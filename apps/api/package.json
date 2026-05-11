@@ -13,15 +13,14 @@
     "strapi": "strapi"
   },
   "dependencies": {
-    "@strapi/plugin-i18n": "^5.0.0",
-    "@strapi/plugin-users-permissions": "^5.0.0",
-    "@strapi/strapi": "^5.0.0",
-    "better-sqlite3": "^9.0.0",
+    "@strapi/strapi": "4.22.1",
+    "@strapi/plugin-users-permissions": "4.22.1",
+    "@strapi/plugin-i18n": "4.22.1",
+    "sqlite3": "^5.1.6",
     "pg": "^8.11.0",
-    "postgres": "^3.4.0"
+    "better-sqlite3": "^9.0.0"
   },
   "devDependencies": {
-    "@strapi/typescript": "^5.0.0",
     "@types/node": "^20.0.0",
     "typescript": "^5.4.0"
   },

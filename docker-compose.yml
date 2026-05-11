@@ -10,7 +10,7 @@ services:
       POSTGRES_USER: ${DATABASE_USERNAME:-velkor}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD:-velkor_secure_password}
     ports:
-      - "5432:5432"
+      - "5434:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -18,16 +18,17 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - velkor-network
 
-  # Strapi CMS
+  # Strapi CMS with pre-built image approach
   strapi:
-    build:
-      context: ./apps/api
-      dockerfile: Dockerfile
+    image: node:24-alpine
     container_name: velkor-strapi
     depends_on:
       postgres:
         condition: service_healthy
+    working_dir: /app
     environment:
       DATABASE_CLIENT: postgres
       DATABASE_HOST: postgres
@@ -44,30 +45,33 @@ services:
     volumes:
       - ./apps/api:/app
       - /app/node_modules
-    command: npm run develop
+    command: sh -c "npm install && npm run develop"
+    networks:
+      - velkor-network
 
-  # Next.js Frontend
+  # Next.js Frontend with pre-built approach
   nextjs:
-    build:
-      context: ./apps/web
-      dockerfile: Dockerfile
+    image: node:24-alpine
     container_name: velkor-nextjs
     depends_on:
       - strapi
+    working_dir: /app
     environment:
-      NEXT_PUBLIC_API_URL: http://strapi:1337
+      NEXT_PUBLIC_API_URL: http://localhost:1337
       NODE_ENV: development
     ports:
       - "3000:3000"
     volumes:
       - ./apps/web:/app
       - /app/node_modules
-    command: npm run dev
+    command: sh -c "npm install && npm run dev"
+    networks:
+      - velkor-network
 
 volumes:
   postgres_data:
     driver: local
 
 networks:
-  default:
-    name: velkor-network
+  velkor-network:
+    driver: bridge
