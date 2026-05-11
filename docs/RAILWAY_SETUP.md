@@ -6,6 +6,24 @@
 - **Main branch**: Auto-deployment enabled
 - **Sync**: Any push to `main` → automatic Railway deployment
 
+## Production URLs
+
+| Service | URL |
+|---------|-----|
+| **Strapi Admin** | https://velkor-api-production.up.railway.app/admin |
+| **API REST** | https://velkor-api-production.up.railway.app/api |
+| **Frontend** | https://velkor-web-production.up.railway.app |
+| **PostgreSQL** | postgres.railway.internal:5432 (private) |
+
+## Railway Dashboard
+
+Project: https://railway.app/project/9f9ab588-4442-49cc-9822-e6dddcf31a03
+
+Services:
+- `Postgres` → Managed database (already running)
+- `velkor-api` → Strapi CMS (auto-deploys from `apps/api`)
+- `velkor-web` → Next.js frontend (auto-deploys from `apps/web`)
+
 ## Railway Configuration
 
 ### Step 1: Authenticate Railway

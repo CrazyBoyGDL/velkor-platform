@@ -250,5 +250,18 @@ Refer to:
 
 ---
 
+## 🌐 Production URLs (Railway)
+
+| Service | URL |
+|---------|-----|
+| Frontend | https://velkor-web-production.up.railway.app |
+| Strapi Admin | https://velkor-api-production.up.railway.app/admin |
+| API REST | https://velkor-api-production.up.railway.app/api |
+| Railway Dashboard | https://railway.app/project/9f9ab588-4442-49cc-9822-e6dddcf31a03 |
+
+**Auto-deploy**: Push to `main` branch → deploys automatically to production.
+
+---
+
 **Last Updated**: 2026-05-11
-**Status**: ✅ Ready for development
+**Status**: ✅ Deployed to Railway — builds in progress
