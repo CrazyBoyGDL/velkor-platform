@@ -16,9 +16,7 @@
     "@strapi/strapi": "4.22.1",
     "@strapi/plugin-users-permissions": "4.22.1",
     "@strapi/plugin-i18n": "4.22.1",
-    "sqlite3": "^5.1.6",
-    "pg": "^8.11.0",
-    "better-sqlite3": "^9.0.0"
+    "pg": "^8.11.0"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
