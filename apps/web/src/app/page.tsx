@@ -141,6 +141,14 @@ export default function HomePage() {
       >
         {/* Canvas network animation (parallax bg) */}
         <motion.div style={{ y: bgY }} className="absolute inset-0 pointer-events-none">
+          {/* Dot grid */}
+          <div
+            className="absolute inset-0 opacity-[0.07]"
+            style={{
+              backgroundImage: 'radial-gradient(circle, #f59e0b 1px, transparent 1px)',
+              backgroundSize: '28px 28px',
+            }}
+          />
           <NetworkBg />
           {/* Amber glow at top center */}
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px]
@@ -158,6 +166,17 @@ export default function HomePage() {
         >
           {/* ─ Left copy ─ */}
           <div>
+            {/* Terminal tag */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5 }}
+              className="inline-flex items-center gap-2 mb-5 px-3 py-1.5 rounded-full border border-noc-green/20 bg-noc-green/5"
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-noc-green animate-pulse-fast" />
+              <span className="text-noc-green text-[11px] font-mono tracking-widest">VELKOR NOC // EN LÍNEA</span>
+            </motion.div>
+
             <motion.div {...fadeUp(0)} className="flex items-center gap-2 mb-7">
               <div className="w-8 h-px bg-amber" />
               <span className="label text-amber/80 tracking-[0.22em]">CONSULTORÍA TECNOLÓGICA EMPRESARIAL</span>
@@ -211,7 +230,10 @@ export default function HomePage() {
             initial={{ opacity: 0, x: 32, y: 8 }}
             animate={{ opacity: 1, x: 0, y: 0 }}
             transition={{ duration: 0.8, ease: 'easeOut', delay: 0.25 }}
+            className="relative"
           >
+            {/* Ambient glow behind the card */}
+            <div className="absolute -inset-4 bg-[radial-gradient(ellipse,rgba(34,197,94,0.06)_0%,transparent_70%)] pointer-events-none" />
             <NOCDashboard />
           </motion.div>
         </motion.div>
