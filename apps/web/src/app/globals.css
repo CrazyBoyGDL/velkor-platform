@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
 * {
   margin: 0;
   padding: 0;
@@ -13,27 +15,39 @@ html, body {
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: 'Inter', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* SOC-NOC Theme Enhancements */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
-
 ::-webkit-scrollbar-track {
-  background: #0a0e27;
+  background: #08091e;
 }
-
 ::-webkit-scrollbar-thumb {
   background: #1e3a8a;
   border-radius: 4px;
 }
-
 ::-webkit-scrollbar-thumb:hover {
   background: #3b82f6;
+}
+
+@layer components {
+  .noc-card {
+    @apply border border-noc-blue/30 rounded-xl bg-gradient-card p-6 hover:border-noc-blue-light/50 hover:shadow-noc transition-all duration-300;
+  }
+  .noc-badge {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-medium border;
+  }
+  .noc-label {
+    @apply text-xs font-mono uppercase tracking-widest text-noc-gray;
+  }
+  .btn-primary {
+    @apply px-6 py-3 rounded-lg bg-noc-blue-light hover:bg-noc-blue-mid text-white font-semibold text-sm transition-colors shadow-noc;
+  }
+  .btn-outline {
+    @apply px-6 py-3 rounded-lg border border-noc-blue/60 hover:border-noc-blue-light text-noc-gray-light hover:text-noc-white text-sm font-medium transition-all;
+  }
 }

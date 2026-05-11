@@ -23,7 +23,7 @@
     "jsx": "preserve",
     "paths": {
       "@/*": [
-        "./*"
+        "./src/*"
       ]
     },
     "allowJs": true,

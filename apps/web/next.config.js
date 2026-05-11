@@ -11,6 +11,11 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  images: {
+    remotePatterns: [
+      { protocol: 'https', hostname: 'velkor-api-production.up.railway.app' },
+    ],
+  },
 }
 
 module.exports = nextConfig
