@@ -1,10 +1,10 @@
 FROM node:20-alpine AS base
-RUN apk add --no-cache libc6-compat
+RUN apk add --no-cache libc6-compat vips-dev fftw-dev gcc g++ make python3
 
 FROM base AS deps
 WORKDIR /app
 COPY package*.json ./
-RUN npm install --ignore-scripts
+RUN npm install
 
 FROM base AS builder
 WORKDIR /app
