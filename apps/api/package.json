@@ -8,7 +8,7 @@
   },
   "scripts": {
     "develop": "strapi develop",
-    "start": "strapi start",
+    "start": "node check-db.js && mkdir -p public/uploads && strapi start",
     "build": "strapi build",
     "strapi": "strapi"
   },
