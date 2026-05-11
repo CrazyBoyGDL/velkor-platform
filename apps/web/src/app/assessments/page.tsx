@@ -58,8 +58,9 @@ export default function AssessmentsPage() {
 
         <div className="mb-10">
           <span className="label">Evaluación gratuita</span>
-          <h1 className="text-4xl sm:text-5xl font-bold text-noc-white mt-3 mb-4">
-            Diagnóstico técnico
+          <h1 className="text-4xl sm:text-5xl font-black text-noc-white mt-3 mb-4 leading-tight">
+            Diagnóstico técnico<br />
+            <span className="text-gradient-amber">sin compromiso</span>
           </h1>
           <p className="text-zinc-500">
             Completa el formulario y recibe una evaluación de tu infraestructura con recomendaciones y cotización en 24 h.
