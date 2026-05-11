@@ -13,9 +13,15 @@ const LINKS = {
     ['Casos de éxito', '/casos'],
     ['Nosotros', '/nosotros'],
     ['Blog técnico', '/blog'],
-    ['Contacto', '/assessments'],
+    ['Diagnóstico gratuito', '/assessments'],
   ],
 }
+
+const CERTS = [
+  { label: 'Fortinet NSE4', color: '#ef4444' },
+  { label: 'Microsoft Gold', color: '#3b82f6' },
+  { label: 'Axis ACSR', color: '#22c55e' },
+]
 
 export default function Footer() {
   return (
@@ -32,12 +38,26 @@ export default function Footer() {
                 <div className="text-zinc-700 text-[9px] font-mono tracking-[0.2em]">SYSTEM</div>
               </div>
             </div>
-            <p className="text-zinc-600 text-sm leading-relaxed max-w-xs">
+            <p className="text-zinc-600 text-sm leading-relaxed max-w-xs mb-5">
               Consultoría tecnológica empresarial. Redes, ciberseguridad y Modern Workplace para empresas que no pueden permitirse interrupciones.
             </p>
-            <div className="mt-5 flex items-center gap-2">
+
+            <div className="flex items-center gap-2 mb-5">
               <span className="w-2 h-2 rounded-full bg-noc-green animate-pulse-slow" />
               <span className="text-noc-green text-[11px] font-mono tracking-widest">SISTEMAS OPERATIVOS AL 99.9%</span>
+            </div>
+
+            {/* Certs */}
+            <div className="flex flex-wrap gap-2">
+              {CERTS.map(({ label, color }) => (
+                <span
+                  key={label}
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded border border-surface-border text-[11px] font-mono text-zinc-500"
+                >
+                  <span className="w-1.5 h-1.5 rounded-full" style={{ background: color }} />
+                  {label}
+                </span>
+              ))}
             </div>
           </div>
 
@@ -60,11 +80,12 @@ export default function Footer() {
 
         <div className="mt-12 pt-6 border-t border-surface-border flex flex-col sm:flex-row justify-between items-center gap-4">
           <p className="text-zinc-700 text-xs font-mono">
-            © {new Date().getFullYear()} Velkor System — Todos los derechos reservados
+            © {new Date().getFullYear()} Velkor System · Todos los derechos reservados
           </p>
-          <div className="flex items-center gap-6 text-zinc-700 text-xs font-mono">
+          <div className="flex items-center gap-4 text-zinc-700 text-xs font-mono">
+            <Link href="/assessments" className="hover:text-zinc-400 transition-colors">Contacto</Link>
+            <span>·</span>
             <span>SOC/NOC Operations Center</span>
-            <span>v1.0.0</span>
           </div>
         </div>
       </div>

@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 const METRICS = [
@@ -67,15 +67,36 @@ const DOT = ({ level }: { level: 'ok' | 'warn' | 'info' }) => (
   }`} />
 )
 
+function Sparkline({ values, color }: { values: number[]; color: string }) {
+  if (values.length < 2) return null
+  const W = 80, H = 24
+  const min = Math.min(...values)
+  const max = Math.max(...values)
+  const range = max - min || 0.1
+  const pts = values.map((v, i) => {
+    const x = (i / (values.length - 1)) * W
+    const y = H - ((v - min) / range) * H
+    return `${x},${y}`
+  }).join(' ')
+  return (
+    <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} className="opacity-70">
+      <polyline points={pts} fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
 export default function NOCDashboard() {
-  const [uptime, setUptime]     = useState(99.9)
-  const [activity, setActivity] = useState(INITIAL_ACTIVITY)
-  const [tick, setTick]         = useState(0)
-  const [clock, setClock]       = useState('')
+  const [uptime, setUptime]       = useState(99.9)
+  const [uptimeHist, setUptimeHist] = useState<number[]>([99.88, 99.91, 99.87, 99.9, 99.93, 99.9])
+  const [activity, setActivity]   = useState(INITIAL_ACTIVITY)
+  const [tick, setTick]           = useState(0)
+  const [clock, setClock]         = useState('')
 
   useEffect(() => {
     const id = setInterval(() => {
-      setUptime(u => parseFloat((u + (Math.random() - 0.5) * 0.03).toFixed(2)))
+      const next = parseFloat((99.9 + (Math.random() - 0.5) * 0.12).toFixed(2))
+      setUptime(next)
+      setUptimeHist(h => [...h.slice(-11), next])
       setTick(t => t + 1)
       setClock(new Date().toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit', second: '2-digit' }))
     }, 3500)
@@ -126,12 +147,17 @@ export default function NOCDashboard() {
               <span className="label text-[10px]">{label}</span>
               <span className={`badge text-[10px] ${badgeColor}`}>{badge}</span>
             </div>
-            <div className="text-2xl font-bold font-mono text-noc-white">
-              {typeof value === 'number' ? (
-                id === 'uptime'
-                  ? <motion.span key={uptime}>{uptime.toFixed(1)}{unit}</motion.span>
-                  : `${value}${unit}`
-              ) : value}
+            <div className="flex items-end justify-between">
+              <div className="text-2xl font-bold font-mono text-noc-white">
+                {typeof value === 'number' ? (
+                  id === 'uptime'
+                    ? <motion.span key={uptime}>{uptime.toFixed(1)}{unit}</motion.span>
+                    : `${value}${unit}`
+                ) : value}
+              </div>
+              {id === 'uptime' && (
+                <Sparkline values={uptimeHist} color="#22c55e" />
+              )}
             </div>
             <div className="progress-track mt-2">
               <motion.div

@@ -25,12 +25,39 @@ const STATS = [
 ]
 
 const SERVICES = [
-  { icon: '⬡', title: 'Redes & Conectividad',   desc: 'LAN/WAN, firewall Fortinet, SD-WAN y Wi-Fi corporativo.',        color: 'text-noc-blue',  accent: 'border-l-noc-blue',  card: 'card-blue'  },
-  { icon: '◉', title: 'CCTV & Videovigilancia', desc: 'Sistemas IP Axis, NVR centralizado y analítica de video IA.',    color: 'text-noc-cyan',  accent: 'border-l-noc-cyan',  card: 'card-cyan'  },
-  { icon: '⬢', title: 'Microsoft 365 & Cloud',  desc: 'Tenant setup, Exchange, Teams, SharePoint y gestión de lic.',   color: 'text-noc-blue',  accent: 'border-l-noc-blue',  card: 'card-blue'  },
-  { icon: '⬟', title: 'Intune & Entra ID',       desc: 'MDM, acceso condicional, MFA y gobernanza de identidades.',     color: 'text-noc-green', accent: 'border-l-noc-green', card: 'card-green' },
-  { icon: '◈', title: 'Monitoreo NOC 24/7',      desc: 'Dashboard en tiempo real, alertas y SLA documentado.',          color: 'text-amber',     accent: 'border-l-amber',     card: 'card-amber' },
-  { icon: '◇', title: 'Diagnóstico & Cotización',desc: 'Auditoría técnica y propuesta detallada en 24 horas.',          color: 'text-noc-cyan',  accent: 'border-l-noc-cyan',  card: 'card-cyan'  },
+  { icon: '⬡', title: 'Redes & Conectividad',    desc: 'LAN/WAN, firewall Fortinet, SD-WAN y Wi-Fi corporativo con QoS.',  color: 'text-noc-blue',  card: 'card-blue',  hex: '#3b82f6' },
+  { icon: '◉', title: 'CCTV & Videovigilancia',  desc: 'Sistemas IP Axis/Hikvision, NVR centralizado y analítica IA.',     color: 'text-noc-cyan',  card: 'card-cyan',  hex: '#06b6d4' },
+  { icon: '⬢', title: 'Microsoft 365 & Cloud',   desc: 'Tenant setup, Exchange Online, Teams, SharePoint y licencias.',    color: 'text-noc-blue',  card: 'card-blue',  hex: '#3b82f6' },
+  { icon: '⬟', title: 'Intune & Entra ID',        desc: 'MDM, acceso condicional, MFA y gobernanza de identidades.',        color: 'text-noc-green', card: 'card-green', hex: '#22c55e' },
+  { icon: '◈', title: 'Monitoreo NOC 24/7',       desc: 'Centro de operaciones con alertas, SLA documentado y respuesta.',   color: 'text-amber',     card: 'card-amber', hex: '#f59e0b' },
+  { icon: '◇', title: 'Diagnóstico & Cotización', desc: 'Auditoría técnica y propuesta personalizada en menos de 24 h.',    color: 'text-noc-cyan',  card: 'card-cyan',  hex: '#06b6d4' },
+]
+
+const TESTIMONIALS = [
+  {
+    quote: 'Velkor rediseñó nuestra red y migró 80 usuarios a Microsoft 365 en un fin de semana. Cero interrupciones al negocio.',
+    author: 'Carlos Méndez',
+    role: 'Director de Operaciones',
+    company: 'Distribuidora Avante',
+    initial: 'CM',
+    color: '#f59e0b',
+  },
+  {
+    quote: 'Implementaron Intune y acceso condicional en 3 semanas. Ahora tenemos visibilidad total de los 150 dispositivos de la empresa.',
+    author: 'Ana Ruiz',
+    role: 'IT Manager',
+    company: 'Corporativo Salud Plus',
+    initial: 'AR',
+    color: '#22c55e',
+  },
+  {
+    quote: 'El sistema de CCTV con analítica de IA detectó un incidente antes de que llegara seguridad. El ROI fue en el primer mes.',
+    author: 'Roberto Leal',
+    role: 'Gerente General',
+    company: 'Retail Cadena Norte',
+    initial: 'RL',
+    color: '#3b82f6',
+  },
 ]
 
 const STEPS = [
@@ -254,12 +281,12 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            {SERVICES.map(({ icon, title, desc, color, card }, i) => (
+            {SERVICES.map(({ icon, title, desc, color, card, hex }, i) => (
               <motion.div
                 key={title}
                 {...fadeUp(i * 0.05)}
-                className={`${card} p-6 rounded-xl border border-l-4 transition-all duration-300 group cursor-default`}
-                style={{ borderLeftColor: 'currentColor' }}
+                className={`${card} p-6 rounded-xl border border-l-[3px] transition-all duration-300 group cursor-default`}
+                style={{ borderLeftColor: hex }}
               >
                 <div className={`text-2xl mb-4 ${color} font-mono leading-none`}>{icon}</div>
                 <h3 className="text-noc-white font-semibold text-[15px] mb-2 group-hover:text-white transition-colors">
@@ -302,6 +329,49 @@ export default function HomePage() {
                 </div>
                 <h3 className="text-noc-white font-bold text-lg mb-2">{title}</h3>
                 <p className="text-zinc-500 text-sm leading-relaxed">{desc}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════════════════
+          TESTIMONIALS
+      ══════════════════════════════════════════════════════════════════ */}
+      <div className="section-divider" />
+      <section className="py-20 px-4 sm:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <motion.span {...fadeUp(0)} className="label block mb-3">Clientes</motion.span>
+            <motion.h2 {...fadeUp(0.05)} className="text-3xl sm:text-4xl font-black text-noc-white">
+              Resultados reales
+            </motion.h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {TESTIMONIALS.map(({ quote, author, role, company, initial, color }, i) => (
+              <motion.div
+                key={author}
+                {...fadeUp(i * 0.08)}
+                className="card p-6 flex flex-col gap-4 hover:border-zinc-700 transition-colors"
+              >
+                {/* Quote mark */}
+                <div className="text-4xl font-serif leading-none" style={{ color, opacity: 0.4 }}>"</div>
+                <p className="text-zinc-300 text-sm leading-relaxed flex-1">
+                  {quote}
+                </p>
+                <div className="flex items-center gap-3 pt-2 border-t border-surface-border">
+                  <div
+                    className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
+                    style={{ background: color + '20', color }}
+                  >
+                    {initial}
+                  </div>
+                  <div>
+                    <div className="text-zinc-200 text-sm font-semibold">{author}</div>
+                    <div className="text-zinc-600 text-[11px]">{role} · {company}</div>
+                  </div>
+                </div>
               </motion.div>
             ))}
           </div>

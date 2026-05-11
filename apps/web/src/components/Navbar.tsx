@@ -52,13 +52,16 @@ export default function Navbar() {
               <Link
                 key={href}
                 href={href}
-                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                className={`relative px-4 py-2 rounded-md text-sm font-medium transition-colors group ${
                   isActive(href)
                     ? 'text-noc-white'
                     : 'text-zinc-500 hover:text-zinc-300'
                 }`}
               >
                 {label}
+                {isActive(href) && (
+                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-4 h-0.5 bg-amber rounded-full" />
+                )}
               </Link>
             ))}
           </nav>
