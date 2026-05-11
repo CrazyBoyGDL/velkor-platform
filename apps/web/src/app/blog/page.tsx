@@ -1,96 +1,85 @@
 import Link from 'next/link'
 
-// Placeholder posts — will be replaced with Strapi API data
-const placeholderPosts = [
+const POSTS = [
   {
     slug: 'zero-trust-network-2025',
-    title: 'Implementing Zero Trust Network Architecture in 2025',
-    excerpt: 'A practical guide to migrating your enterprise network from perimeter-based security to a zero trust model using Entra ID and Intune.',
-    category: 'Networks',
-    date: '2026-05-08',
+    title: 'Cómo implementar Zero Trust en tu red empresarial',
+    excerpt: 'Guía práctica para migrar desde seguridad perimetral hacia un modelo Zero Trust usando Entra ID e Intune en entornos híbridos.',
+    category: 'Redes',
+    date: '8 May 2026',
     readTime: '8 min',
-    color: 'text-noc-blue-light',
-    badge: 'border-noc-blue/40 text-noc-blue-light bg-noc-blue/10',
+    badge: 'text-noc-blue bg-noc-blue-bg',
   },
   {
     slug: 'cctv-ai-analytics',
-    title: 'AI-Powered Video Analytics: Beyond Basic Surveillance',
-    excerpt: 'How modern IP camera systems with AI analytics are transforming security operations — from motion detection to behavioral analysis.',
+    title: 'Analítica de video IA: más allá de la vigilancia básica',
+    excerpt: 'Cómo los sistemas IP modernos con IA transforman las operaciones de seguridad: desde detección de movimiento hasta análisis de comportamiento.',
     category: 'CCTV',
-    date: '2026-05-01',
+    date: '1 May 2026',
     readTime: '6 min',
-    color: 'text-noc-cyan',
-    badge: 'border-noc-cyan/40 text-noc-cyan bg-noc-cyan/10',
+    badge: 'text-noc-cyan bg-noc-blue-bg',
   },
   {
     slug: 'm365-conditional-access',
-    title: 'Microsoft 365 Conditional Access: Complete Setup Guide',
-    excerpt: 'Step-by-step configuration of Conditional Access policies in Entra ID — MFA, device compliance, location restrictions and risk-based policies.',
+    title: 'Acceso Condicional en Microsoft 365: guía completa',
+    excerpt: 'Configuración paso a paso de políticas de Acceso Condicional en Entra ID: MFA, cumplimiento de dispositivos y políticas basadas en riesgo.',
     category: 'Cloud',
-    date: '2026-04-22',
+    date: '22 Abr 2026',
     readTime: '12 min',
-    color: 'text-noc-blue-light',
-    badge: 'border-noc-blue/40 text-noc-blue-light bg-noc-blue/10',
+    badge: 'text-noc-blue bg-noc-blue-bg',
   },
   {
     slug: 'intune-windows-autopilot',
-    title: 'Windows Autopilot with Intune: Zero-Touch Deployment',
-    excerpt: 'Configure Windows Autopilot for automatic device enrollment and configuration — no IT touch required at the end-user desk.',
+    title: 'Windows Autopilot + Intune: despliegue sin intervención IT',
+    excerpt: 'Configura Windows Autopilot para enrolamiento y configuración automática de dispositivos, sin que IT tenga que tocar cada equipo.',
     category: 'Intune',
-    date: '2026-04-15',
+    date: '15 Abr 2026',
     readTime: '10 min',
-    color: 'text-noc-green',
-    badge: 'border-noc-green/40 text-noc-green bg-noc-green-dim/20',
+    badge: 'text-noc-green bg-noc-green-bg',
   },
 ]
 
 export default function BlogPage() {
   return (
-    <div className="bg-gradient-noc min-h-screen pt-12 pb-24 px-4">
-      <div className="max-w-4xl mx-auto">
-
-        {/* Header */}
-        <div className="text-center mb-16">
-          <span className="noc-label">Knowledge base</span>
+    <div className="min-h-screen py-16 px-4 sm:px-8">
+      <div className="max-w-3xl mx-auto">
+        <div className="mb-12">
+          <span className="label">Conocimiento técnico</span>
           <h1 className="text-4xl sm:text-5xl font-bold text-noc-white mt-3 mb-4">
-            Industry Insights
+            Blog técnico
           </h1>
-          <p className="text-noc-gray-mid max-w-xl mx-auto">
-            Technical guides, case studies and best practices from our NOC engineers.
+          <p className="text-zinc-500">
+            Guías, casos de uso y buenas prácticas de nuestros ingenieros NOC.
           </p>
         </div>
 
-        {/* Posts */}
-        <div className="space-y-6">
-          {placeholderPosts.map(({ slug, title, excerpt, category, date, readTime, color, badge }) => (
-            <article key={slug} className="noc-card hover:shadow-noc group cursor-pointer">
-              <div className="flex items-start justify-between gap-4 mb-3">
-                <span className={`noc-badge border ${badge} text-xs`}>
-                  {category}
-                </span>
-                <div className="flex items-center gap-3 text-noc-gray text-xs font-mono flex-shrink-0">
+        <div className="space-y-4">
+          {POSTS.map(({ slug, title, excerpt, category, date, readTime, badge }) => (
+            <article key={slug} className="noc-card group cursor-pointer">
+              <div className="flex items-center justify-between gap-4 mb-3">
+                <span className={`badge ${badge}`}>{category}</span>
+                <div className="text-zinc-700 text-xs font-mono flex items-center gap-2 flex-shrink-0">
                   <span>{date}</span>
                   <span>·</span>
-                  <span>{readTime} read</span>
+                  <span>{readTime}</span>
                 </div>
               </div>
-              <h2 className={`text-xl font-semibold ${color} mb-2 group-hover:underline underline-offset-4 decoration-1`}>
+              <h2 className="text-noc-white font-semibold text-lg mb-2 group-hover:text-amber transition-colors">
                 {title}
               </h2>
-              <p className="text-noc-gray-mid text-sm leading-relaxed">{excerpt}</p>
-              <div className="mt-4 text-xs font-mono text-noc-gray group-hover:text-noc-blue-light transition-colors">
-                READ ARTICLE →
+              <p className="text-zinc-500 text-sm leading-relaxed">{excerpt}</p>
+              <div className="mt-4 text-[11px] font-mono text-zinc-700 group-hover:text-amber transition-colors">
+                LEER ARTÍCULO →
               </div>
             </article>
           ))}
         </div>
 
-        {/* Coming from Strapi note */}
-        <div className="mt-12 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-noc-blue/20 bg-noc-navy/30">
-            <div className="w-1.5 h-1.5 rounded-full bg-noc-blue-light animate-pulse-slow" />
-            <span className="text-noc-gray-mid text-xs font-mono">
-              Content managed via Strapi CMS — more articles coming soon
+        <div className="mt-10 text-center">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-surface-border bg-surface-card">
+            <span className="w-1.5 h-1.5 rounded-full bg-amber animate-pulse-slow" />
+            <span className="text-zinc-600 text-xs font-mono">
+              Contenido gestionado desde Strapi CMS — próximos artículos en camino
             </span>
           </div>
         </div>

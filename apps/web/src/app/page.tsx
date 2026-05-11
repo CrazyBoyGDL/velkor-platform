@@ -1,165 +1,262 @@
+'use client'
+import { useRef } from 'react'
 import Link from 'next/link'
+import { motion, useScroll, useTransform } from 'framer-motion'
+import NOCDashboard from '@/components/NOCDashboard'
 
-const services = [
+// ─── Fade-up animation preset ───────────────────────────────────────────────
+const fadeUp = (delay = 0) => ({
+  initial: { opacity: 0, y: 24 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, amount: 0.3 },
+  transition: { duration: 0.6, ease: 'easeOut', delay },
+})
+
+// ─── Data ────────────────────────────────────────────────────────────────────
+const PARTNERS = ['Fortinet NSE4', 'Microsoft Gold', 'Cisco CCNA', 'Axis ACSR', 'CompTIA Sec+']
+
+const STATS = [
+  { value: '50+',   label: 'Clientes activos',       sub: 'Pymes y corporativos' },
+  { value: '99.9%', label: 'Uptime garantizado',      sub: 'SLA documentado' },
+  { value: '< 4h',  label: 'Tiempo de respuesta',     sub: 'Incidentes críticos' },
+  { value: '8',     label: 'Años de experiencia',     sub: 'Desde 2018' },
+]
+
+const SERVICES = [
   {
-    icon: '🌐',
-    title: 'Network Infrastructure',
-    desc: 'LAN/WAN design, routing, switching and managed Wi-Fi for enterprise environments.',
-    color: 'text-noc-blue-light',
-    border: 'border-noc-blue/40 hover:border-noc-blue-light/60',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6" stroke="currentColor" strokeWidth="1.5">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M8.288 15.038a5.25 5.25 0 017.424 0M5.106 11.856c3.807-3.808 9.98-3.808 13.788 0M1.924 8.674c5.565-5.565 14.587-5.565 20.152 0M12.53 18.22l-.53.53-.53-.53a.75.75 0 011.06 0z" />
+      </svg>
+    ),
+    title: 'Redes & Conectividad',
+    desc: 'LAN/WAN, firewall, SD-WAN y Wi-Fi corporativo gestionado.',
+    color: 'text-noc-blue',
   },
   {
-    icon: '📷',
-    title: 'CCTV & Surveillance',
-    desc: 'IP camera systems, NVR/DVR setup, remote monitoring and video analytics.',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6" stroke="currentColor" strokeWidth="1.5">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z" />
+      </svg>
+    ),
+    title: 'CCTV & Vigilancia',
+    desc: 'Sistemas IP, analítica de video IA y monitoreo remoto 24/7.',
     color: 'text-noc-cyan',
-    border: 'border-noc-cyan/30 hover:border-noc-cyan/60',
   },
   {
-    icon: '☁️',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6" stroke="currentColor" strokeWidth="1.5">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15a4.5 4.5 0 004.5 4.5H18a3.75 3.75 0 001.332-7.257 3 3 0 00-3.758-3.848 5.25 5.25 0 00-10.233 2.33A4.502 4.502 0 002.25 15z" />
+      </svg>
+    ),
     title: 'Microsoft 365 & Cloud',
-    desc: 'Full M365 tenant setup, Exchange Online, SharePoint, Teams and license management.',
-    color: 'text-noc-blue-light',
-    border: 'border-noc-blue/40 hover:border-noc-blue-light/60',
+    desc: 'Tenant setup, Exchange Online, Teams, SharePoint y licencias.',
+    color: 'text-noc-blue',
   },
   {
-    icon: '🔒',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6" stroke="currentColor" strokeWidth="1.5">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+      </svg>
+    ),
     title: 'Intune & Entra ID',
-    desc: 'Device management, conditional access, MFA, identity governance and compliance.',
+    desc: 'MDM, acceso condicional, MFA y gestión de identidades.',
     color: 'text-noc-green',
-    border: 'border-noc-green-dim/50 hover:border-noc-green/50',
   },
   {
-    icon: '🖥️',
-    title: 'NOC Monitoring',
-    desc: 'Real-time infrastructure monitoring, alerting and 24/7 operational support.',
-    color: 'text-noc-orange',
-    border: 'border-noc-orange/30 hover:border-noc-orange/60',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6" stroke="currentColor" strokeWidth="1.5">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5M9 11.25v1.5M12 9v3.75m3-6v6" />
+      </svg>
+    ),
+    title: 'Monitoreo NOC',
+    desc: 'Alertas en tiempo real, dashboards y SLA documentado.',
+    color: 'text-amber',
   },
   {
-    icon: '⚡',
-    title: 'IT Assessment & Quotes',
-    desc: 'On-site technical evaluation, infrastructure audit and detailed quotation.',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6" stroke="currentColor" strokeWidth="1.5">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m5.231 13.481L15 17.25m-4.5-15H5.625c-.621 0-1.125.504-1.125 1.125v16.5c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9zm3.75 11.625a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+      </svg>
+    ),
+    title: 'Diagnóstico & Cotización',
+    desc: 'Auditoría técnica in-situ y propuesta detallada en 24 h.',
     color: 'text-noc-cyan',
-    border: 'border-noc-cyan/30 hover:border-noc-cyan/60',
   },
 ]
 
-const stats = [
-  { value: '99.9%', label: 'Uptime SLA' },
-  { value: '24/7', label: 'NOC Support' },
-  { value: '<15m', label: 'Response Time' },
-  { value: '100+', label: 'Clients Served' },
-]
-
+// ─── Page ────────────────────────────────────────────────────────────────────
 export default function HomePage() {
+  const heroRef = useRef<HTMLDivElement>(null)
+  const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] })
+  const heroY    = useTransform(scrollYProgress, [0, 1], ['0%', '20%'])
+  const heroOpac = useTransform(scrollYProgress, [0, 0.7], [1, 0])
+
   return (
-    <div className="bg-gradient-hero min-h-screen">
+    <>
+      {/* ── HERO ──────────────────────────────────────────────────────── */}
+      <section ref={heroRef} className="relative min-h-[calc(100vh-100px)] flex items-center overflow-hidden">
 
-      {/* Hero */}
-      <section className="relative overflow-hidden pt-20 pb-32 px-4">
-        {/* Background grid effect */}
-        <div
-          className="absolute inset-0 opacity-5"
-          style={{
-            backgroundImage: 'linear-gradient(rgba(59,130,246,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(59,130,246,0.5) 1px, transparent 1px)',
-            backgroundSize: '60px 60px',
-          }}
-        />
+        {/* Parallax bg layer */}
+        <motion.div
+          style={{ y: heroY, opacity: heroOpac }}
+          className="absolute inset-0 pointer-events-none"
+        >
+          {/* Dot grid */}
+          <div
+            className="absolute inset-0 opacity-[0.04]"
+            style={{
+              backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px)',
+              backgroundSize: '32px 32px',
+            }}
+          />
+          {/* Amber glow blob */}
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-hero-glow opacity-60" />
+        </motion.div>
 
-        {/* Status indicator */}
-        <div className="relative max-w-7xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-noc-green/40 bg-noc-green-dim/20 mb-8">
-            <div className="w-2 h-2 rounded-full bg-noc-green animate-pulse-slow" />
-            <span className="text-noc-green text-xs font-mono font-medium tracking-widest">
-              SYSTEMS OPERATIONAL — VELKOR NOC ONLINE
-            </span>
-          </div>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-8 w-full grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center py-16">
 
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-noc-white mb-6 leading-tight">
-            Enterprise IT{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-noc-blue-light to-noc-cyan">
-              Operations Center
-            </span>
-          </h1>
+          {/* Left: Copy */}
+          <div>
+            <motion.div {...fadeUp(0)} className="flex items-center gap-2 mb-6">
+              <div className="w-6 h-px bg-amber" />
+              <span className="label text-[11px] tracking-[0.25em]">CONSULTORÍA TECNOLÓGICA EMPRESARIAL</span>
+            </motion.div>
 
-          <p className="text-lg sm:text-xl text-noc-gray-mid max-w-2xl mx-auto mb-10 leading-relaxed">
-            Networks, CCTV, infrastructure and cloud configuration. Professional SOC/NOC services
-            for businesses that can&apos;t afford downtime.
-          </p>
+            <motion.h1 {...fadeUp(0.1)} className="text-5xl sm:text-6xl font-extrabold leading-[1.08] tracking-tight mb-6">
+              Tu operación,<br />
+              sin puntos<br />
+              <span className="text-amber">de falla.</span>
+            </motion.h1>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/assessments" className="btn-primary text-base px-8 py-4 shadow-noc-strong">
-              Request Assessment
-            </Link>
-            <Link href="/services" className="btn-outline text-base px-8 py-4">
-              View Services
-            </Link>
-          </div>
-        </div>
+            <motion.p {...fadeUp(0.2)} className="text-zinc-400 text-lg leading-relaxed max-w-md mb-10">
+              Redes, ciberseguridad y Modern Workplace para empresas que no pueden permitirse interrupciones.
+            </motion.p>
 
-        {/* Stats bar */}
-        <div className="relative max-w-4xl mx-auto mt-20">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {stats.map(({ value, label }) => (
-              <div key={label} className="text-center p-4 rounded-lg border border-noc-blue/20 bg-noc-navy/50 backdrop-blur">
-                <div className="text-3xl font-bold text-noc-blue-light font-mono">{value}</div>
-                <div className="text-xs text-noc-gray-mid mt-1 uppercase tracking-wider">{label}</div>
+            <motion.div {...fadeUp(0.3)} className="flex flex-col sm:flex-row gap-4 mb-10">
+              <Link href="/assessments" className="btn-amber text-[15px] px-8 py-3.5 text-center">
+                Solicitar diagnóstico gratuito
+              </Link>
+              <Link href="/services" className="btn-ghost text-[15px] px-8 py-3.5 text-center">
+                Ver servicios →
+              </Link>
+            </motion.div>
+
+            {/* Social proof */}
+            <motion.div {...fadeUp(0.4)} className="flex items-center gap-3">
+              <div className="flex -space-x-2">
+                {['#3b82f6','#22c55e','#f59e0b','#ef4444'].map((c, i) => (
+                  <div
+                    key={i}
+                    className="w-8 h-8 rounded-full border-2 border-surface-dark flex items-center justify-center text-xs font-bold"
+                    style={{ backgroundColor: c + '33', color: c }}
+                  >
+                    {['JM','KR','AL','PG'][i]}
+                  </div>
+                ))}
               </div>
+              <span className="text-zinc-500 text-sm">
+                <span className="text-zinc-300 font-semibold">+50 empresas</span> confían en Velkor
+              </span>
+            </motion.div>
+          </div>
+
+          {/* Right: NOC Dashboard */}
+          <motion.div
+            initial={{ opacity: 0, x: 40 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, ease: 'easeOut', delay: 0.3 }}
+            className="animation-float"
+          >
+            <NOCDashboard />
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ── PARTNERS ──────────────────────────────────────────────────── */}
+      <section className="border-y border-surface-border bg-surface-dark/60 py-6 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 flex items-center gap-8 sm:gap-16">
+          <span className="label text-[10px] flex-shrink-0 hidden sm:block">PARTNERS /</span>
+          <div className="flex items-center gap-8 sm:gap-14 overflow-x-auto scrollbar-none pb-1">
+            {PARTNERS.map(p => (
+              <span key={p} className="text-zinc-600 hover:text-zinc-400 text-sm font-medium tracking-wide flex-shrink-0 transition-colors cursor-default">
+                {p}
+              </span>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Services */}
-      <section className="py-24 px-4 bg-noc-darker/50">
+      {/* ── STATS ─────────────────────────────────────────────────────── */}
+      <section className="py-20 px-4 sm:px-8">
+        <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
+          {STATS.map(({ value, label, sub }, i) => (
+            <motion.div key={label} {...fadeUp(i * 0.08)} className="text-center sm:text-left">
+              <div className="text-4xl sm:text-5xl font-extrabold text-noc-white font-mono tracking-tight mb-1">
+                {value}
+              </div>
+              <div className="text-zinc-300 text-sm font-semibold">{label}</div>
+              <div className="text-zinc-600 text-xs mt-0.5">{sub}</div>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── SERVICES ──────────────────────────────────────────────────── */}
+      <section className="py-20 px-4 sm:px-8 border-t border-surface-border">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <span className="noc-label">What we do</span>
-            <h2 className="text-3xl sm:text-4xl font-bold text-noc-white mt-3 mb-4">
-              Enterprise-Grade IT Services
+          <motion.div {...fadeUp(0)} className="mb-12">
+            <span className="label">Lo que hacemos</span>
+            <h2 className="text-3xl sm:text-4xl font-bold text-noc-white mt-3">
+              Servicios de infraestructura IT
             </h2>
-            <p className="text-noc-gray-mid max-w-xl mx-auto">
-              From network design to cloud migration — we cover the full IT infrastructure stack.
-            </p>
-          </div>
+          </motion.div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {services.map(({ icon, title, desc, color, border }) => (
-              <div key={title} className={`noc-card ${border} group cursor-default`}>
-                <div className="text-3xl mb-4">{icon}</div>
-                <h3 className={`text-lg font-semibold ${color} mb-2`}>{title}</h3>
-                <p className="text-noc-gray-mid text-sm leading-relaxed">{desc}</p>
-              </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {SERVICES.map(({ icon, title, desc, color }, i) => (
+              <motion.div
+                key={title}
+                {...fadeUp(i * 0.06)}
+                className="noc-card group cursor-default"
+              >
+                <div className={`${color} mb-4 opacity-80 group-hover:opacity-100 transition-opacity`}>
+                  {icon}
+                </div>
+                <h3 className="text-noc-white font-semibold text-[15px] mb-1.5">{title}</h3>
+                <p className="text-zinc-500 text-sm leading-relaxed">{desc}</p>
+              </motion.div>
             ))}
           </div>
 
-          <div className="text-center mt-12">
-            <Link href="/services" className="btn-outline">
-              See All Services →
+          <motion.div {...fadeUp(0.3)} className="mt-10 flex justify-center sm:justify-start">
+            <Link href="/services" className="btn-ghost text-sm">
+              Ver catálogo completo →
             </Link>
-          </div>
+          </motion.div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="py-24 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="noc-card border-noc-blue-light/30 shadow-noc-strong p-12">
-            <span className="noc-label">Ready to start?</span>
-            <h2 className="text-3xl sm:text-4xl font-bold text-noc-white mt-4 mb-4">
-              Get a Free Technical Assessment
-            </h2>
-            <p className="text-noc-gray-mid mb-8 max-w-lg mx-auto">
-              Our engineers will evaluate your infrastructure and deliver a detailed report with recommendations and pricing.
-            </p>
-            <Link href="/assessments" className="btn-primary text-base px-10 py-4 shadow-noc-strong">
-              Start Assessment
+      {/* ── CTA BOTTOM ────────────────────────────────────────────────── */}
+      <section className="py-24 px-4 sm:px-8 border-t border-surface-border">
+        <motion.div {...fadeUp(0)} className="max-w-2xl mx-auto text-center">
+          <span className="label mb-4 block">¿Listo para empezar?</span>
+          <h2 className="text-3xl sm:text-4xl font-bold text-noc-white mb-4">
+            Diagnóstico gratuito de tu infraestructura
+          </h2>
+          <p className="text-zinc-500 mb-8 leading-relaxed">
+            Nuestros ingenieros evalúan tu infraestructura actual y entregan un informe técnico detallado con recomendaciones y costos.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link href="/assessments" className="btn-amber text-[15px] px-10 py-4 shadow-amber">
+              Solicitar diagnóstico →
+            </Link>
+            <Link href="/services" className="btn-ghost text-[15px] px-10 py-4">
+              Ver servicios
             </Link>
           </div>
-        </div>
+        </motion.div>
       </section>
-
-    </div>
+    </>
   )
 }

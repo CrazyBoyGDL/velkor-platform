@@ -2,18 +2,24 @@ import type { Metadata } from 'next'
 import './globals.css'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import StatusBar from '@/components/StatusBar'
 
 export const metadata: Metadata = {
-  title: 'Velkor System — SOC/NOC Enterprise Operations',
-  description: 'Enterprise IT services: networks, CCTV, infrastructure, Microsoft 365, Intune & Entra ID configuration.',
+  title: 'Velkor System — Consultoría IT Empresarial',
+  description: 'Redes, ciberseguridad y Modern Workplace para empresas que no pueden permitirse interrupciones. NOC 24/7.',
+  icons: {
+    icon: '/favicon.svg',
+    shortcut: '/favicon.svg',
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="scroll-smooth">
-      <body className="bg-noc-dark text-noc-gray-light min-h-screen flex flex-col">
+    <html lang="es" className="scroll-smooth">
+      <body className="bg-surface-dark text-noc-white min-h-screen flex flex-col">
+        <StatusBar />
         <Navbar />
-        <main className="flex-1 pt-16">
+        <main className="flex-1 pt-[100px]">
           {children}
         </main>
         <Footer />

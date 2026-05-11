@@ -2,52 +2,74 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-html, body {
-  height: 100%;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; }
 
 body {
   font-family: 'Inter', system-ui, sans-serif;
+  background-color: #0a0a0a;
+  color: #f4f4f5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-::-webkit-scrollbar {
-  width: 6px;
-}
-::-webkit-scrollbar-track {
-  background: #08091e;
-}
-::-webkit-scrollbar-thumb {
-  background: #1e3a8a;
-  border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #3b82f6;
-}
+/* Scrollbar */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: #0a0a0a; }
+::-webkit-scrollbar-thumb { background: #252525; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #f59e0b40; }
+
+/* Selection */
+::selection { background: rgba(245,158,11,0.3); color: #fff; }
 
 @layer components {
+  /* Card style */
+  .card {
+    @apply border border-surface-border bg-surface-card rounded-xl;
+  }
+  /* NOC-specific card */
   .noc-card {
-    @apply border border-noc-blue/30 rounded-xl bg-gradient-card p-6 hover:border-noc-blue-light/50 hover:shadow-noc transition-all duration-300;
+    @apply card p-6 hover:border-zinc-600 transition-colors duration-300;
   }
-  .noc-badge {
-    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-medium border;
-  }
-  .noc-label {
+  /* Labels */
+  .label {
     @apply text-xs font-mono uppercase tracking-widest text-noc-gray;
   }
-  .btn-primary {
-    @apply px-6 py-3 rounded-lg bg-noc-blue-light hover:bg-noc-blue-mid text-white font-semibold text-sm transition-colors shadow-noc;
+  /* Badge */
+  .badge {
+    @apply inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-mono font-medium;
   }
-  .btn-outline {
-    @apply px-6 py-3 rounded-lg border border-noc-blue/60 hover:border-noc-blue-light text-noc-gray-light hover:text-noc-white text-sm font-medium transition-all;
+  /* Primary CTA */
+  .btn-amber {
+    @apply px-6 py-3 rounded-lg bg-amber font-bold text-black text-sm
+           hover:bg-amber-light active:bg-amber-dark transition-colors
+           shadow-amber-sm hover:shadow-amber;
   }
+  /* Ghost CTA */
+  .btn-ghost {
+    @apply px-6 py-3 rounded-lg border border-surface-border text-noc-gray-mid
+           hover:border-zinc-600 hover:text-noc-white text-sm font-medium transition-colors;
+  }
+  /* Progress bar */
+  .progress-track {
+    @apply h-0.5 bg-surface-raised rounded-full overflow-hidden;
+  }
+}
+
+/* Utility: hide scrollbar */
+.scrollbar-none::-webkit-scrollbar { display: none; }
+.scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Scan-line effect on NOC dashboard */
+.noc-scan::before {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(34,197,94,0.3), transparent);
+  animation: scan 5s linear infinite;
+  pointer-events: none;
+  z-index: 10;
 }

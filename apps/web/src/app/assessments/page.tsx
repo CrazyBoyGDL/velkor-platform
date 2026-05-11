@@ -1,217 +1,183 @@
 'use client'
 import { useState } from 'react'
 
-const serviceOptions = [
-  'Network Infrastructure',
-  'CCTV & Surveillance',
+const SERVICES = [
+  'Redes & Conectividad',
+  'CCTV & Vigilancia',
   'Microsoft 365 / Cloud',
   'Intune & Entra ID',
-  'NOC Monitoring',
-  'IT Audit & Compliance',
-  'Other',
+  'Monitoreo NOC',
+  'Auditoría IT',
+  'Otro',
 ]
 
-const companySizes = ['1-10', '11-50', '51-200', '200+']
+const SIZES = ['1–10', '11–50', '51–200', '200+']
 
-type FormState = {
-  name: string
-  email: string
-  company: string
-  phone: string
-  companySize: string
-  services: string[]
-  description: string
-  urgency: string
+type Form = {
+  name: string; email: string; company: string; phone: string
+  size: string; services: string[]; urgency: string; notes: string
 }
 
-const initialForm: FormState = {
-  name: '',
-  email: '',
-  company: '',
-  phone: '',
-  companySize: '',
-  services: [],
-  description: '',
-  urgency: 'normal',
-}
+const EMPTY: Form = { name: '', email: '', company: '', phone: '', size: '', services: [], urgency: 'normal', notes: '' }
 
 export default function AssessmentsPage() {
-  const [form, setForm] = useState<FormState>(initialForm)
-  const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')
+  const [form, setForm]     = useState<Form>(EMPTY)
+  const [status, setStatus] = useState<'idle'|'loading'|'done'|'error'>('idle')
 
-  const toggleService = (s: string) => {
-    setForm(f => ({
-      ...f,
-      services: f.services.includes(s) ? f.services.filter(x => x !== s) : [...f.services, s],
-    }))
-  }
+  const toggleSvc = (s: string) =>
+    setForm(f => ({ ...f, services: f.services.includes(s) ? f.services.filter(x => x !== s) : [...f.services, s] }))
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setStatus('sending')
-    try {
-      // TODO: wire to Strapi API or Make/n8n webhook
-      await new Promise(r => setTimeout(r, 1200))
-      setStatus('sent')
-      setForm(initialForm)
-    } catch {
-      setStatus('error')
-    }
+    setStatus('loading')
+    await new Promise(r => setTimeout(r, 1000)) // TODO: wire to Strapi/n8n webhook
+    setStatus('done')
+    setForm(EMPTY)
   }
+
+  if (status === 'done') return (
+    <div className="min-h-screen flex items-center justify-center px-4">
+      <div className="noc-card border-noc-green/40 text-center p-12 max-w-md w-full">
+        <div className="w-12 h-12 rounded-full bg-noc-green-bg border border-noc-green/40 flex items-center justify-center mx-auto mb-5">
+          <svg className="w-6 h-6 text-noc-green" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
+        <h2 className="text-xl font-bold text-noc-white mb-2">Solicitud recibida</h2>
+        <p className="text-zinc-500 text-sm mb-6">Nuestro equipo te contactará en menos de 24 horas hábiles.</p>
+        <button onClick={() => setStatus('idle')} className="btn-ghost text-sm px-6 py-2.5">
+          Nueva solicitud
+        </button>
+      </div>
+    </div>
+  )
 
   return (
-    <div className="bg-gradient-noc min-h-screen pt-12 pb-24 px-4">
-      <div className="max-w-3xl mx-auto">
+    <div className="min-h-screen py-16 px-4 sm:px-8">
+      <div className="max-w-2xl mx-auto">
 
-        {/* Header */}
-        <div className="text-center mb-12">
-          <span className="noc-label">Free evaluation</span>
+        <div className="mb-10">
+          <span className="label">Evaluación gratuita</span>
           <h1 className="text-4xl sm:text-5xl font-bold text-noc-white mt-3 mb-4">
-            Technical Assessment
+            Diagnóstico técnico
           </h1>
-          <p className="text-noc-gray-mid max-w-xl mx-auto">
-            Fill out the form below and our engineers will contact you within one business day with a detailed evaluation and quote.
+          <p className="text-zinc-500">
+            Completa el formulario y recibe una evaluación de tu infraestructura con recomendaciones y cotización en 24 h.
           </p>
         </div>
 
-        {status === 'sent' ? (
-          <div className="noc-card border-noc-green/50 shadow-noc-green text-center p-12">
-            <div className="text-5xl mb-4">✅</div>
-            <h2 className="text-2xl font-bold text-noc-green mb-3">Assessment Request Received</h2>
-            <p className="text-noc-gray-mid">
-              Our team will review your request and contact you within 24 hours.
-            </p>
-            <button onClick={() => setStatus('idle')} className="mt-6 btn-outline">
-              Submit Another
-            </button>
+        <form onSubmit={submit} className="noc-card space-y-6">
+
+          {/* Contact */}
+          <div>
+            <h3 className="text-noc-white font-medium mb-4 pb-3 border-b border-surface-border">Información de contacto</h3>
+            <div className="grid sm:grid-cols-2 gap-4">
+              {[
+                { key: 'name',    label: 'Nombre completo',  type: 'text',  placeholder: 'Juan Pérez',           req: true  },
+                { key: 'email',   label: 'Correo electrónico', type: 'email', placeholder: 'juan@empresa.com',    req: true  },
+                { key: 'company', label: 'Empresa',           type: 'text',  placeholder: 'Corporativo XYZ',      req: true  },
+                { key: 'phone',   label: 'Teléfono',          type: 'tel',   placeholder: '+52 55 0000 0000',     req: false },
+              ].map(({ key, label, type, placeholder, req }) => (
+                <div key={key}>
+                  <label className="label text-[10px] block mb-1.5">{label}</label>
+                  <input
+                    type={type}
+                    required={req}
+                    value={form[key as keyof Form] as string}
+                    onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))}
+                    placeholder={placeholder}
+                    className="w-full bg-surface-dark border border-surface-border rounded-lg px-4 py-2.5 text-noc-white placeholder-zinc-700 text-sm focus:outline-none focus:border-zinc-600 transition-colors"
+                  />
+                </div>
+              ))}
+            </div>
           </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="noc-card border-noc-blue/40 space-y-6">
 
-            {/* Contact info */}
-            <div>
-              <h3 className="text-noc-white font-semibold mb-4 pb-2 border-b border-noc-blue/20">Contact Information</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {[
-                  { label: 'Full Name', key: 'name', type: 'text', placeholder: 'John Smith' },
-                  { label: 'Email', key: 'email', type: 'email', placeholder: 'john@company.com' },
-                  { label: 'Company', key: 'company', type: 'text', placeholder: 'Acme Corp' },
-                  { label: 'Phone', key: 'phone', type: 'tel', placeholder: '+1 555 000 0000' },
-                ].map(({ label, key, type, placeholder }) => (
-                  <div key={key}>
-                    <label className="noc-label block mb-1.5">{label}</label>
-                    <input
-                      type={type}
-                      required={key !== 'phone'}
-                      value={form[key as keyof FormState] as string}
-                      onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))}
-                      placeholder={placeholder}
-                      className="w-full bg-noc-dark border border-noc-blue/30 rounded-lg px-4 py-2.5 text-noc-white placeholder-noc-gray text-sm focus:outline-none focus:border-noc-blue-light transition-colors"
-                    />
-                  </div>
-                ))}
-              </div>
+          {/* Company size */}
+          <div>
+            <label className="label text-[10px] block mb-2">Tamaño de empresa</label>
+            <div className="flex flex-wrap gap-2">
+              {SIZES.map(s => (
+                <button key={s} type="button" onClick={() => setForm(f => ({ ...f, size: s }))}
+                  className={`px-4 py-2 rounded-lg border text-sm font-medium transition-all ${
+                    form.size === s ? 'border-amber/60 bg-amber-bg text-amber' : 'border-surface-border text-zinc-500 hover:border-zinc-600'
+                  }`}>
+                  {s} empleados
+                </button>
+              ))}
             </div>
+          </div>
 
-            {/* Company size */}
-            <div>
-              <label className="noc-label block mb-2">Company Size</label>
-              <div className="flex flex-wrap gap-2">
-                {companySizes.map(s => (
-                  <button
-                    key={s}
-                    type="button"
-                    onClick={() => setForm(f => ({ ...f, companySize: s }))}
-                    className={`px-4 py-2 rounded-lg border text-sm font-medium transition-all ${
-                      form.companySize === s
-                        ? 'border-noc-blue-light bg-noc-blue/30 text-noc-white'
-                        : 'border-noc-blue/30 text-noc-gray-mid hover:border-noc-blue/60'
-                    }`}
-                  >
-                    {s} employees
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Services */}
-            <div>
-              <h3 className="text-noc-white font-semibold mb-4 pb-2 border-b border-noc-blue/20">Services Required</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {serviceOptions.map(s => (
-                  <button
-                    key={s}
-                    type="button"
-                    onClick={() => toggleService(s)}
-                    className={`flex items-center gap-2 px-4 py-3 rounded-lg border text-sm text-left transition-all ${
-                      form.services.includes(s)
-                        ? 'border-noc-blue-light bg-noc-blue/20 text-noc-white'
-                        : 'border-noc-blue/20 text-noc-gray-mid hover:border-noc-blue/40'
-                    }`}
-                  >
-                    <div className={`w-4 h-4 rounded border flex items-center justify-center flex-shrink-0 ${
-                      form.services.includes(s) ? 'bg-noc-blue-light border-noc-blue-light' : 'border-noc-gray/50'
+          {/* Services */}
+          <div>
+            <h3 className="text-noc-white font-medium mb-4 pb-3 border-b border-surface-border">Servicios requeridos</h3>
+            <div className="grid sm:grid-cols-2 gap-2">
+              {SERVICES.map(s => {
+                const active = form.services.includes(s)
+                return (
+                  <button key={s} type="button" onClick={() => toggleSvc(s)}
+                    className={`flex items-center gap-3 px-4 py-3 rounded-lg border text-sm text-left transition-all ${
+                      active ? 'border-amber/50 bg-amber-bg text-noc-white' : 'border-surface-border text-zinc-500 hover:border-zinc-600'
                     }`}>
-                      {form.services.includes(s) && <span className="text-white text-xs">✓</span>}
+                    <div className={`w-4 h-4 rounded border flex items-center justify-center flex-shrink-0 transition-all ${
+                      active ? 'bg-amber border-amber' : 'border-zinc-700'
+                    }`}>
+                      {active && <svg className="w-2.5 h-2.5 text-black" fill="currentColor" viewBox="0 0 12 12"><path d="M3.5 6.5l2 2 3.5-3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" fill="none"/></svg>}
                     </div>
                     {s}
                   </button>
-                ))}
-              </div>
+                )
+              })}
             </div>
+          </div>
 
-            {/* Urgency */}
-            <div>
-              <label className="noc-label block mb-2">Urgency</label>
-              <div className="flex flex-wrap gap-2">
-                {[
-                  { value: 'low', label: 'Planning (1-3 months)', color: 'border-noc-green/50 text-noc-green bg-noc-green-dim/20' },
-                  { value: 'normal', label: 'Soon (2-4 weeks)', color: 'border-noc-blue-light/50 text-noc-blue-light bg-noc-blue/20' },
-                  { value: 'high', label: 'Urgent (this week)', color: 'border-noc-orange/50 text-noc-orange bg-noc-orange/10' },
-                ].map(({ value, label, color }) => (
-                  <button
-                    key={value}
-                    type="button"
-                    onClick={() => setForm(f => ({ ...f, urgency: value }))}
-                    className={`px-4 py-2 rounded-lg border text-xs font-medium transition-all ${
-                      form.urgency === value ? color : 'border-noc-blue/20 text-noc-gray-mid'
-                    }`}
-                  >
-                    {label}
-                  </button>
-                ))}
-              </div>
+          {/* Urgency */}
+          <div>
+            <label className="label text-[10px] block mb-2">Urgencia</label>
+            <div className="flex flex-wrap gap-2">
+              {[
+                { v: 'low',    l: 'Planificando (1–3 meses)', c: 'border-noc-green/50 bg-noc-green-bg text-noc-green' },
+                { v: 'normal', l: 'Pronto (2–4 semanas)',      c: 'border-noc-blue/50 bg-noc-blue-bg text-noc-blue'   },
+                { v: 'high',   l: 'Urgente (esta semana)',     c: 'border-amber/50 bg-amber-bg text-amber'            },
+              ].map(({ v, l, c }) => (
+                <button key={v} type="button" onClick={() => setForm(f => ({ ...f, urgency: v }))}
+                  className={`px-4 py-2 rounded-lg border text-xs font-medium transition-all ${
+                    form.urgency === v ? c : 'border-surface-border text-zinc-600 hover:border-zinc-700'
+                  }`}>
+                  {l}
+                </button>
+              ))}
             </div>
+          </div>
 
-            {/* Description */}
-            <div>
-              <label className="noc-label block mb-1.5">Current Situation / Notes</label>
-              <textarea
-                rows={4}
-                value={form.description}
-                onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
-                placeholder="Briefly describe your current infrastructure, pain points, or specific requirements..."
-                className="w-full bg-noc-dark border border-noc-blue/30 rounded-lg px-4 py-3 text-noc-white placeholder-noc-gray text-sm focus:outline-none focus:border-noc-blue-light transition-colors resize-none"
-              />
-            </div>
+          {/* Notes */}
+          <div>
+            <label className="label text-[10px] block mb-1.5">Situación actual / Notas</label>
+            <textarea
+              rows={4}
+              value={form.notes}
+              onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
+              placeholder="Describe brevemente tu infraestructura actual, puntos de dolor o requerimientos específicos..."
+              className="w-full bg-surface-dark border border-surface-border rounded-lg px-4 py-3 text-noc-white placeholder-zinc-700 text-sm focus:outline-none focus:border-zinc-600 transition-colors resize-none"
+            />
+          </div>
 
-            {status === 'error' && (
-              <p className="text-noc-red text-sm">Something went wrong. Please try again or contact us directly.</p>
-            )}
+          {status === 'error' && (
+            <p className="text-noc-red text-sm">Error al enviar. Por favor intenta de nuevo.</p>
+          )}
 
-            <button
-              type="submit"
-              disabled={status === 'sending' || form.services.length === 0}
-              className="w-full btn-primary py-4 text-base disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {status === 'sending' ? 'Sending...' : 'Submit Assessment Request'}
-            </button>
+          <button
+            type="submit"
+            disabled={status === 'loading' || form.services.length === 0}
+            className="w-full btn-amber py-4 text-[15px] disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {status === 'loading' ? 'Enviando...' : 'Solicitar diagnóstico gratuito →'}
+          </button>
 
-            <p className="text-center text-noc-gray text-xs">
-              We respond within 1 business day. No spam, no commitments.
-            </p>
-          </form>
-        )}
+          <p className="text-center text-zinc-700 text-xs font-mono">
+            Respondemos en menos de 1 día hábil. Sin spam, sin compromiso.
+          </p>
+        </form>
       </div>
     </div>
   )
