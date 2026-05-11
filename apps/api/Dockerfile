@@ -7,4 +7,6 @@ COPY . .
 ENV NODE_ENV=production
 RUN npm run build
 EXPOSE 1337
-CMD ["sh", "-c", "mkdir -p /app/public/uploads && npm run start"]
+COPY start.sh /start.sh
+RUN chmod +x /start.sh
+CMD ["/start.sh"]
