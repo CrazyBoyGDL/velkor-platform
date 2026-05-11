@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: velkor-postgres
+    environment:
+      POSTGRES_DB: ${DATABASE_NAME:-velkor_platform}
+      POSTGRES_USER: ${DATABASE_USERNAME:-velkor}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD:-velkor_secure_password}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USERNAME:-velkor}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Strapi CMS
+  strapi:
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile
+    container_name: velkor-strapi
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_CLIENT: postgres
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      DATABASE_NAME: ${DATABASE_NAME:-velkor_platform}
+      DATABASE_USERNAME: ${DATABASE_USERNAME:-velkor}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD:-velkor_secure_password}
+      JWT_SECRET: ${JWT_SECRET:-your-super-secret-jwt-key}
+      STRAPI_ADMIN_PATH: /admin
+      API_URL: http://localhost:1337
+      NODE_ENV: development
+    ports:
+      - "1337:1337"
+    volumes:
+      - ./apps/api:/app
+      - /app/node_modules
+    command: npm run develop
+
+  # Next.js Frontend
+  nextjs:
+    build:
+      context: ./apps/web
+      dockerfile: Dockerfile
+    container_name: velkor-nextjs
+    depends_on:
+      - strapi
+    environment:
+      NEXT_PUBLIC_API_URL: http://strapi:1337
+      NODE_ENV: development
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./apps/web:/app
+      - /app/node_modules
+    command: npm run dev
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  default:
+    name: velkor-network

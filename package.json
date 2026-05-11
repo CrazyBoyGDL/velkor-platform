@@ -1,0 +1,29 @@
+{
+  "name": "velkor-platform",
+  "version": "1.0.0",
+  "description": "Velkor System - SOC/NOC Enterprise Platform for Infrastructure & Cloud Services",
+  "private": true,
+  "workspaces": [
+    "apps/web",
+    "apps/api"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspaces",
+    "build": "npm run build --workspaces",
+    "start": "npm start --workspaces",
+    "lint": "npm run lint --workspaces",
+    "type-check": "npm run type-check --workspaces"
+  },
+  "keywords": [
+    "infrastructure",
+    "cloud",
+    "soc",
+    "noc",
+    "networks",
+    "cctv",
+    "microsoft-365",
+    "intune"
+  ],
+  "author": "Velkor System",
+  "license": "proprietary"
+}

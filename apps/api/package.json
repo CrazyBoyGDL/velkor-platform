@@ -1,0 +1,33 @@
+{
+  "name": "@velkor/api",
+  "version": "1.0.0",
+  "description": "Velkor Platform - Strapi CMS Backend",
+  "private": true,
+  "strapi": {
+    "uuid": "velkor-api-uuid"
+  },
+  "scripts": {
+    "develop": "strapi develop",
+    "start": "strapi start",
+    "build": "strapi build",
+    "strapi": "strapi"
+  },
+  "dependencies": {
+    "@strapi/plugin-i18n": "^5.0.0",
+    "@strapi/plugin-users-permissions": "^5.0.0",
+    "@strapi/strapi": "^5.0.0",
+    "better-sqlite3": "^9.0.0",
+    "pg": "^8.11.0",
+    "postgres": "^3.4.0"
+  },
+  "devDependencies": {
+    "@strapi/typescript": "^5.0.0",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.4.0"
+  },
+  "engines": {
+    "node": ">=20.0.0 <=24.x.x || ^25.0.0",
+    "npm": ">=6.0.0"
+  },
+  "license": "proprietary"
+}
