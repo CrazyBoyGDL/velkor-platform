@@ -6,11 +6,11 @@ import Logo from './Logo'
 
 const LINKS = {
   Servicios: [
-    ['Redes empresariales', '/services'],
-    ['CCTV & Vigilancia', '/services'],
-    ['Microsoft 365', '/services'],
-    ['Intune & Entra ID', '/services'],
-    ['Monitoreo NOC', '/services'],
+    ['Redes empresariales', '/servicios'],
+    ['CCTV & Vigilancia', '/servicios/videovigilancia'],
+    ['Microsoft 365', '/servicios/identidad-acceso'],
+    ['Intune & Entra ID', '/servicios/identidad-acceso'],
+    ['Ciberseguridad', '/servicios/ciberseguridad'],
   ],
   Empresa: [
     ['Casos de éxito', '/casos'],
@@ -21,9 +21,9 @@ const LINKS = {
 }
 
 const CERTS = [
-  { label: 'Fortinet NSE4', color: '#ef4444' },
-  { label: 'Microsoft Gold', color: '#3b82f6' },
-  { label: 'Axis ACSR',     color: '#22c55e' },
+  { label: 'Fortinet NSE4',      color: '#ef4444' },
+  { label: 'Microsoft Partner',  color: '#3b82f6' },
+  { label: 'Axis ACSR',          color: '#22c55e' },
 ]
 
 function FooterCanvas() {
@@ -122,7 +122,7 @@ export default function Footer() {
 
             <div className="flex items-center gap-2 mb-5">
               <span className="w-2 h-2 rounded-full bg-noc-green animate-pulse-slow" />
-              <span className="text-noc-green text-[11px] font-mono tracking-widest">SISTEMAS OPERATIVOS AL 99.9%</span>
+              <span className="text-noc-green text-[11px] font-mono tracking-widest">SOPORTE TÉCNICO ESPECIALIZADO</span>
             </div>
 
             <div className="flex flex-wrap gap-2">
@@ -163,9 +163,9 @@ export default function Footer() {
             © {new Date().getFullYear()} Velkor System · Todos los derechos reservados
           </p>
           <div className="flex items-center gap-4 text-zinc-700 text-xs font-mono">
-            <Link href="/assessments" className="hover:text-zinc-400 transition-colors">Contacto</Link>
+            <Link href="/contacto" className="hover:text-zinc-400 transition-colors">Contacto</Link>
             <span className="text-zinc-800">·</span>
-            <span>SOC/NOC Operations Center</span>
+            <span>Consultoría Tecnológica</span>
             <span className="text-zinc-800">·</span>
             <span className="text-amber">v2.0</span>
           </div>

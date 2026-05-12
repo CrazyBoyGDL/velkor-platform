@@ -27,8 +27,8 @@ const nextConfig = {
 
   async headers() {
     const scriptSrc = isProd
-      ? "script-src 'self' 'unsafe-inline'"
-      : "script-src 'self' 'unsafe-inline' 'unsafe-eval'";
+      ? "script-src 'self' 'unsafe-inline' https://plausible.io"
+      : "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://plausible.io";
 
     return [
       {
@@ -50,7 +50,7 @@ const nextConfig = {
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com",
               "img-src 'self' data: blob:",
-              "connect-src 'self'",
+              "connect-src 'self' https://plausible.io",
               "frame-ancestors 'self'",
             ].join('; '),
           },

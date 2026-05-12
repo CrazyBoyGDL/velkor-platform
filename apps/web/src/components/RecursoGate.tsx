@@ -163,7 +163,7 @@ export default function RecursoGate({
         </div>
         <div>
           <div className="text-noc-white font-semibold text-sm">Recurso desbloqueado</div>
-          <div className="text-zinc-500 text-xs">El acceso a este recurso también fue enviado a {email}</div>
+          <div className="text-zinc-500 text-xs">Disfruta el contenido completo sin restricciones.</div>
         </div>
       </div>
 

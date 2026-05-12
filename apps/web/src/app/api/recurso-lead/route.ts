@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
   const name         = sanitize(body.name, 200);
   const email        = sanitize(body.email, 200);
   const company      = sanitize(body.company, 200);
-  const resourceSlug = sanitize(body.resourceSlug, 100);
+  const resourceSlug = sanitize(body.resourceSlug, 90); // source = 'recurso-' (8) + slug (90) = 98 ≤ maxLength:100
 
   if (!name)                           return NextResponse.json({ error: 'name requerido' },    { status: 400 });
   if (!email || !EMAIL_RE.test(email)) return NextResponse.json({ error: 'email inválido' },    { status: 400 });
