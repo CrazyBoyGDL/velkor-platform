@@ -55,18 +55,38 @@ module.exports = {
         'card':        '0 1px 3px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.04)',
       },
       animation: {
-        'pulse-slow':  'pulse 3s cubic-bezier(0.4,0,0.6,1) infinite',
-        'pulse-fast':  'pulse 1.5s cubic-bezier(0.4,0,0.6,1) infinite',
-        'tick':        'tick 60s linear infinite',
-        'draw':        'draw 1.2s ease forwards',
-        'float':       'float 6s ease-in-out infinite',
-        'scan-line':   'scan 4s linear infinite',
+        // Status / ambient
+        'pulse-slow':      'pulse 3.5s cubic-bezier(0.4,0,0.6,1) infinite',
+        'pulse-fast':      'pulse 1.5s cubic-bezier(0.4,0,0.6,1) infinite',
+        // Hero atmosphere — very slow, subtle drift
+        'ambient-breath':  'ambientBreath 14s ease-in-out infinite',
+        // Entry animations (CSS-only fallback)
+        'fade-in':         'fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+        'fade-up-in':      'fadeUpIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+        // Utility
+        'tick':            'tick 60s linear infinite',
+        'draw':            'draw 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+        'float':           'float 7s ease-in-out infinite',
+        'scan-line':       'scan 4s linear infinite',
       },
       keyframes: {
         tick:  { from: { transform: 'translateX(0)' }, to: { transform: 'translateX(-50%)' } },
         draw:  { from: { strokeDashoffset: '100' }, to: { strokeDashoffset: '0' } },
-        float: { '0%,100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-8px)' } },
+        float: {
+          '0%,100%': { transform: 'translateY(0)' },
+          '50%':     { transform: 'translateY(-6px)' },
+        },
         scan:  { '0%': { top: '-2%' }, '100%': { top: '102%' } },
+        ambientBreath: {
+          '0%,100%': { opacity: '0.55', transform: 'scale(1) translate(0,0)' },
+          '35%':     { opacity: '0.85', transform: 'scale(1.07) translate(14px,-6px)' },
+          '65%':     { opacity: '0.70', transform: 'scale(1.04) translate(-8px,5px)' },
+        },
+        fadeIn:   { from: { opacity: '0' }, to: { opacity: '1' } },
+        fadeUpIn: {
+          from: { opacity: '0', transform: 'translateY(16px)' },
+          to:   { opacity: '1', transform: 'translateY(0)' },
+        },
       },
     },
   },

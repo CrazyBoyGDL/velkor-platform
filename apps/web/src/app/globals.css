@@ -26,6 +26,11 @@ body {
   --green: #22c55e;
   --blue: #3b82f6;
   --cyan: #06b6d4;
+
+  /* Premium easing — used in transitions and animations */
+  --ease-expo:  cubic-bezier(0.16, 1, 0.3, 1);   /* fast start, smooth coast */
+  --ease-quart: cubic-bezier(0.25, 1, 0.5, 1);   /* softer version            */
+  --ease-inout: cubic-bezier(0.4, 0, 0.2, 1);    /* standard material         */
 }
 
 @layer components {
@@ -42,21 +47,25 @@ body {
     box-shadow:
       0 1px 0 rgba(255,255,255,0.03) inset,
       0 4px 16px rgba(0,0,0,0.4);
-    transition: border-color 0.2s, box-shadow 0.2s;
+    transition:
+      border-color 0.28s var(--ease-quart),
+      box-shadow   0.28s var(--ease-quart),
+      background   0.28s var(--ease-quart);
   }
   .card::before {
     content: '';
     position: absolute;
     inset: 0;
     border-radius: 11px;
-    background: linear-gradient(135deg, rgba(255,255,255,0.018) 0%, transparent 55%);
+    background: linear-gradient(135deg, rgba(255,255,255,0.022) 0%, transparent 55%);
     pointer-events: none;
   }
   .card:hover {
-    border-color: #2a2a2a;
+    border-color: #282828;
+    background: linear-gradient(145deg, rgba(25,25,25,0.97), rgba(12,12,12,0.99));
     box-shadow:
       0 1px 0 rgba(255,255,255,0.05) inset,
-      0 8px 24px rgba(0,0,0,0.5);
+      0 8px 28px rgba(0,0,0,0.52);
   }
 
   /* Gradient-border accent cards */
@@ -144,36 +153,69 @@ body {
   .badge { @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[10px] font-mono font-medium; }
 
   /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     BUTTONS
+     BUTTONS — premium tactile interactions
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
   .btn-amber {
     @apply inline-flex items-center justify-center
            px-6 py-3 rounded-xl
-           bg-amber font-bold text-black text-sm
-           hover:bg-amber-light active:scale-[0.97]
-           transition-all duration-150;
+           bg-amber font-bold text-black text-sm;
     box-shadow:
-      0 0 0 1px rgba(245,158,11,0.6),
-      0 4px 20px rgba(245,158,11,0.25),
-      0 1px 0 rgba(255,255,255,0.2) inset;
+      0 0 0 1px rgba(245,158,11,0.55),
+      0 4px 20px rgba(245,158,11,0.22),
+      0 1px 0 rgba(255,255,255,0.22) inset;
+    transform: translateY(0) scale(1);
+    transition:
+      background-color 0.16s ease,
+      box-shadow       0.22s var(--ease-quart),
+      transform        0.16s var(--ease-quart);
+    will-change: transform, box-shadow;
+    -webkit-tap-highlight-color: transparent;
   }
   .btn-amber:hover {
+    background-color: #fbbf24;
+    transform: translateY(-1px) scale(1.013);
     box-shadow:
       0 0 0 1px rgba(245,158,11,0.8),
-      0 4px 32px rgba(245,158,11,0.4),
-      0 1px 0 rgba(255,255,255,0.25) inset;
+      0 6px 26px rgba(245,158,11,0.30),
+      0 1px 0 rgba(255,255,255,0.28) inset;
   }
+  .btn-amber:active {
+    background-color: #d97706;
+    transform: translateY(0px) scale(0.972);
+    box-shadow:
+      0 0 0 1px rgba(245,158,11,0.45),
+      0 2px 10px rgba(245,158,11,0.14),
+      0 1px 0 rgba(255,255,255,0.14) inset;
+    transition-duration: 0.07s;
+  }
+
   .btn-ghost {
     @apply inline-flex items-center justify-center
            px-6 py-3 rounded-xl
            border border-surface-border text-zinc-400
-           hover:border-zinc-600 hover:text-zinc-200
-           text-sm font-medium transition-all duration-150;
+           text-sm font-medium;
     background: linear-gradient(145deg, rgba(20,20,20,0.6), rgba(10,10,10,0.8));
+    transform: translateY(0) scale(1);
+    transition:
+      background   0.2s var(--ease-quart),
+      border-color 0.2s var(--ease-quart),
+      color        0.16s ease,
+      box-shadow   0.22s var(--ease-quart),
+      transform    0.18s var(--ease-quart);
+    will-change: transform;
+    -webkit-tap-highlight-color: transparent;
   }
   .btn-ghost:hover {
-    background: linear-gradient(145deg, rgba(28,28,28,0.8), rgba(16,16,16,0.9));
-    box-shadow: 0 0 20px rgba(255,255,255,0.03);
+    border-color: #3f3f46;
+    color: #e4e4e7;
+    background: linear-gradient(145deg, rgba(26,26,26,0.85), rgba(14,14,14,0.92));
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.28), 0 0 0 1px rgba(255,255,255,0.04);
+  }
+  .btn-ghost:active {
+    transform: translateY(0px) scale(0.975);
+    transition-duration: 0.07s;
+    box-shadow: none;
   }
 
   /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -231,25 +273,42 @@ body {
   background-clip: text;
 }
 
+/* ── Ambient breathing glow — hero atmosphere ── */
+@keyframes ambientBreath {
+  0%, 100% { opacity: 0.55; transform: scale(1)    translate(0, 0);      }
+  35%       { opacity: 0.85; transform: scale(1.07) translate(14px, -6px); }
+  65%       { opacity: 0.70; transform: scale(1.04) translate(-8px, 5px);  }
+}
+
 /* ── Animated gradient border (pulse) ── */
 @keyframes borderPulse {
   0%, 100% { opacity: 0.5; }
-  50%       { opacity: 1; }
+  50%       { opacity: 1;   }
 }
 .border-pulse { animation: borderPulse 3s ease-in-out infinite; }
 
-/* ── Glow ping (for floating CTA) ── */
+/* ── Glow ping — reduced to subtle, non-alarming indicator ── */
 @keyframes glowPing {
-  0%   { transform: scale(1); opacity: 0.6; }
-  100% { transform: scale(2); opacity: 0; }
+  0%   { transform: scale(1);    opacity: 0.4; }
+  100% { transform: scale(1.55); opacity: 0;   }
 }
 
 /* ── Counter animation ── */
 @keyframes countUp {
-  from { opacity: 0; transform: translateY(12px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0);    }
 }
-.count-visible { animation: countUp 0.5s ease forwards; }
+.count-visible { animation: countUp 0.55s var(--ease-expo) forwards; }
+
+/* ── Smooth entry (CSS-only fallback, used on non-motion components) ── */
+@keyframes fadeUpIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
 
 /* ── Scan line ── */
 @keyframes scanDown {
@@ -281,6 +340,26 @@ body {
   top: 20px; left: 100%;
   width: 100%; height: 1px;
   background: linear-gradient(90deg, #252525, transparent);
+}
+
+/* ══════════════════════════════════════════════════════════
+   REDUCED MOTION — accessibility requirement
+   Disables animations; keeps instant transitions (opacity/color)
+   for users who need it. Framer-motion respects this via its
+   own useReducedMotion hook where wired.
+══════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.12s !important;
+    scroll-behavior: auto !important;
+  }
+  /* Preserve non-motion transitions (color, opacity) */
+  .btn-amber, .btn-ghost {
+    transition: background-color 0.12s ease, color 0.12s ease !important;
+    transform: none !important;
+  }
 }
 
 /* ══════════════════════════════════════════════════════════

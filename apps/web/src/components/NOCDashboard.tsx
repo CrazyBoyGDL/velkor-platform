@@ -66,7 +66,7 @@ export default function NOCDashboard() {
             key={id}
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.08 + 0.15 }}
+            transition={{ delay: i * 0.08 + 0.15, duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
             className={`p-4 ${i % 2 === 0 ? 'border-r' : ''} ${i < 2 ? 'border-b' : ''} border-surface-border`}
           >
             <div className="flex items-center justify-between mb-2">
@@ -88,7 +88,7 @@ export default function NOCDashboard() {
             key={category}
             initial={{ opacity: 0, x: -6 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: i * 0.07 + 0.5 }}
+            transition={{ delay: i * 0.06 + 0.4, duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
             className="flex items-start gap-3"
           >
             <div className="w-1.5 h-1.5 rounded-full bg-amber/50 flex-shrink-0 mt-[5px]" />

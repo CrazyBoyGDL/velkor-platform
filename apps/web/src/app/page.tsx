@@ -8,12 +8,23 @@ import ServicePanel, { type ServicePanelData } from '@/components/ServicePanel'
 
 const NetworkBg = dynamic(() => import('@/components/NetworkBg'), { ssr: false })
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
+// ─── Motion helpers ───────────────────────────────────────────────────────────
+// easeOutExpo — fast deceleration that reads as expensive and intentional
+const EASE = [0.16, 1, 0.3, 1] as const
+
+// For below-fold content: triggers when element enters viewport
 const fadeUp = (delay = 0) => ({
-  initial: { opacity: 0, y: 24 },
+  initial: { opacity: 0, y: 16 },
   whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, amount: 0.2 },
-  transition: { duration: 0.55, ease: 'easeOut', delay },
+  viewport: { once: true, amount: 0.12 },
+  transition: { duration: 0.65, ease: EASE, delay },
+})
+
+// For above-fold hero content: animate on mount, don't wait for scroll
+const heroUp = (delay = 0) => ({
+  initial: { opacity: 0, y: 14 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.65, ease: EASE, delay },
 })
 
 // ─── DATA ────────────────────────────────────────────────────────────────────
@@ -137,9 +148,9 @@ function Counter({ val, suf, prefix = '' }: { val: number; suf: string; prefix?:
 function SectionHeader({ eyebrow, title, sub }: { eyebrow: string; title: React.ReactNode; sub?: string }) {
   return (
     <div className="text-center mb-16">
-      <motion.span {...fadeUp(0)} className="label block mb-4">{eyebrow}</motion.span>
-      <motion.h2 {...fadeUp(0.05)} className="text-3xl sm:text-[2.6rem] font-black text-noc-white leading-tight tracking-tight">{title}</motion.h2>
-      {sub && <motion.p {...fadeUp(0.1)} className="text-zinc-500 mt-4 max-w-xl mx-auto text-base leading-relaxed">{sub}</motion.p>}
+      <motion.span {...fadeUp(0)}    className="label block mb-4">{eyebrow}</motion.span>
+      <motion.h2  {...fadeUp(0.06)} className="text-3xl sm:text-[2.6rem] font-black text-noc-white leading-tight tracking-tight">{title}</motion.h2>
+      {sub && <motion.p {...fadeUp(0.12)} className="text-zinc-500 mt-4 max-w-xl mx-auto text-base leading-relaxed">{sub}</motion.p>}
     </div>
   )
 }
@@ -173,14 +184,16 @@ export default function HomePage() {
 
         {/* Layered backgrounds */}
         <motion.div style={{ y: bgY }} className="absolute inset-0 pointer-events-none">
-          {/* Subtle dot texture — very low opacity */}
+          {/* Subtle dot texture */}
           <div className="absolute inset-0 opacity-[0.03]" style={{
             backgroundImage: 'radial-gradient(circle, #f59e0b 1px, transparent 1px)',
             backgroundSize: '32px 32px',
           }} />
           <NetworkBg />
-          {/* Amber glow — reduced, centred */}
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-[radial-gradient(ellipse,rgba(245,158,11,0.06)_0%,transparent_65%)]" />
+          {/* Amber ambient glow — breathes slowly to create living atmosphere */}
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] animate-ambient-breath pointer-events-none"
+            style={{ background: 'radial-gradient(ellipse, rgba(245,158,11,0.065) 0%, transparent 65%)' }}
+          />
           {/* Bottom fade */}
           <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-surface-dark to-transparent" />
         </motion.div>
@@ -190,13 +203,13 @@ export default function HomePage() {
           style={{ y: textY, opacity }}
           className="relative max-w-7xl mx-auto px-4 sm:px-8 w-full grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center py-16"
         >
-          {/* Left copy */}
+          {/* Left copy — animate on mount (above fold) */}
           <div>
-            <motion.div {...fadeUp(0)} className="flex items-center gap-2.5 mb-7">
+            <motion.div {...heroUp(0)} className="flex items-center gap-2.5 mb-7">
               <span className="label text-amber/70">CONSULTORÍA TECNOLÓGICA EMPRESARIAL</span>
             </motion.div>
 
-            <motion.h1 {...fadeUp(0.08)}
+            <motion.h1 {...heroUp(0.08)}
               className="text-[clamp(2.5rem,5.5vw,4.2rem)] font-black leading-[1.05] tracking-tight mb-7"
             >
               Tu operación,<br />
@@ -204,12 +217,12 @@ export default function HomePage() {
               <span className="text-gradient-amber">de falla.</span>
             </motion.h1>
 
-            <motion.p {...fadeUp(0.14)} className="text-zinc-400 text-[1.0625rem] leading-[1.75] max-w-[26rem] mb-9">
+            <motion.p {...heroUp(0.16)} className="text-zinc-400 text-[1.0625rem] leading-[1.75] max-w-[26rem] mb-9">
               Redes, ciberseguridad y Modern Workplace para empresas que no pueden permitirse interrupciones.
             </motion.p>
 
             {/* CTAs */}
-            <motion.div {...fadeUp(0.2)} className="flex flex-col sm:flex-row gap-3 mb-5">
+            <motion.div {...heroUp(0.24)} className="flex flex-col sm:flex-row gap-3 mb-5">
               <Link href="/assessments" className="btn-amber text-[15px] px-8 py-4">
                 Solicitar diagnóstico gratis
               </Link>
@@ -218,18 +231,18 @@ export default function HomePage() {
               </Link>
             </motion.div>
 
-            <motion.p {...fadeUp(0.24)} className="text-xs font-mono text-zinc-600 flex items-center gap-2 mb-8">
-              <span className="w-1.5 h-1.5 rounded-full bg-noc-green animate-pulse-fast inline-block" />
+            <motion.p {...heroUp(0.32)} className="text-xs font-medium text-zinc-600 flex items-center gap-2 mb-8">
+              <span className="w-1.5 h-1.5 rounded-full bg-noc-green animate-pulse-slow inline-block" />
               Sin contrato mínimo · Diagnóstico técnico sin costo
             </motion.p>
 
-            {/* Social proof avatars */}
-            <motion.div {...fadeUp(0.28)} className="flex items-center gap-3">
+            {/* Social proof */}
+            <motion.div {...heroUp(0.38)} className="flex items-center gap-3">
               <div className="flex -space-x-2">
                 {[1,2,3,4].map(n => (
                   <div key={n} className="w-8 h-8 rounded-full border-2 border-surface-dark flex items-center justify-center"
-                    style={{ background: 'rgba(245,158,11,0.12)', boxShadow: 'none' }}>
-                    <span className="w-3 h-3 rounded-full" style={{ background: 'rgba(245,158,11,0.3)' }} />
+                    style={{ background: 'rgba(245,158,11,0.1)', boxShadow: 'none' }}>
+                    <span className="w-3 h-3 rounded-full" style={{ background: 'rgba(245,158,11,0.28)' }} />
                   </div>
                 ))}
               </div>
@@ -241,9 +254,9 @@ export default function HomePage() {
 
           {/* Right: Capabilities Panel */}
           <motion.div
-            initial={{ opacity: 0, x: 24, y: 8 }}
+            initial={{ opacity: 0, x: 20, y: 10 }}
             animate={{ opacity: 1, x: 0, y: 0 }}
-            transition={{ duration: 0.75, ease: 'easeOut', delay: 0.2 }}
+            transition={{ duration: 0.8, ease: EASE, delay: 0.3 }}
             className="relative"
           >
             <NOCDashboard />
@@ -278,7 +291,7 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {STATS.map(({ val, suf, label, sub, color, prefix }, i) => (
-              <motion.div key={label} {...fadeUp(i * 0.07)}
+              <motion.div key={label} {...fadeUp(i * 0.05)}
                 className="card p-7"
               >
                 <div className="text-3xl sm:text-4xl font-black mb-2 leading-none tabular-nums" style={{ color }}>
@@ -322,7 +335,7 @@ export default function HomePage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {SERVICES.map((svc, i) => (
-              <motion.div key={svc.title} {...fadeUp(i * 0.07)}>
+              <motion.div key={svc.title} {...fadeUp(i * 0.055)}>
                 <ServicePanel data={svc} />
               </motion.div>
             ))}
@@ -417,7 +430,7 @@ export default function HomePage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
             {TESTIMONIALS.map(({ quote, author, role, initials }, i) => (
-              <motion.div key={author} {...fadeUp(i * 0.08)}
+              <motion.div key={author} {...fadeUp(i * 0.07)}
                 className="card p-7 flex flex-col"
               >
                 {/* Quote mark — Inter, not serif */}

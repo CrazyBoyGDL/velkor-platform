@@ -19,11 +19,11 @@ export default function ServicePanel({ data }: { data: ServicePanelData }) {
   const { icon, title, desc, hex, tags, href = '/servicios' } = data
   const ref = useRef<HTMLDivElement>(null)
 
-  // Subtle 3-D tilt on hover (±3°)
+  // Subtle 3-D tilt on hover (±2.5°) — tighter spring for premium feel
   const mouseX = useMotionValue(0)
   const mouseY = useMotionValue(0)
-  const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [3, -3]), { stiffness: 300, damping: 30 })
-  const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-3, 3]), { stiffness: 300, damping: 30 })
+  const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [2.5, -2.5]), { stiffness: 380, damping: 36 })
+  const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-2.5, 2.5]), { stiffness: 380, damping: 36 })
   const glowX   = useTransform(mouseX, [-0.5, 0.5], ['0%', '100%'])
   const glowY   = useTransform(mouseY, [-0.5, 0.5], ['0%', '100%'])
 
@@ -41,6 +41,7 @@ export default function ServicePanel({ data }: { data: ServicePanelData }) {
       onMouseMove={onMove}
       onMouseLeave={onLeave}
       style={{ rotateX, rotateY, transformPerspective: 900, transformStyle: 'preserve-3d' }}
+      whileHover={{ scale: 1.006 }}
       transition={{ type: 'spring', stiffness: 400, damping: 30 }}
       className="relative rounded-2xl overflow-hidden cursor-default group h-full"
     >

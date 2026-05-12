@@ -82,8 +82,8 @@ export default function FloatingCTA() {
           <span
             className="absolute inset-0 rounded-2xl"
             style={{
-              animation: 'glowPing 2s ease-out infinite',
-              background: 'rgba(245,158,11,0.3)',
+              animation: 'glowPing 3.5s ease-out infinite',
+              background: 'rgba(245,158,11,0.18)',
             }}
           />
         )}
