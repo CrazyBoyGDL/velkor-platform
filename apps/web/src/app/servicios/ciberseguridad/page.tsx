@@ -6,7 +6,7 @@ import ScrollDepthTracker from '@/components/ScrollDepthTracker'
 export const metadata: Metadata = {
   title: 'Ciberseguridad Empresarial | Fortinet · Zero Trust · Redes',
   description:
-    'Firewall Fortinet FortiGate, segmentación VLAN, VPN y arquitectura Zero Trust para empresas en México. Ingenieros NSE4 certificados. Diagnóstico gratuito.',
+    'Firewall Fortinet FortiGate, segmentación VLAN, VPN y arquitectura Zero Trust para empresas en México. Ingenieros especializados. Diagnóstico gratuito.',
   alternates: { canonical: 'https://velkor.mx/servicios/ciberseguridad' },
   openGraph: {
     title: 'Ciberseguridad Empresarial | Velkor',
@@ -29,10 +29,10 @@ const faqJsonLd = {
     },
     {
       '@type': 'Question',
-      name: '¿Tienen ingenieros certificados en Fortinet?',
+      name: '¿Tienen experiencia implementando Fortinet?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Sí. Nuestros ingenieros de red cuentan con certificación Fortinet NSE4 y proyectos activos de FortiGate en producción.',
+        text: 'Sí. Nuestros ingenieros tienen experiencia directa implementando FortiGate en producción, con proyectos activos en empresas de distintos sectores en México.',
       },
     },
     {
@@ -95,8 +95,8 @@ const SOLUTIONS = [
   },
   {
     hex: '#3b82f6',
-    title: 'Monitoreo y alertas NOC',
-    desc: 'Alertas en tiempo real ante comportamientos anómalos, intentos de intrusión y tráfico sospechoso. Respuesta < 15 min.',
+    title: 'Alertas y visibilidad',
+    desc: 'Configuración de alertas ante comportamientos anómalos, intentos de intrusión y tráfico sospechoso. Visibilidad activa de la red.',
   },
   {
     hex: '#3b82f6',
@@ -106,9 +106,9 @@ const SOLUTIONS = [
 ]
 
 const TECHS = [
-  'Fortinet NSE4', 'FortiGate 100F', 'FortiSwitch', 'FortiAP',
+  'Fortinet FortiGate', 'FortiGate 100F', 'FortiSwitch', 'FortiAP',
   'Cisco Catalyst', 'SD-WAN', 'IPsec VPN', 'SSL VPN',
-  'VLAN 802.1Q', 'QoS', 'IPS/IDS', 'SIEM básico',
+  'VLAN 802.1Q', 'QoS', 'IPS/IDS', 'Log & Alertas',
 ]
 
 const FAQ = [
@@ -117,8 +117,8 @@ const FAQ = [
     a: 'Para sitios de hasta 200 usuarios, realizamos la migración en un fin de semana con cero downtime planificado. El lunes tu equipo llega a una red mejor segmentada y documentada.',
   },
   {
-    q: '¿Tienen ingenieros certificados en Fortinet?',
-    a: 'Sí. Nuestros ingenieros de red cuentan con certificación Fortinet NSE4 y proyectos activos de FortiGate en producción.',
+    q: '¿Tienen experiencia implementando Fortinet?',
+    a: 'Sí. Nuestros ingenieros tienen experiencia directa implementando FortiGate en producción, con proyectos activos en empresas de distintos sectores en México.',
   },
   {
     q: '¿Qué es Zero Trust en la práctica?',
@@ -182,14 +182,14 @@ export default function CiberseguridadPage() {
             <span className="badge text-[10px] font-mono" style={{ color: '#3b82f6', backgroundColor: '#3b82f618' }}>
               REDES & CIBERSEGURIDAD
             </span>
-            <span className="text-zinc-700 text-[10px] font-mono">FORTINET NSE4 CERTIFIED</span>
+            <span className="text-zinc-700 text-[10px] font-mono">ESPECIALISTAS FORTINET</span>
           </div>
           <h1 className="text-4xl sm:text-5xl font-black text-noc-white leading-tight mb-4">
             Tu red, blindada<br />
             <span style={{ color: '#3b82f6' }}>desde adentro.</span>
           </h1>
           <p className="text-zinc-400 text-lg leading-relaxed max-w-2xl mb-8">
-            Diseñamos e implementamos arquitecturas de red seguras con firewalls Fortinet, segmentación por VLAN y monitoreo activo para que ningún incidente pase desapercibido.
+            Diseñamos e implementamos arquitecturas de red seguras con firewalls Fortinet FortiGate, segmentación VLAN y controles de acceso que eliminan movimientos laterales desde el primer día.
           </p>
           <div className="flex flex-col sm:flex-row gap-3">
             <TrackedLink href="/assessments" className="btn-amber px-8 py-3.5 text-[15px]"

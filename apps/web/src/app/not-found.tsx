@@ -18,7 +18,7 @@ export default function NotFound() {
           Recurso no disponible
         </h1>
         <p className="text-zinc-500 text-sm mb-8 leading-relaxed">
-          El NOC registró un intento de acceso a una ruta que no existe en este sistema.
+          La ruta solicitada no existe en este sistema. Verifica la URL o regresa al inicio.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-3 justify-center">

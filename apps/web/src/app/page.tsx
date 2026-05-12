@@ -30,10 +30,10 @@ const heroUp = (delay = 0) => ({
 
 // ─── DATA ────────────────────────────────────────────────────────────────────
 const STATS = [
-  { val: 50,  suf: '+',  label: 'Clientes activos',     sub: 'Pymes y corporativos',  color: '#f59e0b' },
-  { val: 8,   suf: 'yr', label: 'Años de experiencia',  sub: 'Fundados en 2016',      color: '#f59e0b' },
-  { val: 4,   suf: 'h',  label: 'Tiempo de respuesta',  sub: 'Incidentes críticos',   color: '#f59e0b', prefix: '<' },
-  { val: 100, suf: '%',  label: 'Proyectos documentados', sub: 'KPIs verificados al cierre', color: '#f59e0b' },
+  { val: 50,  suf: '+',  label: 'Clientes activos',      sub: 'Pymes y corporativos',          color: '#f59e0b' },
+  { val: 8,   suf: 'yr', label: 'Años de experiencia',   sub: 'Fundados en 2016',              color: '#f59e0b' },
+  { val: 24,  suf: 'h',  label: 'Propuesta técnica',     sub: 'Diagnóstico inicial incluido',  color: '#f59e0b', prefix: '<' },
+  { val: 100, suf: '%',  label: 'Proyectos documentados', sub: 'KPIs verificados al cierre',   color: '#f59e0b' },
 ]
 
 const SERVICES: ServicePanelData[] = [
@@ -41,7 +41,7 @@ const SERVICES: ServicePanelData[] = [
     icon: '⬡', title: 'Redes & Ciberseguridad',
     desc: 'Fortinet FortiGate, segmentación VLAN, VPN y arquitectura Zero Trust para eliminar movimientos laterales.',
     hex: '#3b82f6', uptime: 99.7, incidents: 0,
-    tags: ['Fortinet NSE4', 'VLAN', 'Zero Trust', 'VPN', 'IPS/IDS'],
+    tags: ['FortiGate NGFW', 'VLAN', 'Zero Trust', 'VPN', 'IPS/IDS'],
     sparkline: [99.2, 99.5, 99.7, 99.6, 99.8, 99.9, 99.7, 99.8, 99.7, 99.9],
     href: '/servicios/ciberseguridad',
   },
@@ -70,10 +70,10 @@ const SERVICES: ServicePanelData[] = [
     href: '/servicios/identidad-acceso',
   },
   {
-    icon: '◈', title: 'Monitoreo NOC 24/7',
-    desc: 'Monitoreo activo de red, firewall y endpoints. Detección de incidentes en tiempo real con SLA de respuesta documentado < 15 min.',
-    hex: '#f59e0b', uptime: 99.9, incidents: 2,
-    tags: ['SIEM', 'Alertas RTR', 'SLA < 15 min', 'Dashboard', 'Fortinet'],
+    icon: '◈', title: 'Continuidad & Soporte',
+    desc: 'Soporte técnico activo, revisiones periódicas de infraestructura y atención a incidentes para mantener tu operación estable post-implementación.',
+    hex: '#f59e0b', uptime: 99.9, incidents: 0,
+    tags: ['Soporte activo', 'Revisiones', 'Atención incidentes', 'Documentación', 'Fortinet'],
     sparkline: [99.7, 99.8, 99.9, 99.8, 99.9, 99.9, 100, 99.9, 99.9, 99.9],
     href: '/assessments',
   },
@@ -81,7 +81,7 @@ const SERVICES: ServicePanelData[] = [
     icon: '◇', title: 'Consultoría & Diagnóstico',
     desc: 'Evaluación técnica de tu infraestructura y hoja de ruta personalizada. Informe con brechas, tecnologías recomendadas y costos en 24 h.',
     hex: '#06b6d4', uptime: 100, incidents: 0,
-    tags: ['Auditoría', 'Propuesta 24h', 'Sin costo', 'Ingenieros NSE4'],
+    tags: ['Auditoría', 'Propuesta 24h', 'Sin costo', 'Expertos Fortinet'],
     sparkline: [100, 100, 100, 100, 100, 100, 100, 100, 100, 100],
     href: '/assessments',
   },
@@ -100,19 +100,20 @@ const TESTIMONIALS = [
 ]
 
 const DIFFERENTIATORS = [
-  { label: 'SLA < 4 h', sub: 'Respuesta en incidentes críticos' },
-  { label: 'Zero Trust nativo', sub: 'Diseñado desde el inicio, no adaptado después' },
-  { label: 'Dashboard en tiempo real', sub: 'Visibilidad total 24/7' },
-  { label: 'KPIs firmados', sub: 'Métricas acordadas antes de iniciar' },
-  { label: 'Ingenieros certificados', sub: 'NSE4, Microsoft 365, CompTIA' },
-  { label: 'Sin lock-in', sub: 'Mes a mes, sin permanencia mínima' },
+  { label: 'Entregables firmados',    sub: 'Alcance, costos y cronograma acordados antes de iniciar' },
+  { label: 'Zero Trust por diseño',   sub: 'Arquitectura segura desde el primer día, no adaptada después' },
+  { label: 'Proyecto documentado',    sub: 'Estado y entregables visibles en cada fase' },
+  { label: 'KPIs comprometidos',      sub: 'Métricas acordadas y verificadas al cierre' },
+  { label: 'Ingenieros especializados', sub: 'Experiencia directa en Fortinet, Microsoft 365 y redes IP' },
+  { label: 'Sin lock-in',             sub: 'Mes a mes, sin permanencia mínima' },
 ]
 
+// Technology specializations — platforms we implement, not badge claims
 const CERTS = [
-  { name: 'Fortinet NSE 4', dot: '#f59e0b' },
-  { name: 'Microsoft 365', dot: '#f59e0b' },
-  { name: 'CompTIA Sec+',  dot: '#f59e0b' },
-  { name: 'Cisco CCNA',    dot: '#f59e0b' },
+  { name: 'Fortinet FortiGate', dot: '#f59e0b' },
+  { name: 'Microsoft 365',      dot: '#f59e0b' },
+  { name: 'Axis · Hikvision',   dot: '#f59e0b' },
+  { name: 'Cisco · HP Aruba',   dot: '#f59e0b' },
 ]
 
 // ─── Scroll-triggered counter ─────────────────────────────────────────────────
@@ -307,7 +308,7 @@ export default function HomePage() {
       <div className="section-divider" />
       <section className="py-5 bg-surface-dark">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 flex items-center gap-8 overflow-x-auto scrollbar-none">
-          <span className="label flex-shrink-0 text-zinc-700">CERTIFICACIONES</span>
+          <span className="label flex-shrink-0 text-zinc-700">TECNOLOGÍAS</span>
           <div className="w-px h-4 bg-surface-border flex-shrink-0" />
           <div className="flex items-center gap-10 flex-shrink-0">
             {CERTS.map(({ name }) => (
@@ -350,7 +351,7 @@ export default function HomePage() {
       {/* ── Micro CTA after stats ── */}
       <div className="max-w-7xl mx-auto px-4 sm:px-8 mb-20">
         <CtaStrip
-          text="Cada cliente opera con SLA documentado, dashboard en tiempo real y KPIs comprometidos antes de iniciar."
+          text="Cada proyecto incluye documentación técnica, entregables verificados y KPIs acordados desde el inicio."
           cta="Ver casos de éxito"
           href="/casos"
         />

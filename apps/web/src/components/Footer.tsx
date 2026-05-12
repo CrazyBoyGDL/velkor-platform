@@ -21,9 +21,9 @@ const LINKS = {
 }
 
 const CERTS = [
-  { label: 'Fortinet NSE4',      color: '#ef4444' },
-  { label: 'Microsoft Partner',  color: '#3b82f6' },
-  { label: 'Axis ACSR',          color: '#22c55e' },
+  { label: 'Fortinet FortiGate', color: '#3b82f6' },
+  { label: 'Microsoft 365',      color: '#22c55e' },
+  { label: 'Axis · Hikvision',   color: '#06b6d4' },
 ]
 
 function FooterCanvas() {

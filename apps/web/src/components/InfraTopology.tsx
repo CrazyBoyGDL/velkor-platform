@@ -29,7 +29,7 @@ function polar(deg: number, r: number): [number, number] {
 // Label dx/dy: offset from the node center to the text anchor point
 const NODES = [
   { deg: -90, color: '#3b82f6', label: 'REDES',    detail: 'Fortinet · Zero Trust', dx:  0,   dy: -36, anchor: 'middle' as const },
-  { deg: -30, color: '#f59e0b', label: 'NOC',      detail: 'Monitoreo · Respuesta', dx:  30,  dy:  -4, anchor: 'start'  as const },
+  { deg: -30, color: '#f59e0b', label: 'SOPORTE',   detail: 'Gestión · Continuidad', dx:  30,  dy:  -4, anchor: 'start'  as const },
   { deg:  30, color: '#06b6d4', label: 'CCTV',     detail: 'Axis · NVR · IA',       dx:  30,  dy:  -4, anchor: 'start'  as const },
   { deg:  90, color: '#3b82f6', label: 'CLOUD',    detail: 'M365 · Exchange',        dx:  0,   dy:  36, anchor: 'middle' as const },
   { deg: 150, color: '#22c55e', label: 'IDENTITY', detail: 'Entra ID · FIDO2',       dx: -30,  dy:  -4, anchor: 'end'    as const },

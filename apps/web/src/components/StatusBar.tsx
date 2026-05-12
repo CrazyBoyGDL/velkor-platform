@@ -1,9 +1,9 @@
 'use client'
 
 const TRUST_SIGNALS = [
-  'Fortinet NSE4',
-  'Microsoft Partner',
-  'Intune & Entra ID',
+  'Redes & Seguridad Fortinet',
+  'Microsoft 365 & Entra ID',
+  'Videovigilancia IP',
   'Desde 2016',
 ]
 

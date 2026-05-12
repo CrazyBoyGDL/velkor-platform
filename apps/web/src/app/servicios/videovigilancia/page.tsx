@@ -90,8 +90,8 @@ const SOLUTIONS = [
   },
   {
     hex: '#06b6d4',
-    title: 'Monitoreo remoto 24/7',
-    desc: 'Acceso desde app móvil y web con notificaciones push en tiempo real. Dashboard unificado para todas las sedes.',
+    title: 'Acceso remoto y app móvil',
+    desc: 'Visualización desde app móvil y web con notificaciones push en tiempo real. Consola unificada para todas las sedes.',
   },
   {
     hex: '#06b6d4',

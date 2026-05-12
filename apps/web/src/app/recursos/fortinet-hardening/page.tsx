@@ -100,7 +100,7 @@ const CONTENT = {
         'Configurar actualización automática de firmas IPS cada 24 horas',
         'Establecer acción "Block" para firmas de severidad crítica y alta',
         'Habilitar detección de botnets y C&C (Command & Control)',
-        'Configurar alertas de IPS hacia SOC o responsable de seguridad',
+        'Configurar alertas de IPS hacia el responsable de seguridad o equipo IT',
         'Revisar top 10 hits de IPS semanalmente para identificar patrones',
       ],
     },
@@ -156,13 +156,13 @@ export default function FortinetHardeningPage() {
             <span className="badge text-[10px] font-mono" style={{ color: '#3b82f6', backgroundColor: '#3b82f618' }}>
               REDES & CIBERSEGURIDAD
             </span>
-            <span className="text-zinc-700 text-[10px] font-mono">12 min · NSE4 verified</span>
+            <span className="text-zinc-700 text-[10px] font-mono">12 min · Revisado por ingenieros Fortinet</span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-black text-noc-white leading-tight mb-4">
             {CONTENT.title}
           </h1>
           <p className="text-zinc-400 text-base leading-relaxed max-w-2xl">
-            Configuraciones revisadas por ingenieros Fortinet NSE4 con proyectos activos en producción. Cubre desde el acceso de gestión hasta la segmentación por VLAN.
+            Configuraciones revisadas por ingenieros con experiencia directa en FortiGate en producción. Cubre desde el acceso de gestión hasta la segmentación por VLAN.
           </p>
         </div>
 

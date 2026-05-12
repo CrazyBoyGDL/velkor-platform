@@ -7,7 +7,7 @@ const SERVICES = [
   'CCTV & Vigilancia',
   'Microsoft 365 / Cloud',
   'Intune & Entra ID',
-  'Monitoreo NOC',
+  'Continuidad & Soporte',
   'Auditoría IT',
   'Otro',
 ]

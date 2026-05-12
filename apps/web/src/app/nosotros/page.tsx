@@ -3,17 +3,17 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 
 const STATS = [
-  { val: '2016',  label: 'Año de fundación',       color: '#f59e0b' },
-  { val: '50+',   label: 'Clientes activos',        color: '#22c55e' },
-  { val: '24/7',  label: 'Monitoreo activo',        color: '#3b82f6' },
-  { val: '<4 h',  label: 'Respuesta en incidentes', color: '#06b6d4' },
+  { val: '2016',  label: 'Año de fundación',      color: '#f59e0b' },
+  { val: '50+',   label: 'Clientes activos',       color: '#22c55e' },
+  { val: '3',     label: 'Áreas de especialidad',  color: '#3b82f6' },
+  { val: '<48h',  label: 'Primera propuesta',      color: '#06b6d4' },
 ]
 
 const VALUES = [
   {
     color: '#f59e0b',
     title: 'Respuesta inmediata',
-    desc: 'SLA documentado de menos de 4 horas para incidentes críticos. Equipo de soporte activo las 24 horas, los 365 días del año.',
+    desc: 'Compromiso de respuesta documentado para cada proyecto. Nuestro equipo técnico atiende directamente, sin intermediarios ni escalaciones a centros externos.',
     icon: (
       <svg viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
         <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-13a.75.75 0 00-1.5 0v5c0 .414.336.75.75.75h4a.75.75 0 000-1.5h-3.25V5z" clipRule="evenodd" />
@@ -33,7 +33,7 @@ const VALUES = [
   {
     color: '#22c55e',
     title: 'Transparencia total',
-    desc: 'Dashboards en tiempo real con acceso del cliente, reportes mensuales con métricas y visibilidad completa del estado de tu infraestructura.',
+    desc: 'Documentación del proyecto actualizada en cada fase, acceso del cliente a entregables y visibilidad completa del avance de implementación.',
     icon: (
       <svg viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
         <path d="M15.5 2A1.5 1.5 0 0014 3.5v13a1.5 1.5 0 001.5 1.5h1a1.5 1.5 0 001.5-1.5v-13A1.5 1.5 0 0016.5 2h-1zM9.5 6A1.5 1.5 0 008 7.5v9A1.5 1.5 0 009.5 18h1a1.5 1.5 0 001.5-1.5v-9A1.5 1.5 0 0010.5 6h-1zM3.5 10A1.5 1.5 0 002 11.5v5A1.5 1.5 0 003.5 18h1A1.5 1.5 0 006 16.5v-5A1.5 1.5 0 004.5 10h-1z" />
@@ -52,12 +52,13 @@ const VALUES = [
   },
 ]
 
+// Technology specializations — platforms we implement operationally
 const CERTS = [
-  { label: 'Fortinet NSE4', color: '#ef4444' },
-  { label: 'Microsoft Partner',       color: '#3b82f6' },
-  { label: 'Cisco CCNA', color: '#3b82f6' },
-  { label: 'Axis ACSR', color: '#22c55e' },
-  { label: 'CompTIA Security+', color: '#f59e0b' },
+  { label: 'Fortinet FortiGate', color: '#3b82f6' },
+  { label: 'Microsoft 365',      color: '#22c55e' },
+  { label: 'Intune & Entra ID',  color: '#22c55e' },
+  { label: 'Axis · Hikvision',   color: '#06b6d4' },
+  { label: 'Cisco · HP Aruba',   color: '#3b82f6' },
 ]
 
 const fadeUp = (delay = 0) => ({

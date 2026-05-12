@@ -39,11 +39,11 @@ const FALLBACK_CASES: CaseStudy[] = [
     sector: 'Manufactura',
     year: '2024',
     challenge: 'Red plana sin segmentación, 3 brechas de seguridad en 6 meses con activos expuestos.',
-    solution: 'Rediseño LAN/WAN completo con VLANs, firewall Fortinet FG-100F y monitoreo NOC activo.',
+    solution: 'Rediseño LAN/WAN completo con VLANs, firewall Fortinet FG-100F y soporte activo de red.',
     result: '0 incidentes',
     resultSub: 'en 14 meses',
     hex: '#3b82f6',
-    tags: ['Redes', 'Fortinet', 'VLAN', 'NOC'],
+    tags: ['Redes', 'Fortinet', 'VLAN', 'Soporte'],
   },
   {
     client: 'Corporativo médico · CDMX · 62 usuarios',

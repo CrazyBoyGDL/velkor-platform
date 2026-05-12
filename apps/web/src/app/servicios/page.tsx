@@ -15,7 +15,7 @@ const SERVICES = [
     eyebrow: 'REDES & CIBERSEGURIDAD',
     title: 'Infraestructura segura desde el diseño',
     desc: 'Firewall Fortinet FortiGate, segmentación VLAN, VPN site-to-site y arquitectura Zero Trust para eliminar movimientos laterales y fortalecer el perímetro.',
-    tags: ['Fortinet NSE4', 'VLAN', 'Zero Trust', 'VPN', 'IPS/IDS'],
+    tags: ['FortiGate NGFW', 'VLAN', 'Zero Trust', 'VPN', 'IPS/IDS'],
     cta: 'Ver servicio →',
   },
   {
@@ -51,7 +51,7 @@ export default function ServiciosPage() {
             <span className="text-gradient-amber">de principio a fin</span>
           </h1>
           <p className="text-zinc-500 max-w-xl text-base leading-relaxed">
-            Tres especialidades integradas. Desde el firewall perimetral hasta la cámara en la sucursal más remota, gestionadas por un solo equipo con SLA documentado.
+            Tres especialidades integradas. Desde el firewall perimetral hasta la cámara en la sucursal más remota, gestionadas por un solo equipo con entregables documentados.
           </p>
         </div>
 

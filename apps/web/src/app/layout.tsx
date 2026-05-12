@@ -17,10 +17,10 @@ export const metadata: Metadata = {
     template: '%s | Velkor',
   },
   description:
-    'Consultoría IT empresarial en redes, ciberseguridad Fortinet, identidad Microsoft 365, videovigilancia IP y NOC 24/7. Más de 50 clientes empresariales. Desde 2016.',
+    'Consultoría IT empresarial en redes, ciberseguridad Fortinet, identidad Microsoft 365 y videovigilancia IP. Más de 50 clientes empresariales. Desde 2016.',
   keywords: [
     'consultoría IT', 'ciberseguridad empresarial', 'Fortinet', 'Microsoft 365',
-    'Intune', 'Entra ID', 'NOC 24/7', 'CCTV IP', 'videovigilancia empresarial',
+    'Intune', 'Entra ID', 'CCTV IP', 'videovigilancia empresarial',
     'redes empresariales', 'Zero Trust', 'MDM', 'México',
   ],
   authors: [{ name: 'Velkor System', url: SITE_URL }],
@@ -81,13 +81,13 @@ const jsonLd = {
         url: `${SITE_URL}/favicon.svg`,
       },
       description:
-        'Consultoría IT empresarial especializada en redes, ciberseguridad, identidad Microsoft, videovigilancia IP y NOC 24/7.',
+        'Consultoría IT empresarial especializada en redes, ciberseguridad, identidad Microsoft y videovigilancia IP.',
       foundingDate: '2016',
       areaServed: 'MX',
       knowsAbout: [
         'Fortinet', 'Microsoft 365', 'Entra ID', 'Microsoft Intune',
         'Ciberseguridad', 'Redes Empresariales', 'Videovigilancia IP', 'CCTV',
-        'Zero Trust', 'MDM', 'NOC', 'SD-WAN',
+        'Zero Trust', 'MDM', 'SD-WAN',
       ],
     },
     {
@@ -104,7 +104,7 @@ const jsonLd = {
         'Redes Empresariales',
         'Microsoft 365',
         'Videovigilancia IP',
-        'NOC 24/7',
+        'Gestión de Identidad',
       ],
       provider: { '@id': `${SITE_URL}/#organization` },
     },

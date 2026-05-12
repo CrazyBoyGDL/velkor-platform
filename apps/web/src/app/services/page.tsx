@@ -24,7 +24,7 @@ const CATEGORIES = [
       { name: 'Diseño de sistema IP', desc: 'Relevamiento técnico, plano de ubicación de cámaras, switching PoE y cableado.' },
       { name: 'Configuración NVR/DVR', desc: 'Almacenamiento, programación de grabación, detección de movimiento y acceso remoto.' },
       { name: 'Video analítica con IA', desc: 'Detección de intrusos, conteo de personas, lectura de patentes y alertas perimetrales.' },
-      { name: 'Monitoreo remoto 24/7', desc: 'Centro de monitoreo NOC con respuesta a alarmas e informes de incidentes.' },
+      { name: 'Acceso remoto y app móvil', desc: 'Visualización desde app móvil y web con notificaciones de eventos e informes de actividad.' },
     ],
   },
   {
