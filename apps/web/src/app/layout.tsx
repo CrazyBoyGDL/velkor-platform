@@ -10,8 +10,12 @@ export const metadata: Metadata = {
   title: 'Velkor System — Consultoría IT Empresarial',
   description: 'Redes, ciberseguridad y Modern Workplace para empresas que no pueden permitirse interrupciones. NOC 24/7.',
   icons: {
-    icon: '/favicon.svg',
+    icon: [
+      { url: '/favicon.svg',       media: '(prefers-color-scheme: dark)' },
+      { url: '/favicon-white.svg', media: '(prefers-color-scheme: light)' },
+    ],
     shortcut: '/favicon.svg',
+    apple: '/favicon.svg',
   },
 }
 
