@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import NOCDashboard from '@/components/NOCDashboard'
 import ServicePanel, { type ServicePanelData } from '@/components/ServicePanel'
+import { trackCTA } from '@/components/Analytics'
 
 const NetworkBg = dynamic(() => import('@/components/NetworkBg'), { ssr: false })
 
@@ -32,7 +33,7 @@ const STATS = [
   { val: 50,  suf: '+',  label: 'Clientes activos',     sub: 'Pymes y corporativos',  color: '#f59e0b' },
   { val: 8,   suf: 'yr', label: 'Años de experiencia',  sub: 'Fundados en 2016',      color: '#f59e0b' },
   { val: 4,   suf: 'h',  label: 'Tiempo de respuesta',  sub: 'Incidentes críticos',   color: '#f59e0b', prefix: '<' },
-  { val: 3,   suf: '',   label: 'Especialidades IT',    sub: 'Red · Identidad · CCTV',color: '#f59e0b' },
+  { val: 100, suf: '%',  label: 'Proyectos documentados', sub: 'KPIs verificados al cierre', color: '#f59e0b' },
 ]
 
 const SERVICES: ServicePanelData[] = [
@@ -54,7 +55,7 @@ const SERVICES: ServicePanelData[] = [
   },
   {
     icon: '⬢', title: 'Microsoft 365 & Cloud',
-    desc: 'Tenant setup, Exchange Online, Teams, SharePoint y optimización de licencias M365.',
+    desc: 'Tenant configurado, identidades centralizadas y productividad en producción. Exchange, Teams y SharePoint gestionados por ingenieros certificados.',
     hex: '#3b82f6', uptime: 99.9, incidents: 0,
     tags: ['Exchange', 'Teams', 'SharePoint', 'Entra ID', 'OneDrive'],
     sparkline: [99.7, 99.8, 99.9, 99.9, 99.8, 99.9, 100, 99.9, 99.9, 100],
@@ -70,15 +71,15 @@ const SERVICES: ServicePanelData[] = [
   },
   {
     icon: '◈', title: 'Monitoreo NOC 24/7',
-    desc: 'Centro de operaciones: monitoreo continuo, alertas en tiempo real y SLA < 15 min documentado.',
+    desc: 'Monitoreo activo de red, firewall y endpoints. Detección de incidentes en tiempo real con SLA de respuesta documentado < 15 min.',
     hex: '#f59e0b', uptime: 99.9, incidents: 2,
     tags: ['SIEM', 'Alertas RTR', 'SLA < 15 min', 'Dashboard', 'Fortinet'],
     sparkline: [99.7, 99.8, 99.9, 99.8, 99.9, 99.9, 100, 99.9, 99.9, 99.9],
     href: '/assessments',
   },
   {
-    icon: '◇', title: 'Diagnóstico & Cotización',
-    desc: 'Auditoría técnica completa de tu infraestructura y propuesta personalizada en menos de 24 h.',
+    icon: '◇', title: 'Consultoría & Diagnóstico',
+    desc: 'Evaluación técnica de tu infraestructura y hoja de ruta personalizada. Informe con brechas, tecnologías recomendadas y costos en 24 h.',
     hex: '#06b6d4', uptime: 100, incidents: 0,
     tags: ['Auditoría', 'Propuesta 24h', 'Sin costo', 'Ingenieros NSE4'],
     sparkline: [100, 100, 100, 100, 100, 100, 100, 100, 100, 100],
@@ -100,11 +101,11 @@ const TESTIMONIALS = [
 
 const DIFFERENTIATORS = [
   { label: 'SLA < 4 h', sub: 'Respuesta en incidentes críticos' },
-  { label: 'Zero Trust', sub: 'Arquitectura por diseño' },
+  { label: 'Zero Trust nativo', sub: 'Diseñado desde el inicio, no adaptado después' },
   { label: 'Dashboard en tiempo real', sub: 'Visibilidad total 24/7' },
   { label: 'KPIs firmados', sub: 'Métricas acordadas antes de iniciar' },
   { label: 'Ingenieros certificados', sub: 'NSE4, Microsoft 365, CompTIA' },
-  { label: 'Sin contrato mínimo', sub: 'Servicio mes a mes' },
+  { label: 'Sin lock-in', sub: 'Mes a mes, sin permanencia mínima' },
 ]
 
 const CERTS = [
@@ -218,15 +219,17 @@ export default function HomePage() {
             </motion.h1>
 
             <motion.p {...heroUp(0.16)} className="text-zinc-400 text-[1.0625rem] leading-[1.75] max-w-[26rem] mb-9">
-              Redes, ciberseguridad y Modern Workplace para empresas que no pueden permitirse interrupciones.
+              Redes, ciberseguridad y gestión de identidad para empresas que no pueden permitirse interrupciones.
             </motion.p>
 
             {/* CTAs */}
             <motion.div {...heroUp(0.24)} className="flex flex-col sm:flex-row gap-3 mb-5">
-              <Link href="/assessments" className="btn-amber text-[15px] px-8 py-4">
+              <Link href="/assessments" className="btn-amber text-[15px] px-8 py-4"
+                onClick={() => trackCTA('Hero — Solicitar diagnóstico')}>
                 Solicitar diagnóstico gratis
               </Link>
-              <Link href="/servicios" className="btn-ghost text-[15px] px-8 py-4">
+              <Link href="/servicios" className="btn-ghost text-[15px] px-8 py-4"
+                onClick={() => trackCTA('Hero — Ver servicios')}>
                 Ver servicios →
               </Link>
             </motion.div>
@@ -308,7 +311,7 @@ export default function HomePage() {
       {/* ── Micro CTA after stats ── */}
       <div className="max-w-7xl mx-auto px-4 sm:px-8 mb-20">
         <CtaStrip
-          text="¿Tu empresa todavía no tiene uptime documentado ni SLA firmado?"
+          text="Cada cliente opera con SLA documentado, dashboard en tiempo real y KPIs comprometidos antes de iniciar."
           cta="Ver casos de éxito"
           href="/casos"
         />
@@ -485,10 +488,12 @@ export default function HomePage() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3 justify-center mb-10">
-            <Link href="/assessments" className="btn-amber text-[15px] px-10 py-4">
+            <Link href="/assessments" className="btn-amber text-[15px] px-10 py-4"
+              onClick={() => trackCTA('Final CTA — Solicitar diagnóstico')}>
               Solicitar diagnóstico →
             </Link>
-            <Link href="/casos" className="btn-ghost text-[15px] px-10 py-4">
+            <Link href="/casos" className="btn-ghost text-[15px] px-10 py-4"
+              onClick={() => trackCTA('Final CTA — Ver casos')}>
               Ver casos de éxito
             </Link>
           </div>
@@ -499,7 +504,7 @@ export default function HomePage() {
               'Sin contrato mínimo',
               'Respuesta < 24 h',
               'Ingenieros certificados',
-              'Sin spam',
+              'Propuesta sin costo',
             ].map((text) => (
               <div key={text} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
                 style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>

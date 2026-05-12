@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import TrackedLink from '@/components/TrackedLink'
+import ScrollDepthTracker from '@/components/ScrollDepthTracker'
 
 export const metadata: Metadata = {
   title: 'Ciberseguridad Empresarial | Fortinet · Zero Trust · Redes',
@@ -149,6 +151,7 @@ export default function CiberseguridadPage() {
   return (
     <div className="min-h-screen py-16 px-4 sm:px-8">
       <div className="max-w-5xl mx-auto">
+        <ScrollDepthTracker page="servicios-ciberseguridad" />
 
         <script
           type="application/ld+json"
@@ -189,12 +192,14 @@ export default function CiberseguridadPage() {
             Diseñamos e implementamos arquitecturas de red seguras con firewalls Fortinet, segmentación por VLAN y monitoreo activo para que ningún incidente pase desapercibido.
           </p>
           <div className="flex flex-col sm:flex-row gap-3">
-            <Link href="/assessments" className="btn-amber px-8 py-3.5 text-[15px]">
+            <TrackedLink href="/assessments" className="btn-amber px-8 py-3.5 text-[15px]"
+              trackLabel="Ciberseguridad — Hero CTA">
               Diagnóstico de red gratuito →
-            </Link>
-            <Link href="/casos" className="btn-ghost px-8 py-3.5 text-[15px]">
+            </TrackedLink>
+            <TrackedLink href="/casos" className="btn-ghost px-8 py-3.5 text-[15px]"
+              trackLabel="Ciberseguridad — Ver casos">
               Ver casos de éxito
-            </Link>
+            </TrackedLink>
           </div>
         </div>
 
@@ -277,9 +282,10 @@ export default function CiberseguridadPage() {
           <p className="text-zinc-500 text-sm mb-6 max-w-sm mx-auto leading-relaxed">
             Evaluamos tu topología actual, identificamos vulnerabilidades y entregamos un informe técnico con plan de acción. Sin costo.
           </p>
-          <Link href="/assessments" className="btn-amber px-10 py-3.5 text-[15px]">
+          <TrackedLink href="/assessments" className="btn-amber px-10 py-3.5 text-[15px]"
+            trackLabel="Ciberseguridad — Bottom CTA">
             Solicitar diagnóstico →
-          </Link>
+          </TrackedLink>
         </div>
 
       </div>

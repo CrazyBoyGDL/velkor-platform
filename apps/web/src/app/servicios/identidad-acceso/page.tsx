@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import TrackedLink from '@/components/TrackedLink'
+import ScrollDepthTracker from '@/components/ScrollDepthTracker'
 
 export const metadata: Metadata = {
   title: 'Gestión de Identidad y Acceso | Entra ID · Intune · MFA',
@@ -149,6 +151,7 @@ export default function IdentidadAccesoPage() {
   return (
     <div className="min-h-screen py-16 px-4 sm:px-8">
       <div className="max-w-5xl mx-auto">
+        <ScrollDepthTracker page="servicios-identidad-acceso" />
 
         <script
           type="application/ld+json"
@@ -189,12 +192,14 @@ export default function IdentidadAccesoPage() {
             Implementamos Microsoft Entra ID, Intune y MFA para que cada acceso en tu empresa sea auditado, condicional y revocable en tiempo real. Zero Trust por diseño.
           </p>
           <div className="flex flex-col sm:flex-row gap-3">
-            <Link href="/assessments" className="btn-amber px-8 py-3.5 text-[15px]">
+            <TrackedLink href="/assessments" className="btn-amber px-8 py-3.5 text-[15px]"
+              trackLabel="Identidad — Hero CTA">
               Diagnóstico de identidad gratuito →
-            </Link>
-            <Link href="/casos" className="btn-ghost px-8 py-3.5 text-[15px]">
+            </TrackedLink>
+            <TrackedLink href="/casos" className="btn-ghost px-8 py-3.5 text-[15px]"
+              trackLabel="Identidad — Ver casos">
               Ver casos de éxito
-            </Link>
+            </TrackedLink>
           </div>
         </div>
 
@@ -274,9 +279,10 @@ export default function IdentidadAccesoPage() {
           <p className="text-zinc-500 text-sm mb-6 max-w-sm mx-auto leading-relaxed">
             Revisamos tu entorno de Entra ID, políticas de acceso y dispositivos gestionados. Entregamos un informe con brechas y recomendaciones. Sin costo.
           </p>
-          <Link href="/assessments" className="btn-amber px-10 py-3.5 text-[15px]">
+          <TrackedLink href="/assessments" className="btn-amber px-10 py-3.5 text-[15px]"
+            trackLabel="Identidad — Bottom CTA">
             Solicitar diagnóstico →
-          </Link>
+          </TrackedLink>
         </div>
 
       </div>

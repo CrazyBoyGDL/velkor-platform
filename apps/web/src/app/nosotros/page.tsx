@@ -61,10 +61,10 @@ const CERTS = [
 ]
 
 const fadeUp = (delay = 0) => ({
-  initial: { opacity: 0, y: 20 },
+  initial: { opacity: 0, y: 16 },
   whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, amount: 0.2 },
-  transition: { duration: 0.5, ease: 'easeOut', delay },
+  viewport: { once: true, amount: 0.12 },
+  transition: { duration: 0.65, ease: [0.16, 1, 0.3, 1], delay },
 })
 
 export default function NosotrosPage() {
@@ -76,11 +76,11 @@ export default function NosotrosPage() {
         <motion.div {...fadeUp(0)} className="mb-12">
           <span className="label">Quiénes somos</span>
           <h1 className="text-4xl sm:text-5xl font-black text-noc-white mt-3 mb-6 leading-tight">
-            El equipo detrás<br />
-            <span className="text-gradient-amber">de Velkor</span>
+            El equipo que implementa,<br />
+            <span className="text-gradient-amber">no solo asesora</span>
           </h1>
           <p className="text-zinc-400 text-lg leading-relaxed max-w-2xl">
-            Desde 2016 operamos como el departamento de IT externo para más de 50 empresas. Combinamos expertise técnico certificado con respuesta operacional real, no solo consultoría.
+            Desde 2016 operamos como el equipo de IT de más de 50 empresas en México. Combinamos ingeniería certificada con ejecución directa en campo: cada proyecto tiene un ingeniero responsable de principio a cierre.
           </p>
         </motion.div>
 

@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import TrackedLink from '@/components/TrackedLink'
+import ScrollDepthTracker from '@/components/ScrollDepthTracker'
 
 export const metadata: Metadata = {
   title: 'Videovigilancia IP Empresarial | Axis · NVR 4K · IA Analytics',
@@ -149,6 +151,7 @@ export default function VideovigilanciaPage() {
   return (
     <div className="min-h-screen py-16 px-4 sm:px-8">
       <div className="max-w-5xl mx-auto">
+        <ScrollDepthTracker page="servicios-videovigilancia" />
 
         <script
           type="application/ld+json"
@@ -189,12 +192,14 @@ export default function VideovigilanciaPage() {
             Instalamos sistemas IP con cámaras Axis e Hikvision 4K, NVR centralizado con retención hasta 90 días y analítica con IA para detectar incidentes en tiempo real, no horas después.
           </p>
           <div className="flex flex-col sm:flex-row gap-3">
-            <Link href="/assessments" className="btn-amber px-8 py-3.5 text-[15px]">
+            <TrackedLink href="/assessments" className="btn-amber px-8 py-3.5 text-[15px]"
+              trackLabel="Videovigilancia — Hero CTA">
               Diseño de sistema gratuito →
-            </Link>
-            <Link href="/casos" className="btn-ghost px-8 py-3.5 text-[15px]">
+            </TrackedLink>
+            <TrackedLink href="/casos" className="btn-ghost px-8 py-3.5 text-[15px]"
+              trackLabel="Videovigilancia — Ver casos">
               Ver caso retail
-            </Link>
+            </TrackedLink>
           </div>
         </div>
 
@@ -274,9 +279,10 @@ export default function VideovigilanciaPage() {
           <p className="text-zinc-500 text-sm mb-6 max-w-sm mx-auto leading-relaxed">
             Realizamos el relevamiento técnico, diseño de plano de cámaras y propuesta con costos reales. Sin compromiso.
           </p>
-          <Link href="/assessments" className="btn-amber px-10 py-3.5 text-[15px]">
+          <TrackedLink href="/assessments" className="btn-amber px-10 py-3.5 text-[15px]"
+            trackLabel="Videovigilancia — Bottom CTA">
             Solicitar relevamiento →
-          </Link>
+          </TrackedLink>
         </div>
 
       </div>

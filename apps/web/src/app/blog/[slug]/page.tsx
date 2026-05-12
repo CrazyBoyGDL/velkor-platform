@@ -2,6 +2,8 @@ import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { strapi } from '@/lib/strapi'
+import ScrollDepthTracker from '@/components/ScrollDepthTracker'
+import TrackedLink from '@/components/TrackedLink'
 
 export const revalidate = 3600
 export const dynamicParams = true
@@ -103,6 +105,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
 
   return (
     <div className="min-h-screen py-16 px-4 sm:px-8">
+      <ScrollDepthTracker page={`blog-${params.slug}`} />
       <div className="max-w-3xl mx-auto">
 
         {/* Back link */}
@@ -155,23 +158,25 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
 
         {/* Inline CTA — service contact prompt */}
         <div
-          className="my-12 card p-7 border-amber/20"
+          className="my-12 card p-7"
           style={{ borderLeftColor: hex, borderLeftWidth: 3 }}
         >
-          <div className="text-[10px] font-mono text-zinc-600 mb-2">¿NECESITAS AYUDA CON ESTO?</div>
+          <div className="text-[10px] font-mono text-zinc-600 mb-2">IMPLEMENTACIÓN DISPONIBLE</div>
           <h3 className="text-noc-white font-bold text-base mb-2">
-            Nuestros ingenieros pueden implementarlo en tu empresa
+            Nuestros ingenieros lo implementan en tu infraestructura
           </h3>
           <p className="text-zinc-500 text-sm leading-relaxed mb-4">
-            Si este artículo cubre algo que ya estás considerando para tu infraestructura, empieza con un diagnóstico técnico gratuito.
+            Si estás evaluando esto para tu empresa, podemos entregar un diagnóstico técnico con brechas identificadas, tecnologías recomendadas y costos reales — sin costo y en 24 h.
           </p>
           <div className="flex flex-col sm:flex-row gap-3">
-            <Link href="/assessments" className="btn-amber px-6 py-2.5 text-sm">
+            <TrackedLink href="/assessments" className="btn-amber px-6 py-2.5 text-sm"
+              trackLabel={`Blog inline CTA — ${post.category}`}>
               Diagnóstico gratuito →
-            </Link>
-            <Link href="/contacto" className="btn-ghost px-6 py-2.5 text-sm">
+            </TrackedLink>
+            <TrackedLink href="/contacto" className="btn-ghost px-6 py-2.5 text-sm"
+              trackLabel={`Blog contact CTA — ${post.category}`}>
               Hablar con un ingeniero
-            </Link>
+            </TrackedLink>
           </div>
         </div>
 
@@ -213,12 +218,13 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
           >
             ← Más artículos
           </Link>
-          <Link
-            href="/contacto"
+          <TrackedLink
+            href="/assessments"
             className="btn-amber px-6 py-2.5 text-sm"
+            trackLabel={`Blog footer CTA — ${post.category}`}
           >
-            Hablar con un ingeniero →
-          </Link>
+            Solicitar diagnóstico →
+          </TrackedLink>
         </div>
       </div>
     </div>

@@ -88,10 +88,10 @@ export default async function BlogPage() {
         <div className="mb-12">
           <span className="label">Conocimiento técnico</span>
           <h1 className="text-4xl sm:text-5xl font-black text-noc-white mt-3 mb-4">
-            Blog técnico
+            Conocimiento en producción
           </h1>
-          <p className="text-zinc-500">
-            Guías, casos de uso y buenas prácticas de nuestros ingenieros.
+          <p className="text-zinc-500 max-w-xl leading-relaxed">
+            Implementaciones reales, decisiones de arquitectura y buenas prácticas documentadas por nuestros ingenieros de campo.
           </p>
         </div>
 
@@ -101,7 +101,7 @@ export default async function BlogPage() {
           <div className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full border border-surface-border bg-surface-card">
             <span className="w-1.5 h-1.5 rounded-full bg-amber animate-pulse-slow" />
             <span className="text-zinc-600 text-xs font-mono">
-              Más artículos en camino · Gestionado desde Strapi CMS
+              Más artículos en camino · Publicado por el equipo Velkor
             </span>
           </div>
         </div>
