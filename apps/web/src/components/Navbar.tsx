@@ -38,7 +38,7 @@ export default function Navbar() {
       className="fixed top-9 left-0 right-0 z-40 transition-all duration-300"
       style={{
         background: solid || open
-          ? 'rgba(8,8,8,0.92)'
+          ? 'rgba(6,6,10,0.94)'
           : 'transparent',
         backdropFilter: solid || open ? 'blur(20px) saturate(180%)' : 'none',
         borderBottom: solid || open ? '1px solid rgba(255,255,255,0.06)' : '1px solid transparent',
@@ -120,7 +120,7 @@ export default function Navbar() {
             className="lg:hidden overflow-hidden"
             style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}
           >
-            <div className="px-4 py-4 space-y-1" style={{ background: 'rgba(8,8,8,0.97)' }}>
+            <div className="px-4 py-4 space-y-1" style={{ background: 'rgba(6,6,10,0.97)' }}>
               {NAV.map(({ href, label, icon }) => (
                 <Link
                   key={href}

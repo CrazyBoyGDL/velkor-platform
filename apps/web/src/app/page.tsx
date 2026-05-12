@@ -146,12 +146,16 @@ function Counter({ val, suf, prefix = '' }: { val: number; suf: string; prefix?:
 }
 
 // ─── Section header ───────────────────────────────────────────────────────────
-function SectionHeader({ eyebrow, title, sub }: { eyebrow: string; title: React.ReactNode; sub?: string }) {
+function SectionHeader({ eyebrow, title, sub, align = 'center' }: {
+  eyebrow: string; title: React.ReactNode; sub?: string; align?: 'center' | 'left'
+}) {
+  const cls = align === 'left' ? 'text-left mb-16' : 'text-center mb-16'
+  const subCls = align === 'left' ? 'text-zinc-500 mt-4 max-w-xl text-base leading-relaxed' : 'text-zinc-500 mt-4 max-w-xl mx-auto text-base leading-relaxed'
   return (
-    <div className="text-center mb-16">
+    <div className={cls}>
       <motion.span {...fadeUp(0)}    className="label block mb-4">{eyebrow}</motion.span>
-      <motion.h2  {...fadeUp(0.06)} className="text-3xl sm:text-[2.6rem] font-black text-noc-white leading-tight tracking-tight">{title}</motion.h2>
-      {sub && <motion.p {...fadeUp(0.12)} className="text-zinc-500 mt-4 max-w-xl mx-auto text-base leading-relaxed">{sub}</motion.p>}
+      <motion.h2  {...fadeUp(0.06)} className="text-3xl sm:text-[2.6rem] font-black text-noc-white leading-tight tracking-heading">{title}</motion.h2>
+      {sub && <motion.p {...fadeUp(0.12)} className={subCls}>{sub}</motion.p>}
     </div>
   )
 }
@@ -179,51 +183,59 @@ export default function HomePage() {
   return (
     <>
       {/* ════════════════════════════════════════════════════════════════
-          HERO
+          HERO — cinematic viewport, commanding editorial composition
       ════════════════════════════════════════════════════════════════ */}
-      <section ref={heroRef} className="relative min-h-[calc(100vh-100px)] flex items-center overflow-hidden">
+      <section ref={heroRef} className="relative min-h-screen flex items-center overflow-hidden">
 
-        {/* Layered backgrounds */}
+        {/* ── Layered atmospheric backgrounds ── */}
         <motion.div style={{ y: bgY }} className="absolute inset-0 pointer-events-none">
-          {/* Subtle dot texture */}
-          <div className="absolute inset-0 opacity-[0.03]" style={{
-            backgroundImage: 'radial-gradient(circle, #f59e0b 1px, transparent 1px)',
-            backgroundSize: '32px 32px',
+          {/* Warm bloom — upper-left: brand energy source */}
+          <div className="absolute inset-0" style={{
+            background: 'radial-gradient(ellipse 100% 70% at 15% 20%, rgba(245,158,11,0.032) 0%, transparent 55%)',
           }} />
+          {/* Cool depth — lower-right: recessive atmospheric pressure */}
+          <div className="absolute inset-0" style={{
+            background: 'radial-gradient(ellipse 80% 60% at 85% 85%, rgba(59,130,246,0.018) 0%, transparent 55%)',
+          }} />
+          {/* Topology dot texture — subtle infrastructure motif */}
+          <div className="absolute inset-0 bg-topology opacity-60" />
           <NetworkBg />
-          {/* Amber ambient glow — breathes slowly to create living atmosphere */}
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] animate-ambient-breath pointer-events-none"
-            style={{ background: 'radial-gradient(ellipse, rgba(245,158,11,0.065) 0%, transparent 65%)' }}
+          {/* Amber ambient breath — living atmosphere above the fold */}
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[380px] animate-ambient-breath pointer-events-none"
+            style={{ background: 'radial-gradient(ellipse, rgba(245,158,11,0.072) 0%, transparent 60%)' }}
           />
-          {/* Bottom fade */}
-          <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-surface-dark to-transparent" />
+          {/* Bottom fade — transitions smoothly to next section */}
+          <div className="absolute bottom-0 left-0 right-0 h-52 bg-gradient-to-t from-surface-dark to-transparent" />
         </motion.div>
 
-        {/* Hero content */}
+        {/* ── Hero content — asymmetric editorial layout ── */}
         <motion.div
           style={{ y: textY, opacity }}
-          className="relative max-w-7xl mx-auto px-4 sm:px-8 w-full grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center py-16"
+          className="relative max-w-7xl mx-auto px-4 sm:px-8 w-full grid grid-cols-1 lg:grid-cols-[1fr_420px] xl:grid-cols-[1fr_480px] gap-16 lg:gap-20 xl:gap-24 items-center py-28 sm:py-32 lg:py-36"
         >
-          {/* Left copy — animate on mount (above fold) */}
+          {/* Left: editorial copy — animate on mount (above fold) */}
           <div>
-            <motion.div {...heroUp(0)} className="flex items-center gap-2.5 mb-7">
-              <span className="label text-amber/70">CONSULTORÍA TECNOLÓGICA EMPRESARIAL</span>
+            {/* Eyebrow — with decorative accent line */}
+            <motion.div {...heroUp(0)} className="flex items-center gap-3 mb-8">
+              <div className="w-8 h-px flex-shrink-0" style={{ background: 'rgba(245,158,11,0.45)' }} />
+              <span className="label text-amber/60">CONSULTORÍA TECNOLÓGICA EMPRESARIAL</span>
             </motion.div>
 
+            {/* Display headline — commanding, tight, editorial */}
             <motion.h1 {...heroUp(0.08)}
-              className="text-[clamp(2.5rem,5.5vw,4.2rem)] font-black leading-[1.05] tracking-tight mb-7"
+              className="text-[clamp(3rem,7vw,5rem)] font-black leading-[0.97] tracking-display mb-8"
             >
               Tu operación,<br />
               sin puntos<br />
               <span className="text-gradient-amber">de falla.</span>
             </motion.h1>
 
-            <motion.p {...heroUp(0.16)} className="text-zinc-400 text-[1.0625rem] leading-[1.75] max-w-[26rem] mb-9">
+            <motion.p {...heroUp(0.16)} className="text-zinc-400 text-[1.0625rem] leading-[1.78] max-w-[28rem] mb-10">
               Redes, ciberseguridad y gestión de identidad para empresas que no pueden permitirse interrupciones.
             </motion.p>
 
             {/* CTAs */}
-            <motion.div {...heroUp(0.24)} className="flex flex-col sm:flex-row gap-3 mb-5">
+            <motion.div {...heroUp(0.24)} className="flex flex-col sm:flex-row gap-3 mb-6">
               <Link href="/assessments" className="btn-amber text-[15px] px-8 py-4"
                 onClick={() => trackCTA('Hero — Solicitar diagnóstico')}>
                 Solicitar diagnóstico gratis
@@ -234,18 +246,18 @@ export default function HomePage() {
               </Link>
             </motion.div>
 
-            <motion.p {...heroUp(0.32)} className="text-xs font-medium text-zinc-600 flex items-center gap-2 mb-8">
+            <motion.p {...heroUp(0.30)} className="text-xs font-medium text-zinc-600 flex items-center gap-2 mb-9">
               <span className="w-1.5 h-1.5 rounded-full bg-noc-green animate-pulse-slow inline-block" />
               Sin contrato mínimo · Diagnóstico técnico sin costo
             </motion.p>
 
             {/* Social proof */}
-            <motion.div {...heroUp(0.38)} className="flex items-center gap-3">
+            <motion.div {...heroUp(0.36)} className="flex items-center gap-3">
               <div className="flex -space-x-2">
                 {[1,2,3,4].map(n => (
                   <div key={n} className="w-8 h-8 rounded-full border-2 border-surface-dark flex items-center justify-center"
                     style={{ background: 'rgba(245,158,11,0.1)', boxShadow: 'none' }}>
-                    <span className="w-3 h-3 rounded-full" style={{ background: 'rgba(245,158,11,0.28)' }} />
+                    <span className="w-3 h-3 rounded-full" style={{ background: 'rgba(245,158,11,0.3)' }} />
                   </div>
                 ))}
               </div>
@@ -255,15 +267,34 @@ export default function HomePage() {
             </motion.div>
           </div>
 
-          {/* Right: Capabilities Panel */}
+          {/* Right: Capabilities Panel — elevated, atmospheric */}
           <motion.div
-            initial={{ opacity: 0, x: 20, y: 10 }}
+            initial={{ opacity: 0, x: 24, y: 12 }}
             animate={{ opacity: 1, x: 0, y: 0 }}
-            transition={{ duration: 0.8, ease: EASE, delay: 0.3 }}
+            transition={{ duration: 0.9, ease: EASE, delay: 0.28 }}
             className="relative"
           >
+            {/* Ambient bloom behind the panel — depth and presence */}
+            <div className="absolute -inset-8 rounded-[2rem] pointer-events-none"
+              style={{ background: 'radial-gradient(ellipse at 50% 40%, rgba(245,158,11,0.05) 0%, transparent 70%)' }}
+            />
             <NOCDashboard />
           </motion.div>
+        </motion.div>
+
+        {/* ── Editorial scroll indicator ── */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.6, duration: 1.0, ease: EASE }}
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 hidden lg:flex flex-col items-center gap-2.5"
+        >
+          <span className="text-zinc-700 text-[9px] font-mono tracking-[0.28em] uppercase">Explorar</span>
+          <motion.div
+            animate={{ y: [0, 6, 0] }}
+            transition={{ repeat: Infinity, duration: 2.8, ease: 'easeInOut', delay: 2 }}
+            className="w-px h-7 bg-gradient-to-b from-zinc-600 via-zinc-700 to-transparent"
+          />
         </motion.div>
       </section>
 
@@ -288,20 +319,21 @@ export default function HomePage() {
       <div className="section-divider" />
 
       {/* ════════════════════════════════════════════════════════════════
-          BENTO STATS
+          BENTO STATS — editorial large-number hierarchy
       ════════════════════════════════════════════════════════════════ */}
-      <section className="py-24 px-4 sm:px-8">
+      <section className="py-28 px-4 sm:px-8">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
             {STATS.map(({ val, suf, label, sub, color, prefix }, i) => (
               <motion.div key={label} {...fadeUp(i * 0.05)}
-                className="card p-7"
+                className="card p-7 sm:p-9"
               >
-                <div className="text-3xl sm:text-4xl font-black mb-2 leading-none tabular-nums" style={{ color }}>
+                {/* Display-tier number — primary visual anchor */}
+                <div className="text-[2.6rem] sm:text-5xl font-black mb-3 leading-none tabular-nums tracking-[-0.03em]" style={{ color }}>
                   <Counter val={val} suf={suf} prefix={prefix ?? ''} />
                 </div>
-                <div className="text-zinc-300 text-sm font-semibold">{label}</div>
-                <div className="text-zinc-600 text-xs mt-1">{sub}</div>
+                <div className="text-zinc-200 text-sm font-semibold mb-1">{label}</div>
+                <div className="text-zinc-600 text-xs leading-relaxed">{sub}</div>
               </motion.div>
             ))}
           </div>
@@ -321,12 +353,14 @@ export default function HomePage() {
           SERVICES
       ════════════════════════════════════════════════════════════════ */}
       <div className="section-divider" />
-      <section className="py-24 px-4 sm:px-8">
-        <div className="max-w-7xl mx-auto">
+      <section className="py-28 px-4 sm:px-8 relative overflow-hidden">
+        {/* Topology motif — subtle infrastructure grid */}
+        <div className="absolute inset-0 bg-topology opacity-40 pointer-events-none" />
+        <div className="max-w-7xl mx-auto relative">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-14">
             <div>
               <motion.span {...fadeUp(0)} className="label block mb-4">Lo que hacemos</motion.span>
-              <motion.h2 {...fadeUp(0.06)} className="text-3xl sm:text-[2.5rem] font-black text-noc-white leading-tight tracking-tight">
+              <motion.h2 {...fadeUp(0.06)} className="text-3xl sm:text-[2.5rem] font-black text-noc-white leading-tight tracking-heading">
                 Infraestructura IT<br />
                 <span className="text-gradient-white">de principio a fin</span>
               </motion.h2>
@@ -359,8 +393,7 @@ export default function HomePage() {
           POR QUÉ VELKOR — Differentiators grid
       ════════════════════════════════════════════════════════════════ */}
       <div className="section-divider" />
-      <section className="py-24 px-4 sm:px-8 relative overflow-hidden"
-        style={{ background: 'linear-gradient(180deg, #0a0a0a 0%, #0c0c0c 100%)' }}
+      <section className="py-28 px-4 sm:px-8 relative overflow-hidden section-deep"
       >
         <div className="max-w-7xl mx-auto relative">
           <SectionHeader
@@ -392,7 +425,7 @@ export default function HomePage() {
           PROCESS
       ════════════════════════════════════════════════════════════════ */}
       <div className="section-divider" />
-      <section className="py-24 px-4 sm:px-8" style={{ background: 'linear-gradient(180deg, #0c0c0c, #0a0a0a)' }}>
+      <section className="py-28 px-4 sm:px-8 section-arch">
         <div className="max-w-7xl mx-auto">
           <SectionHeader
             eyebrow="Proceso"
@@ -420,10 +453,10 @@ export default function HomePage() {
       </section>
 
       {/* ════════════════════════════════════════════════════════════════
-          TESTIMONIALS
+          TESTIMONIALS — warm amber atmosphere
       ════════════════════════════════════════════════════════════════ */}
       <div className="section-divider" />
-      <section className="py-24 px-4 sm:px-8">
+      <section className="py-28 px-4 sm:px-8 relative overflow-hidden section-warm">
         <div className="max-w-7xl mx-auto">
           <SectionHeader
             eyebrow="Clientes"
@@ -467,18 +500,21 @@ export default function HomePage() {
           FINAL CTA
       ════════════════════════════════════════════════════════════════ */}
       <div className="section-divider" />
-      <section className="py-32 px-4 sm:px-8 relative overflow-hidden">
-        {/* Subtle background */}
+      <section className="py-36 px-4 sm:px-8 relative overflow-hidden">
+        {/* Layered ambient bloom */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-[500px] h-[360px] bg-[radial-gradient(ellipse,rgba(245,158,11,0.05)_0%,transparent_65%)]" />
+            <div className="w-[700px] h-[500px] bg-[radial-gradient(ellipse,rgba(245,158,11,0.065)_0%,transparent_65%)]" />
+          </div>
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="w-[340px] h-[240px] bg-[radial-gradient(ellipse,rgba(245,158,11,0.04)_0%,transparent_60%)]" />
           </div>
         </div>
 
         <motion.div {...fadeUp(0)} className="relative max-w-xl mx-auto text-center">
           <span className="label block mb-5">¿Listo para empezar?</span>
 
-          <h2 className="text-4xl sm:text-5xl font-black text-noc-white mb-6 leading-[1.05] tracking-tight">
+          <h2 className="text-4xl sm:text-5xl font-black text-noc-white mb-6 leading-[0.98] tracking-display">
             Diagnóstico gratis<br />
             <span className="text-gradient-amber">en 24 horas.</span>
           </h2>

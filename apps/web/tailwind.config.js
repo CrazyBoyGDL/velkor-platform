@@ -5,14 +5,15 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Base surfaces (reference: near-black)
+        // Base surfaces — 3-tier depth system
+        // canvas (#06060a) → card (#0e0e12) → raised (#161618)
         surface: {
-          DEFAULT: '#111111',
-          dark:    '#0a0a0a',
-          card:    '#141414',
-          raised:  '#1a1a1a',
-          border:  '#252525',
-          hover:   '#1f1f1f',
+          DEFAULT: '#111113',
+          dark:    '#06060a',   // page canvas — deepest
+          card:    '#0e0e12',   // card background — mid elevation
+          raised:  '#161618',   // raised / hover state — most elevated
+          border:  '#222228',   // border — slightly blue-tinted for depth
+          hover:   '#1a1a1e',   // hover surface
         },
         // Main accent
         amber: {

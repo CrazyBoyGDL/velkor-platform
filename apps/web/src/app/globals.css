@@ -9,9 +9,13 @@ html, body { height: 100%; }
 
 body {
   font-family: 'Inter', system-ui, sans-serif;
-  background-color: #0a0a0a;
+  /* Slightly cooler/deeper than pure black — premium dark canvas */
+  background-color: #06060a;
   color: #f4f4f5;
   -webkit-font-smoothing: antialiased;
+  /* Ultra-subtle grain — physical surface quality, not digital flatness */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.028'/%3E%3C/svg%3E");
+  background-size: 256px;
 }
 
 ::-webkit-scrollbar { width: 5px; }
@@ -40,32 +44,41 @@ body {
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
   .card {
     position: relative;
-    border-radius: 12px;
-    border: 1px solid #1e1e1e;
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,0.065);
     background:
-      linear-gradient(145deg, rgba(22,22,22,0.96), rgba(10,10,10,0.99));
+      linear-gradient(150deg, rgba(18,18,22,0.97) 0%, rgba(10,10,14,0.99) 100%);
     box-shadow:
-      0 1px 0 rgba(255,255,255,0.03) inset,
-      0 4px 16px rgba(0,0,0,0.4);
+      /* Top-edge inner light — simulates overhead ambient source */
+      0 1px 0 rgba(255,255,255,0.06) inset,
+      /* Side inner edge */
+      1px 0 0 rgba(255,255,255,0.015) inset,
+      /* Depth shadow */
+      0 4px 20px rgba(0,0,0,0.50),
+      0 1px 4px rgba(0,0,0,0.35);
     transition:
       border-color 0.28s var(--ease-quart),
       box-shadow   0.28s var(--ease-quart),
-      background   0.28s var(--ease-quart);
+      background   0.28s var(--ease-quart),
+      transform    0.28s var(--ease-quart);
   }
   .card::before {
     content: '';
     position: absolute;
     inset: 0;
-    border-radius: 11px;
-    background: linear-gradient(135deg, rgba(255,255,255,0.022) 0%, transparent 55%);
+    border-radius: 13px;
+    /* Diagonal specular — light from top-left */
+    background: linear-gradient(140deg, rgba(255,255,255,0.028) 0%, transparent 50%);
     pointer-events: none;
   }
   .card:hover {
-    border-color: #282828;
-    background: linear-gradient(145deg, rgba(25,25,25,0.97), rgba(12,12,12,0.99));
+    border-color: rgba(255,255,255,0.10);
+    background: linear-gradient(150deg, rgba(22,22,28,0.98) 0%, rgba(12,12,16,0.99) 100%);
     box-shadow:
-      0 1px 0 rgba(255,255,255,0.05) inset,
-      0 8px 28px rgba(0,0,0,0.52);
+      0 1px 0 rgba(255,255,255,0.09) inset,
+      1px 0 0 rgba(255,255,255,0.025) inset,
+      0 12px 36px rgba(0,0,0,0.58),
+      0 4px 8px rgba(0,0,0,0.40);
   }
 
   /* Gradient-border accent cards */
@@ -149,7 +162,8 @@ body {
   /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      LABELS / BADGES
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-  .label { @apply text-[11px] font-medium uppercase tracking-[0.14em] text-zinc-500; }
+  /* More pronounced tracking — premium editorial signature */
+  .label { @apply text-[11px] font-medium uppercase tracking-[0.20em] text-zinc-500; }
   .badge { @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[10px] font-mono font-medium; }
 
   /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -224,7 +238,57 @@ body {
   .progress-track { @apply h-0.5 bg-surface-raised rounded-full overflow-hidden; }
   .section-divider {
     @apply w-full h-px my-0;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05) 30%, rgba(255,255,255,0.05) 70%, transparent);
+    /* More pronounced gradient — creates editorial chapter breaks */
+    background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(255,255,255,0.04) 15%,
+      rgba(255,255,255,0.07) 40%,
+      rgba(255,255,255,0.07) 60%,
+      rgba(255,255,255,0.04) 85%,
+      transparent 100%);
+  }
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     DISPLAY TYPOGRAPHY — premium editorial scale
+     Use on hero and major section headings for
+     larger, tighter, more commanding type.
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  /* Hero / display tier: -0.04em tracking */
+  .tracking-display { letter-spacing: -0.04em; }
+  /* Major heading tier: -0.03em tracking */
+  .tracking-heading { letter-spacing: -0.03em; }
+  /* Sub-heading tier: -0.02em tracking */
+  .tracking-title   { letter-spacing: -0.02em; }
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     TOPOLOGY DOT GRID — subtle infrastructure motif
+     Used as a background pattern on select sections.
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  .bg-topology {
+    background-image:
+      radial-gradient(circle, rgba(255,255,255,0.028) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     SECTION ATMOSPHERES — depth + character per section
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  /* Warm amber bloom — for testimonials / hero sections */
+  .section-warm::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 90% 60% at 50% 0%,
+      rgba(245,158,11,0.035) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  /* Cool deep atmosphere — for why-us / authority sections */
+  .section-deep {
+    background: linear-gradient(180deg, #040408 0%, #060610 50%, #040408 100%);
+  }
+  /* Architectural — for process / methodology sections */
+  .section-arch {
+    background: linear-gradient(180deg, #06060a 0%, #040408 100%);
   }
 
   /* Glowing dot */
@@ -238,11 +302,18 @@ body {
      INLINE CTA STRIP
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
   .cta-strip {
-    @apply rounded-2xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4;
+    @apply rounded-2xl p-7 flex flex-col sm:flex-row items-center justify-between gap-5;
     background:
-      linear-gradient(135deg, rgba(245,158,11,0.06), rgba(245,158,11,0.02) 50%, transparent) padding-box,
-      linear-gradient(135deg, rgba(245,158,11,0.2), rgba(245,158,11,0.04)) border-box;
+      linear-gradient(135deg,
+        rgba(245,158,11,0.07) 0%,
+        rgba(245,158,11,0.025) 40%,
+        transparent 70%) padding-box,
+      linear-gradient(135deg,
+        rgba(245,158,11,0.25) 0%,
+        rgba(245,158,11,0.08) 50%,
+        rgba(245,158,11,0.04) 100%) border-box;
     border: 1px solid transparent;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.35), 0 1px 0 rgba(255,255,255,0.03) inset;
   }
 }
 
@@ -370,7 +441,8 @@ html.light {
   color-scheme: light;
 }
 html.light body {
-  background-color: #f5f5f7;
+  background-color: #f2f2f5;
+  background-image: none; /* remove grain on light mode */
   color: #1d1d1f;
 }
 
