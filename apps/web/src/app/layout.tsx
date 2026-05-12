@@ -3,6 +3,8 @@ import './globals.css'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import StatusBar from '@/components/StatusBar'
+import FloatingCTA from '@/components/FloatingCTA'
+import SocialProof from '@/components/SocialProof'
 
 export const metadata: Metadata = {
   title: 'Velkor System — Consultoría IT Empresarial',
@@ -23,6 +25,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
         </main>
         <Footer />
+        <FloatingCTA />
+        <SocialProof />
       </body>
     </html>
   )
