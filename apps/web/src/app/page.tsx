@@ -326,12 +326,16 @@ export default function HomePage() {
       ════════════════════════════════════════════════════════════════ */}
       <section className="py-28 px-4 sm:px-8">
         <div className="max-w-7xl mx-auto">
+          {/* Architectural section label — minimal, editorial */}
+          <motion.div {...fadeUp(0)} className="flex items-center gap-4 mb-10">
+            <span className="label">Resultados verificados</span>
+            <div className="flex-1 h-px" style={{ background: 'linear-gradient(90deg, rgba(255,255,255,0.05), transparent)' }} />
+          </motion.div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
             {STATS.map(({ val, suf, label, sub, color, prefix }, i) => (
-              <motion.div key={label} {...fadeUp(i * 0.05)}
+              <motion.div key={label} {...fadeUp(i * 0.06 + 0.04)}
                 className="card p-7 sm:p-9"
               >
-                {/* Display-tier number — primary visual anchor */}
                 <div className="text-[2.6rem] sm:text-5xl font-black mb-3 leading-none tabular-nums tracking-[-0.03em]" style={{ color }}>
                   <Counter val={val} suf={suf} prefix={prefix ?? ''} />
                 </div>
@@ -453,17 +457,23 @@ export default function HomePage() {
           />
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5 relative">
-            {/* Connector */}
-            <div className="hidden md:block absolute top-[30px] left-[calc(16.67%+16px)] right-[calc(16.67%+16px)] h-px"
-              style={{ background: 'linear-gradient(90deg, rgba(245,158,11,0.2), rgba(245,158,11,0.1) 50%, rgba(245,158,11,0.2))' }} />
+            {/* Dashed architectural connector */}
+            <div className="hidden md:block absolute top-[2.6rem] left-[calc(16.67%+22px)] right-[calc(16.67%+22px)] h-px pointer-events-none"
+              style={{ borderTop: '1px dashed rgba(245,158,11,0.15)' }} />
 
             {STEPS.map(({ n, color, bg, border, title, desc }, i) => (
-              <motion.div key={n} {...fadeUp(i * 0.1)} className="card p-8 relative">
-                <div className="inline-flex items-center justify-center w-11 h-11 rounded-xl border mb-7 font-mono font-semibold text-sm"
-                  style={{ background: bg, borderColor: border, color }}>
+              <motion.div key={n} {...fadeUp(i * 0.1)} className="card p-8 relative overflow-hidden">
+                {/* Large typographic step number — editorial depth element */}
+                <div className="absolute right-5 top-3 font-mono font-black leading-none select-none pointer-events-none tabular-nums"
+                  style={{ fontSize: '5.5rem', color, opacity: 0.045 }}>
                   {n}
                 </div>
-                <h3 className="text-noc-white font-bold text-lg mb-3">{title}</h3>
+                {/* Horizontal step indicator */}
+                <div className="flex items-center gap-3 mb-7">
+                  <span className="font-mono text-xs font-bold" style={{ color }}>{n}</span>
+                  <div className="flex-1 h-px" style={{ background: `linear-gradient(90deg, ${color}38, transparent)` }} />
+                </div>
+                <h3 className="text-noc-white font-bold text-[17px] mb-3 tracking-title">{title}</h3>
                 <p className="text-zinc-500 text-sm leading-relaxed">{desc}</p>
               </motion.div>
             ))}
