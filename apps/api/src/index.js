@@ -42,6 +42,11 @@ async function configurePublicPermissions(strapi) {
     { action: 'api::servicio.servicio.find' },
     { action: 'api::servicio.servicio.findOne' },
     { action: 'api::lead.lead.create' },
+    // Phase 4: lead magnets, testimonials, FAQ
+    { action: 'api::recurso.recurso.find' },
+    { action: 'api::recurso.recurso.findOne' },
+    { action: 'api::testimonio.testimonio.find' },
+    { action: 'api::faq-item.faq-item.find' },
   ];
 
   for (const { action } of permissionsToGrant) {

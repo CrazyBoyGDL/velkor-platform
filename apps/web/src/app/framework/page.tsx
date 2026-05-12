@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import TestimonialSection from '@/components/TestimonialSection'
 
 export const metadata: Metadata = {
   title: 'Nuestra Metodología | Framework Velkor de 5 Etapas',
@@ -217,6 +218,13 @@ export default function FrameworkPage() {
             ))}
           </div>
         </div>
+
+        {/* Testimonials */}
+        <TestimonialSection
+          title="Lo que dicen nuestros clientes"
+          subtitle="Proyectos reales, ingenieros reales, resultados documentados."
+          limit={3}
+        />
 
         {/* CTA */}
         <div className="card p-10 text-center border-amber/20">

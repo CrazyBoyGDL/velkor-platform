@@ -7,13 +7,14 @@ import Logo from './Logo'
 import ThemeToggle from './ThemeToggle'
 
 const NAV = [
-  { href: '/',            label: 'Inicio',      icon: true },
-  { href: '/servicios',   label: 'Servicios' },
-  { href: '/framework',   label: 'Framework' },
-  { href: '/blog',        label: 'Blog' },
-  { href: '/casos',       label: 'Casos' },
-  { href: '/nosotros',    label: 'Nosotros' },
-  { href: '/assessments', label: 'Contacto' },
+  { href: '/',           label: 'Inicio',    icon: true },
+  { href: '/servicios',  label: 'Servicios' },
+  { href: '/framework',  label: 'Framework' },
+  { href: '/recursos',   label: 'Recursos' },
+  { href: '/blog',       label: 'Blog' },
+  { href: '/casos',      label: 'Casos' },
+  { href: '/nosotros',   label: 'Nosotros' },
+  { href: '/contacto',   label: 'Contacto' },
 ]
 
 export default function Navbar() {

@@ -6,6 +6,7 @@ import StatusBar from '@/components/StatusBar'
 import FloatingCTA from '@/components/FloatingCTA'
 import SocialProof from '@/components/SocialProof'
 import ThemeProvider from '@/components/ThemeProvider'
+import { Analytics } from '@/components/Analytics'
 
 const SITE_URL = 'https://velkor.mx'
 
@@ -118,6 +119,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
+        <Analytics />
         <ThemeProvider>
           <StatusBar />
           <Navbar />

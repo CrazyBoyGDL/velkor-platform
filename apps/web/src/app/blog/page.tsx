@@ -91,7 +91,7 @@ export default async function BlogPage() {
             Blog técnico
           </h1>
           <p className="text-zinc-500">
-            Guías, casos de uso y buenas prácticas de nuestros ingenieros NOC.
+            Guías, casos de uso y buenas prácticas de nuestros ingenieros.
           </p>
         </div>
 

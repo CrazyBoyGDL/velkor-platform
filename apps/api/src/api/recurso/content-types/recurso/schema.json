@@ -1,0 +1,30 @@
+{
+  "kind": "collectionType",
+  "collectionName": "recursos",
+  "info": {
+    "singularName": "recurso",
+    "pluralName": "recursos",
+    "displayName": "Recurso",
+    "description": "Recursos descargables / lead magnets"
+  },
+  "options": { "draftAndPublish": true },
+  "attributes": {
+    "title": { "type": "string", "required": true },
+    "slug": { "type": "uid", "targetField": "title", "required": true },
+    "description": { "type": "text", "required": true },
+    "category": {
+      "type": "enumeration",
+      "enum": ["Identidad", "Redes", "CCTV", "Cloud", "Seguridad"],
+      "required": true
+    },
+    "items": {
+      "type": "json",
+      "description": "Array de strings: qué incluye el recurso"
+    },
+    "hex": { "type": "string" },
+    "fileUrl": {
+      "type": "string",
+      "description": "URL opcional al PDF (CDN o Storage)"
+    }
+  }
+}

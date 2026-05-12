@@ -13,6 +13,45 @@ export const metadata: Metadata = {
   },
 }
 
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: '¿Cuántas cámaras puede gestionar el sistema?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Diseñamos desde sistemas de 8 cámaras para una sede única hasta instalaciones de 256+ canales multi-sede, con NVR dimensionado para cada caso.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: '¿Pueden integrarse las cámaras analógicas existentes?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Sí, si son cámaras ONVIF pueden integrarse al NVR IP. Las cámaras analógicas tradicionales requieren encoders o reemplazo según el estado.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: '¿La retención de video cumple con regulaciones?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Configuramos la retención según el sector: 30 días para comercial, 60 para salud y 90 días o más para regulaciones específicas.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: '¿Qué pasa si se interrumpe la conexión a internet?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'El NVR local graba continuamente sin internet. La nube y el acceso remoto se restauran automáticamente al recuperar la conectividad.',
+      },
+    },
+  ],
+}
+
 const PROBLEMS = [
   {
     hex: '#ef4444',
@@ -114,6 +153,10 @@ export default function VideovigilanciaPage() {
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
         />
 
         {/* Breadcrumb */}

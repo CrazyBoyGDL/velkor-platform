@@ -13,7 +13,7 @@ const VALUES = [
   {
     color: '#f59e0b',
     title: 'Respuesta inmediata',
-    desc: 'SLA documentado de menos de 4 horas para incidentes críticos. Centro NOC activo las 24 horas, los 365 días del año.',
+    desc: 'SLA documentado de menos de 4 horas para incidentes críticos. Equipo de soporte activo las 24 horas, los 365 días del año.',
     icon: (
       <svg viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
         <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-13a.75.75 0 00-1.5 0v5c0 .414.336.75.75.75h4a.75.75 0 000-1.5h-3.25V5z" clipRule="evenodd" />
@@ -80,7 +80,7 @@ export default function NosotrosPage() {
             <span className="text-gradient-amber">de Velkor</span>
           </h1>
           <p className="text-zinc-400 text-lg leading-relaxed max-w-2xl">
-            Desde 2018 operamos como el departamento de IT externo para más de 50 empresas. Combinamos expertise técnico certificado con respuesta operacional real, no solo consultoría.
+            Desde 2016 operamos como el departamento de IT externo para más de 50 empresas. Combinamos expertise técnico certificado con respuesta operacional real, no solo consultoría.
           </p>
         </motion.div>
 

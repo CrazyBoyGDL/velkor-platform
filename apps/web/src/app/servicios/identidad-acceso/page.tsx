@@ -13,6 +13,45 @@ export const metadata: Metadata = {
   },
 }
 
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: '¿Cuánto tiempo toma la implementación?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Entre 3 y 6 semanas según el número de usuarios y la complejidad del entorno. Entregamos un cronograma detallado en la fase de diseño.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: '¿Necesitamos tener Microsoft 365 ya contratado?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'No necesariamente. Si aún no lo tienen, lo configuramos desde cero incluyendo licenciamiento. Si ya lo tienen, auditamos el tenant y aplicamos mejoras.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: '¿Qué pasa con los equipos Windows existentes?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Se pueden incorporar a Intune sin reinstalar el sistema operativo usando el método de inscripción automática de Entra ID.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: '¿Esto aplica también a dispositivos móviles?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Sí. Gestionamos iOS y Android con Intune MAM, que protege datos corporativos en apps sin necesidad de gestionar el dispositivo completo.',
+      },
+    },
+  ],
+}
+
 const PROBLEMS = [
   {
     hex: '#ef4444',
@@ -114,6 +153,10 @@ export default function IdentidadAccesoPage() {
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
         />
 
         {/* Breadcrumb */}

@@ -23,6 +23,15 @@ type StrapiPost = {
 
 type StrapiListResponse = { data: StrapiPost[] }
 
+type RelatedPost = {
+  slug: string
+  title: string
+  excerpt: string
+  category: string
+  readTime: string
+  hex: string
+}
+
 // ── Data fetching ─────────────────────────────────────────────────────────────
 async function getPost(slug: string): Promise<StrapiPost['attributes'] | null> {
   const data = await strapi.get<StrapiListResponse>(
@@ -31,6 +40,23 @@ async function getPost(slug: string): Promise<StrapiPost['attributes'] | null> {
   )
   const post = data?.data?.[0]
   return post ? post.attributes : null
+}
+
+async function getRelatedPosts(excludeSlug: string): Promise<RelatedPost[]> {
+  const data = await strapi.get<StrapiListResponse>(
+    `/posts?sort=publishedAt:desc&pagination[limit]=4&publicationState=live` +
+    `&filters[slug][$ne]=${encodeURIComponent(excludeSlug)}` +
+    `&fields[0]=slug&fields[1]=title&fields[2]=excerpt&fields[3]=category&fields[4]=readTime&fields[5]=hex`,
+    3600
+  )
+  return (data?.data ?? []).slice(0, 3).map(({ attributes: a }) => ({
+    slug: a.slug,
+    title: a.title,
+    excerpt: a.excerpt ?? '',
+    category: a.category,
+    readTime: a.readTime ?? '',
+    hex: a.hex ?? '#f59e0b',
+  }))
 }
 
 function formatDate(iso: string): string {
@@ -66,7 +92,10 @@ export async function generateMetadata(
 
 // ── Page ──────────────────────────────────────────────────────────────────────
 export default async function BlogPostPage({ params }: { params: { slug: string } }) {
-  const post = await getPost(params.slug)
+  const [post, related] = await Promise.all([
+    getPost(params.slug),
+    getRelatedPosts(params.slug),
+  ])
   if (!post) notFound()
 
   const date = formatDate(post.publishedAt)
@@ -124,8 +153,60 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
           <p className="text-zinc-600 text-sm italic">Contenido completo próximamente.</p>
         )}
 
+        {/* Inline CTA — service contact prompt */}
+        <div
+          className="my-12 card p-7 border-amber/20"
+          style={{ borderLeftColor: hex, borderLeftWidth: 3 }}
+        >
+          <div className="text-[10px] font-mono text-zinc-600 mb-2">¿NECESITAS AYUDA CON ESTO?</div>
+          <h3 className="text-noc-white font-bold text-base mb-2">
+            Nuestros ingenieros pueden implementarlo en tu empresa
+          </h3>
+          <p className="text-zinc-500 text-sm leading-relaxed mb-4">
+            Si este artículo cubre algo que ya estás considerando para tu infraestructura, empieza con un diagnóstico técnico gratuito.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Link href="/assessments" className="btn-amber px-6 py-2.5 text-sm">
+              Diagnóstico gratuito →
+            </Link>
+            <Link href="/contacto" className="btn-ghost px-6 py-2.5 text-sm">
+              Hablar con un ingeniero
+            </Link>
+          </div>
+        </div>
+
+        {/* Related posts */}
+        {related.length > 0 && (
+          <div className="mt-12">
+            <div className="label block mb-5">Artículos relacionados</div>
+            <div className="grid sm:grid-cols-3 gap-4">
+              {related.map(p => (
+                <Link
+                  key={p.slug}
+                  href={`/blog/${p.slug}`}
+                  className="card p-5 hover:border-zinc-600 transition-colors group block"
+                  style={{ borderTopColor: p.hex, borderTopWidth: 2 }}
+                >
+                  <span
+                    className="badge text-[9px] font-mono mb-3 inline-block"
+                    style={{ color: p.hex, backgroundColor: p.hex + '20' }}
+                  >
+                    {p.category}
+                  </span>
+                  <h4 className="text-noc-white font-semibold text-sm leading-snug mb-2 group-hover:text-white transition-colors line-clamp-2">
+                    {p.title}
+                  </h4>
+                  {p.readTime && (
+                    <span className="text-zinc-600 text-[10px] font-mono">{p.readTime} de lectura</span>
+                  )}
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Footer navigation */}
-        <div className="mt-16 pt-8 border-t border-surface-border flex items-center justify-between gap-4">
+        <div className="mt-12 pt-8 border-t border-surface-border flex items-center justify-between gap-4">
           <Link
             href="/blog"
             className="text-zinc-600 text-xs font-mono hover:text-zinc-400 transition-colors"
@@ -133,10 +214,10 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
             ← Más artículos
           </Link>
           <Link
-            href="/assessments"
+            href="/contacto"
             className="btn-amber px-6 py-2.5 text-sm"
           >
-            Solicitar diagnóstico →
+            Hablar con un ingeniero →
           </Link>
         </div>
       </div>

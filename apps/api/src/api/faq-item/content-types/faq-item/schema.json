@@ -1,0 +1,21 @@
+{
+  "kind": "collectionType",
+  "collectionName": "faq_items",
+  "info": {
+    "singularName": "faq-item",
+    "pluralName": "faq-items",
+    "displayName": "FAQ Item",
+    "description": "Preguntas frecuentes reutilizables por servicio"
+  },
+  "options": { "draftAndPublish": true },
+  "attributes": {
+    "question": { "type": "string", "required": true },
+    "answer": { "type": "text", "required": true },
+    "service": {
+      "type": "enumeration",
+      "enum": ["General", "Redes", "Identidad", "CCTV", "Framework"],
+      "default": "General"
+    },
+    "order": { "type": "integer", "default": 0 }
+  }
+}

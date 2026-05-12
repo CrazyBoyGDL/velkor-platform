@@ -13,6 +13,45 @@ export const metadata: Metadata = {
   },
 }
 
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: '¿Cuánto tarda la migración de un firewall en producción?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Para sitios de hasta 200 usuarios, realizamos la migración en un fin de semana con cero downtime planificado. El lunes tu equipo llega a una red mejor segmentada y documentada.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: '¿Tienen ingenieros certificados en Fortinet?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Sí. Nuestros ingenieros de red cuentan con certificación Fortinet NSE4 y proyectos activos de FortiGate en producción.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: '¿Qué es Zero Trust en la práctica?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Verificar siempre, nunca confiar por defecto. Cada dispositivo debe demostrar que cumple políticas antes de acceder a recursos, independientemente de si está dentro o fuera de la red.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: '¿Puedo mantener mi conectividad ISP actual?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Sí. Diseñamos la solución sobre tu conectividad existente y podemos agregar redundancia con failover automático entre proveedores.',
+      },
+    },
+  ],
+}
+
 const PROBLEMS = [
   {
     hex: '#ef4444',
@@ -114,6 +153,10 @@ export default function CiberseguridadPage() {
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
         />
 
         {/* Breadcrumb */}

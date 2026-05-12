@@ -1,0 +1,38 @@
+{
+  "kind": "collectionType",
+  "collectionName": "testimonios",
+  "info": {
+    "singularName": "testimonio",
+    "pluralName": "testimonios",
+    "displayName": "Testimonio",
+    "description": "Testimonios de clientes (anónimos o con rol/sector)"
+  },
+  "options": { "draftAndPublish": true },
+  "attributes": {
+    "quote": { "type": "text", "required": true },
+    "role": {
+      "type": "string",
+      "required": true,
+      "description": "Ej: Director de Operaciones"
+    },
+    "company": {
+      "type": "string",
+      "required": true,
+      "description": "Ej: Empresa de manufactura · Monterrey"
+    },
+    "initials": {
+      "type": "string",
+      "description": "2 letras para el avatar (ej: DO)"
+    },
+    "hex": {
+      "type": "string",
+      "description": "Color del avatar"
+    },
+    "service": {
+      "type": "enumeration",
+      "enum": ["General", "Redes", "Identidad", "CCTV", "Cloud"],
+      "default": "General"
+    },
+    "order": { "type": "integer", "default": 0 }
+  }
+}
