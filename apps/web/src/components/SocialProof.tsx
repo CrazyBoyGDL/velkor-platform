@@ -62,8 +62,8 @@ export default function SocialProof() {
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-1.5 mb-0.5">
-                  <span className="w-1.5 h-1.5 rounded-full flex-shrink-0 bg-noc-green" />
-                  <span className="text-zinc-500 text-[10px] font-mono">Servicio más solicitado</span>
+                  <span className="w-1 h-1 rounded-full flex-shrink-0 bg-zinc-600" />
+                  <span className="text-zinc-600 text-[10px] font-medium">Solicitado recientemente</span>
                 </div>
                 <p className="text-zinc-300 text-xs font-semibold leading-snug">{e.sector}</p>
                 <p className="text-zinc-600 text-[11px] mt-0.5">
@@ -72,10 +72,9 @@ export default function SocialProof() {
               </div>
             </div>
           </div>
-          <div className="px-4 py-2 rounded-b-[13px] flex items-center gap-2 border-t"
+          <div className="px-4 py-2 rounded-b-[13px] border-t"
             style={{ borderColor: 'rgba(255,255,255,0.05)', background: 'rgba(255,255,255,0.02)' }}>
-            <span className="w-1.5 h-1.5 rounded-full bg-noc-green animate-pulse-fast" />
-            <span className="text-[10px] font-mono text-zinc-600 tracking-wide">NOC Velkor · en operación</span>
+            <span className="text-[10px] text-zinc-700 font-medium">Velkor System · velkor.mx</span>
           </div>
         </motion.div>
       )}

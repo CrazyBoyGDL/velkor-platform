@@ -136,10 +136,10 @@ function Counter({ val, suf, prefix = '' }: { val: number; suf: string; prefix?:
 // ─── Section header ───────────────────────────────────────────────────────────
 function SectionHeader({ eyebrow, title, sub }: { eyebrow: string; title: React.ReactNode; sub?: string }) {
   return (
-    <div className="text-center mb-14">
-      <motion.span {...fadeUp(0)} className="label block mb-3">{eyebrow}</motion.span>
-      <motion.h2 {...fadeUp(0.05)} className="text-3xl sm:text-4xl font-black text-noc-white leading-tight">{title}</motion.h2>
-      {sub && <motion.p {...fadeUp(0.1)} className="text-zinc-500 mt-3 max-w-md mx-auto text-sm">{sub}</motion.p>}
+    <div className="text-center mb-16">
+      <motion.span {...fadeUp(0)} className="label block mb-4">{eyebrow}</motion.span>
+      <motion.h2 {...fadeUp(0.05)} className="text-3xl sm:text-[2.6rem] font-black text-noc-white leading-tight tracking-tight">{title}</motion.h2>
+      {sub && <motion.p {...fadeUp(0.1)} className="text-zinc-500 mt-4 max-w-xl mx-auto text-base leading-relaxed">{sub}</motion.p>}
     </div>
   )
 }
@@ -173,16 +173,14 @@ export default function HomePage() {
 
         {/* Layered backgrounds */}
         <motion.div style={{ y: bgY }} className="absolute inset-0 pointer-events-none">
-          {/* Dot grid */}
-          <div className="absolute inset-0 opacity-[0.06]" style={{
+          {/* Subtle dot texture — very low opacity */}
+          <div className="absolute inset-0 opacity-[0.03]" style={{
             backgroundImage: 'radial-gradient(circle, #f59e0b 1px, transparent 1px)',
-            backgroundSize: '28px 28px',
+            backgroundSize: '32px 32px',
           }} />
           <NetworkBg />
-          {/* Amber glow */}
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-[radial-gradient(ellipse,rgba(245,158,11,0.09)_0%,transparent_65%)]" />
-          {/* Green glow (right side — where dashboard is) */}
-          <div className="absolute top-1/3 right-0 w-[400px] h-[400px] bg-[radial-gradient(ellipse,rgba(34,197,94,0.05)_0%,transparent_70%)]" />
+          {/* Amber glow — reduced, centred */}
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-[radial-gradient(ellipse,rgba(245,158,11,0.06)_0%,transparent_65%)]" />
           {/* Bottom fade */}
           <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-surface-dark to-transparent" />
         </motion.div>
@@ -194,20 +192,19 @@ export default function HomePage() {
         >
           {/* Left copy */}
           <div>
-            <motion.div {...fadeUp(0)} className="flex items-center gap-2 mb-6">
-              <div className="w-8 h-px bg-amber" />
-              <span className="label text-amber/80 tracking-[0.22em]">CONSULTORÍA TECNOLÓGICA EMPRESARIAL</span>
+            <motion.div {...fadeUp(0)} className="flex items-center gap-2.5 mb-7">
+              <span className="label text-amber/70">CONSULTORÍA TECNOLÓGICA EMPRESARIAL</span>
             </motion.div>
 
             <motion.h1 {...fadeUp(0.08)}
-              className="text-[clamp(2.6rem,6vw,4.4rem)] font-black leading-[1.03] tracking-tight mb-6"
+              className="text-[clamp(2.5rem,5.5vw,4.2rem)] font-black leading-[1.05] tracking-tight mb-7"
             >
               Tu operación,<br />
               sin puntos<br />
               <span className="text-gradient-amber">de falla.</span>
             </motion.h1>
 
-            <motion.p {...fadeUp(0.14)} className="text-zinc-400 text-lg leading-relaxed max-w-md mb-8">
+            <motion.p {...fadeUp(0.14)} className="text-zinc-400 text-[1.0625rem] leading-[1.75] max-w-[26rem] mb-9">
               Redes, ciberseguridad y Modern Workplace para empresas que no pueden permitirse interrupciones.
             </motion.p>
 
@@ -242,14 +239,13 @@ export default function HomePage() {
             </motion.div>
           </div>
 
-          {/* Right: NOC Dashboard */}
+          {/* Right: Capabilities Panel */}
           <motion.div
-            initial={{ opacity: 0, x: 32, y: 8 }}
+            initial={{ opacity: 0, x: 24, y: 8 }}
             animate={{ opacity: 1, x: 0, y: 0 }}
-            transition={{ duration: 0.8, ease: 'easeOut', delay: 0.25 }}
+            transition={{ duration: 0.75, ease: 'easeOut', delay: 0.2 }}
             className="relative"
           >
-            <div className="absolute -inset-6 bg-[radial-gradient(ellipse,rgba(34,197,94,0.07)_0%,transparent_70%)] pointer-events-none" />
             <NOCDashboard />
           </motion.div>
         </motion.div>
@@ -259,14 +255,15 @@ export default function HomePage() {
           PARTNERS
       ════════════════════════════════════════════════════════════════ */}
       <div className="section-divider" />
-      <section className="py-4 bg-surface-dark/80">
+      <section className="py-5 bg-surface-dark">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 flex items-center gap-8 overflow-x-auto scrollbar-none">
-          <span className="label flex-shrink-0">CERTIFICACIONES /</span>
+          <span className="label flex-shrink-0 text-zinc-700">CERTIFICACIONES</span>
+          <div className="w-px h-4 bg-surface-border flex-shrink-0" />
           <div className="flex items-center gap-10 flex-shrink-0">
-            {CERTS.map(({ name, dot }) => (
-              <div key={name} className="flex items-center gap-2 opacity-40 hover:opacity-60 transition-opacity cursor-default flex-shrink-0">
-                <div className="w-1.5 h-1.5 rounded-full" style={{ background: dot }} />
-                <span className="text-zinc-400 text-sm font-medium">{name}</span>
+            {CERTS.map(({ name }) => (
+              <div key={name} className="flex items-center gap-2 cursor-default flex-shrink-0">
+                <div className="w-1 h-1 rounded-full bg-zinc-700" />
+                <span className="text-zinc-500 text-sm font-medium">{name}</span>
               </div>
             ))}
           </div>
@@ -277,24 +274,18 @@ export default function HomePage() {
       {/* ════════════════════════════════════════════════════════════════
           BENTO STATS
       ════════════════════════════════════════════════════════════════ */}
-      <section className="py-20 px-4 sm:px-8">
+      <section className="py-24 px-4 sm:px-8">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {STATS.map(({ val, suf, label, sub, color, prefix }, i) => (
               <motion.div key={label} {...fadeUp(i * 0.07)}
-                className="card p-6 group overflow-hidden relative"
+                className="card p-7"
               >
-                {/* Corner accent */}
-                <div className="absolute top-0 right-0 w-16 h-16 rounded-bl-3xl opacity-5"
-                  style={{ background: color }} />
-                <div className="text-4xl sm:text-5xl font-black mb-1 leading-none" style={{ color }}>
+                <div className="text-3xl sm:text-4xl font-black mb-2 leading-none tabular-nums" style={{ color }}>
                   <Counter val={val} suf={suf} prefix={prefix ?? ''} />
                 </div>
-                <div className="text-zinc-300 text-sm font-semibold mt-1">{label}</div>
-                <div className="text-zinc-600 text-xs mt-0.5">{sub}</div>
-                {/* Bottom line */}
-                <div className="absolute bottom-0 left-0 right-0 h-px opacity-40"
-                  style={{ background: `linear-gradient(90deg, ${color}40, transparent)` }} />
+                <div className="text-zinc-300 text-sm font-semibold">{label}</div>
+                <div className="text-zinc-600 text-xs mt-1">{sub}</div>
               </motion.div>
             ))}
           </div>
@@ -302,7 +293,7 @@ export default function HomePage() {
       </section>
 
       {/* ── Micro CTA after stats ── */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-8 mb-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 mb-20">
         <CtaStrip
           text="¿Tu empresa todavía no tiene uptime documentado ni SLA firmado?"
           cta="Ver casos de éxito"
@@ -314,12 +305,12 @@ export default function HomePage() {
           SERVICES
       ════════════════════════════════════════════════════════════════ */}
       <div className="section-divider" />
-      <section className="py-20 px-4 sm:px-8">
+      <section className="py-24 px-4 sm:px-8">
         <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-12">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-14">
             <div>
-              <motion.span {...fadeUp(0)} className="label block mb-3">Lo que hacemos</motion.span>
-              <motion.h2 {...fadeUp(0.06)} className="text-3xl sm:text-4xl font-black text-noc-white leading-tight">
+              <motion.span {...fadeUp(0)} className="label block mb-4">Lo que hacemos</motion.span>
+              <motion.h2 {...fadeUp(0.06)} className="text-3xl sm:text-[2.5rem] font-black text-noc-white leading-tight tracking-tight">
                 Infraestructura IT<br />
                 <span className="text-gradient-white">de principio a fin</span>
               </motion.h2>
@@ -352,13 +343,9 @@ export default function HomePage() {
           POR QUÉ VELKOR — Differentiators grid
       ════════════════════════════════════════════════════════════════ */}
       <div className="section-divider" />
-      <section className="py-20 px-4 sm:px-8 relative overflow-hidden"
-        style={{ background: 'linear-gradient(180deg, #0a0a0a 0%, #0d0f0d 100%)' }}
+      <section className="py-24 px-4 sm:px-8 relative overflow-hidden"
+        style={{ background: 'linear-gradient(180deg, #0a0a0a 0%, #0c0c0c 100%)' }}
       >
-        {/* Background glow */}
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-[radial-gradient(ellipse,rgba(34,197,94,0.04)_0%,transparent_70%)]" />
-        </div>
         <div className="max-w-7xl mx-auto relative">
           <SectionHeader
             eyebrow="Por qué elegirnos"
@@ -366,16 +353,13 @@ export default function HomePage() {
             sub="Cada cliente tiene un SLA, KPIs medibles y acceso a su dashboard en tiempo real. No vendemos promesas."
           />
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-10">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-12">
             {DIFFERENTIATORS.map(({ label, sub }, i) => (
               <motion.div key={label} {...fadeUp(i * 0.06)}
                 className="card p-5 group"
               >
-                <div className="flex items-center gap-2 mb-1.5">
-                  <span className="w-1 h-4 rounded-full bg-amber opacity-60 flex-shrink-0" />
-                  <div className="text-zinc-200 font-semibold text-sm leading-snug">{label}</div>
-                </div>
-                <div className="text-zinc-600 text-xs ml-3 leading-relaxed">{sub}</div>
+                <div className="text-zinc-200 font-semibold text-[14px] leading-snug mb-1.5">{label}</div>
+                <div className="text-zinc-600 text-xs leading-relaxed">{sub}</div>
               </motion.div>
             ))}
           </div>
@@ -392,7 +376,7 @@ export default function HomePage() {
           PROCESS
       ════════════════════════════════════════════════════════════════ */}
       <div className="section-divider" />
-      <section className="py-20 px-4 sm:px-8" style={{ background: 'linear-gradient(180deg, #0d0d0d, #0a0a0a)' }}>
+      <section className="py-24 px-4 sm:px-8" style={{ background: 'linear-gradient(180deg, #0c0c0c, #0a0a0a)' }}>
         <div className="max-w-7xl mx-auto">
           <SectionHeader
             eyebrow="Proceso"
@@ -402,21 +386,17 @@ export default function HomePage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5 relative">
             {/* Connector */}
-            <div className="hidden md:block absolute top-[28px] left-[calc(16.67%+12px)] right-[calc(16.67%+12px)] h-px"
-              style={{ background: 'linear-gradient(90deg, rgba(245,158,11,0.3), rgba(59,130,246,0.3) 50%, rgba(34,197,94,0.3))' }} />
+            <div className="hidden md:block absolute top-[30px] left-[calc(16.67%+16px)] right-[calc(16.67%+16px)] h-px"
+              style={{ background: 'linear-gradient(90deg, rgba(245,158,11,0.2), rgba(245,158,11,0.1) 50%, rgba(245,158,11,0.2))' }} />
 
             {STEPS.map(({ n, color, bg, border, title, desc }, i) => (
-              <motion.div key={n} {...fadeUp(i * 0.1)} className="card p-7 relative">
-                <div className="inline-flex items-center justify-center w-11 h-11 rounded-xl border mb-6 font-mono font-bold text-sm"
+              <motion.div key={n} {...fadeUp(i * 0.1)} className="card p-8 relative">
+                <div className="inline-flex items-center justify-center w-11 h-11 rounded-xl border mb-7 font-mono font-semibold text-sm"
                   style={{ background: bg, borderColor: border, color }}>
                   {n}
                 </div>
-                <h3 className="text-noc-white font-black text-xl mb-3">{title}</h3>
+                <h3 className="text-noc-white font-bold text-lg mb-3">{title}</h3>
                 <p className="text-zinc-500 text-sm leading-relaxed">{desc}</p>
-                {/* Step tag */}
-                <div className="mt-5 text-[10px] font-mono tracking-widest" style={{ color: color + '80' }}>
-                  PASO {n} DE 03
-                </div>
               </motion.div>
             ))}
           </div>
@@ -427,7 +407,7 @@ export default function HomePage() {
           TESTIMONIALS
       ════════════════════════════════════════════════════════════════ */}
       <div className="section-divider" />
-      <section className="py-20 px-4 sm:px-8">
+      <section className="py-24 px-4 sm:px-8">
         <div className="max-w-7xl mx-auto">
           <SectionHeader
             eyebrow="Clientes"
@@ -438,18 +418,19 @@ export default function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
             {TESTIMONIALS.map(({ quote, author, role, initials }, i) => (
               <motion.div key={author} {...fadeUp(i * 0.08)}
-                className="card p-6 flex flex-col gap-4"
+                className="card p-7 flex flex-col"
               >
-                <div className="text-4xl font-serif leading-none text-amber opacity-30">"</div>
-                <p className="text-zinc-400 text-sm leading-relaxed flex-1">{quote}</p>
-                <div className="flex items-center gap-3 pt-3" style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+                {/* Quote mark — Inter, not serif */}
+                <div className="text-3xl font-black leading-none text-amber/25 mb-4 select-none">&ldquo;</div>
+                <p className="text-zinc-400 text-sm leading-relaxed flex-1 mb-6">{quote}</p>
+                <div className="flex items-center gap-3 pt-5" style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
                   <div className="w-9 h-9 rounded-xl flex items-center justify-center text-xs font-bold flex-shrink-0"
-                    style={{ background: 'rgba(245,158,11,0.1)', color: '#f59e0b' }}>
+                    style={{ background: 'rgba(245,158,11,0.08)', color: '#f59e0b', border: '1px solid rgba(245,158,11,0.15)' }}>
                     {initials}
                   </div>
                   <div>
                     <div className="text-zinc-300 text-sm font-semibold">{author}</div>
-                    <div className="text-zinc-600 text-[11px]">{role}</div>
+                    <div className="text-zinc-600 text-[11px] mt-0.5">{role}</div>
                   </div>
                 </div>
               </motion.div>
@@ -470,55 +451,45 @@ export default function HomePage() {
           FINAL CTA
       ════════════════════════════════════════════════════════════════ */}
       <div className="section-divider" />
-      <section className="py-28 px-4 sm:px-8 relative overflow-hidden">
-        {/* Background */}
+      <section className="py-32 px-4 sm:px-8 relative overflow-hidden">
+        {/* Subtle background */}
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute inset-0" style={{
-            backgroundImage: 'radial-gradient(circle, rgba(245,158,11,0.03) 1px, transparent 1px)',
-            backgroundSize: '24px 24px',
-          }} />
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-[600px] h-[400px] bg-[radial-gradient(ellipse,rgba(245,158,11,0.07)_0%,transparent_65%)]" />
+            <div className="w-[500px] h-[360px] bg-[radial-gradient(ellipse,rgba(245,158,11,0.05)_0%,transparent_65%)]" />
           </div>
         </div>
 
-        <motion.div {...fadeUp(0)} className="relative max-w-2xl mx-auto text-center">
-          <span className="label block mb-4">¿Listo para empezar?</span>
+        <motion.div {...fadeUp(0)} className="relative max-w-xl mx-auto text-center">
+          <span className="label block mb-5">¿Listo para empezar?</span>
 
-          <h2 className="text-4xl sm:text-6xl font-black text-noc-white mb-5 leading-[1.02]">
+          <h2 className="text-4xl sm:text-5xl font-black text-noc-white mb-6 leading-[1.05] tracking-tight">
             Diagnóstico gratis<br />
             <span className="text-gradient-amber">en 24 horas.</span>
           </h2>
 
-          <p className="text-zinc-500 mb-3 max-w-md mx-auto leading-relaxed">
+          <p className="text-zinc-500 mb-8 leading-relaxed text-base">
             Nuestros ingenieros evalúan tu infraestructura y entregan un informe técnico con recomendaciones y costos reales.
           </p>
 
-          <p className="text-zinc-600 text-xs font-mono mb-10 flex items-center justify-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-noc-green animate-pulse-fast inline-block" />
-            Respuesta en menos de 24 horas · Sin compromiso
-          </p>
-
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-10">
-            <Link href="/assessments" className="btn-amber text-[15px] px-12 py-4">
+          <div className="flex flex-col sm:flex-row gap-3 justify-center mb-10">
+            <Link href="/assessments" className="btn-amber text-[15px] px-10 py-4">
               Solicitar diagnóstico →
             </Link>
-            <Link href="/casos" className="btn-ghost text-[15px] px-12 py-4">
+            <Link href="/casos" className="btn-ghost text-[15px] px-10 py-4">
               Ver casos de éxito
             </Link>
           </div>
 
           {/* Trust chips */}
-          <div className="flex flex-wrap items-center justify-center gap-4">
+          <div className="flex flex-wrap items-center justify-center gap-3">
             {[
-              { dot: '#22c55e', text: 'Sin contrato mínimo' },
-              { dot: '#f59e0b', text: 'Respuesta < 24 h' },
-              { dot: '#3b82f6', text: 'Ingenieros certificados' },
-              { dot: '#06b6d4', text: 'Sin spam' },
-            ].map(({ dot, text }) => (
+              'Sin contrato mínimo',
+              'Respuesta < 24 h',
+              'Ingenieros certificados',
+              'Sin spam',
+            ].map((text) => (
               <div key={text} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
-                style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
-                <span className="w-1.5 h-1.5 rounded-full" style={{ background: dot }} />
+                style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
                 <span className="text-zinc-500 text-xs">{text}</span>
               </div>
             ))}
