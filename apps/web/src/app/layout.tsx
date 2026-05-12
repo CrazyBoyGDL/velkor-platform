@@ -5,6 +5,7 @@ import Footer from '@/components/Footer'
 import StatusBar from '@/components/StatusBar'
 import FloatingCTA from '@/components/FloatingCTA'
 import SocialProof from '@/components/SocialProof'
+import ThemeProvider from '@/components/ThemeProvider'
 
 export const metadata: Metadata = {
   title: 'Velkor System — Consultoría IT Empresarial',
@@ -21,16 +22,18 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es" className="scroll-smooth">
-      <body className="bg-surface-dark text-noc-white min-h-screen flex flex-col">
-        <StatusBar />
-        <Navbar />
-        <main className="flex-1 pt-[100px]">
-          {children}
-        </main>
-        <Footer />
-        <FloatingCTA />
-        <SocialProof />
+    <html lang="es" className="scroll-smooth dark" suppressHydrationWarning>
+      <body className="bg-surface-dark text-noc-white min-h-screen flex flex-col transition-colors duration-300">
+        <ThemeProvider>
+          <StatusBar />
+          <Navbar />
+          <main className="flex-1 pt-[100px]">
+            {children}
+          </main>
+          <Footer />
+          <FloatingCTA />
+          <SocialProof />
+        </ThemeProvider>
       </body>
     </html>
   )

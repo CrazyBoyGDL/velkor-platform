@@ -303,3 +303,89 @@ body {
   width: 100%; height: 1px;
   background: linear-gradient(90deg, #252525, transparent);
 }
+
+/* ══════════════════════════════════════════════════════════
+   LIGHT THEME OVERRIDES
+   Applied when html.light class is set via ThemeToggle
+══════════════════════════════════════════════════════════ */
+html.light {
+  color-scheme: light;
+}
+html.light body {
+  background-color: #f5f5f7;
+  color: #1d1d1f;
+}
+
+/* Surfaces */
+html.light .card {
+  background: linear-gradient(145deg, rgba(255,255,255,0.98), rgba(248,248,248,0.99)) !important;
+  border-color: rgba(0,0,0,0.07) !important;
+  box-shadow: 0 1px 0 rgba(255,255,255,0.9) inset, 0 8px 32px rgba(0,0,0,0.07) !important;
+  color: #1d1d1f;
+}
+html.light .card:hover {
+  border-color: rgba(0,0,0,0.12) !important;
+  box-shadow: 0 1px 0 rgba(255,255,255,0.9) inset, 0 16px 48px rgba(0,0,0,0.1), 0 0 0 1px rgba(0,0,0,0.05) !important;
+}
+html.light .card-blue, html.light .card-cyan, html.light .card-green, html.light .card-amber {
+  background: rgba(255,255,255,0.98) !important;
+}
+html.light .card-blue:hover   { box-shadow: 0 0 0 1px rgba(59,130,246,0.3), 0 8px 32px rgba(59,130,246,0.08) !important; }
+html.light .card-green:hover  { box-shadow: 0 0 0 1px rgba(34,197,94,0.3),  0 8px 32px rgba(34,197,94,0.08)  !important; }
+html.light .card-amber:hover  { box-shadow: 0 0 0 1px rgba(245,158,11,0.4), 0 8px 32px rgba(245,158,11,0.1)  !important; }
+html.light .card-cyan:hover   { box-shadow: 0 0 0 1px rgba(6,182,212,0.3),  0 8px 32px rgba(6,182,212,0.08)  !important; }
+
+html.light .noc-card { color: #1d1d1f; }
+html.light .cta-strip { background: rgba(255,255,255,0.8) !important; }
+
+/* Typography */
+html.light .text-noc-white { color: #1d1d1f !important; }
+html.light .text-zinc-400  { color: #52525b !important; }
+html.light .text-zinc-500  { color: #6b7280 !important; }
+html.light .text-zinc-600  { color: #71717a !important; }
+html.light .text-zinc-700  { color: #9ca3af !important; }
+html.light .text-zinc-200  { color: #27272a !important; }
+html.light .text-zinc-300  { color: #3f3f46 !important; }
+
+/* Navigation */
+html.light header {
+  background: rgba(245,245,247,0.92) !important;
+  border-bottom-color: rgba(0,0,0,0.08) !important;
+}
+html.light footer {
+  background: #e8e8ed !important;
+  border-top-color: rgba(0,0,0,0.08) !important;
+}
+
+/* Status bar */
+html.light .fixed.top-0 {
+  background: rgba(240,240,242,0.95) !important;
+  border-bottom-color: rgba(0,0,0,0.07) !important;
+}
+
+/* Section backgrounds */
+html.light section {
+  background-color: transparent !important;
+}
+html.light .section-divider {
+  background: linear-gradient(90deg, transparent, rgba(0,0,0,0.07) 30%, rgba(0,0,0,0.07) 70%, transparent) !important;
+}
+
+/* Buttons */
+html.light .btn-ghost {
+  border-color: rgba(0,0,0,0.15) !important;
+  color: #27272a !important;
+  background: rgba(255,255,255,0.8) !important;
+}
+html.light .btn-ghost:hover {
+  border-color: rgba(0,0,0,0.25) !important;
+  color: #09090b !important;
+}
+
+/* Labels */
+html.light .label { color: #9ca3af !important; }
+html.light .badge { background: rgba(0,0,0,0.06); }
+
+/* Scrollbar */
+html.light::-webkit-scrollbar-track { background: #f5f5f7; }
+html.light::-webkit-scrollbar-thumb { background: #d1d1d6; }

@@ -4,6 +4,8 @@ import Link from 'next/link'
 import dynamic from 'next/dynamic'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import NOCDashboard from '@/components/NOCDashboard'
+import ServicePanel, { type ServicePanelData } from '@/components/ServicePanel'
+import NOCStory from '@/components/NOCStory'
 
 const NetworkBg = dynamic(() => import('@/components/NetworkBg'), { ssr: false })
 
@@ -23,13 +25,55 @@ const STATS = [
   { val: 8,    suf: ' yr',label: 'Años operando',        sub: 'Desde 2018',            color: '#06b6d4' },
 ]
 
-const SERVICES = [
-  { icon: '⬡', title: 'Redes & Conectividad',    desc: 'LAN/WAN, firewall Fortinet, SD-WAN y Wi-Fi corporativo con QoS.',   color: 'text-noc-blue',  card: 'card-blue',  hex: '#3b82f6' },
-  { icon: '◉', title: 'CCTV & Videovigilancia',  desc: 'Sistemas IP Axis/Hikvision, NVR centralizado y analítica con IA.',  color: 'text-noc-cyan',  card: 'card-cyan',  hex: '#06b6d4' },
-  { icon: '⬢', title: 'Microsoft 365 & Cloud',   desc: 'Tenant setup, Exchange Online, Teams, SharePoint y licencias.',     color: 'text-noc-blue',  card: 'card-blue',  hex: '#3b82f6' },
-  { icon: '⬟', title: 'Intune & Entra ID',        desc: 'MDM, acceso condicional, MFA y gobernanza de identidades.',         color: 'text-noc-green', card: 'card-green', hex: '#22c55e' },
-  { icon: '◈', title: 'Monitoreo NOC 24/7',       desc: 'Centro de operaciones, alertas en tiempo real y SLA documentado.',  color: 'text-amber',     card: 'card-amber', hex: '#f59e0b' },
-  { icon: '◇', title: 'Diagnóstico & Cotización', desc: 'Auditoría técnica y propuesta personalizada en menos de 24 h.',     color: 'text-noc-cyan',  card: 'card-cyan',  hex: '#06b6d4' },
+const SERVICES: ServicePanelData[] = [
+  {
+    icon: '⬡', title: 'Redes & Conectividad',
+    desc: 'LAN/WAN, firewall Fortinet, SD-WAN y Wi-Fi corporativo con QoS y segmentación por VLAN.',
+    hex: '#3b82f6', uptime: 99.7, incidents: 0,
+    tags: ['Fortinet', 'Cisco', 'SD-WAN', 'VLAN', 'QoS'],
+    sparkline: [99.2, 99.5, 99.7, 99.6, 99.8, 99.9, 99.7, 99.8, 99.7, 99.9],
+    href: '/services',
+  },
+  {
+    icon: '◉', title: 'CCTV & Videovigilancia',
+    desc: 'Sistemas IP Axis/Hikvision, NVR centralizado con retención 30 días y analítica con IA.',
+    hex: '#06b6d4', uptime: 99.5, incidents: 1,
+    tags: ['Axis', 'NVR 4K', 'IA Analytics', 'PoE+', 'ONVIF'],
+    sparkline: [99.1, 99.3, 99.5, 99.2, 99.6, 99.4, 99.5, 99.7, 99.5, 99.6],
+    href: '/services',
+  },
+  {
+    icon: '⬢', title: 'Microsoft 365 & Cloud',
+    desc: 'Tenant setup, Exchange Online, Teams, SharePoint y optimización de licencias M365.',
+    hex: '#3b82f6', uptime: 99.9, incidents: 0,
+    tags: ['Exchange', 'Teams', 'SharePoint', 'Entra ID', 'OneDrive'],
+    sparkline: [99.7, 99.8, 99.9, 99.9, 99.8, 99.9, 100, 99.9, 99.9, 100],
+    href: '/services',
+  },
+  {
+    icon: '⬟', title: 'Intune & Entra ID',
+    desc: 'MDM, acceso condicional, MFA por hardware y gobernanza de identidades Zero Trust.',
+    hex: '#22c55e', uptime: 99.8, incidents: 0,
+    tags: ['MDM', 'MFA', 'Autopilot', 'PIM', 'Conditional Access'],
+    sparkline: [99.5, 99.7, 99.8, 99.9, 99.8, 99.9, 99.8, 99.9, 99.8, 99.9],
+    href: '/services',
+  },
+  {
+    icon: '◈', title: 'Monitoreo NOC 24/7',
+    desc: 'Centro de operaciones propio: más de 200 indicadores monitoreados, alertas y SLA documentado.',
+    hex: '#f59e0b', uptime: 99.9, incidents: 2,
+    tags: ['SIEM', 'Alertas RTR', 'SLA 4h', 'Live Dashboard', 'Fortinet'],
+    sparkline: [99.7, 99.8, 99.9, 99.8, 99.9, 99.9, 100, 99.9, 99.9, 99.9],
+    href: '/services',
+  },
+  {
+    icon: '◇', title: 'Diagnóstico & Cotización',
+    desc: 'Auditoría técnica completa de tu infraestructura y propuesta personalizada en menos de 24 h.',
+    hex: '#06b6d4', uptime: 100, incidents: 0,
+    tags: ['Auditoría', 'Propuesta 24h', 'Sin costo', 'Ingenieros NSE4'],
+    sparkline: [100, 100, 100, 100, 100, 100, 100, 100, 100, 100],
+    href: '/assessments',
+  },
 ]
 
 const STEPS = [
@@ -306,25 +350,10 @@ export default function HomePage() {
             </motion.div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {SERVICES.map(({ icon, title, desc, color, card, hex }, i) => (
-              <motion.div key={title} {...fadeUp(i * 0.06)}
-                className={`${card} p-6 group cursor-default`}
-                style={{ borderLeftColor: hex, borderLeftWidth: 3 }}
-              >
-                {/* Ambient glow dot */}
-                <div className="w-9 h-9 rounded-xl flex items-center justify-center mb-5 text-lg font-mono"
-                  style={{ background: hex + '18', color: hex }}>
-                  {icon}
-                </div>
-                <h3 className="text-noc-white font-semibold text-[15px] mb-2 group-hover:text-white transition-colors">{title}</h3>
-                <p className="text-zinc-500 text-sm leading-relaxed">{desc}</p>
-                <div className="mt-5 flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <span className="text-[11px] font-mono" style={{ color: hex }}>VER DETALLE</span>
-                  <svg viewBox="0 0 16 16" fill="none" className="w-3 h-3" style={{ color: hex }}>
-                    <path d="M3 8h10m-4-4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {SERVICES.map((svc, i) => (
+              <motion.div key={svc.title} {...fadeUp(i * 0.07)}>
+                <ServicePanel data={svc} />
               </motion.div>
             ))}
           </div>
@@ -340,6 +369,12 @@ export default function HomePage() {
           </motion.div>
         </div>
       </section>
+
+      {/* ════════════════════════════════════════════════════════════════
+          NOC STORY — Apple scroll storytelling
+      ════════════════════════════════════════════════════════════════ */}
+      <div className="section-divider" />
+      <NOCStory />
 
       {/* ════════════════════════════════════════════════════════════════
           POR QUÉ VELKOR — Differentiators grid
