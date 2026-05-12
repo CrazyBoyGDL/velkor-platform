@@ -1,0 +1,45 @@
+{
+  "kind": "collectionType",
+  "collectionName": "casos",
+  "info": {
+    "singularName": "caso",
+    "pluralName": "casos",
+    "displayName": "Caso",
+    "description": "Case studies"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "sector": {
+      "type": "string",
+      "required": true,
+      "maxLength": 100
+    },
+    "year": {
+      "type": "string",
+      "maxLength": 10
+    },
+    "challenge": {
+      "type": "text"
+    },
+    "solution": {
+      "type": "text"
+    },
+    "result": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "resultSub": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "tags": {
+      "type": "json"
+    },
+    "hex": {
+      "type": "string",
+      "maxLength": 20
+    }
+  }
+}

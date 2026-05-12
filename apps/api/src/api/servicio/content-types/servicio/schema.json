@@ -1,0 +1,32 @@
+{
+  "kind": "collectionType",
+  "collectionName": "servicios",
+  "info": {
+    "singularName": "servicio",
+    "pluralName": "servicios",
+    "displayName": "Servicio",
+    "description": "Service catalog entries"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true,
+      "maxLength": 200
+    },
+    "description": {
+      "type": "text"
+    },
+    "category": {
+      "type": "enumeration",
+      "enum": ["Infraestructura", "Seguridad", "Cloud", "Soporte"],
+      "required": true
+    },
+    "hex": {
+      "type": "string",
+      "maxLength": 20
+    }
+  }
+}

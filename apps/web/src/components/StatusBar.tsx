@@ -1,11 +1,11 @@
 'use client'
 import { useState, useEffect } from 'react'
 
-const STATUS_ITEMS = [
-  { label: 'Red empresarial', value: '99.06%', level: 'ok' as const },
-  { label: 'Microsoft 365',   value: '99.88%', level: 'ok' as const },
-  { label: 'Fortinet FW',     value: 'PROTEGIDO', level: 'ok' as const },
-  { label: '1 alerta',        value: 'EN REVISIÓN', level: 'warn' as const },
+const CERTS = [
+  { label: 'Fortinet NSE',        level: 'ok'   as const },
+  { label: 'Microsoft Partner',   level: 'ok'   as const },
+  { label: 'Intune & Entra ID',   level: 'ok'   as const },
+  { label: 'NOC 24 / 7 / 365',   level: 'ok'   as const },
 ]
 
 const DOT = ({ level }: { level: 'ok' | 'warn' }) => (
@@ -32,20 +32,17 @@ export default function StatusBar() {
     day: 'numeric', month: 'short', year: 'numeric',
   })
 
-  // Duplicate items for seamless scroll
-  const items = [...STATUS_ITEMS, ...STATUS_ITEMS]
+  const ticker = [...CERTS, ...CERTS]
 
   return (
     <div className="fixed top-0 left-0 right-0 z-50 h-9 bg-surface-dark border-b border-surface-border overflow-hidden flex items-center">
-      {/* Scrolling ticker (mobile) / static list (desktop) */}
+
+      {/* Desktop: static list */}
       <div className="flex-1 hidden sm:flex items-center gap-8 px-6 overflow-hidden">
-        {STATUS_ITEMS.map(({ label, value, level }) => (
+        {CERTS.map(({ label, level }) => (
           <div key={label} className="flex items-center gap-1.5 flex-shrink-0">
             <DOT level={level} />
             <span className="text-zinc-500 text-[11px] font-mono">{label}</span>
-            <span className={`text-[11px] font-mono font-bold ${
-              level === 'ok' ? 'text-noc-green' : 'text-amber'
-            }`}>{value}</span>
           </div>
         ))}
       </div>
@@ -53,13 +50,10 @@ export default function StatusBar() {
       {/* Mobile: continuous scroll ticker */}
       <div className="sm:hidden flex-1 overflow-hidden">
         <div className="flex items-center gap-8 animate-tick whitespace-nowrap px-4">
-          {items.map(({ label, value, level }, i) => (
+          {ticker.map(({ label, level }, i) => (
             <div key={i} className="flex items-center gap-1.5 inline-flex">
               <DOT level={level} />
               <span className="text-zinc-500 text-[10px] font-mono">{label}</span>
-              <span className={`text-[10px] font-mono font-bold ${
-                level === 'ok' ? 'text-noc-green' : 'text-amber'
-              }`}>{value}</span>
             </div>
           ))}
         </div>

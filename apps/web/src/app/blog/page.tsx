@@ -1,8 +1,9 @@
-'use client'
-import Link from 'next/link'
-import { motion } from 'framer-motion'
+import { strapi } from '@/lib/strapi'
+import BlogList, { type BlogPost } from '@/components/BlogList'
 
-const POSTS = [
+export const revalidate = 3600
+
+const FALLBACK_POSTS: BlogPost[] = [
   {
     slug: 'zero-trust-network-2025',
     title: 'Cómo implementar Zero Trust en tu red empresarial',
@@ -41,21 +42,50 @@ const POSTS = [
   },
 ]
 
-const fadeUp = (delay = 0) => ({
-  initial: { opacity: 0, y: 20 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, amount: 0.2 },
-  transition: { duration: 0.5, ease: 'easeOut', delay },
-})
+type StrapiPost = {
+  id: number
+  attributes: {
+    slug: string
+    title: string
+    excerpt: string
+    category: string
+    publishedAt: string
+    readTime: string
+    hex: string
+  }
+}
 
-export default function BlogPage() {
-  const [featured, ...rest] = POSTS
+function formatDate(iso: string): string {
+  try {
+    return new Date(iso).toLocaleDateString('es-MX', { day: 'numeric', month: 'short', year: 'numeric' })
+  } catch {
+    return iso
+  }
+}
+
+async function getPosts(): Promise<BlogPost[]> {
+  const data = await strapi.get<{ data: StrapiPost[] }>('/posts?sort=publishedAt:desc&pagination[limit]=20')
+  if (!data?.data?.length) return FALLBACK_POSTS
+
+  return data.data.map(({ attributes: a }) => ({
+    slug: a.slug,
+    title: a.title,
+    excerpt: a.excerpt ?? '',
+    category: a.category,
+    date: formatDate(a.publishedAt),
+    readTime: a.readTime ?? '',
+    hex: a.hex ?? '#f59e0b',
+  }))
+}
+
+export default async function BlogPage() {
+  const posts = await getPosts()
 
   return (
     <div className="min-h-screen py-16 px-4 sm:px-8">
       <div className="max-w-5xl mx-auto">
 
-        <motion.div {...fadeUp(0)} className="mb-12">
+        <div className="mb-12">
           <span className="label">Conocimiento técnico</span>
           <h1 className="text-4xl sm:text-5xl font-black text-noc-white mt-3 mb-4">
             Blog técnico
@@ -63,79 +93,18 @@ export default function BlogPage() {
           <p className="text-zinc-500">
             Guías, casos de uso y buenas prácticas de nuestros ingenieros NOC.
           </p>
-        </motion.div>
-
-        {/* Featured */}
-        <motion.article
-          {...fadeUp(0.08)}
-          className="card p-0 overflow-hidden mb-6 hover:border-zinc-700 transition-all duration-300 cursor-pointer group"
-          style={{ borderLeftColor: featured.hex, borderLeftWidth: 3 }}
-        >
-          <div className="p-8">
-            <div className="flex items-center gap-3 mb-5">
-              <span className="badge text-[10px]" style={{ color: featured.hex, backgroundColor: featured.hex + '20' }}>
-                {featured.category}
-              </span>
-              <span className="label text-[10px] text-zinc-700">ARTÍCULO DESTACADO</span>
-            </div>
-            <h2 className="text-noc-white font-black text-2xl sm:text-3xl mb-4 leading-tight group-hover:text-amber transition-colors">
-              {featured.title}
-            </h2>
-            <p className="text-zinc-400 text-base leading-relaxed mb-6 max-w-2xl">
-              {featured.excerpt}
-            </p>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3 text-zinc-600 text-xs font-mono">
-                <span>{featured.date}</span>
-                <span>·</span>
-                <span>{featured.readTime} de lectura</span>
-              </div>
-              <span className="text-[11px] font-mono opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: featured.hex }}>
-                LEER ARTÍCULO →
-              </span>
-            </div>
-          </div>
-        </motion.article>
-
-        {/* Grid */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
-          {rest.map(({ slug, title, excerpt, category, date, readTime, hex }, i) => (
-            <motion.article
-              key={slug}
-              {...fadeUp(i * 0.06 + 0.15)}
-              className="card p-5 hover:border-zinc-700 transition-all duration-300 cursor-pointer group flex flex-col"
-              style={{ borderTopColor: hex, borderTopWidth: 2 }}
-            >
-              <div className="flex items-center justify-between mb-4">
-                <span className="badge text-[10px]" style={{ color: hex, backgroundColor: hex + '20' }}>
-                  {category}
-                </span>
-                <span className="text-zinc-700 text-[10px] font-mono">{readTime}</span>
-              </div>
-              <h2 className="text-noc-white font-semibold text-[15px] mb-2 leading-snug group-hover:text-white transition-colors flex-1">
-                {title}
-              </h2>
-              <p className="text-zinc-600 text-xs leading-relaxed mb-4">
-                {excerpt.slice(0, 100)}…
-              </p>
-              <div className="flex items-center justify-between mt-auto pt-3 border-t border-surface-border">
-                <span className="text-zinc-700 text-[10px] font-mono">{date}</span>
-                <span className="text-[10px] font-mono opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: hex }}>
-                  LEER →
-                </span>
-              </div>
-            </motion.article>
-          ))}
         </div>
 
-        <motion.div {...fadeUp(0.3)} className="text-center">
+        <BlogList posts={posts} />
+
+        <div className="text-center">
           <div className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full border border-surface-border bg-surface-card">
             <span className="w-1.5 h-1.5 rounded-full bg-amber animate-pulse-slow" />
             <span className="text-zinc-600 text-xs font-mono">
               Más artículos en camino · Gestionado desde Strapi CMS
             </span>
           </div>
-        </motion.div>
+        </div>
       </div>
     </div>
   )

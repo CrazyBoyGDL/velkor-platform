@@ -1,0 +1,58 @@
+{
+  "kind": "collectionType",
+  "collectionName": "leads",
+  "info": {
+    "singularName": "lead",
+    "pluralName": "leads",
+    "displayName": "Lead",
+    "description": "Assessment form submissions"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true,
+      "maxLength": 200
+    },
+    "email": {
+      "type": "email",
+      "required": true
+    },
+    "company": {
+      "type": "string",
+      "required": true,
+      "maxLength": 200
+    },
+    "phone": {
+      "type": "string",
+      "maxLength": 30
+    },
+    "companySize": {
+      "type": "enumeration",
+      "enum": ["1-10", "11-50", "51-200", "200+"]
+    },
+    "services": {
+      "type": "json"
+    },
+    "urgency": {
+      "type": "enumeration",
+      "enum": ["low", "normal", "high"],
+      "default": "normal"
+    },
+    "notes": {
+      "type": "text",
+      "maxLength": 2000
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": ["new", "contacted", "qualified", "closed"],
+      "default": "new"
+    },
+    "source": {
+      "type": "string",
+      "maxLength": 100
+    }
+  }
+}

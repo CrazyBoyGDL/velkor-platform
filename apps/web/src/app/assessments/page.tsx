@@ -30,9 +30,30 @@ export default function AssessmentsPage() {
   const submit = async (e: React.FormEvent) => {
     e.preventDefault()
     setStatus('loading')
-    await new Promise(r => setTimeout(r, 1000)) // TODO: wire to Strapi/n8n webhook
-    setStatus('done')
-    setForm(EMPTY)
+    try {
+      const res = await fetch('/api/assessment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          company: form.company,
+          phone: form.phone,
+          companySize: form.size,
+          services: form.services,
+          urgency: form.urgency,
+          notes: form.notes,
+        }),
+      })
+      if (!res.ok) {
+        setStatus('error')
+        return
+      }
+      setStatus('done')
+      setForm(EMPTY)
+    } catch {
+      setStatus('error')
+    }
   }
 
   if (status === 'done') return (
@@ -163,8 +184,12 @@ export default function AssessmentsPage() {
             />
           </div>
 
+          {form.services.length === 0 && (
+            <p className="text-zinc-500 text-xs text-center">Selecciona al menos un servicio para continuar.</p>
+          )}
+
           {status === 'error' && (
-            <p className="text-noc-red text-sm">Error al enviar. Por favor intenta de nuevo.</p>
+            <p className="text-noc-red text-sm text-center">No se pudo enviar tu solicitud. Por favor intenta de nuevo.</p>
           )}
 
           <button
