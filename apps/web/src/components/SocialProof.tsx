@@ -3,12 +3,12 @@ import { useState, useEffect } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 
 const ENTRIES = [
-  { sector: 'Empresa distribuidora',  city: 'Monterrey',   service: 'Diagnóstico de red',       ago: 'hace 4 min'  },
-  { sector: 'Grupo de salud',         city: 'CDMX',        service: 'Microsoft 365',             ago: 'hace 11 min' },
-  { sector: 'Cadena de retail',       city: 'Guadalajara', service: 'CCTV & analítica de video', ago: 'hace 18 min' },
-  { sector: 'Firma de servicios',     city: 'Querétaro',   service: 'Intune + Entra ID',         ago: 'hace 26 min' },
-  { sector: 'Empresa logística',      city: 'Tijuana',     service: 'SD-WAN multi-sede',         ago: 'hace 33 min' },
-  { sector: 'Centro médico',          city: 'León',        service: 'Diagnóstico de seguridad',  ago: 'hace 41 min' },
+  { sector: 'Empresa distribuidora',  city: 'Monterrey',   service: 'Diagnóstico de red'       },
+  { sector: 'Grupo de salud',         city: 'CDMX',        service: 'Microsoft 365'             },
+  { sector: 'Cadena de retail',       city: 'Guadalajara', service: 'CCTV & analítica de video' },
+  { sector: 'Firma de servicios',     city: 'Querétaro',   service: 'Intune + Entra ID'         },
+  { sector: 'Empresa logística',      city: 'Tijuana',     service: 'SD-WAN multi-sede'         },
+  { sector: 'Centro médico',          city: 'León',        service: 'Diagnóstico de seguridad'  },
 ]
 
 export default function SocialProof() {
@@ -63,7 +63,7 @@ export default function SocialProof() {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-1.5 mb-0.5">
                   <span className="w-1.5 h-1.5 rounded-full flex-shrink-0 bg-noc-green" />
-                  <span className="text-zinc-500 text-[10px] font-mono">{e.ago}</span>
+                  <span className="text-zinc-500 text-[10px] font-mono">Servicio más solicitado</span>
                 </div>
                 <p className="text-zinc-300 text-xs font-semibold leading-snug">{e.sector}</p>
                 <p className="text-zinc-600 text-[11px] mt-0.5">

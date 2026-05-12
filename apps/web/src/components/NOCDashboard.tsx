@@ -9,8 +9,7 @@ const CAPABILITIES = [
     detail: '24 × 7 × 365',
     badge: 'NOC',
     badgeColor: 'text-noc-green bg-noc-green-bg',
-    barColor: 'bg-noc-green',
-    barWidth: 100,
+    dotColor: 'bg-noc-green',
   },
   {
     id: 'response',
@@ -18,8 +17,7 @@ const CAPABILITIES = [
     detail: '< 15 min',
     badge: 'SLA',
     badgeColor: 'text-amber bg-amber-bg',
-    barColor: 'bg-amber',
-    barWidth: 85,
+    dotColor: 'bg-amber',
   },
   {
     id: 'coverage',
@@ -27,8 +25,7 @@ const CAPABILITIES = [
     detail: 'Firewall · VPN · LAN',
     badge: 'FORTINET',
     badgeColor: 'text-noc-blue bg-noc-blue-bg',
-    barColor: 'bg-noc-blue',
-    barWidth: 90,
+    dotColor: 'bg-noc-blue',
   },
   {
     id: 'cloud',
@@ -36,8 +33,7 @@ const CAPABILITIES = [
     detail: 'M365 · Entra ID · Intune',
     badge: 'MICROSOFT',
     badgeColor: 'text-noc-green bg-noc-green-bg',
-    barColor: 'bg-noc-green',
-    barWidth: 88,
+    dotColor: 'bg-noc-green',
   },
 ]
 
@@ -87,7 +83,7 @@ export default function NOCDashboard() {
 
       {/* Capabilities grid */}
       <div className="grid grid-cols-2 border-b border-surface-border">
-        {CAPABILITIES.map(({ id, label, detail, badge, badgeColor, barColor, barWidth }, i) => (
+        {CAPABILITIES.map(({ id, label, detail, badge, badgeColor, dotColor }, i) => (
           <motion.div
             key={id}
             initial={{ opacity: 0, y: 8 }}
@@ -99,16 +95,11 @@ export default function NOCDashboard() {
               <span className="label text-[10px]">{label}</span>
               <span className={`badge text-[10px] ${badgeColor}`}>{badge}</span>
             </div>
-            <div className="text-noc-white text-sm font-mono font-semibold mb-2 truncate">
-              {detail}
-            </div>
-            <div className="progress-track">
-              <motion.div
-                className={`h-full rounded-full ${barColor}`}
-                initial={{ width: 0 }}
-                animate={{ width: `${barWidth}%` }}
-                transition={{ duration: 1.2, ease: 'easeOut', delay: i * 0.15 + 0.4 }}
-              />
+            <div className="flex items-center gap-2 mt-1">
+              <span className={`w-2 h-2 rounded-full flex-shrink-0 ${dotColor}`} />
+              <div className="text-noc-white text-sm font-mono font-semibold truncate">
+                {detail}
+              </div>
             </div>
           </motion.div>
         ))}

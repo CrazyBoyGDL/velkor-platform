@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 
 const CASES = [
   {
-    client: 'Distribuidora Industrial del Norte',
+    client: 'Empresa distribuidora · Monterrey · 200 empleados',
     sector: 'Manufactura',
     year: '2024',
     challenge: 'Red plana sin segmentación, 3 brechas de seguridad en 6 meses con activos expuestos.',
@@ -15,7 +15,7 @@ const CASES = [
     tags: ['Redes', 'Fortinet', 'VLAN', 'NOC'],
   },
   {
-    client: 'Corporativo Médico Especialidades',
+    client: 'Corporativo médico · CDMX · 62 usuarios',
     sector: 'Salud',
     year: '2025',
     challenge: 'Sin MFA, 62 usuarios con acceso irrestricto a expedientes de pacientes.',
@@ -26,7 +26,7 @@ const CASES = [
     tags: ['Entra ID', 'Intune', 'Compliance', 'DLP'],
   },
   {
-    client: 'Cadena de Retail · 8 sucursales',
+    client: 'Cadena de retail · Guadalajara · 8 sucursales',
     sector: 'Retail',
     year: '2025',
     challenge: 'CCTV analógico obsoleto, cero visibilidad remota y pérdidas mensuales por robo.',

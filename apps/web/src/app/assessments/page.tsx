@@ -11,7 +11,7 @@ const SERVICES = [
   'Otro',
 ]
 
-const SIZES = ['1–10', '11–50', '51–200', '200+']
+const SIZES = ['1-10', '11-50', '51-200', '200+']
 
 type Form = {
   name: string; email: string; company: string; phone: string
@@ -124,7 +124,7 @@ export default function AssessmentsPage() {
                   className={`px-4 py-2 rounded-lg border text-sm font-medium transition-all ${
                     form.size === s ? 'border-amber/60 bg-amber-bg text-amber' : 'border-surface-border text-zinc-500 hover:border-zinc-600'
                   }`}>
-                  {s} empleados
+                  {s.replace('-', '–')} empleados
                 </button>
               ))}
             </div>
