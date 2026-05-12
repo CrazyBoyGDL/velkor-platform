@@ -5,7 +5,6 @@ import dynamic from 'next/dynamic'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import NOCDashboard from '@/components/NOCDashboard'
 import ServicePanel, { type ServicePanelData } from '@/components/ServicePanel'
-import NOCStory from '@/components/NOCStory'
 
 const NetworkBg = dynamic(() => import('@/components/NetworkBg'), { ssr: false })
 
@@ -19,28 +18,28 @@ const fadeUp = (delay = 0) => ({
 
 // ─── DATA ────────────────────────────────────────────────────────────────────
 const STATS = [
-  { val: 50,   suf: '+',  label: 'Clientes activos',    sub: 'Pymes y corporativos',  color: '#f59e0b' },
-  { val: 99.9, suf: '%',  label: 'Uptime garantizado',  sub: 'SLA documentado',       color: '#f59e0b' },
-  { val: 4,    suf: 'h',  label: 'Tiempo de respuesta', sub: 'Incidentes críticos',   color: '#f59e0b', prefix: '<' },
-  { val: 8,    suf: 'yr', label: 'Años operando',        sub: 'Desde 2016',            color: '#f59e0b' },
+  { val: 50,  suf: '+',  label: 'Clientes activos',     sub: 'Pymes y corporativos',  color: '#f59e0b' },
+  { val: 8,   suf: 'yr', label: 'Años de experiencia',  sub: 'Fundados en 2016',      color: '#f59e0b' },
+  { val: 4,   suf: 'h',  label: 'Tiempo de respuesta',  sub: 'Incidentes críticos',   color: '#f59e0b', prefix: '<' },
+  { val: 3,   suf: '',   label: 'Especialidades IT',    sub: 'Red · Identidad · CCTV',color: '#f59e0b' },
 ]
 
 const SERVICES: ServicePanelData[] = [
   {
-    icon: '⬡', title: 'Redes & Conectividad',
-    desc: 'LAN/WAN, firewall Fortinet, SD-WAN y Wi-Fi corporativo con QoS y segmentación por VLAN.',
+    icon: '⬡', title: 'Redes & Ciberseguridad',
+    desc: 'Fortinet FortiGate, segmentación VLAN, VPN y arquitectura Zero Trust para eliminar movimientos laterales.',
     hex: '#3b82f6', uptime: 99.7, incidents: 0,
-    tags: ['Fortinet', 'Cisco', 'SD-WAN', 'VLAN', 'QoS'],
+    tags: ['Fortinet NSE4', 'VLAN', 'Zero Trust', 'VPN', 'IPS/IDS'],
     sparkline: [99.2, 99.5, 99.7, 99.6, 99.8, 99.9, 99.7, 99.8, 99.7, 99.9],
-    href: '/services',
+    href: '/servicios/ciberseguridad',
   },
   {
     icon: '◉', title: 'CCTV & Videovigilancia',
-    desc: 'Sistemas IP Axis/Hikvision, NVR centralizado con retención 30 días y analítica con IA.',
+    desc: 'Cámaras IP Axis/Hikvision 4K, NVR centralizado con retención 30–90 días y analítica con IA.',
     hex: '#06b6d4', uptime: 99.5, incidents: 1,
     tags: ['Axis', 'NVR 4K', 'IA Analytics', 'PoE+', 'ONVIF'],
     sparkline: [99.1, 99.3, 99.5, 99.2, 99.6, 99.4, 99.5, 99.7, 99.5, 99.6],
-    href: '/services',
+    href: '/servicios/videovigilancia',
   },
   {
     icon: '⬢', title: 'Microsoft 365 & Cloud',
@@ -48,7 +47,7 @@ const SERVICES: ServicePanelData[] = [
     hex: '#3b82f6', uptime: 99.9, incidents: 0,
     tags: ['Exchange', 'Teams', 'SharePoint', 'Entra ID', 'OneDrive'],
     sparkline: [99.7, 99.8, 99.9, 99.9, 99.8, 99.9, 100, 99.9, 99.9, 100],
-    href: '/services',
+    href: '/servicios/identidad-acceso',
   },
   {
     icon: '⬟', title: 'Intune & Entra ID',
@@ -56,15 +55,15 @@ const SERVICES: ServicePanelData[] = [
     hex: '#22c55e', uptime: 99.8, incidents: 0,
     tags: ['MDM', 'MFA', 'Autopilot', 'PIM', 'Conditional Access'],
     sparkline: [99.5, 99.7, 99.8, 99.9, 99.8, 99.9, 99.8, 99.9, 99.8, 99.9],
-    href: '/services',
+    href: '/servicios/identidad-acceso',
   },
   {
     icon: '◈', title: 'Monitoreo NOC 24/7',
-    desc: 'Centro de operaciones propio: más de 200 indicadores monitoreados, alertas y SLA documentado.',
+    desc: 'Centro de operaciones: monitoreo continuo, alertas en tiempo real y SLA < 15 min documentado.',
     hex: '#f59e0b', uptime: 99.9, incidents: 2,
-    tags: ['SIEM', 'Alertas RTR', 'SLA 4h', 'Live Dashboard', 'Fortinet'],
+    tags: ['SIEM', 'Alertas RTR', 'SLA < 15 min', 'Dashboard', 'Fortinet'],
     sparkline: [99.7, 99.8, 99.9, 99.8, 99.9, 99.9, 100, 99.9, 99.9, 99.9],
-    href: '/services',
+    href: '/assessments',
   },
   {
     icon: '◇', title: 'Diagnóstico & Cotización',
@@ -195,15 +194,6 @@ export default function HomePage() {
         >
           {/* Left copy */}
           <div>
-            {/* NOC online pill */}
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}
-              className="inline-flex items-center gap-2 mb-5 px-3 py-1.5 rounded-full"
-              style={{ background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.2)' }}
-            >
-              <span className="w-1.5 h-1.5 rounded-full bg-noc-green animate-pulse-fast" />
-              <span className="text-noc-green text-[11px] font-mono tracking-widest">VELKOR NOC // EN LÍNEA</span>
-            </motion.div>
-
             <motion.div {...fadeUp(0)} className="flex items-center gap-2 mb-6">
               <div className="w-8 h-px bg-amber" />
               <span className="label text-amber/80 tracking-[0.22em]">CONSULTORÍA TECNOLÓGICA EMPRESARIAL</span>
@@ -226,7 +216,7 @@ export default function HomePage() {
               <Link href="/assessments" className="btn-amber text-[15px] px-8 py-4">
                 Solicitar diagnóstico gratis
               </Link>
-              <Link href="/services" className="btn-ghost text-[15px] px-8 py-4">
+              <Link href="/servicios" className="btn-ghost text-[15px] px-8 py-4">
                 Ver servicios →
               </Link>
             </motion.div>
@@ -335,7 +325,7 @@ export default function HomePage() {
               </motion.h2>
             </div>
             <motion.div {...fadeUp(0.1)}>
-              <Link href="/services" className="btn-ghost text-sm whitespace-nowrap">Catálogo completo →</Link>
+              <Link href="/servicios" className="btn-ghost text-sm whitespace-nowrap">Catálogo completo →</Link>
             </motion.div>
           </div>
 
@@ -357,12 +347,6 @@ export default function HomePage() {
           </motion.div>
         </div>
       </section>
-
-      {/* ════════════════════════════════════════════════════════════════
-          NOC STORY — Apple scroll storytelling
-      ════════════════════════════════════════════════════════════════ */}
-      <div className="section-divider" />
-      <NOCStory />
 
       {/* ════════════════════════════════════════════════════════════════
           POR QUÉ VELKOR — Differentiators grid

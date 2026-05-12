@@ -1,0 +1,242 @@
+import type { Metadata } from 'next'
+import Link from 'next/link'
+
+export const metadata: Metadata = {
+  title: 'Gestión de Identidad y Acceso | Entra ID · Intune · MFA',
+  description:
+    'Implementación de Microsoft Entra ID, Intune y MFA para empresas en México. Acceso Condicional, Zero Trust y gobernanza de identidades. Ingenieros Microsoft certificados.',
+  alternates: { canonical: 'https://velkor.mx/servicios/identidad-acceso' },
+  openGraph: {
+    title: 'Gestión de Identidad y Acceso | Velkor',
+    description:
+      'Microsoft Entra ID, Intune y MFA para que cada acceso sea auditado y condicional.',
+  },
+}
+
+const PROBLEMS = [
+  {
+    hex: '#ef4444',
+    title: 'Contraseñas como única barrera',
+    desc: 'El 81 % de las brechas comienzan con credenciales robadas. Sin MFA, una sola contraseña comprometida da acceso irrestricto a todo.',
+  },
+  {
+    hex: '#f59e0b',
+    title: 'Dispositivos sin inventario ni política',
+    desc: 'Equipos sin MDM pueden acceder a datos corporativos sin que IT lo sepa, sin cifrado y sin posibilidad de borrado remoto.',
+  },
+  {
+    hex: '#ef4444',
+    title: 'Admins con acceso permanente',
+    desc: 'Cuentas con privilegios elevados las 24 h del día son un objetivo prioritario. Sin PIM, el radio de impacto de un compromiso es máximo.',
+  },
+]
+
+const SOLUTIONS = [
+  {
+    hex: '#22c55e',
+    title: 'Microsoft Entra ID',
+    desc: 'Configuración de tenant, SSO, sincronización con Active Directory (Entra Connect) y unión híbrida de dispositivos.',
+  },
+  {
+    hex: '#22c55e',
+    title: 'Acceso Condicional',
+    desc: 'MFA obligatorio por riesgo, cumplimiento de dispositivos, restricciones por ubicación y bloqueo de acceso legacy.',
+  },
+  {
+    hex: '#22c55e',
+    title: 'Intune MDM/MAM',
+    desc: 'Inventario de dispositivos, políticas de cumplimiento, despliegue de apps, Windows Autopilot y borrado remoto.',
+  },
+  {
+    hex: '#22c55e',
+    title: 'MFA y FIDO2',
+    desc: 'Microsoft Authenticator, llaves físicas FIDO2 y passkeys para eliminar el riesgo de phishing de credenciales.',
+  },
+  {
+    hex: '#22c55e',
+    title: 'PIM — Privileged Identity Management',
+    desc: 'Acceso privilegiado just-in-time con aprobación y auditoría. Sin cuentas admin permanentes.',
+  },
+  {
+    hex: '#22c55e',
+    title: 'DLP y protección de datos',
+    desc: 'Microsoft Purview DLP para evitar fuga de datos sensibles por correo, Teams, SharePoint y dispositivos.',
+  },
+]
+
+const TECHS = [
+  'Microsoft Entra ID', 'Microsoft Intune', 'Entra Connect',
+  'Windows Autopilot', 'FIDO2 / Passkeys', 'PIM', 'SSPR',
+  'Acceso Condicional', 'Microsoft Purview DLP', 'Defender for Identity',
+]
+
+const FAQ = [
+  {
+    q: '¿Cuánto tiempo toma la implementación?',
+    a: 'Entre 3 y 6 semanas según el número de usuarios y la complejidad del entorno. Entregamos un cronograma detallado en la fase de diseño.',
+  },
+  {
+    q: '¿Necesitamos tener Microsoft 365 ya contratado?',
+    a: 'No necesariamente. Si aún no lo tienen, lo configuramos desde cero incluyendo licenciamiento. Si ya lo tienen, auditamos el tenant y aplicamos mejoras.',
+  },
+  {
+    q: '¿Qué pasa con los equipos Windows existentes?',
+    a: 'Se pueden incorporar a Intune sin reinstalar el sistema operativo usando el método de inscripción automática de Entra ID.',
+  },
+  {
+    q: '¿Esto aplica también a dispositivos móviles?',
+    a: 'Sí. Gestionamos iOS y Android con Intune MAM, que protege datos corporativos en apps sin necesidad de gestionar el dispositivo completo.',
+  },
+]
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'Gestión de Identidad y Acceso Empresarial',
+  description:
+    'Implementación de Microsoft Entra ID, Intune y MFA. Acceso Condicional, Zero Trust y gobernanza de identidades.',
+  provider: { '@type': 'Organization', name: 'Velkor System', url: 'https://velkor.mx' },
+  areaServed: { '@type': 'Country', name: 'México' },
+  serviceType: 'Identity and Access Management',
+  offers: {
+    '@type': 'Offer',
+    description: 'Diagnóstico de identidad y acceso sin costo.',
+    price: '0',
+    priceCurrency: 'MXN',
+  },
+}
+
+export default function IdentidadAccesoPage() {
+  return (
+    <div className="min-h-screen py-16 px-4 sm:px-8">
+      <div className="max-w-5xl mx-auto">
+
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+
+        {/* Breadcrumb */}
+        <Link
+          href="/servicios"
+          className="inline-flex items-center gap-2 text-zinc-600 text-xs font-mono hover:text-zinc-400 transition-colors mb-10"
+        >
+          <svg viewBox="0 0 16 16" fill="currentColor" className="w-3 h-3">
+            <path d="M3.828 7H14a1 1 0 110 2H3.828l2.829 2.828a1 1 0 11-1.414 1.414L1 9l-.707-.707L1 7.586 5.243 3.343A1 1 0 016.657 4.757L3.828 7z" />
+          </svg>
+          Servicios
+        </Link>
+
+        {/* Hero */}
+        <div
+          className="mb-14 pl-5"
+          style={{ borderLeft: '3px solid #22c55e' }}
+        >
+          <div className="flex items-center gap-3 mb-4">
+            <span className="badge text-[10px] font-mono" style={{ color: '#22c55e', backgroundColor: '#22c55e18' }}>
+              IDENTIDAD & ACCESO
+            </span>
+            <span className="text-zinc-700 text-[10px] font-mono">MICROSOFT CERTIFIED</span>
+          </div>
+          <h1 className="text-4xl sm:text-5xl font-black text-noc-white leading-tight mb-4">
+            Cada identidad,<br />
+            <span style={{ color: '#22c55e' }}>bajo control.</span>
+          </h1>
+          <p className="text-zinc-400 text-lg leading-relaxed max-w-2xl mb-8">
+            Implementamos Microsoft Entra ID, Intune y MFA para que cada acceso en tu empresa sea auditado, condicional y revocable en tiempo real. Zero Trust por diseño.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Link href="/assessments" className="btn-amber px-8 py-3.5 text-[15px]">
+              Diagnóstico de identidad gratuito →
+            </Link>
+            <Link href="/casos" className="btn-ghost px-8 py-3.5 text-[15px]">
+              Ver casos de éxito
+            </Link>
+          </div>
+        </div>
+
+        {/* Problems */}
+        <div className="mb-14">
+          <span className="label block mb-6">Riesgos más comunes</span>
+          <div className="grid sm:grid-cols-3 gap-4">
+            {PROBLEMS.map(({ hex, title, desc }) => (
+              <div
+                key={title}
+                className="card p-6"
+                style={{ borderTopColor: hex, borderTopWidth: 2 }}
+              >
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: hex }} />
+                  <h3 className="text-noc-white font-semibold text-sm">{title}</h3>
+                </div>
+                <p className="text-zinc-500 text-xs leading-relaxed">{desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Solutions */}
+        <div className="mb-14">
+          <span className="label block mb-6">Lo que implementamos</span>
+          <div className="grid sm:grid-cols-2 gap-4">
+            {SOLUTIONS.map(({ title, desc }) => (
+              <div
+                key={title}
+                className="card p-6 hover:border-zinc-600 transition-colors group"
+                style={{ borderLeftColor: '#22c55e', borderLeftWidth: 2 }}
+              >
+                <h3 className="text-noc-white font-semibold text-sm mb-2 group-hover:text-white transition-colors">
+                  {title}
+                </h3>
+                <p className="text-zinc-500 text-xs leading-relaxed">{desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Technologies */}
+        <div className="mb-14">
+          <span className="label block mb-4">Tecnologías</span>
+          <div className="flex flex-wrap gap-2">
+            {TECHS.map(t => (
+              <span
+                key={t}
+                className="px-3 py-1.5 rounded-lg border border-surface-border text-zinc-400 text-xs font-mono hover:border-zinc-600 transition-colors"
+              >
+                {t}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {/* FAQ */}
+        <div className="mb-14">
+          <span className="label block mb-6">Preguntas frecuentes</span>
+          <div className="space-y-4">
+            {FAQ.map(({ q, a }) => (
+              <div key={q} className="card p-6 hover:border-zinc-600 transition-colors">
+                <h3 className="text-noc-white font-semibold text-sm mb-2">{q}</h3>
+                <p className="text-zinc-500 text-sm leading-relaxed">{a}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* CTA */}
+        <div className="card p-10 text-center" style={{ borderColor: '#22c55e30' }}>
+          <div className="text-xs font-mono text-zinc-600 mb-3">SIGUIENTE PASO</div>
+          <h2 className="text-2xl font-black text-noc-white mb-3">
+            Auditoría de identidad en 24 horas
+          </h2>
+          <p className="text-zinc-500 text-sm mb-6 max-w-sm mx-auto leading-relaxed">
+            Revisamos tu entorno de Entra ID, políticas de acceso y dispositivos gestionados. Entregamos un informe con brechas y recomendaciones. Sin costo.
+          </p>
+          <Link href="/assessments" className="btn-amber px-10 py-3.5 text-[15px]">
+            Solicitar diagnóstico →
+          </Link>
+        </div>
+
+      </div>
+    </div>
+  )
+}

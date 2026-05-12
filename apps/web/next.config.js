@@ -15,6 +15,16 @@ const nextConfig = {
       { protocol: 'https', hostname: 'velkor-api-production.up.railway.app' },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: '/services',
+        destination: '/servicios',
+        permanent: true,
+      },
+    ]
+  },
+
   async headers() {
     const scriptSrc = isProd
       ? "script-src 'self' 'unsafe-inline'"

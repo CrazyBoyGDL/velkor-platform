@@ -7,8 +7,9 @@ import Logo from './Logo'
 import ThemeToggle from './ThemeToggle'
 
 const NAV = [
-  { href: '/',            label: 'Inicio',   icon: true },
-  { href: '/services',    label: 'Servicios' },
+  { href: '/',            label: 'Inicio',      icon: true },
+  { href: '/servicios',   label: 'Servicios' },
+  { href: '/framework',   label: 'Framework' },
   { href: '/blog',        label: 'Blog' },
   { href: '/casos',       label: 'Casos' },
   { href: '/nosotros',    label: 'Nosotros' },

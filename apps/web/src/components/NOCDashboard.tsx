@@ -72,7 +72,7 @@ export default function NOCDashboard() {
           <span className="w-3 h-3 rounded-full bg-red-500/80" />
           <span className="w-3 h-3 rounded-full bg-amber/80" />
           <span className="w-3 h-3 rounded-full bg-noc-green/80" />
-          <span className="ml-2 text-zinc-600 text-xs font-mono">velkor-noc / capacidades</span>
+          <span className="ml-2 text-zinc-600 text-xs font-mono">velkor / servicios IT</span>
         </div>
         <div className="flex items-center gap-1.5">
           <span className="w-1.5 h-1.5 rounded-full bg-noc-green animate-pulse-slow" />

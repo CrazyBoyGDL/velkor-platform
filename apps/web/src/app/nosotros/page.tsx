@@ -3,9 +3,9 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 
 const STATS = [
-  { val: '2018',  label: 'Año de fundación',       color: '#f59e0b' },
+  { val: '2016',  label: 'Año de fundación',       color: '#f59e0b' },
   { val: '50+',   label: 'Clientes activos',        color: '#22c55e' },
-  { val: '99.9%', label: 'Uptime garantizado',      color: '#3b82f6' },
+  { val: '24/7',  label: 'Monitoreo activo',        color: '#3b82f6' },
   { val: '<4 h',  label: 'Respuesta en incidentes', color: '#06b6d4' },
 ]
 
@@ -54,7 +54,7 @@ const VALUES = [
 
 const CERTS = [
   { label: 'Fortinet NSE4', color: '#ef4444' },
-  { label: 'Microsoft Gold Partner', color: '#3b82f6' },
+  { label: 'Microsoft Partner',       color: '#3b82f6' },
   { label: 'Cisco CCNA', color: '#3b82f6' },
   { label: 'Axis ACSR', color: '#22c55e' },
   { label: 'CompTIA Security+', color: '#f59e0b' },
@@ -77,7 +77,7 @@ export default function NosotrosPage() {
           <span className="label">Quiénes somos</span>
           <h1 className="text-4xl sm:text-5xl font-black text-noc-white mt-3 mb-6 leading-tight">
             El equipo detrás<br />
-            <span className="text-gradient-amber">del NOC</span>
+            <span className="text-gradient-amber">de Velkor</span>
           </h1>
           <p className="text-zinc-400 text-lg leading-relaxed max-w-2xl">
             Desde 2018 operamos como el departamento de IT externo para más de 50 empresas. Combinamos expertise técnico certificado con respuesta operacional real, no solo consultoría.
@@ -96,7 +96,7 @@ export default function NosotrosPage() {
 
         {/* Values */}
         <motion.div {...fadeUp(0.15)} className="mb-4">
-          <span className="label block mb-6">Valores operativos</span>
+          <span className="label block mb-6">Nuestros valores</span>
         </motion.div>
         <div className="grid sm:grid-cols-2 gap-4 mb-16">
           {VALUES.map(({ color, title, desc, icon }, i) => (
