@@ -3,7 +3,7 @@ import { useRef, useEffect, useState } from 'react'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
 import { motion, useScroll, useTransform } from 'framer-motion'
-import NOCDashboard from '@/components/NOCDashboard'
+import InfraTopology from '@/components/InfraTopology'
 import ServicePanel, { type ServicePanelData } from '@/components/ServicePanel'
 import { trackCTA } from '@/components/Analytics'
 
@@ -211,7 +211,7 @@ export default function HomePage() {
         {/* ── Hero content — asymmetric editorial layout ── */}
         <motion.div
           style={{ y: textY, opacity }}
-          className="relative max-w-7xl mx-auto px-4 sm:px-8 w-full grid grid-cols-1 lg:grid-cols-[1fr_420px] xl:grid-cols-[1fr_480px] gap-16 lg:gap-20 xl:gap-24 items-center py-28 sm:py-32 lg:py-36"
+          className="relative max-w-7xl mx-auto px-4 sm:px-8 w-full grid grid-cols-1 lg:grid-cols-[1fr_480px] xl:grid-cols-[1fr_540px] gap-16 lg:gap-12 xl:gap-16 items-center py-28 sm:py-32 lg:py-36"
         >
           {/* Left: editorial copy — animate on mount (above fold) */}
           <div>
@@ -267,18 +267,21 @@ export default function HomePage() {
             </motion.div>
           </div>
 
-          {/* Right: Capabilities Panel — elevated, atmospheric */}
+          {/* Right: Infrastructure topology — architectural visualization */}
           <motion.div
-            initial={{ opacity: 0, x: 24, y: 12 }}
-            animate={{ opacity: 1, x: 0, y: 0 }}
-            transition={{ duration: 0.9, ease: EASE, delay: 0.28 }}
-            className="relative"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 1.1, ease: EASE, delay: 0.32 }}
+            className="relative hidden lg:flex items-center justify-center"
           >
-            {/* Ambient bloom behind the panel — depth and presence */}
-            <div className="absolute -inset-8 rounded-[2rem] pointer-events-none"
-              style={{ background: 'radial-gradient(ellipse at 50% 40%, rgba(245,158,11,0.05) 0%, transparent 70%)' }}
-            />
-            <NOCDashboard />
+            {/* Layered atmospheric depth behind topology */}
+            <div className="absolute inset-0 pointer-events-none">
+              <div className="absolute inset-0"
+                style={{ background: 'radial-gradient(ellipse 90% 70% at 50% 50%, rgba(59,130,246,0.03) 0%, transparent 65%)' }} />
+              <div className="absolute inset-0"
+                style={{ background: 'radial-gradient(ellipse 55% 45% at 58% 38%, rgba(245,158,11,0.022) 0%, transparent 60%)' }} />
+            </div>
+            <InfraTopology />
           </motion.div>
         </motion.div>
 
@@ -393,31 +396,47 @@ export default function HomePage() {
           POR QUÉ VELKOR — Differentiators grid
       ════════════════════════════════════════════════════════════════ */}
       <div className="section-divider" />
-      <section className="py-28 px-4 sm:px-8 relative overflow-hidden section-deep"
-      >
+      <section className="py-28 px-4 sm:px-8 relative overflow-hidden section-deep">
         <div className="max-w-7xl mx-auto relative">
-          <SectionHeader
-            eyebrow="Por qué elegirnos"
-            title={<>Sin compromisos vacíos.<br /><span className="text-gradient-green">Solo resultados firmados.</span></>}
-            sub="Cada cliente tiene un SLA, KPIs medibles y acceso a su dashboard en tiempo real. No vendemos promesas."
-          />
+          <div className="grid lg:grid-cols-[1fr_1fr] gap-16 lg:gap-24 items-start">
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-12">
-            {DIFFERENTIATORS.map(({ label, sub }, i) => (
-              <motion.div key={label} {...fadeUp(i * 0.06)}
-                className="card p-5 group"
-              >
-                <div className="text-zinc-200 font-semibold text-[14px] leading-snug mb-1.5">{label}</div>
-                <div className="text-zinc-600 text-xs leading-relaxed">{sub}</div>
+            {/* Left: editorial statement */}
+            <div className="lg:sticky lg:top-32">
+              <motion.span {...fadeUp(0)} className="label block mb-5">Por qué elegirnos</motion.span>
+              <motion.h2 {...fadeUp(0.06)}
+                className="text-3xl sm:text-[2.6rem] font-black text-noc-white leading-tight tracking-heading mb-6">
+                Sin compromisos<br />vacíos.<br />
+                <span className="text-gradient-green">Solo resultados.</span>
+              </motion.h2>
+              <motion.p {...fadeUp(0.12)} className="text-zinc-500 text-base leading-relaxed mb-10 max-w-sm">
+                Cada cliente opera con SLA documentado, KPIs comprometidos antes de iniciar y acceso a su dashboard en tiempo real.
+              </motion.p>
+              <motion.div {...fadeUp(0.18)}>
+                <Link href="/nosotros" className="btn-ghost text-sm">
+                  Conocer al equipo →
+                </Link>
               </motion.div>
-            ))}
-          </div>
+            </div>
 
-          <motion.div {...fadeUp(0.25)} className="text-center">
-            <Link href="/nosotros" className="btn-ghost text-sm">
-              Conocer al equipo →
-            </Link>
-          </motion.div>
+            {/* Right: differentiator list — editorial, not card grid */}
+            <div>
+              {DIFFERENTIATORS.map(({ label, sub }, i) => (
+                <motion.div key={label} {...fadeUp(i * 0.06)}
+                  className="flex items-start gap-5 py-5 group"
+                  style={{ borderBottom: '1px solid rgba(255,255,255,0.045)' }}
+                >
+                  {/* Architectural accent mark */}
+                  <div className="w-4 h-px mt-[11px] flex-shrink-0 transition-all duration-300"
+                    style={{ background: 'rgba(34,197,94,0.35)' }} />
+                  <div>
+                    <div className="text-zinc-100 font-semibold text-[15px] leading-snug mb-1.5 group-hover:text-white transition-colors">{label}</div>
+                    <div className="text-zinc-500 text-sm leading-relaxed">{sub}</div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+
+          </div>
         </div>
       </section>
 
