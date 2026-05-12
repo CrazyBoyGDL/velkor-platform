@@ -12,7 +12,8 @@
     "build": "npm run build --workspaces",
     "start": "npm start --workspaces",
     "lint": "npm run lint --workspaces",
-    "type-check": "npm run type-check --workspaces"
+    "type-check": "npm run type-check --workspaces",
+    "generate:secrets": "node scripts/generate-secrets.js"
   },
   "keywords": [
     "infrastructure",

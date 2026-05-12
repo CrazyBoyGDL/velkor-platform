@@ -7,6 +7,6 @@ COPY . .
 ENV NODE_ENV=production
 RUN npm run build
 EXPOSE 1337
-COPY start.sh /start.sh
-RUN chmod +x /start.sh
-CMD ["/start.sh"]
+# start.sh lives at /app/start.sh (WORKDIR) so `sh ./start.sh` works everywhere
+RUN chmod +x ./start.sh
+CMD ["sh", "./start.sh"]

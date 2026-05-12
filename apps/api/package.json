@@ -8,9 +8,10 @@
   },
   "scripts": {
     "develop": "strapi develop",
-    "start": "node check-db.js && mkdir -p public/uploads && strapi start",
+    "start": "sh ./start.sh",
     "build": "strapi build",
-    "strapi": "strapi"
+    "strapi": "strapi",
+    "generate:secrets": "node ../../scripts/generate-secrets.js"
   },
   "dependencies": {
     "@strapi/strapi": "4.22.1",
