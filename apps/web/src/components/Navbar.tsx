@@ -7,7 +7,7 @@ import Logo from './Logo'
 import ThemeToggle from './ThemeToggle'
 
 const NAV = [
-  { href: '/',            label: 'Inicio' },
+  { href: '/',            label: 'Inicio',   icon: true },
   { href: '/services',    label: 'Servicios' },
   { href: '/blog',        label: 'Blog' },
   { href: '/casos',       label: 'Casos' },
@@ -57,16 +57,22 @@ export default function Navbar() {
 
           {/* Desktop Nav */}
           <nav className="hidden lg:flex items-center gap-0.5">
-            {NAV.map(({ href, label }) => (
+            {NAV.map(({ href, label, icon }) => (
               <Link
                 key={href}
                 href={href}
-                className={`relative px-3.5 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                className={`relative flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                   isActive(href)
                     ? 'text-noc-white'
                     : 'text-zinc-500 hover:text-zinc-200 hover:bg-white/[0.04]'
                 }`}
               >
+                {icon && (
+                  <svg viewBox="0 0 16 16" fill="none" className="w-3 h-3 flex-shrink-0">
+                    <path d="M2 6.5L8 2l6 4.5V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6.5z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/>
+                    <path d="M6 15v-5h4v5" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/>
+                  </svg>
+                )}
                 {label}
                 {isActive(href) && (
                   <motion.span
@@ -113,16 +119,22 @@ export default function Navbar() {
             style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}
           >
             <div className="px-4 py-4 space-y-1" style={{ background: 'rgba(8,8,8,0.97)' }}>
-              {NAV.map(({ href, label }) => (
+              {NAV.map(({ href, label, icon }) => (
                 <Link
                   key={href}
                   href={href}
-                  className={`block px-4 py-3 rounded-xl text-sm transition-colors ${
+                  className={`flex items-center gap-2 px-4 py-3 rounded-xl text-sm transition-colors ${
                     isActive(href)
                       ? 'text-white bg-white/[0.06] font-medium'
                       : 'text-zinc-400 hover:text-white hover:bg-white/[0.04]'
                   }`}
                 >
+                  {icon && (
+                    <svg viewBox="0 0 16 16" fill="none" className="w-3.5 h-3.5 flex-shrink-0">
+                      <path d="M2 6.5L8 2l6 4.5V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6.5z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/>
+                      <path d="M6 15v-5h4v5" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/>
+                    </svg>
+                  )}
                   {label}
                 </Link>
               ))}

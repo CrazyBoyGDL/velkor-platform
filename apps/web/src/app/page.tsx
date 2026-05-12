@@ -20,9 +20,9 @@ const fadeUp = (delay = 0) => ({
 // ─── DATA ────────────────────────────────────────────────────────────────────
 const STATS = [
   { val: 50,   suf: '+',  label: 'Clientes activos',    sub: 'Pymes y corporativos',  color: '#f59e0b' },
-  { val: 99.9, suf: '%',  label: 'Uptime garantizado',  sub: 'SLA documentado',       color: '#22c55e' },
-  { val: 4,    suf: 'h',  label: 'Tiempo de respuesta', sub: 'Incidentes críticos',   color: '#3b82f6', prefix: '<' },
-  { val: 8,    suf: ' yr',label: 'Años operando',        sub: 'Desde 2018',            color: '#06b6d4' },
+  { val: 99.9, suf: '%',  label: 'Uptime garantizado',  sub: 'SLA documentado',       color: '#f59e0b' },
+  { val: 4,    suf: 'h',  label: 'Tiempo de respuesta', sub: 'Incidentes críticos',   color: '#f59e0b', prefix: '<' },
+  { val: 8,    suf: 'yr', label: 'Años operando',        sub: 'Desde 2016',            color: '#f59e0b' },
 ]
 
 const SERVICES: ServicePanelData[] = [
@@ -83,26 +83,25 @@ const STEPS = [
 ]
 
 const TESTIMONIALS = [
-  { quote: 'Velkor rediseñó nuestra red y migró 80 usuarios a Microsoft 365 en un fin de semana. Cero interrupciones.', author: 'Carlos Méndez', role: 'Director de Operaciones · Avante', color: '#f59e0b', initials: 'CM' },
-  { quote: 'Implementaron Intune y acceso condicional en 3 semanas. Ahora tenemos visibilidad total de 150 dispositivos.', author: 'Ana Ruiz', role: 'IT Manager · Salud Plus', color: '#22c55e', initials: 'AR' },
-  { quote: 'El sistema CCTV con analítica IA detectó un incidente antes de que llegara seguridad. ROI en el primer mes.', author: 'Roberto Leal', role: 'Gerente General · Retail Norte', color: '#3b82f6', initials: 'RL' },
+  { quote: 'Rediseñaron nuestra red y migraron 80 usuarios a Microsoft 365 en un fin de semana. Cero interrupciones, documentación entregada el lunes.', author: 'Director de Operaciones', role: 'Empresa de distribución · Monterrey', color: '#f59e0b', initials: 'DO' },
+  { quote: 'Implementaron Intune y acceso condicional en 3 semanas. Ahora tenemos visibilidad total de 150 dispositivos desde un solo panel.', author: 'IT Manager', role: 'Grupo de salud · CDMX', color: '#f59e0b', initials: 'IT' },
+  { quote: 'El sistema CCTV con analítica de video detectó un incidente antes de que llegara el equipo de seguridad. El ROI fue evidente en el primer mes.', author: 'Gerente General', role: 'Cadena de retail · Guadalajara', color: '#f59e0b', initials: 'GG' },
 ]
 
 const DIFFERENTIATORS = [
-  { icon: '⚡', label: 'SLA < 4 h', sub: 'Incidentes críticos', color: '#f59e0b' },
-  { icon: '🔐', label: 'Zero Trust', sub: 'Por diseño, no por moda', color: '#3b82f6' },
-  { icon: '📊', label: 'Dashboard live', sub: 'Visibilidad total 24/7', color: '#22c55e' },
-  { icon: '📋', label: 'KPIs firmados', sub: 'Antes de empezar', color: '#06b6d4' },
-  { icon: '🏅', label: 'NSE4 + M365', sub: 'Ingenieros certificados', color: '#f59e0b' },
-  { icon: '🚫', label: 'Sin contrato mínimo', sub: 'Cancela cuando quieras', color: '#22c55e' },
+  { label: 'SLA < 4 h', sub: 'Respuesta en incidentes críticos' },
+  { label: 'Zero Trust', sub: 'Arquitectura por diseño' },
+  { label: 'Dashboard en tiempo real', sub: 'Visibilidad total 24/7' },
+  { label: 'KPIs firmados', sub: 'Métricas acordadas antes de iniciar' },
+  { label: 'Ingenieros certificados', sub: 'NSE4, Microsoft 365, CompTIA' },
+  { label: 'Sin contrato mínimo', sub: 'Servicio mes a mes' },
 ]
 
-const PARTNERS = [
-  { name: 'Fortinet NSE4', dot: '#ef4444' },
-  { name: 'Microsoft Gold', dot: '#3b82f6' },
-  { name: 'Cisco CCNA',    dot: '#3b82f6' },
-  { name: 'Axis ACSR',     dot: '#22c55e' },
+const CERTS = [
+  { name: 'Fortinet NSE 4', dot: '#f59e0b' },
+  { name: 'Microsoft 365', dot: '#f59e0b' },
   { name: 'CompTIA Sec+',  dot: '#f59e0b' },
+  { name: 'Cisco CCNA',    dot: '#f59e0b' },
 ]
 
 // ─── Scroll-triggered counter ─────────────────────────────────────────────────
@@ -147,18 +146,10 @@ function SectionHeader({ eyebrow, title, sub }: { eyebrow: string; title: React.
 }
 
 // ─── Inline CTA strip ─────────────────────────────────────────────────────────
-function CtaStrip({ text, cta, href, urgency }: { text: string; cta: string; href: string; urgency?: string }) {
+function CtaStrip({ text, cta, href }: { text: string; cta: string; href: string }) {
   return (
     <motion.div {...fadeUp(0)} className="cta-strip">
-      <div>
-        <p className="text-noc-white font-semibold text-[15px]">{text}</p>
-        {urgency && (
-          <p className="text-amber text-xs font-mono mt-1 flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-amber animate-pulse-fast inline-block" />
-            {urgency}
-          </p>
-        )}
-      </div>
+      <p className="text-noc-white font-semibold text-[15px]">{text}</p>
       <Link href={href} className="btn-amber whitespace-nowrap flex-shrink-0">
         {cta} →
       </Link>
@@ -240,19 +231,18 @@ export default function HomePage() {
               </Link>
             </motion.div>
 
-            {/* Urgency */}
-            <motion.p {...fadeUp(0.24)} className="text-xs font-mono text-amber/70 flex items-center gap-2 mb-8">
-              <span className="w-1.5 h-1.5 rounded-full bg-amber animate-pulse-fast inline-block" />
-              Solo 4 slots disponibles este mes · Sin contrato mínimo
+            <motion.p {...fadeUp(0.24)} className="text-xs font-mono text-zinc-600 flex items-center gap-2 mb-8">
+              <span className="w-1.5 h-1.5 rounded-full bg-noc-green animate-pulse-fast inline-block" />
+              Sin contrato mínimo · Diagnóstico técnico sin costo
             </motion.p>
 
             {/* Social proof avatars */}
             <motion.div {...fadeUp(0.28)} className="flex items-center gap-3">
               <div className="flex -space-x-2">
-                {[['JM','#f59e0b'],['KR','#3b82f6'],['AL','#22c55e'],['PR','#06b6d4']].map(([i,c]) => (
-                  <div key={i} className="w-8 h-8 rounded-full border-2 border-surface-dark flex items-center justify-center text-[10px] font-bold"
-                    style={{ background: c + '22', color: c }}>
-                    {i}
+                {[1,2,3,4].map(n => (
+                  <div key={n} className="w-8 h-8 rounded-full border-2 border-surface-dark flex items-center justify-center"
+                    style={{ background: 'rgba(245,158,11,0.12)', boxShadow: 'none' }}>
+                    <span className="w-3 h-3 rounded-full" style={{ background: 'rgba(245,158,11,0.3)' }} />
                   </div>
                 ))}
               </div>
@@ -281,10 +271,10 @@ export default function HomePage() {
       <div className="section-divider" />
       <section className="py-4 bg-surface-dark/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 flex items-center gap-8 overflow-x-auto scrollbar-none">
-          <span className="label flex-shrink-0">PARTNERS /</span>
+          <span className="label flex-shrink-0">CERTIFICACIONES /</span>
           <div className="flex items-center gap-10 flex-shrink-0">
-            {PARTNERS.map(({ name, dot }) => (
-              <div key={name} className="flex items-center gap-2 opacity-40 hover:opacity-70 transition-opacity cursor-default flex-shrink-0">
+            {CERTS.map(({ name, dot }) => (
+              <div key={name} className="flex items-center gap-2 opacity-40 hover:opacity-60 transition-opacity cursor-default flex-shrink-0">
                 <div className="w-1.5 h-1.5 rounded-full" style={{ background: dot }} />
                 <span className="text-zinc-400 text-sm font-medium">{name}</span>
               </div>
@@ -325,9 +315,8 @@ export default function HomePage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-8 mb-16">
         <CtaStrip
           text="¿Tu empresa todavía no tiene uptime documentado ni SLA firmado?"
-          cta="Ver cómo lo logramos"
+          cta="Ver casos de éxito"
           href="/casos"
-          urgency="3 empresas más obtuvieron diagnóstico gratis esta semana"
         />
       </div>
 
@@ -364,7 +353,6 @@ export default function HomePage() {
               text="¿No sabes qué servicio necesitas? 15 minutos con un ingeniero lo aclaran."
               cta="Diagnóstico gratuito"
               href="/assessments"
-              urgency="Respondemos en menos de 2 horas en horario hábil"
             />
           </motion.div>
         </div>
@@ -395,18 +383,15 @@ export default function HomePage() {
           />
 
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-10">
-            {DIFFERENTIATORS.map(({ icon, label, sub, color }, i) => (
+            {DIFFERENTIATORS.map(({ label, sub }, i) => (
               <motion.div key={label} {...fadeUp(i * 0.06)}
-                className="card p-5 flex items-start gap-3 group"
+                className="card p-5 group"
               >
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 text-lg"
-                  style={{ background: color + '15' }}>
-                  {icon}
-                </div>
-                <div>
+                <div className="flex items-center gap-2 mb-1.5">
+                  <span className="w-1 h-4 rounded-full bg-amber opacity-60 flex-shrink-0" />
                   <div className="text-zinc-200 font-semibold text-sm leading-snug">{label}</div>
-                  <div className="text-zinc-600 text-xs mt-0.5">{sub}</div>
                 </div>
+                <div className="text-zinc-600 text-xs ml-3 leading-relaxed">{sub}</div>
               </motion.div>
             ))}
           </div>
@@ -467,23 +452,19 @@ export default function HomePage() {
           />
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
-            {TESTIMONIALS.map(({ quote, author, role, color, initials }, i) => (
+            {TESTIMONIALS.map(({ quote, author, role, initials }, i) => (
               <motion.div key={author} {...fadeUp(i * 0.08)}
                 className="card p-6 flex flex-col gap-4"
-                style={{
-                  background: `linear-gradient(145deg, rgba(20,20,20,0.97), rgba(10,10,10,0.99)) padding-box, linear-gradient(135deg, ${color}28, rgba(30,30,30,0.6) 50%, ${color}08) border-box`,
-                  border: '1px solid transparent',
-                }}
               >
-                <div className="text-5xl font-serif leading-none opacity-20" style={{ color }}>"</div>
-                <p className="text-zinc-300 text-sm leading-relaxed flex-1">{quote}</p>
-                <div className="flex items-center gap-3 pt-3 border-t border-surface-border">
+                <div className="text-4xl font-serif leading-none text-amber opacity-30">"</div>
+                <p className="text-zinc-400 text-sm leading-relaxed flex-1">{quote}</p>
+                <div className="flex items-center gap-3 pt-3" style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
                   <div className="w-9 h-9 rounded-xl flex items-center justify-center text-xs font-bold flex-shrink-0"
-                    style={{ background: color + '20', color }}>
+                    style={{ background: 'rgba(245,158,11,0.1)', color: '#f59e0b' }}>
                     {initials}
                   </div>
                   <div>
-                    <div className="text-zinc-200 text-sm font-semibold">{author}</div>
+                    <div className="text-zinc-300 text-sm font-semibold">{author}</div>
                     <div className="text-zinc-600 text-[11px]">{role}</div>
                   </div>
                 </div>
@@ -493,10 +474,9 @@ export default function HomePage() {
 
           <motion.div {...fadeUp(0.2)}>
             <CtaStrip
-              text="Tu empresa puede tener los mismos resultados. El diagnóstico es gratuito."
-              cta="Solicitar ahora"
+              text="Podemos mostrar resultados similares en tu infraestructura. El diagnóstico no tiene costo."
+              cta="Solicitar diagnóstico"
               href="/assessments"
-              urgency="Respondemos en menos de 24 horas hábiles"
             />
           </motion.div>
         </div>
@@ -530,10 +510,9 @@ export default function HomePage() {
             Nuestros ingenieros evalúan tu infraestructura y entregan un informe técnico con recomendaciones y costos reales.
           </p>
 
-          {/* Scarcity */}
-          <p className="text-amber text-xs font-mono mb-10 flex items-center justify-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-amber animate-pulse-fast inline-block" />
-            Solo 4 diagnósticos gratuitos disponibles este mes
+          <p className="text-zinc-600 text-xs font-mono mb-10 flex items-center justify-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-noc-green animate-pulse-fast inline-block" />
+            Respuesta en menos de 24 horas · Sin compromiso
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-10">
