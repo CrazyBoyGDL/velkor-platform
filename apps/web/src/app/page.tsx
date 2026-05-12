@@ -483,26 +483,45 @@ export default function HomePage() {
             sub="Cada caso tiene métricas documentadas. No publicamos testimonios sin datos."
           />
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
-            {TESTIMONIALS.map(({ quote, author, role, initials }, i) => (
-              <motion.div key={author} {...fadeUp(i * 0.07)}
-                className="card p-7 flex flex-col"
-              >
-                {/* Quote mark — Inter, not serif */}
-                <div className="text-3xl font-black leading-none text-amber/25 mb-4 select-none">&ldquo;</div>
-                <p className="text-zinc-400 text-sm leading-relaxed flex-1 mb-6">{quote}</p>
-                <div className="flex items-center gap-3 pt-5" style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-                  <div className="w-9 h-9 rounded-xl flex items-center justify-center text-xs font-bold flex-shrink-0"
-                    style={{ background: 'rgba(245,158,11,0.08)', color: '#f59e0b', border: '1px solid rgba(245,158,11,0.15)' }}>
-                    {initials}
-                  </div>
-                  <div>
-                    <div className="text-zinc-300 text-sm font-semibold">{author}</div>
-                    <div className="text-zinc-600 text-[11px] mt-0.5">{role}</div>
-                  </div>
+          {/* Asymmetric editorial layout — featured + two compact */}
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-10">
+
+            {/* Featured testimonial — primary, left 3/5 */}
+            <motion.div {...fadeUp(0)} className="md:col-span-3 card p-9 flex flex-col">
+              <div className="text-[3.5rem] font-black leading-none text-amber/18 mb-5 select-none">&ldquo;</div>
+              <p className="text-zinc-300 text-[15px] leading-[1.75] flex-1 mb-8">{TESTIMONIALS[0].quote}</p>
+              <div className="flex items-center gap-3 pt-6" style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center text-sm font-bold flex-shrink-0"
+                  style={{ background: 'rgba(245,158,11,0.09)', color: '#f59e0b', border: '1px solid rgba(245,158,11,0.18)' }}>
+                  {TESTIMONIALS[0].initials}
                 </div>
-              </motion.div>
-            ))}
+                <div>
+                  <div className="text-zinc-200 text-sm font-semibold">{TESTIMONIALS[0].author}</div>
+                  <div className="text-zinc-600 text-xs mt-0.5">{TESTIMONIALS[0].role}</div>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Secondary testimonials — right 2/5, stacked */}
+            <div className="md:col-span-2 flex flex-col gap-4">
+              {TESTIMONIALS.slice(1).map(({ quote, author, role, initials }, i) => (
+                <motion.div key={author} {...fadeUp((i + 1) * 0.09)} className="card p-6 flex flex-col flex-1">
+                  <div className="text-2xl font-black leading-none text-amber/18 mb-3 select-none">&ldquo;</div>
+                  <p className="text-zinc-400 text-sm leading-relaxed flex-1 mb-5">{quote}</p>
+                  <div className="flex items-center gap-2.5 pt-4" style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center text-[11px] font-bold flex-shrink-0"
+                      style={{ background: 'rgba(245,158,11,0.07)', color: '#f59e0b', border: '1px solid rgba(245,158,11,0.12)' }}>
+                      {initials}
+                    </div>
+                    <div>
+                      <div className="text-zinc-300 text-sm font-semibold">{author}</div>
+                      <div className="text-zinc-600 text-[11px] mt-0.5">{role}</div>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+
           </div>
 
           <motion.div {...fadeUp(0.2)}>

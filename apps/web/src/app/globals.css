@@ -286,10 +286,7 @@ body {
   .section-deep {
     background: linear-gradient(180deg, #040408 0%, #060610 50%, #040408 100%);
   }
-  /* Architectural — for process / methodology sections */
-  .section-arch {
-    background: linear-gradient(180deg, #06060a 0%, #040408 100%);
-  }
+  /* Architectural — for process / methodology sections (see full definition below) */
 
   /* Glowing dot */
   .dot-live { @apply relative flex h-2 w-2; }
@@ -315,6 +312,62 @@ body {
     border: 1px solid transparent;
     box-shadow: 0 4px 20px rgba(0,0,0,0.35), 0 1px 0 rgba(255,255,255,0.03) inset;
   }
+}
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     ARCHITECTURAL RULE — premium editorial chapter separator
+     A hairline with a diamond accent at center.
+     Usage: <div class="arch-rule my-12" />
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  .arch-rule {
+    position: relative;
+    height: 1px;
+    background: linear-gradient(90deg,
+      transparent,
+      rgba(255,255,255,0.05) 20%,
+      rgba(255,255,255,0.07) 50%,
+      rgba(255,255,255,0.05) 80%,
+      transparent);
+  }
+  .arch-rule::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    background: rgba(245,158,11,0.38);
+    border-radius: 1px;
+    transform: translate(-50%, -50%) rotate(45deg);
+  }
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     EDITORIAL LEFT ANCHOR — thin vertical rule for
+     content columns, magazine layout feel.
+     Usage: apply to a wrapper div alongside content.
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  .editorial-anchor {
+    border-left: 1px solid rgba(255,255,255,0.055);
+    padding-left: 1.75rem;
+  }
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     SECTION-ARCH — gradient + topology texture
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  .section-arch {
+    background: linear-gradient(180deg, #06060a 0%, #040408 100%);
+    position: relative;
+    overflow: hidden;
+  }
+  .section-arch::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle, rgba(255,255,255,0.016) 1px, transparent 1px);
+    background-size: 32px 32px;
+    pointer-events: none;
+  }
+
 }
 
 /* ── Scrollbar none ── */
