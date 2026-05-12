@@ -1,13 +1,12 @@
-const STRAPI_URL =
-  process.env.STRAPI_URL ||
-  process.env.NEXT_PUBLIC_API_URL ||
-  'http://localhost:1337';
+// Server-only — never import this in client components.
+// Set STRAPI_URL as a private env var in Railway (not NEXT_PUBLIC_).
+const STRAPI_URL = process.env.STRAPI_URL || 'http://localhost:1337';
 
-async function strapiGet<T>(path: string): Promise<T | null> {
+async function strapiGet<T>(path: string, revalidate = 3600): Promise<T | null> {
   try {
     const res = await fetch(`${STRAPI_URL}/api${path}`, {
       headers: { 'Content-Type': 'application/json' },
-      next: { revalidate: 3600 },
+      next: { revalidate },
     });
     if (!res.ok) {
       console.error(`[strapi] GET ${path} → ${res.status}`);

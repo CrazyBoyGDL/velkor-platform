@@ -1,7 +1,26 @@
 'use strict';
 
+const REQUIRED_ENV = [
+  'JWT_SECRET',
+  'ADMIN_JWT_SECRET',
+  'API_TOKEN_SALT',
+  'TRANSFER_TOKEN_SALT',
+  'APP_KEYS',
+  'DATABASE_HOST',
+  'DATABASE_NAME',
+  'DATABASE_USERNAME',
+  'DATABASE_PASSWORD',
+];
+
 module.exports = {
-  register() {},
+  register() {
+    const missing = REQUIRED_ENV.filter((k) => !process.env[k]);
+    if (missing.length > 0) {
+      throw new Error(
+        `[Velkor] Strapi cannot start — missing required env vars: ${missing.join(', ')}`
+      );
+    }
+  },
 
   async bootstrap({ strapi }) {
     await configurePublicPermissions(strapi);
@@ -16,32 +35,32 @@ async function configurePublicPermissions(strapi) {
   if (!publicRole) return;
 
   const permissionsToGrant = [
-    // Posts — public read
-    { action: 'api::post.post.find', roleId: publicRole.id },
-    { action: 'api::post.post.findOne', roleId: publicRole.id },
-    // Casos — public read
-    { action: 'api::caso.caso.find', roleId: publicRole.id },
-    { action: 'api::caso.caso.findOne', roleId: publicRole.id },
-    // Servicios — public read
-    { action: 'api::servicio.servicio.find', roleId: publicRole.id },
-    { action: 'api::servicio.servicio.findOne', roleId: publicRole.id },
-    // Leads — public create only (no read — privacy)
-    { action: 'api::lead.lead.create', roleId: publicRole.id },
+    { action: 'api::post.post.find' },
+    { action: 'api::post.post.findOne' },
+    { action: 'api::caso.caso.find' },
+    { action: 'api::caso.caso.findOne' },
+    { action: 'api::servicio.servicio.find' },
+    { action: 'api::servicio.servicio.findOne' },
+    { action: 'api::lead.lead.create' },
   ];
 
-  for (const { action, roleId } of permissionsToGrant) {
-    const existing = await strapi
-      .query('plugin::users-permissions.permission')
-      .findOne({ where: { action, role: roleId } });
+  for (const { action } of permissionsToGrant) {
+    try {
+      const existing = await strapi
+        .query('plugin::users-permissions.permission')
+        .findOne({ where: { action, role: publicRole.id } });
 
-    if (!existing) {
-      await strapi
-        .query('plugin::users-permissions.permission')
-        .create({ data: { action, role: roleId, enabled: true } });
-    } else if (!existing.enabled) {
-      await strapi
-        .query('plugin::users-permissions.permission')
-        .update({ where: { id: existing.id }, data: { enabled: true } });
+      if (!existing) {
+        await strapi
+          .query('plugin::users-permissions.permission')
+          .create({ data: { action, role: publicRole.id, enabled: true } });
+      } else if (!existing.enabled) {
+        await strapi
+          .query('plugin::users-permissions.permission')
+          .update({ where: { id: existing.id }, data: { enabled: true } });
+      }
+    } catch (err) {
+      strapi.log.warn(`[Velkor] Could not configure permission for ${action}:`, err.message);
     }
   }
 }

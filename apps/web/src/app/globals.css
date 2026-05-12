@@ -389,3 +389,24 @@ html.light .badge { background: rgba(0,0,0,0.06); }
 /* Scrollbar */
 html.light::-webkit-scrollbar-track { background: #f5f5f7; }
 html.light::-webkit-scrollbar-thumb { background: #d1d1d6; }
+
+/* ══════════════════════════════════════════════════════════
+   BLOG POST CONTENT BODY
+   Used in /blog/[slug] for Strapi richtext output
+══════════════════════════════════════════════════════════ */
+.blog-body { color: #a1a1aa; line-height: 1.8; font-size: 1rem; }
+.blog-body h1,.blog-body h2 { color: #f4f4f5; font-weight: 800; margin: 2rem 0 1rem; line-height: 1.25; }
+.blog-body h3,.blog-body h4 { color: #e4e4e7; font-weight: 700; margin: 1.5rem 0 0.75rem; }
+.blog-body p  { margin-bottom: 1.25rem; }
+.blog-body ul,.blog-body ol { padding-left: 1.5rem; margin-bottom: 1.25rem; }
+.blog-body ul li { list-style: disc; margin-bottom: 0.25rem; }
+.blog-body ol li { list-style: decimal; margin-bottom: 0.25rem; }
+.blog-body code { font-family: 'JetBrains Mono', monospace; font-size: 0.85em; background: rgba(245,158,11,0.1); color: #f59e0b; padding: 0.15em 0.45em; border-radius: 4px; }
+.blog-body pre  { background: #0a0a0a; border: 1px solid #252525; border-radius: 10px; padding: 1.25rem; overflow-x: auto; margin-bottom: 1.5rem; }
+.blog-body pre code { background: none; color: #e4e4e7; padding: 0; font-size: 0.875rem; }
+.blog-body blockquote { border-left: 3px solid #f59e0b; padding-left: 1rem; color: #71717a; font-style: italic; margin-bottom: 1.25rem; }
+.blog-body a  { color: #f59e0b; text-decoration: underline; text-underline-offset: 3px; }
+.blog-body a:hover { color: #fbbf24; }
+.blog-body hr { border: none; border-top: 1px solid #252525; margin: 2rem 0; }
+.blog-body strong { color: #e4e4e7; font-weight: 600; }
+.blog-body img { border-radius: 10px; max-width: 100%; margin: 1.5rem 0; }

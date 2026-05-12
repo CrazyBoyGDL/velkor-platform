@@ -7,7 +7,7 @@ module.exports = {
       database: process.env.DATABASE_NAME || 'railway',
       user: process.env.DATABASE_USERNAME || 'postgres',
       password: process.env.DATABASE_PASSWORD || '',
-      ssl: false,
+      ssl: process.env.DATABASE_SSL === 'true' ? { rejectUnauthorized: false } : false,
     },
     pool: { min: 2, max: 10 },
   },
