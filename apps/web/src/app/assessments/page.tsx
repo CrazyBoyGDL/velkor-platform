@@ -11,7 +11,15 @@ const SERVICES = [
   'Otro',
 ]
 
+// Display labels (shown in UI) stay human-readable.
+// Strapi enum values cannot start with a digit, so we map before sending.
 const SIZES = ['1-10', '11-50', '51-200', '200+']
+const SIZE_ENUM: Record<string, string> = {
+  '1-10':   'size_1_10',
+  '11-50':  'size_11_50',
+  '51-200': 'size_51_200',
+  '200+':   'size_200_plus',
+}
 
 type Form = {
   name: string; email: string; company: string; phone: string
@@ -39,7 +47,7 @@ export default function AssessmentsPage() {
           email: form.email,
           company: form.company,
           phone: form.phone,
-          companySize: form.size,
+          companySize: SIZE_ENUM[form.size] ?? form.size,
           services: form.services,
           urgency: form.urgency,
           notes: form.notes,

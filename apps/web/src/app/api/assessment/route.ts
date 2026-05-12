@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
   const company     = sanitize(body.company, 200);
   const phone       = sanitize(body.phone, 30);
   const notes       = sanitize(body.notes, 2000);
-  const companySize = sanitize(body.companySize, 10);
+  const companySize = sanitize(body.companySize, 20); // longest valid value: size_200_plus (13 chars)
   const urgency     = sanitize(body.urgency, 10);
   const services    = Array.isArray(body.services)
     ? body.services.map((s) => sanitize(s, 100)).filter(Boolean)
