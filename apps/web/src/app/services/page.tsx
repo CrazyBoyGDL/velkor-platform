@@ -71,23 +71,26 @@ export default function ServicesPage() {
         </motion.div>
 
         <div className="space-y-16">
-          {CATEGORIES.map(({ id, label, hex, card, services }, ci) => (
+          {CATEGORIES.map(({ id, label, hex, services }, ci) => (
             <motion.div key={id} {...fadeUp(ci * 0.010)}>
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-2 h-2 rounded-full" style={{ background: hex }} />
-                <h2 className="text-xl font-bold" style={{ color: hex }}>{label}</h2>
-                <div className="flex-1 h-px bg-surface-border" />
+              <div className="flex items-center gap-4 mb-4">
+                <span className="text-[10px] font-mono font-bold uppercase tracking-[0.15em]" style={{ color: hex }}>{label}</span>
+                <div className="flex-1 h-px" style={{ background: `linear-gradient(90deg, ${hex}20, transparent)` }} />
               </div>
-              <div className="grid sm:grid-cols-2 gap-4">
+              <div>
                 {services.map(({ name, desc }, si) => (
                   <motion.div
                     key={name}
                     {...fadeUp(si * 0.010)}
-                    className={`${card} p-6 rounded-xl border transition-all duration-300 group`}
-                    style={{ borderLeftColor: hex, borderLeftWidth: 3 }}
+                    className="group flex items-start gap-5 py-5"
+                    style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}
                   >
-                    <h3 className="text-noc-white font-medium mb-2 group-hover:text-white transition-colors">{name}</h3>
-                    <p className="text-zinc-500 text-sm leading-relaxed">{desc}</p>
+                    <div className="w-px self-stretch flex-shrink-0 mt-1"
+                      style={{ background: hex + '30', minWidth: '1px' }} />
+                    <div>
+                      <div className="text-zinc-200 font-semibold text-[14px] mb-1.5 group-hover:text-white transition-colors duration-150">{name}</div>
+                      <p className="text-zinc-500 text-sm leading-relaxed">{desc}</p>
+                    </div>
                   </motion.div>
                 ))}
               </div>
@@ -95,7 +98,7 @@ export default function ServicesPage() {
           ))}
         </div>
 
-        <motion.div {...fadeUp(0)} className="mt-20 card border-amber/30 text-center p-10 max-w-xl mx-auto">
+        <motion.div {...fadeUp(0)} className="mt-20 text-center py-14 max-w-xl mx-auto" style={{ borderTop: '1px solid rgba(255,255,255,0.045)' }}>
           <h3 className="text-xl font-black text-noc-white mb-3">¿Necesitas una solución a medida?</h3>
           <p className="text-zinc-500 mb-6 text-sm">
             Evaluamos tu infraestructura actual y diseñamos un paquete de servicios personalizado.

@@ -80,11 +80,11 @@ export default function NosotrosPage() {
         </motion.div>
 
         {/* Stats strip */}
-        <motion.div {...fadeUp(0)} className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-16">
+        <motion.div {...fadeUp(0)} className="flex flex-wrap gap-10 mb-16 pt-2">
           {STATS.map(({ val, label, color }) => (
-            <div key={label} className="card p-5 text-center hover:border-zinc-700 transition-colors">
-              <div className="text-3xl font-black font-mono mb-1" style={{ color }}>{val}</div>
-              <div className="text-zinc-600 text-xs">{label}</div>
+            <div key={label} className="flex flex-col gap-1">
+              <div className="text-[2.2rem] font-black font-mono leading-none" style={{ color }}>{val}</div>
+              <div className="text-zinc-600 text-xs mt-1">{label}</div>
             </div>
           ))}
         </motion.div>
@@ -93,22 +93,20 @@ export default function NosotrosPage() {
         <motion.div {...fadeUp(0)} className="mb-4">
           <span className="label block mb-6">Nuestros valores</span>
         </motion.div>
-        <div className="grid sm:grid-cols-2 gap-4 mb-16">
+        <div className="mb-16" style={{ borderTop: '1px solid rgba(255,255,255,0.045)' }}>
           {VALUES.map(({ color, title, desc, icon }, i) => (
-            <motion.div
-              key={title}
-              {...fadeUp(i * 0.010)}
-              className="card p-6 hover:border-zinc-700 transition-all duration-300 group"
-              style={{ borderLeftColor: color, borderLeftWidth: 3 }}
+            <motion.div key={title} {...fadeUp(i * 0.010)}
+              className="flex items-start gap-5 py-7"
+              style={{ borderBottom: '1px solid rgba(255,255,255,0.045)' }}
             >
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0"
-                  style={{ backgroundColor: color + '20', color }}>
-                  {icon}
-                </div>
-                <h3 className="text-noc-white font-semibold">{title}</h3>
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5"
+                style={{ background: color + '12', color }}>
+                {icon}
               </div>
-              <p className="text-zinc-500 text-sm leading-relaxed">{desc}</p>
+              <div>
+                <div className="text-zinc-100 font-semibold text-[15px] mb-2">{title}</div>
+                <p className="text-zinc-500 text-sm leading-relaxed">{desc}</p>
+              </div>
             </motion.div>
           ))}
         </div>
@@ -116,14 +114,11 @@ export default function NosotrosPage() {
         {/* Certs */}
         <motion.div {...fadeUp(0)} className="mb-16">
           <span className="label block mb-5">Certificaciones</span>
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-wrap gap-x-7 gap-y-4">
             {CERTS.map(({ label, color }) => (
-              <div
-                key={label}
-                className="flex items-center gap-2 px-4 py-2.5 rounded-lg border border-surface-border bg-surface-card hover:border-zinc-700 transition-colors"
-              >
-                <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: color }} />
-                <span className="text-zinc-300 text-sm font-medium">{label}</span>
+              <div key={label} className="flex items-center gap-2.5">
+                <span className="w-1 h-1 rounded-full flex-shrink-0" style={{ background: color }} />
+                <span className="text-zinc-400 text-sm">{label}</span>
               </div>
             ))}
           </div>

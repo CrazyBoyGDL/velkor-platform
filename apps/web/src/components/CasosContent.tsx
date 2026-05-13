@@ -108,8 +108,12 @@ function CaseCard({ c, i }: { c: CaseStudy; i: number }) {
   return (
     <motion.article
       {...fadeUp(i * 0.010)}
-      className="card overflow-hidden"
-      style={{ borderLeft: `3px solid ${hex}50` }}
+      className="overflow-hidden relative"
+      style={{
+        borderLeft: `2px solid ${hex}28`,
+        background: 'rgba(255,255,255,0.013)',
+        borderRadius: '0 10px 10px 0',
+      }}
     >
       {/* Header row */}
       <div

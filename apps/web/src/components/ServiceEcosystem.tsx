@@ -92,14 +92,10 @@ function Layer({
           {services.map(({ name, color: c }) => (
             <div
               key={name}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-[11px] font-mono"
-              style={{
-                background: 'rgba(255,255,255,0.03)',
-                border: '1px solid rgba(255,255,255,0.07)',
-                color: 'rgba(161,161,170,0.8)',
-              }}
+              className="flex items-center gap-2 text-[11px] font-mono"
+              style={{ color: 'rgba(161,161,170,0.55)' }}
             >
-              <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: c }} />
+              <span className="w-1 h-1 rounded-full flex-shrink-0" style={{ background: c }} />
               {name}
             </div>
           ))}

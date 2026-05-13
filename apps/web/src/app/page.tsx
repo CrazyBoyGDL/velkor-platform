@@ -152,11 +152,43 @@ function SectionHeader({ eyebrow, title, sub, align = 'center' }: {
 // ─── Inline CTA strip ─────────────────────────────────────────────────────────
 function CtaStrip({ text, cta, href }: { text: string; cta: string; href: string }) {
   return (
-    <motion.div {...fadeUp(0)} className="cta-strip">
-      <p className="text-noc-white font-semibold text-[15px]">{text}</p>
-      <Link href={href} className="btn-amber whitespace-nowrap flex-shrink-0">
-        {cta} →
-      </Link>
+    <motion.div {...fadeUp(0)}
+      className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 py-8"
+      style={{ borderTop: '1px solid rgba(255,255,255,0.04)' }}
+    >
+      <p className="text-zinc-500 text-sm leading-relaxed">{text}</p>
+      <Link href={href} className="btn-ghost text-sm whitespace-nowrap flex-shrink-0">{cta} →</Link>
+    </motion.div>
+  )
+}
+
+// ─── Service row — editorial catalog item ────────────────────────────────────
+function ServiceRow({ svc, delay }: { svc: ServicePanelData; delay: number }) {
+  return (
+    <motion.div {...fadeUp(delay)}
+      className="group flex items-start gap-5 py-6"
+      style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}
+    >
+      <div className="w-1.5 h-1.5 rounded-full mt-[0.55rem] flex-shrink-0"
+        style={{ background: svc.hex + 'bb' }} />
+      <div className="flex-1 min-w-0">
+        <div className="flex items-baseline justify-between gap-3 mb-1.5">
+          <h3 className="text-zinc-200 font-semibold text-[14px] group-hover:text-white transition-colors duration-150">
+            {svc.title}
+          </h3>
+          <Link href={svc.href || '/servicios'}
+            className="text-[11px] font-mono flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+            style={{ color: svc.hex + 'aa' }}>
+            Ver detalle →
+          </Link>
+        </div>
+        <p className="text-zinc-500 text-[13px] leading-relaxed mb-3">{svc.desc}</p>
+        <div className="flex flex-wrap gap-x-3 gap-y-0.5">
+          {svc.tags.slice(0, 4).map(t => (
+            <span key={t} className="text-[9.5px] font-mono text-zinc-700">{t}</span>
+          ))}
+        </div>
+      </div>
     </motion.div>
   )
 }
@@ -305,15 +337,10 @@ export default function HomePage() {
             <div className="flex-1 h-px" style={{ background: 'linear-gradient(90deg, rgba(255,255,255,0.05), transparent)' }} />
           </motion.div>
           {/* Editorial stat strip — numbers breathe in open space, no card boxes */}
-          <div className="grid grid-cols-2 md:grid-cols-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-0">
             {STATS.map(({ val, suf, label, sub, color, prefix }, i) => (
               <motion.div key={label} {...fadeUp(i * 0.010)}
-                className={[
-                  'px-6 sm:px-8 py-10',
-                  i % 2 === 1             ? 'border-l border-surface-border' : '',
-                  i >= 2                  ? 'border-t border-surface-border md:border-t-0' : '',
-                  i > 0 && i % 2 !== 1   ? 'md:border-l md:border-surface-border' : '',
-                ].join(' ')}
+                className="px-6 sm:px-10 py-12"
               >
                 <div className="text-[3rem] sm:text-[3.5rem] font-black mb-2 leading-none tabular-nums tracking-[-0.03em]" style={{ color }}>
                   <Counter val={val} suf={suf} prefix={prefix ?? ''} />
@@ -336,14 +363,14 @@ export default function HomePage() {
       </div>
 
       {/* ════════════════════════════════════════════════════════════════
-          SERVICES
+          SERVICES — editorial catalog + anchor panels
       ════════════════════════════════════════════════════════════════ */}
-      <div className="section-divider" />
       <section className="py-20 px-4 sm:px-8 relative overflow-hidden">
-        {/* Topology motif — subtle infrastructure grid */}
-        <div className="absolute inset-0 bg-topology opacity-40 pointer-events-none" />
+        <div className="absolute inset-0 bg-topology opacity-30 pointer-events-none" />
         <div className="max-w-7xl mx-auto relative">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-10">
+
+          {/* Section header */}
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-12">
             <div>
               <motion.span {...fadeUp(0)} className="label block mb-4">Lo que hacemos</motion.span>
               <motion.h2 {...fadeUp(0.010)} className="text-2xl sm:text-[2.3rem] font-bold text-noc-white leading-tight tracking-heading">
@@ -356,29 +383,34 @@ export default function HomePage() {
             </motion.div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {SERVICES.map((svc, i) => (
-              <motion.div key={svc.title} {...fadeUp(i * 0.010)}>
-                <ServicePanel data={svc} />
-              </motion.div>
-            ))}
+          {/* Editorial catalog list + 2 anchor panels */}
+          <div className="grid lg:grid-cols-[1fr_284px] gap-16 items-start">
+
+            {/* Left: service index — all 6 as editorial rows */}
+            <div>
+              {SERVICES.map((svc, i) => (
+                <ServiceRow key={svc.title} svc={svc} delay={i * 0.010} />
+              ))}
+            </div>
+
+            {/* Right: 2 anchor ServicePanels — selective containment */}
+            <div className="hidden lg:flex flex-col gap-5 sticky top-24">
+              <ServicePanel data={SERVICES[0]} />
+              <ServicePanel data={SERVICES[3]} />
+            </div>
           </div>
 
-          {/* ── Micro CTA after services ── */}
-          <motion.div {...fadeUp(0)} className="mt-8">
-            <CtaStrip
-              text="¿No sabes qué servicio necesitas? 15 minutos con un ingeniero lo aclaran."
-              cta="Diagnóstico gratuito"
-              href="/assessments"
-            />
-          </motion.div>
+          <CtaStrip
+            text="¿No sabes qué servicio necesitas? 15 minutos con un ingeniero lo aclaran."
+            cta="Diagnóstico gratuito"
+            href="/assessments"
+          />
         </div>
       </section>
 
       {/* ════════════════════════════════════════════════════════════════
           POR QUÉ VELKOR — Differentiators grid
       ════════════════════════════════════════════════════════════════ */}
-      <div className="section-divider" />
       <section className="py-20 px-4 sm:px-8 relative overflow-hidden section-deep">
         <div className="max-w-7xl mx-auto relative">
           <div className="grid lg:grid-cols-[1fr_1fr] gap-16 lg:gap-24 items-start">
@@ -428,13 +460,11 @@ export default function HomePage() {
           Shows how services form an integrated platform, not silo services.
           Positioned between differentiators and process for logical flow.
       ════════════════════════════════════════════════════════════════ */}
-      <div className="section-divider" />
       <ServiceEcosystem />
 
       {/* ════════════════════════════════════════════════════════════════
           PROCESS
       ════════════════════════════════════════════════════════════════ */}
-      <div className="section-divider" />
       <section className="py-20 px-4 sm:px-8 section-arch">
         <div className="max-w-7xl mx-auto">
           <SectionHeader
@@ -443,24 +473,25 @@ export default function HomePage() {
             sub="Desde el primer contacto hasta la operación continua, en tres pasos con fechas y entregables claros."
           />
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 relative">
-            {/* Dashed architectural connector */}
-            <div className="hidden md:block absolute top-[2.6rem] left-[calc(16.67%+22px)] right-[calc(16.67%+22px)] h-px pointer-events-none"
-              style={{ borderTop: '1px dashed rgba(100,116,139,0.12)' }} />
+          <div className="grid grid-cols-1 md:grid-cols-3">
+            {STEPS.map(({ n, color, title, desc }, i) => (
+              <motion.div key={n} {...fadeUp(0)}
+                className="relative pt-8 pb-12 overflow-hidden"
+                style={i > 0 ? { borderLeft: '1px solid rgba(255,255,255,0.04)', paddingLeft: '2.75rem' } : {}}
+              >
+                {/* Step index + gradient rule */}
+                <div className="flex items-center gap-3 mb-8">
+                  <span className="text-[10px] font-mono font-bold tabular-nums" style={{ color }}>{n}</span>
+                  <div className="h-px flex-1" style={{ background: `linear-gradient(90deg, ${color}22, transparent)` }} />
+                </div>
 
-            {STEPS.map(({ n, color, bg, border, title, desc }, i) => (
-              <motion.div key={n} {...fadeUp(0)} className="card p-8 relative overflow-hidden">
-                {/* Large typographic step number — editorial depth element */}
-                <div className="absolute right-5 top-3 font-mono font-black leading-none select-none pointer-events-none tabular-nums"
-                  style={{ fontSize: '5.5rem', color, opacity: 0.045 }}>
+                {/* Ghost number — atmospheric depth */}
+                <div className="absolute right-3 bottom-6 font-mono font-black select-none pointer-events-none leading-none tabular-nums"
+                  style={{ fontSize: '6.5rem', color, opacity: 0.025 }}>
                   {n}
                 </div>
-                {/* Horizontal step indicator */}
-                <div className="flex items-center gap-3 mb-7">
-                  <span className="font-mono text-xs font-bold" style={{ color }}>{n}</span>
-                  <div className="flex-1 h-px" style={{ background: `linear-gradient(90deg, ${color}38, transparent)` }} />
-                </div>
-                <h3 className="text-noc-white font-bold text-[17px] mb-3 tracking-title">{title}</h3>
+
+                <h3 className="text-zinc-100 font-bold text-[17px] mb-3 tracking-title">{title}</h3>
                 <p className="text-zinc-500 text-sm leading-relaxed">{desc}</p>
               </motion.div>
             ))}
@@ -473,19 +504,16 @@ export default function HomePage() {
           Sanitized project deliverables between process + testimonials:
           shows what we actually produce, not marketing promises.
       ════════════════════════════════════════════════════════════════ */}
-      <div className="section-divider" />
       <OperationalArtifacts />
 
       {/* ════════════════════════════════════════════════════════════════
           EXECUTIVE DIAGNOSTIC — consultive questions that surface gaps
       ════════════════════════════════════════════════════════════════ */}
-      <div className="section-divider" />
       <ExecutiveDiagnostic />
 
       {/* ════════════════════════════════════════════════════════════════
           TESTIMONIALS — warm amber atmosphere
       ════════════════════════════════════════════════════════════════ */}
-      <div className="section-divider" />
       <section className="py-20 px-4 sm:px-8 relative overflow-hidden section-warm">
         <div className="max-w-7xl mx-auto">
           <SectionHeader
@@ -578,18 +606,10 @@ export default function HomePage() {
             </Link>
           </div>
 
-          {/* Trust chips */}
-          <div className="flex flex-wrap items-center justify-center gap-3">
-            {[
-              'Sin contrato mínimo',
-              'Respuesta < 24 h',
-              'Ingenieros especializados',
-              'Propuesta sin costo',
-            ].map((text) => (
-              <div key={text} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
-                style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-                <span className="text-zinc-500 text-xs">{text}</span>
-              </div>
+          {/* Trust items — plain monospace */}
+          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
+            {['Sin contrato mínimo', 'Respuesta < 24 h', 'Ingenieros especializados', 'Propuesta sin costo'].map(text => (
+              <span key={text} className="text-zinc-600 text-[11px] font-mono">{text}</span>
             ))}
           </div>
         </motion.div>

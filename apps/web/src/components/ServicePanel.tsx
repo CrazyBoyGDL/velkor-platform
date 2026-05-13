@@ -53,8 +53,8 @@ export default function ServicePanel({ data }: { data: ServicePanelData }) {
       <div className="absolute inset-0 rounded-xl"
         style={{
           background: 'linear-gradient(150deg, #0a1020, #060d18)',
-          border: '1px solid rgba(56,100,160,0.13)',
-          boxShadow: '0 4px 24px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.022) inset',
+          border: '1px solid rgba(56,100,160,0.07)',
+          boxShadow: '0 2px 16px rgba(0,0,0,0.35)',
         }}
       />
 
