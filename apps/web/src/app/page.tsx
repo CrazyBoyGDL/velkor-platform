@@ -3,7 +3,7 @@ import { useRef, useEffect, useState } from 'react'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
 import { motion, useScroll, useTransform } from 'framer-motion'
-import HeroOperationalFrame from '@/components/HeroOperationalFrame'
+import InfraTopology from '@/components/InfraTopology'
 import ServicePanel, { type ServicePanelData } from '@/components/ServicePanel'
 import OperationalArtifacts from '@/components/OperationalArtifacts'
 import ServiceEcosystem from '@/components/ServiceEcosystem'
@@ -19,17 +19,17 @@ const EASE = [0.16, 1, 0.3, 1] as const
 
 // For below-fold content: triggers when element enters viewport
 const fadeUp = (delay = 0) => ({
-  initial: { opacity: 0, y: 4 },
+  initial: { opacity: 0, y: 3 },
   whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, amount: 0.08 },
-  transition: { duration: 0.28, ease: EASE, delay },
+  viewport: { once: true, amount: 0.05 },
+  transition: { duration: 0.22, ease: EASE, delay },
 })
 
 // For above-fold hero content: animate on mount, don't wait for scroll
 const heroUp = (delay = 0) => ({
-  initial: { opacity: 0, y: 4 },
+  initial: { opacity: 0, y: 3 },
   animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.22, ease: EASE, delay },
+  transition: { duration: 0.20, ease: EASE, delay },
 })
 
 // ─── DATA ────────────────────────────────────────────────────────────────────
@@ -183,9 +183,9 @@ function CtaStrip({ text, cta, href }: { text: string; cta: string; href: string
 export default function HomePage() {
   const heroRef = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] })
-  const bgY     = useTransform(scrollYProgress, [0, 1], ['0%', '18%'])
-  const textY   = useTransform(scrollYProgress, [0, 1], ['0%', '10%'])
-  const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0])
+  const bgY     = useTransform(scrollYProgress, [0, 1], ['0%', '10%'])
+  const textY   = useTransform(scrollYProgress, [0, 1], ['0%', '5%'])
+  const opacity = useTransform(scrollYProgress, [0, 0.9], [1, 0])
 
   return (
     <>
@@ -270,14 +270,18 @@ export default function HomePage() {
             </motion.div>
           </div>
 
-          {/* Right: Operational command frame — living infrastructure view */}
+          {/* Right: Infrastructure architecture diagram */}
           <motion.div
-            initial={{ opacity: 0, x: 16 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.75, ease: EASE, delay: 0.22 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.65, ease: EASE, delay: 0.20 }}
             className="relative hidden lg:flex items-center justify-center"
           >
-            <HeroOperationalFrame />
+            <div className="absolute inset-0 pointer-events-none">
+              <div className="absolute inset-0"
+                style={{ background: 'radial-gradient(ellipse 90% 70% at 50% 50%, rgba(37,99,235,0.028) 0%, transparent 65%)' }} />
+            </div>
+            <InfraTopology />
           </motion.div>
         </motion.div>
 
@@ -367,7 +371,7 @@ export default function HomePage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {SERVICES.map((svc, i) => (
-              <motion.div key={svc.title} {...fadeUp(i * 0.04)}>
+              <motion.div key={svc.title} {...fadeUp(i * 0.025)}>
                 <ServicePanel data={svc} />
               </motion.div>
             ))}

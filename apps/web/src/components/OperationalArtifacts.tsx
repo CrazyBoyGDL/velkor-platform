@@ -1,13 +1,13 @@
 'use client'
 import { motion } from 'framer-motion'
 
-const EASE = [0.16, 1, 0.3, 1] as const
+const EASE = [0.25, 0, 0, 1] as const
 
 const fadeUp = (delay = 0) => ({
-  initial: { opacity: 0, y: 10 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, amount: 0.1 },
-  transition: { duration: 0.42, ease: EASE, delay },
+  initial: { opacity: 0 },
+  whileInView: { opacity: 1 },
+  viewport: { once: true, amount: 0.05 },
+  transition: { duration: 0.20, ease: EASE, delay },
 })
 
 // ── Shared primitives ─────────────────────────────────────────────────────────
