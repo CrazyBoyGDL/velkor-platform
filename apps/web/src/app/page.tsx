@@ -16,25 +16,25 @@ const EASE = [0.16, 1, 0.3, 1] as const
 
 // For below-fold content: triggers when element enters viewport
 const fadeUp = (delay = 0) => ({
-  initial: { opacity: 0, y: 10 },
+  initial: { opacity: 0, y: 8 },
   whileInView: { opacity: 1, y: 0 },
   viewport: { once: true, amount: 0.08 },
-  transition: { duration: 0.42, ease: EASE, delay },
+  transition: { duration: 0.35, ease: EASE, delay },
 })
 
 // For above-fold hero content: animate on mount, don't wait for scroll
 const heroUp = (delay = 0) => ({
-  initial: { opacity: 0, y: 10 },
+  initial: { opacity: 0, y: 8 },
   animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.38, ease: EASE, delay },
+  transition: { duration: 0.30, ease: EASE, delay },
 })
 
 // ─── DATA ────────────────────────────────────────────────────────────────────
 const STATS = [
-  { val: 50,  suf: '+',  label: 'Clientes activos',      sub: 'Pymes y corporativos',          color: '#f59e0b' },
-  { val: 8,   suf: 'yr', label: 'Años de experiencia',   sub: 'Fundados en 2016',              color: '#f59e0b' },
-  { val: 24,  suf: 'h',  label: 'Propuesta técnica',     sub: 'Diagnóstico inicial incluido',  color: '#f59e0b', prefix: '<' },
-  { val: 100, suf: '%',  label: 'Proyectos documentados', sub: 'KPIs verificados al cierre',   color: '#f59e0b' },
+  { val: 50,  suf: '+',  label: 'Clientes activos',      sub: 'Pymes y corporativos',          color: '#3b82f6' },
+  { val: 8,   suf: 'yr', label: 'Años de experiencia',   sub: 'Fundados en 2016',              color: '#64748b' },
+  { val: 24,  suf: 'h',  label: 'Propuesta técnica',     sub: 'Diagnóstico inicial incluido',  color: '#22c55e', prefix: '<' },
+  { val: 100, suf: '%',  label: 'Proyectos documentados', sub: 'KPIs verificados al cierre',   color: '#3b82f6' },
 ]
 
 const SERVICES: ServicePanelData[] = [
@@ -76,7 +76,7 @@ const SERVICES: ServicePanelData[] = [
   {
     icon: '◈', title: 'Continuidad & Soporte',
     desc: 'Revisiones proactivas periódicas y respuesta a incidentes antes de que afecten la operación. Sin contrato mínimo ni permanencia forzada.',
-    hex: '#f59e0b', uptime: 99.9, incidents: 0,
+    hex: '#64748b', uptime: 99.9, incidents: 0,
     tags: ['Soporte activo', 'Revisiones', 'Atención incidentes', 'Documentación', 'Fortinet'],
     sparkline: [99.7, 99.8, 99.9, 99.8, 99.9, 99.9, 100, 99.9, 99.9, 99.9],
     href: '/assessments',
@@ -194,21 +194,17 @@ export default function HomePage() {
 
         {/* ── Layered atmospheric backgrounds ── */}
         <motion.div style={{ y: bgY }} className="absolute inset-0 pointer-events-none">
-          {/* Warm bloom — upper-left: brand energy source */}
+          {/* Cool blue bloom — upper-left: calm enterprise depth */}
           <div className="absolute inset-0" style={{
-            background: 'radial-gradient(ellipse 100% 70% at 15% 20%, rgba(245,158,11,0.032) 0%, transparent 55%)',
+            background: 'radial-gradient(ellipse 100% 70% at 15% 20%, rgba(37,99,235,0.015) 0%, transparent 55%)',
           }} />
           {/* Cool depth — lower-right: recessive atmospheric pressure */}
           <div className="absolute inset-0" style={{
-            background: 'radial-gradient(ellipse 80% 60% at 85% 85%, rgba(59,130,246,0.018) 0%, transparent 55%)',
+            background: 'radial-gradient(ellipse 80% 60% at 85% 85%, rgba(59,130,246,0.012) 0%, transparent 55%)',
           }} />
           {/* Topology dot texture — subtle infrastructure motif */}
           <div className="absolute inset-0 bg-topology opacity-60" />
           <NetworkBg />
-          {/* Amber ambient breath — living atmosphere above the fold */}
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[380px] animate-ambient-breath pointer-events-none"
-            style={{ background: 'radial-gradient(ellipse, rgba(245,158,11,0.072) 0%, transparent 60%)' }}
-          />
           {/* Bottom fade — transitions smoothly to next section */}
           <div className="absolute bottom-0 left-0 right-0 h-52 bg-gradient-to-t from-surface-dark to-transparent" />
         </motion.div>
@@ -222,8 +218,8 @@ export default function HomePage() {
           <div>
             {/* Eyebrow — with decorative accent line */}
             <motion.div {...heroUp(0)} className="flex items-center gap-3 mb-8">
-              <div className="w-8 h-px flex-shrink-0" style={{ background: 'rgba(245,158,11,0.45)' }} />
-              <span className="label text-amber/60">CONSULTORÍA TECNOLÓGICA EMPRESARIAL</span>
+              <div className="w-8 h-px flex-shrink-0" style={{ background: 'rgba(100,116,139,0.30)' }} />
+              <span className="label text-zinc-500">CONSULTORÍA TECNOLÓGICA EMPRESARIAL</span>
             </motion.div>
 
             {/* Display headline — commanding, tight, editorial */}
@@ -261,8 +257,8 @@ export default function HomePage() {
               <div className="flex -space-x-2">
                 {[1,2,3,4].map(n => (
                   <div key={n} className="w-8 h-8 rounded-full border-2 border-surface-dark flex items-center justify-center"
-                    style={{ background: 'rgba(245,158,11,0.1)', boxShadow: 'none' }}>
-                    <span className="w-3 h-3 rounded-full" style={{ background: 'rgba(245,158,11,0.3)' }} />
+                    style={{ background: 'rgba(100,116,139,0.10)', boxShadow: 'none' }}>
+                    <span className="w-3 h-3 rounded-full" style={{ background: 'rgba(100,116,139,0.25)' }} />
                   </div>
                 ))}
               </div>
@@ -284,7 +280,7 @@ export default function HomePage() {
               <div className="absolute inset-0"
                 style={{ background: 'radial-gradient(ellipse 90% 70% at 50% 50%, rgba(59,130,246,0.03) 0%, transparent 65%)' }} />
               <div className="absolute inset-0"
-                style={{ background: 'radial-gradient(ellipse 55% 45% at 58% 38%, rgba(245,158,11,0.022) 0%, transparent 60%)' }} />
+                style={{ background: 'radial-gradient(ellipse 55% 45% at 58% 38%, rgba(37,99,235,0.012) 0%, transparent 60%)' }} />
             </div>
             <InfraTopology />
           </motion.div>
@@ -338,7 +334,7 @@ export default function HomePage() {
           </motion.div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
             {STATS.map(({ val, suf, label, sub, color, prefix }, i) => (
-              <motion.div key={label} {...fadeUp(i * 0.06 + 0.04)}
+              <motion.div key={label} {...fadeUp(i * 0.04 + 0.04)}
                 className="card p-7 sm:p-9"
               >
                 <div className="text-[2.6rem] sm:text-5xl font-black mb-3 leading-none tabular-nums tracking-[-0.03em]" style={{ color }}>
@@ -384,7 +380,7 @@ export default function HomePage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {SERVICES.map((svc, i) => (
-              <motion.div key={svc.title} {...fadeUp(i * 0.055)}>
+              <motion.div key={svc.title} {...fadeUp(i * 0.04)}>
                 <ServicePanel data={svc} />
               </motion.div>
             ))}
@@ -430,7 +426,7 @@ export default function HomePage() {
             {/* Right: differentiator list — editorial, not card grid */}
             <div>
               {DIFFERENTIATORS.map(({ label, sub }, i) => (
-                <motion.div key={label} {...fadeUp(i * 0.06)}
+                <motion.div key={label} {...fadeUp(i * 0.04)}
                   className="flex items-start gap-5 py-5 group"
                   style={{ borderBottom: '1px solid rgba(255,255,255,0.045)' }}
                 >
@@ -464,7 +460,7 @@ export default function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5 relative">
             {/* Dashed architectural connector */}
             <div className="hidden md:block absolute top-[2.6rem] left-[calc(16.67%+22px)] right-[calc(16.67%+22px)] h-px pointer-events-none"
-              style={{ borderTop: '1px dashed rgba(245,158,11,0.15)' }} />
+              style={{ borderTop: '1px dashed rgba(100,116,139,0.12)' }} />
 
             {STEPS.map(({ n, color, bg, border, title, desc }, i) => (
               <motion.div key={n} {...fadeUp(i * 0.1)} className="card p-8 relative overflow-hidden">
@@ -515,7 +511,7 @@ export default function HomePage() {
               <p className="text-zinc-300 text-[15px] leading-[1.75] flex-1 mb-8">{TESTIMONIALS[0].quote}</p>
               <div className="flex items-center gap-3 pt-6" style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center text-sm font-bold flex-shrink-0"
-                  style={{ background: 'rgba(245,158,11,0.09)', color: '#f59e0b', border: '1px solid rgba(245,158,11,0.18)' }}>
+                  style={{ background: 'rgba(100,116,139,0.09)', color: '#94a3b8', border: '1px solid rgba(100,116,139,0.18)' }}>
                   {TESTIMONIALS[0].initials}
                 </div>
                 <div>
@@ -533,7 +529,7 @@ export default function HomePage() {
                   <p className="text-zinc-400 text-sm leading-relaxed flex-1 mb-5">{quote}</p>
                   <div className="flex items-center gap-2.5 pt-4" style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
                     <div className="w-8 h-8 rounded-lg flex items-center justify-center text-[11px] font-bold flex-shrink-0"
-                      style={{ background: 'rgba(245,158,11,0.07)', color: '#f59e0b', border: '1px solid rgba(245,158,11,0.12)' }}>
+                      style={{ background: 'rgba(100,116,139,0.07)', color: '#94a3b8', border: '1px solid rgba(100,116,139,0.12)' }}>
                       {initials}
                     </div>
                     <div>
@@ -562,14 +558,9 @@ export default function HomePage() {
       ════════════════════════════════════════════════════════════════ */}
       <div className="section-divider" />
       <section className="py-36 px-4 sm:px-8 relative overflow-hidden">
-        {/* Layered ambient bloom */}
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-[700px] h-[500px] bg-[radial-gradient(ellipse,rgba(245,158,11,0.065)_0%,transparent_65%)]" />
-          </div>
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-[340px] h-[240px] bg-[radial-gradient(ellipse,rgba(245,158,11,0.04)_0%,transparent_60%)]" />
-          </div>
+        {/* Ambient bloom */}
+        <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
+          <div className="w-[600px] h-[400px] bg-[radial-gradient(ellipse,rgba(37,99,235,0.025)_0%,transparent_65%)]" />
         </div>
 
         <motion.div {...fadeUp(0)} className="relative max-w-xl mx-auto text-center">

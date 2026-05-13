@@ -43,6 +43,11 @@ body {
   --ease-expo:  cubic-bezier(0.16, 1, 0.3, 1);   /* fast start, smooth coast */
   --ease-quart: cubic-bezier(0.25, 1, 0.5, 1);   /* softer version            */
   --ease-inout: cubic-bezier(0.4, 0, 0.2, 1);    /* standard material         */
+
+  /* Enterprise palette — calm steel blue replaces startup amber for CTAs */
+  --enterprise-blue:        #2563eb;   /* blue-600 — main action */
+  --enterprise-blue-hover:  #3b82f6;   /* blue-500 — hover state */
+  --enterprise-blue-active: #1d4ed8;   /* blue-700 — pressed state */
 }
 
 @layer components {
@@ -177,38 +182,41 @@ body {
   /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      BUTTONS — premium tactile interactions
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  /* ── Primary CTA — enterprise steel blue (not startup amber) ── */
   .btn-amber {
     @apply inline-flex items-center justify-center
            px-6 py-3 rounded-xl
-           bg-amber font-bold text-black text-sm;
+           font-semibold text-sm;
+    color: #ffffff;
+    background: var(--enterprise-blue);
     box-shadow:
-      0 0 0 1px rgba(245,158,11,0.55),
-      0 4px 20px rgba(245,158,11,0.22),
-      0 1px 0 rgba(255,255,255,0.22) inset;
+      0 0 0 1px rgba(37,99,235,0.40),
+      0 4px 14px rgba(37,99,235,0.16),
+      0 1px 0 rgba(255,255,255,0.10) inset;
     transform: translateY(0) scale(1);
     transition:
-      background-color 0.12s ease,
-      box-shadow       0.16s var(--ease-quart),
-      transform        0.12s var(--ease-quart);
+      background  0.12s ease,
+      box-shadow  0.16s var(--ease-quart),
+      transform   0.12s var(--ease-quart);
     will-change: transform, box-shadow;
     -webkit-tap-highlight-color: transparent;
     touch-action: manipulation;
   }
   .btn-amber:hover {
-    background-color: #fbbf24;
-    transform: translateY(-1px) scale(1.013);
+    background: var(--enterprise-blue-hover);
+    transform: translateY(-1px) scale(1.012);
     box-shadow:
-      0 0 0 1px rgba(245,158,11,0.8),
-      0 6px 26px rgba(245,158,11,0.30),
-      0 1px 0 rgba(255,255,255,0.28) inset;
+      0 0 0 1px rgba(59,130,246,0.50),
+      0 6px 20px rgba(59,130,246,0.18),
+      0 1px 0 rgba(255,255,255,0.14) inset;
   }
   .btn-amber:active {
-    background-color: #d97706;
+    background: var(--enterprise-blue-active);
     transform: translateY(0px) scale(0.972);
     box-shadow:
-      0 0 0 1px rgba(245,158,11,0.45),
-      0 2px 10px rgba(245,158,11,0.14),
-      0 1px 0 rgba(255,255,255,0.14) inset;
+      0 0 0 1px rgba(29,78,216,0.40),
+      0 2px 8px rgba(37,99,235,0.10),
+      0 1px 0 rgba(255,255,255,0.08) inset;
     transition-duration: 0.07s;
   }
 
@@ -266,7 +274,7 @@ body {
     left: 50%;
     width: 4px;
     height: 4px;
-    background: rgba(245,158,11,0.22);
+    background: rgba(100,116,139,0.28);   /* slate — calm structural mark */
     border-radius: 1px;
     transform: translate(-50%, -50%) rotate(45deg);
   }
@@ -296,13 +304,13 @@ body {
   /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      SECTION ATMOSPHERES — depth + character per section
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-  /* Warm amber bloom — for testimonials / hero sections */
+  /* Subtle neutral bloom — testimonials section (removed warm amber) */
   .section-warm::before {
     content: '';
     position: absolute;
     inset: 0;
     background: radial-gradient(ellipse 90% 60% at 50% 0%,
-      rgba(245,158,11,0.035) 0%, transparent 65%);
+      rgba(255,255,255,0.008) 0%, transparent 65%);
     pointer-events: none;
   }
   /* Cool deep atmosphere — for why-us / authority sections */
@@ -325,13 +333,13 @@ body {
     @apply rounded-2xl p-7 flex flex-col sm:flex-row items-center justify-between gap-5;
     background:
       linear-gradient(135deg,
-        rgba(245,158,11,0.07) 0%,
-        rgba(245,158,11,0.025) 40%,
+        rgba(30,58,138,0.07) 0%,
+        rgba(30,58,138,0.02) 40%,
         transparent 70%) padding-box,
       linear-gradient(135deg,
-        rgba(245,158,11,0.25) 0%,
-        rgba(245,158,11,0.08) 50%,
-        rgba(245,158,11,0.04) 100%) border-box;
+        rgba(59,130,246,0.16) 0%,
+        rgba(59,130,246,0.05) 50%,
+        rgba(59,130,246,0.02) 100%) border-box;
     border: 1px solid transparent;
     box-shadow: 0 4px 20px rgba(0,0,0,0.35), 0 1px 0 rgba(255,255,255,0.03) inset;
   }
@@ -358,7 +366,7 @@ body {
     left: 50%;
     width: 5px;
     height: 5px;
-    background: rgba(245,158,11,0.38);
+    background: rgba(100,116,139,0.30);   /* slate — calm, not warm */
     border-radius: 1px;
     transform: translate(-50%, -50%) rotate(45deg);
   }
@@ -401,7 +409,8 @@ body {
 
 /* ── Gradient text ── */
 .text-gradient-amber {
-  background: linear-gradient(135deg, #f59e0b, #fbbf24 50%, #f97316);
+  /* Muted amber — removed orange (#f97316) endpoint that read as startup/aggressive */
+  background: linear-gradient(135deg, #d97706, #f59e0b 50%, #ca8a04);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
