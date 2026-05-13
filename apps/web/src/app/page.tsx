@@ -6,6 +6,7 @@ import { motion, useScroll, useTransform } from 'framer-motion'
 import InfraTopology from '@/components/InfraTopology'
 import ServicePanel, { type ServicePanelData } from '@/components/ServicePanel'
 import OperationalArtifacts from '@/components/OperationalArtifacts'
+import ServiceEcosystem from '@/components/ServiceEcosystem'
 import { trackCTA } from '@/components/Analytics'
 
 const NetworkBg = dynamic(() => import('@/components/NetworkBg'), { ssr: false })
@@ -444,6 +445,14 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* ════════════════════════════════════════════════════════════════
+          SERVICE ECOSYSTEM — operational layer dependency map
+          Shows how services form an integrated platform, not silo services.
+          Positioned between differentiators and process for logical flow.
+      ════════════════════════════════════════════════════════════════ */}
+      <div className="section-divider" />
+      <ServiceEcosystem />
 
       {/* ════════════════════════════════════════════════════════════════
           PROCESS
