@@ -15,17 +15,17 @@ const EASE = [0.16, 1, 0.3, 1] as const
 
 // For below-fold content: triggers when element enters viewport
 const fadeUp = (delay = 0) => ({
-  initial: { opacity: 0, y: 16 },
+  initial: { opacity: 0, y: 10 },
   whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, amount: 0.12 },
-  transition: { duration: 0.65, ease: EASE, delay },
+  viewport: { once: true, amount: 0.08 },
+  transition: { duration: 0.42, ease: EASE, delay },
 })
 
 // For above-fold hero content: animate on mount, don't wait for scroll
 const heroUp = (delay = 0) => ({
-  initial: { opacity: 0, y: 14 },
+  initial: { opacity: 0, y: 10 },
   animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.65, ease: EASE, delay },
+  transition: { duration: 0.38, ease: EASE, delay },
 })
 
 // ─── DATA ────────────────────────────────────────────────────────────────────
@@ -39,7 +39,8 @@ const STATS = [
 const SERVICES: ServicePanelData[] = [
   {
     icon: '⬡', title: 'Redes & Ciberseguridad',
-    desc: 'Fortinet FortiGate, segmentación VLAN, VPN y arquitectura Zero Trust para eliminar movimientos laterales.',
+    desc: 'Segmentación y hardening de red para eliminar movimiento lateral. FortiGate NGFW, VLANs y Zero Trust arquitecturados desde el primer día, no adaptados después.',
+    outcome: 'Proyecto: 0 incidentes · 14 meses · Red distribuidora 85 hosts',
     hex: '#3b82f6', uptime: 99.7, incidents: 0,
     tags: ['FortiGate NGFW', 'VLAN', 'Zero Trust', 'VPN', 'IPS/IDS'],
     sparkline: [99.2, 99.5, 99.7, 99.6, 99.8, 99.9, 99.7, 99.8, 99.7, 99.9],
@@ -47,7 +48,8 @@ const SERVICES: ServicePanelData[] = [
   },
   {
     icon: '◉', title: 'CCTV & Videovigilancia',
-    desc: 'Cámaras IP Axis/Hikvision 4K, NVR centralizado con retención 30–90 días y analítica con IA.',
+    desc: 'Visibilidad total de tus instalaciones con detección de incidentes en tiempo real. Cámaras 4K, NVR centralizado y analítica con IA para actuar antes de que escalen.',
+    outcome: 'Proyecto: −34% robos · 96 cámaras · Retail 8 sucursales',
     hex: '#06b6d4', uptime: 99.5, incidents: 1,
     tags: ['Axis', 'NVR 4K', 'IA Analytics', 'PoE+', 'ONVIF'],
     sparkline: [99.1, 99.3, 99.5, 99.2, 99.6, 99.4, 99.5, 99.7, 99.5, 99.6],
@@ -55,7 +57,7 @@ const SERVICES: ServicePanelData[] = [
   },
   {
     icon: '⬢', title: 'Microsoft 365 & Cloud',
-    desc: 'Tenant configurado, identidades centralizadas y productividad en producción. Exchange, Teams y SharePoint gestionados por ingenieros certificados.',
+    desc: 'Microsoft 365 en producción completa en menos de 5 días hábiles: correo, colaboración y cumplimiento. Sin migraciones incompletas ni usuarios sin configurar.',
     hex: '#3b82f6', uptime: 99.9, incidents: 0,
     tags: ['Exchange', 'Teams', 'SharePoint', 'Entra ID', 'OneDrive'],
     sparkline: [99.7, 99.8, 99.9, 99.9, 99.8, 99.9, 100, 99.9, 99.9, 100],
@@ -63,7 +65,8 @@ const SERVICES: ServicePanelData[] = [
   },
   {
     icon: '⬟', title: 'Intune & Entra ID',
-    desc: 'MDM, acceso condicional, MFA por hardware y gobernanza de identidades Zero Trust.',
+    desc: 'Gobernanza total de dispositivos e identidades. Ningún endpoint sin gestionar. Ninguna credencial sin MFA. Acceso condicional por política, no por excepción.',
+    outcome: 'Proyecto: NOM-024 en 6 semanas · 62 usuarios · Salud',
     hex: '#22c55e', uptime: 99.8, incidents: 0,
     tags: ['MDM', 'MFA', 'Autopilot', 'PIM', 'Conditional Access'],
     sparkline: [99.5, 99.7, 99.8, 99.9, 99.8, 99.9, 99.8, 99.9, 99.8, 99.9],
@@ -71,7 +74,7 @@ const SERVICES: ServicePanelData[] = [
   },
   {
     icon: '◈', title: 'Continuidad & Soporte',
-    desc: 'Soporte técnico activo, revisiones periódicas de infraestructura y atención a incidentes para mantener tu operación estable post-implementación.',
+    desc: 'Revisiones proactivas periódicas y respuesta a incidentes antes de que afecten la operación. Sin contrato mínimo ni permanencia forzada.',
     hex: '#f59e0b', uptime: 99.9, incidents: 0,
     tags: ['Soporte activo', 'Revisiones', 'Atención incidentes', 'Documentación', 'Fortinet'],
     sparkline: [99.7, 99.8, 99.9, 99.8, 99.9, 99.9, 100, 99.9, 99.9, 99.9],
@@ -79,9 +82,9 @@ const SERVICES: ServicePanelData[] = [
   },
   {
     icon: '◇', title: 'Consultoría & Diagnóstico',
-    desc: 'Evaluación técnica de tu infraestructura y hoja de ruta personalizada. Informe con brechas, tecnologías recomendadas y costos en 24 h.',
+    desc: 'Mapa técnico completo de tu infraestructura en 24 horas: brechas documentadas, riesgos priorizados y propuesta de remediación con costos reales.',
     hex: '#06b6d4', uptime: 100, incidents: 0,
-    tags: ['Auditoría', 'Propuesta 24h', 'Sin costo', 'Expertos Fortinet'],
+    tags: ['Auditoría', 'Propuesta 24h', 'Sin costo', 'Ingenieros Fortinet'],
     sparkline: [100, 100, 100, 100, 100, 100, 100, 100, 100, 100],
     href: '/assessments',
   },
@@ -90,7 +93,7 @@ const SERVICES: ServicePanelData[] = [
 const STEPS = [
   { n: '01', color: '#f59e0b', bg: 'rgba(245,158,11,0.1)',  border: 'rgba(245,158,11,0.3)',  title: 'Diagnóstico',      desc: 'Evaluamos tu infraestructura: redes, identidades, dispositivos y seguridad. Informe técnico en 24 h.' },
   { n: '02', color: '#3b82f6', bg: 'rgba(59,130,246,0.1)',  border: 'rgba(59,130,246,0.3)',  title: 'Propuesta',        desc: 'Plan de trabajo con alcance, tecnologías, cronograma y cotización detallada. Sin letra pequeña.' },
-  { n: '03', color: '#22c55e', bg: 'rgba(34,197,94,0.1)',   border: 'rgba(34,197,94,0.3)',   title: 'Implementación',   desc: 'Ingenieros certificados, documentación de cada cambio y transferencia de conocimiento a tu equipo.' },
+  { n: '03', color: '#22c55e', bg: 'rgba(34,197,94,0.1)',   border: 'rgba(34,197,94,0.3)',   title: 'Implementación',   desc: 'Ingenieros especializados en campo, documentación de cada cambio y transferencia de conocimiento a tu equipo.' },
 ]
 
 const TESTIMONIALS = [
@@ -223,7 +226,7 @@ export default function HomePage() {
             </motion.div>
 
             {/* Display headline — commanding, tight, editorial */}
-            <motion.h1 {...heroUp(0.08)}
+            <motion.h1 {...heroUp(0.06)}
               className="text-[clamp(3rem,7vw,5rem)] font-black leading-[0.97] tracking-display mb-8"
             >
               Tu operación,<br />
@@ -231,12 +234,12 @@ export default function HomePage() {
               <span className="text-gradient-amber">de falla.</span>
             </motion.h1>
 
-            <motion.p {...heroUp(0.16)} className="text-zinc-400 text-[1.0625rem] leading-[1.78] max-w-[28rem] mb-10">
+            <motion.p {...heroUp(0.11)} className="text-zinc-400 text-[1.0625rem] leading-[1.78] max-w-[28rem] mb-10">
               Redes, ciberseguridad y gestión de identidad para empresas que no pueden permitirse interrupciones.
             </motion.p>
 
             {/* CTAs */}
-            <motion.div {...heroUp(0.24)} className="flex flex-col sm:flex-row gap-3 mb-6">
+            <motion.div {...heroUp(0.16)} className="flex flex-col sm:flex-row gap-3 mb-6">
               <Link href="/assessments" className="btn-amber text-[15px] px-8 py-4"
                 onClick={() => trackCTA('Hero — Solicitar diagnóstico')}>
                 Solicitar diagnóstico gratis
@@ -247,13 +250,13 @@ export default function HomePage() {
               </Link>
             </motion.div>
 
-            <motion.p {...heroUp(0.30)} className="text-xs font-medium text-zinc-600 flex items-center gap-2 mb-9">
+            <motion.p {...heroUp(0.20)} className="text-xs font-medium text-zinc-600 flex items-center gap-2 mb-9">
               <span className="w-1.5 h-1.5 rounded-full bg-noc-green animate-pulse-slow inline-block" />
               Sin contrato mínimo · Diagnóstico técnico sin costo
             </motion.p>
 
             {/* Social proof */}
-            <motion.div {...heroUp(0.36)} className="flex items-center gap-3">
+            <motion.div {...heroUp(0.24)} className="flex items-center gap-3">
               <div className="flex -space-x-2">
                 {[1,2,3,4].map(n => (
                   <div key={n} className="w-8 h-8 rounded-full border-2 border-surface-dark flex items-center justify-center"
@@ -272,7 +275,7 @@ export default function HomePage() {
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 1.1, ease: EASE, delay: 0.32 }}
+            transition={{ duration: 0.75, ease: EASE, delay: 0.18 }}
             className="relative hidden lg:flex items-center justify-center"
           >
             {/* Layered atmospheric depth behind topology */}
@@ -290,7 +293,7 @@ export default function HomePage() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 1.6, duration: 1.0, ease: EASE }}
+          transition={{ delay: 0.85, duration: 0.7, ease: EASE }}
           className="absolute bottom-8 left-1/2 -translate-x-1/2 hidden lg:flex flex-col items-center gap-2.5"
         >
           <span className="text-zinc-700 text-[9px] font-mono tracking-[0.28em] uppercase">Explorar</span>
@@ -414,7 +417,7 @@ export default function HomePage() {
                 <span className="text-gradient-green">Solo resultados.</span>
               </motion.h2>
               <motion.p {...fadeUp(0.12)} className="text-zinc-500 text-base leading-relaxed mb-10 max-w-sm">
-                Cada cliente opera con SLA documentado, KPIs comprometidos antes de iniciar y acceso a su dashboard en tiempo real.
+                Comprometemos entregables antes de iniciar y los verificamos al cierre. Sin promesas vagas, sin compromisos que no podemos cumplir.
               </motion.p>
               <motion.div {...fadeUp(0.18)}>
                 <Link href="/nosotros" className="btn-ghost text-sm">
@@ -588,7 +591,7 @@ export default function HomePage() {
             {[
               'Sin contrato mínimo',
               'Respuesta < 24 h',
-              'Ingenieros certificados',
+              'Ingenieros especializados',
               'Propuesta sin costo',
             ].map((text) => (
               <div key={text} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"

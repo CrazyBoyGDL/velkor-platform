@@ -7,6 +7,7 @@ export interface ServicePanelData {
   icon: string
   title: string
   desc: string
+  outcome?: string    // anonymized project result — shows as evidence note
   hex: string
   uptime: number      // kept for interface compatibility, not rendered
   incidents: number   // kept for interface compatibility, not rendered
@@ -16,7 +17,7 @@ export interface ServicePanelData {
 }
 
 export default function ServicePanel({ data }: { data: ServicePanelData }) {
-  const { icon, title, desc, hex, tags, href = '/servicios' } = data
+  const { icon, title, desc, outcome, hex, tags, href = '/servicios' } = data
   const ref = useRef<HTMLDivElement>(null)
 
   // Subtle 3-D tilt on hover (±2.5°) — tighter spring for premium feel
@@ -80,7 +81,16 @@ export default function ServicePanel({ data }: { data: ServicePanelData }) {
         <h3 className="text-zinc-100 font-semibold text-[15px] leading-snug mb-3">{title}</h3>
 
         {/* Description */}
-        <p className="text-zinc-500 text-sm leading-relaxed mb-5 flex-1">{desc}</p>
+        <p className="text-zinc-500 text-sm leading-relaxed mb-4 flex-1">{desc}</p>
+
+        {/* Project evidence note — anonymized case reference */}
+        {outcome && (
+          <div className="flex items-center gap-1.5 mb-4 pb-4 text-[9.5px] font-mono"
+            style={{ borderBottom: '1px solid rgba(255,255,255,0.04)', color: hex + '80' }}>
+            <span style={{ color: hex + '55' }}>↗</span>
+            {outcome}
+          </div>
+        )}
 
         {/* Tags */}
         <div className="flex flex-wrap gap-1.5 mb-5">
