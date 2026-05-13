@@ -47,6 +47,7 @@ const SERVICES: ServicePanelData[] = [
     tags: ['FortiGate NGFW', 'VLAN', 'Zero Trust', 'VPN', 'IPS/IDS'],
     sparkline: [99.2, 99.5, 99.7, 99.6, 99.8, 99.9, 99.7, 99.8, 99.7, 99.9],
     href: '/servicios/ciberseguridad',
+    ref: 'VELK-NET-001', scope: '85 hosts', sla: '99.7%',
   },
   {
     icon: '◉', title: 'CCTV & Videovigilancia',
@@ -56,6 +57,7 @@ const SERVICES: ServicePanelData[] = [
     tags: ['Axis', 'NVR 4K', 'IA Analytics', 'PoE+', 'ONVIF'],
     sparkline: [99.1, 99.3, 99.5, 99.2, 99.6, 99.4, 99.5, 99.7, 99.5, 99.6],
     href: '/servicios/videovigilancia',
+    ref: 'VELK-VID-002', scope: '96 cámaras', sla: '99.5%',
   },
   {
     icon: '⬢', title: 'Microsoft 365 & Cloud',
@@ -64,6 +66,7 @@ const SERVICES: ServicePanelData[] = [
     tags: ['Exchange', 'Teams', 'SharePoint', 'Entra ID', 'OneDrive'],
     sparkline: [99.7, 99.8, 99.9, 99.9, 99.8, 99.9, 100, 99.9, 99.9, 100],
     href: '/servicios/identidad-acceso',
+    ref: 'VELK-M365-003', scope: 'Cloud · Prod', sla: '99.9%',
   },
   {
     icon: '⬟', title: 'Intune & Entra ID',
@@ -73,6 +76,7 @@ const SERVICES: ServicePanelData[] = [
     tags: ['MDM', 'MFA', 'Autopilot', 'PIM', 'Conditional Access'],
     sparkline: [99.5, 99.7, 99.8, 99.9, 99.8, 99.9, 99.8, 99.9, 99.8, 99.9],
     href: '/servicios/identidad-acceso',
+    ref: 'VELK-IDN-004', scope: '62 usuarios', sla: '99.8%',
   },
   {
     icon: '◈', title: 'Continuidad & Soporte',
@@ -81,6 +85,7 @@ const SERVICES: ServicePanelData[] = [
     tags: ['Soporte activo', 'Revisiones', 'Atención incidentes', 'Documentación', 'Fortinet'],
     sparkline: [99.7, 99.8, 99.9, 99.8, 99.9, 99.9, 100, 99.9, 99.9, 99.9],
     href: '/assessments',
+    ref: 'VELK-OPS-005', scope: 'Multi-sede', sla: '99.9%',
   },
   {
     icon: '◇', title: 'Consultoría & Diagnóstico',
@@ -89,6 +94,7 @@ const SERVICES: ServicePanelData[] = [
     tags: ['Auditoría', 'Propuesta 24h', 'Sin costo', 'Ingenieros Fortinet'],
     sparkline: [100, 100, 100, 100, 100, 100, 100, 100, 100, 100],
     href: '/assessments',
+    ref: 'VELK-CST-006', scope: 'On-demand', sla: '24h',
   },
 ]
 
