@@ -7,20 +7,15 @@ export interface ServicePanelData {
   icon: string
   title: string
   desc: string
-  outcome?: string  // anonymized project result — evidence note
+  outcome?: string  // sanitized project evidence — what was delivered
+  scope?: string    // implementation architecture reference
   hex: string
-  uptime: number
-  incidents: number
   tags: string[]
-  sparkline: number[]
   href?: string
-  ref?: string      // kept for data compatibility, not rendered
-  scope?: string
-  sla?: string
 }
 
 export default function ServicePanel({ data }: { data: ServicePanelData }) {
-  const { icon, title, desc, outcome, hex, tags, href = '/servicios' } = data
+  const { icon, title, desc, outcome, scope, hex, tags, href = '/servicios' } = data
   const cardRef = useRef<HTMLDivElement>(null)
 
   // Subtle 3-D tilt on hover (±2°) — physical inertia spring
@@ -101,10 +96,18 @@ export default function ServicePanel({ data }: { data: ServicePanelData }) {
           ))}
         </div>
 
-        {/* Outcome note — anonymized case reference */}
+        {/* Architecture scope — implementation reference */}
+        {scope && (
+          <div className="text-[9.5px] font-mono mb-3 leading-relaxed"
+            style={{ color: 'rgba(100,116,139,0.40)' }}>
+            {scope}
+          </div>
+        )}
+
+        {/* Outcome — sanitized project evidence */}
         {outcome && (
           <div className="text-[10px] font-mono mb-4"
-            style={{ color: 'rgba(100,116,139,0.45)', borderTop: '1px solid rgba(255,255,255,0.04)', paddingTop: '0.75rem' }}>
+            style={{ color: 'rgba(100,116,139,0.50)', borderTop: '1px solid rgba(255,255,255,0.04)', paddingTop: '0.75rem' }}>
             {outcome}
           </div>
         )}
