@@ -1,6 +1,7 @@
 'use client'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
+import { reveal as fadeUp } from '@/lib/motion'
 
 const CATEGORIES = [
   {
@@ -53,13 +54,6 @@ const CATEGORIES = [
   },
 ]
 
-const fadeUp = (delay = 0) => ({
-  initial: { opacity: 0, y: 20 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, amount: 0.15 },
-  transition: { duration: 0.5, ease: 'easeOut', delay },
-})
-
 export default function ServicesPage() {
   return (
     <div className="min-h-screen py-16 px-4 sm:px-8">
@@ -78,7 +72,7 @@ export default function ServicesPage() {
 
         <div className="space-y-16">
           {CATEGORIES.map(({ id, label, hex, card, services }, ci) => (
-            <motion.div key={id} {...fadeUp(ci * 0.05)}>
+            <motion.div key={id} {...fadeUp(ci * 0.010)}>
               <div className="flex items-center gap-4 mb-6">
                 <div className="w-2 h-2 rounded-full" style={{ background: hex }} />
                 <h2 className="text-xl font-bold" style={{ color: hex }}>{label}</h2>
@@ -88,7 +82,7 @@ export default function ServicesPage() {
                 {services.map(({ name, desc }, si) => (
                   <motion.div
                     key={name}
-                    {...fadeUp(si * 0.05 + ci * 0.03 + 0.05)}
+                    {...fadeUp(si * 0.010)}
                     className={`${card} p-6 rounded-xl border transition-all duration-300 group`}
                     style={{ borderLeftColor: hex, borderLeftWidth: 3 }}
                   >
@@ -101,7 +95,7 @@ export default function ServicesPage() {
           ))}
         </div>
 
-        <motion.div {...fadeUp(0.3)} className="mt-20 card border-amber/30 text-center p-10 max-w-xl mx-auto">
+        <motion.div {...fadeUp(0)} className="mt-20 card border-amber/30 text-center p-10 max-w-xl mx-auto">
           <h3 className="text-xl font-black text-noc-white mb-3">¿Necesitas una solución a medida?</h3>
           <p className="text-zinc-500 mb-6 text-sm">
             Evaluamos tu infraestructura actual y diseñamos un paquete de servicios personalizado.

@@ -1,15 +1,7 @@
 'use client'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-
-const EASE = [0.25, 0, 0, 1] as const
-
-const fadeUp = (delay = 0) => ({
-  initial: { opacity: 0 },
-  whileInView: { opacity: 1 },
-  viewport: { once: true, amount: 0.05 },
-  transition: { duration: 0.20, ease: EASE, delay },
-})
+import { reveal as fadeUp } from '@/lib/motion'
 
 export type CasePhase = {
   label: string
@@ -115,7 +107,7 @@ function CaseCard({ c, i }: { c: CaseStudy; i: number }) {
 
   return (
     <motion.article
-      {...fadeUp(i * 0.06)}
+      {...fadeUp(i * 0.010)}
       className="card overflow-hidden"
       style={{ borderLeft: `3px solid ${hex}50` }}
     >
@@ -213,7 +205,7 @@ export default function CasosContent({ cases }: { cases: CaseStudy[] }) {
 
       {/* NDA note */}
       <motion.p
-        {...fadeUp(0.2)}
+        {...fadeUp(0)}
         className="text-center text-[10px] font-mono mt-6"
         style={{ color: 'rgba(255,255,255,0.14)' }}
       >
@@ -222,7 +214,7 @@ export default function CasosContent({ cases }: { cases: CaseStudy[] }) {
 
       {/* Bottom CTA */}
       <motion.div
-        {...fadeUp(0.28)}
+        {...fadeUp(0)}
         className="mt-12 card p-10 text-center"
         style={{ borderColor: 'rgba(37,99,235,0.18)' }}
       >

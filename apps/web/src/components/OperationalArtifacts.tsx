@@ -1,14 +1,6 @@
 'use client'
 import { motion } from 'framer-motion'
-
-const EASE = [0.25, 0, 0, 1] as const
-
-const fadeUp = (delay = 0) => ({
-  initial: { opacity: 0 },
-  whileInView: { opacity: 1 },
-  viewport: { once: true, amount: 0.05 },
-  transition: { duration: 0.20, ease: EASE, delay },
-})
+import { reveal as fadeUp } from '@/lib/motion'
 
 // ── Shared primitives ─────────────────────────────────────────────────────────
 function DocLine() {
@@ -179,19 +171,19 @@ export default function OperationalArtifacts() {
 
         {/* Three-column artifact grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <motion.div {...fadeUp(0.04)} className="h-full">
+          <motion.div {...fadeUp(0)} className="h-full">
             <AssessmentCard />
           </motion.div>
-          <motion.div {...fadeUp(0.09)} className="h-full">
+          <motion.div {...fadeUp(0.010)} className="h-full">
             <TimelineCard />
           </motion.div>
-          <motion.div {...fadeUp(0.14)} className="h-full">
+          <motion.div {...fadeUp(0.020)} className="h-full">
             <PolicyCard />
           </motion.div>
         </div>
 
         {/* Authenticity disclaimer */}
-        <motion.p {...fadeUp(0.18)}
+        <motion.p {...fadeUp(0)}
           className="text-center text-[10px] font-mono mt-5"
           style={{ color: 'rgba(255,255,255,0.14)' }}>
           Datos de proyecto anonimizados · Referencias completas disponibles bajo NDA

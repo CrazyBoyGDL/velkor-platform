@@ -1,15 +1,6 @@
 'use client'
 import { motion } from 'framer-motion'
-
-const EASE = [0.25, 0, 0, 1] as const
-
-// Settle in — opacity only, no y displacement
-const appear = (delay = 0) => ({
-  initial:    { opacity: 0 },
-  whileInView:{ opacity: 1 },
-  viewport:   { once: true, amount: 0.05 },
-  transition: { duration: 0.22, ease: EASE, delay },
-})
+import { reveal as appear } from '@/lib/motion'
 
 // Three structural failure patterns observed in SMB/mid-market engagements
 const RISKS = [
@@ -96,12 +87,12 @@ export default function RiskExposure() {
 
           {/* Left: editorial statement */}
           <div className="lg:sticky lg:top-28">
-            <motion.h2 {...appear(0.04)}
+            <motion.h2 {...appear(0)}
               className="text-2xl sm:text-[2rem] font-bold text-noc-white leading-tight tracking-heading mb-4">
               Las brechas que ya<br />
               <span className="text-zinc-600">existen en tu red.</span>
             </motion.h2>
-            <motion.p {...appear(0.07)} className="text-zinc-600 text-sm leading-relaxed max-w-xs">
+            <motion.p {...appear(0.010)} className="text-zinc-600 text-sm leading-relaxed max-w-xs">
               Estos vectores aparecen en más del 80% de los diagnósticos que realizamos. No son hipotéticos.
             </motion.p>
           </div>
@@ -109,7 +100,7 @@ export default function RiskExposure() {
           {/* Right: three risk items as editorial text blocks */}
           <div>
             {RISKS.map((risk, i) => (
-              <RiskItem key={risk.title} risk={risk} delay={i * 0.04 + 0.06} />
+              <RiskItem key={risk.title} risk={risk} delay={i * 0.010} />
             ))}
           </div>
 

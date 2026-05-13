@@ -1,6 +1,7 @@
 'use client'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
+import { reveal as fadeUp } from '@/lib/motion'
 
 export type BlogPost = {
   slug: string
@@ -11,13 +12,6 @@ export type BlogPost = {
   readTime: string
   hex: string
 }
-
-const fadeUp = (delay = 0) => ({
-  initial: { opacity: 0, y: 20 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, amount: 0.2 },
-  transition: { duration: 0.5, ease: 'easeOut', delay },
-})
 
 export default function BlogList({ posts }: { posts: BlogPost[] }) {
   const [featured, ...rest] = posts
@@ -65,7 +59,7 @@ export default function BlogList({ posts }: { posts: BlogPost[] }) {
         {rest.map(({ slug, title, excerpt, category, date, readTime, hex }, i) => (
           <Link key={slug} href={`/blog/${slug}`} className="group">
             <motion.article
-              {...fadeUp(i * 0.06 + 0.15)}
+              {...fadeUp(i * 0.010)}
               className="card p-5 hover:border-zinc-700 transition-all duration-300 cursor-pointer flex flex-col h-full"
               style={{ borderTopColor: hex, borderTopWidth: 2 }}
             >

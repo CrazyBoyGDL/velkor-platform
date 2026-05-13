@@ -1,6 +1,7 @@
 'use client'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
+import { reveal as fadeUp } from '@/lib/motion'
 
 const STATS = [
   { val: '2016',  label: 'Año de fundación',      color: '#f59e0b' },
@@ -61,13 +62,6 @@ const CERTS = [
   { label: 'Cisco · HP Aruba',   color: '#3b82f6' },
 ]
 
-const fadeUp = (delay = 0) => ({
-  initial: { opacity: 0, y: 16 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, amount: 0.12 },
-  transition: { duration: 0.65, ease: [0.16, 1, 0.3, 1], delay },
-})
-
 export default function NosotrosPage() {
   return (
     <div className="min-h-screen py-16 px-4 sm:px-8">
@@ -86,7 +80,7 @@ export default function NosotrosPage() {
         </motion.div>
 
         {/* Stats strip */}
-        <motion.div {...fadeUp(0.1)} className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-16">
+        <motion.div {...fadeUp(0)} className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-16">
           {STATS.map(({ val, label, color }) => (
             <div key={label} className="card p-5 text-center hover:border-zinc-700 transition-colors">
               <div className="text-3xl font-black font-mono mb-1" style={{ color }}>{val}</div>
@@ -96,14 +90,14 @@ export default function NosotrosPage() {
         </motion.div>
 
         {/* Values */}
-        <motion.div {...fadeUp(0.15)} className="mb-4">
+        <motion.div {...fadeUp(0)} className="mb-4">
           <span className="label block mb-6">Nuestros valores</span>
         </motion.div>
         <div className="grid sm:grid-cols-2 gap-4 mb-16">
           {VALUES.map(({ color, title, desc, icon }, i) => (
             <motion.div
               key={title}
-              {...fadeUp(i * 0.07 + 0.18)}
+              {...fadeUp(i * 0.010)}
               className="card p-6 hover:border-zinc-700 transition-all duration-300 group"
               style={{ borderLeftColor: color, borderLeftWidth: 3 }}
             >
@@ -120,7 +114,7 @@ export default function NosotrosPage() {
         </div>
 
         {/* Certs */}
-        <motion.div {...fadeUp(0.3)} className="mb-16">
+        <motion.div {...fadeUp(0)} className="mb-16">
           <span className="label block mb-5">Certificaciones</span>
           <div className="flex flex-wrap gap-3">
             {CERTS.map(({ label, color }) => (
@@ -136,7 +130,7 @@ export default function NosotrosPage() {
         </motion.div>
 
         {/* CTA */}
-        <motion.div {...fadeUp(0.35)} className="text-center border-t border-surface-border pt-14">
+        <motion.div {...fadeUp(0)} className="text-center border-t border-surface-border pt-14">
           <h3 className="text-2xl font-black text-noc-white mb-3">¿Listo para trabajar juntos?</h3>
           <p className="text-zinc-500 mb-6 max-w-sm mx-auto">
             Empieza con un diagnóstico gratuito. Sin compromiso, con resultados claros.

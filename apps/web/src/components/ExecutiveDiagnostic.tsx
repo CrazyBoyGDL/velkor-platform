@@ -1,15 +1,7 @@
 'use client'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-
-const EASE = [0.25, 0, 0, 1] as const
-
-const appear = (delay = 0) => ({
-  initial:    { opacity: 0 },
-  whileInView:{ opacity: 1 },
-  viewport:   { once: true, amount: 0.05 },
-  transition: { duration: 0.22, ease: EASE, delay },
-})
+import { reveal as appear } from '@/lib/motion'
 
 // Four diagnostic questions — the ones a senior engineer asks on a first visit
 const QUESTIONS = [
@@ -52,12 +44,12 @@ export default function ExecutiveDiagnostic() {
         </div>
 
         <div className="grid lg:grid-cols-[1fr_1fr] gap-16 items-end mb-12">
-          <motion.h2 {...appear(0.04)}
+          <motion.h2 {...appear(0)}
             className="text-2xl sm:text-[2rem] font-bold text-noc-white leading-tight tracking-heading">
             Cuatro preguntas que<br />
             <span className="text-zinc-600">todo responsable de IT debe poder responder.</span>
           </motion.h2>
-          <motion.p {...appear(0.07)} className="text-zinc-600 text-sm leading-relaxed max-w-sm self-end">
+          <motion.p {...appear(0.010)} className="text-zinc-600 text-sm leading-relaxed max-w-sm self-end">
             Si alguna genera incertidumbre, es una brecha operacional. La evaluamos en el diagnóstico inicial, sin costo.
           </motion.p>
         </div>
@@ -67,7 +59,7 @@ export default function ExecutiveDiagnostic() {
           {QUESTIONS.map((q, i) => (
             <motion.div
               key={q.question}
-              {...appear(i * 0.05 + 0.08)}
+              {...appear(i * 0.010)}
               className="grid md:grid-cols-[1fr_1.2fr] gap-8 py-8"
               style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}
             >
@@ -89,7 +81,7 @@ export default function ExecutiveDiagnostic() {
         </div>
 
         {/* CTA */}
-        <motion.div {...appear(0.28)} className="mt-10 flex flex-col sm:flex-row items-start sm:items-center gap-5">
+        <motion.div {...appear(0)} className="mt-10 flex flex-col sm:flex-row items-start sm:items-center gap-5">
           <Link href="/assessments" className="btn-amber">
             Solicitar evaluación técnica →
           </Link>

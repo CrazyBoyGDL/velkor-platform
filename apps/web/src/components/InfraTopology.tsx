@@ -1,5 +1,6 @@
 'use client'
 import { motion } from 'framer-motion'
+import { EASE } from '@/lib/motion'
 
 // ─── Canvas + geometry constants ──────────────────────────────────────────────
 const W = 560, H = 400
@@ -20,8 +21,6 @@ const R2 = 152                     // outer: edge/cloud/audit nodes
 // Node hexagon sizes
 const R_HEX1 = 13                  // inner node hexagon
 const R_HEX2 = 10                  // outer node hexagon
-
-const EASE = [0.16, 1, 0.3, 1] as const
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 /** Cartesian from polar, relative to hub center */
@@ -149,7 +148,7 @@ export default function InfraTopology() {
                   strokeDashoffset: [DASH_R1, 0],
                 }}
                 transition={{
-                  opacity: { duration: 0.35, ease: EASE as any, delay: i * 0.07 + 0.45 },
+                  opacity: { duration: 0.12, ease: EASE as any, delay: 0.08 },
                   strokeDashoffset: {
                     repeat: Infinity,
                     duration: 2.1 + i * 0.17,
@@ -183,7 +182,7 @@ export default function InfraTopology() {
                   strokeDashoffset: [DASH_R2, 0],
                 }}
                 transition={{
-                  opacity: { duration: 0.35, ease: EASE as any, delay: i * 0.1 + 0.8 },
+                  opacity: { duration: 0.12, ease: EASE as any, delay: 0.08 },
                   strokeDashoffset: {
                     repeat: Infinity,
                     duration: 3.8 + i * 0.25,
@@ -216,7 +215,7 @@ export default function InfraTopology() {
             <motion.g key={`cross-${i}`}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, ease: EASE as any, delay: 1.1 + i * 0.18 }}
+              transition={{ duration: 0.15, ease: EASE as any, delay: 0.12 }}
             >
               <path d={path}
                 stroke={color} strokeWidth={0.75} strokeOpacity={0.22}
@@ -247,7 +246,7 @@ export default function InfraTopology() {
               key={`n1-${deg}`}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, ease: EASE as any, delay: i * 0.07 + 0.42 }}
+              transition={{ duration: 0.18, ease: EASE as any, delay: 0.08 }}
             >
               {/* Breathing ambient halo — calm living-system pulse */}
               <motion.circle
@@ -305,7 +304,7 @@ export default function InfraTopology() {
               key={`n2-${deg}`}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, ease: EASE as any, delay: i * 0.1 + 0.88 }}
+              transition={{ duration: 0.18, ease: EASE as any, delay: 0.08 }}
             >
               <circle cx={nx} cy={ny} r={16} fill={color} fillOpacity={0.03} />
               <polygon
@@ -346,7 +345,7 @@ export default function InfraTopology() {
         <motion.g
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.75, ease: EASE as any, delay: 0.18 }}
+          transition={{ duration: 0.18, ease: EASE as any, delay: 0.05 }}
         >
           {/* Ambient breathing glow — cool steel, not amber */}
           <motion.circle

@@ -1,14 +1,6 @@
 'use client'
 import { motion } from 'framer-motion'
-
-const EASE = [0.25, 0, 0, 1] as const
-
-const fadeUp = (delay = 0) => ({
-  initial: { opacity: 0 },
-  whileInView: { opacity: 1 },
-  viewport: { once: true, amount: 0.05 },
-  transition: { duration: 0.20, ease: EASE, delay },
-})
+import { reveal as fadeUp } from '@/lib/motion'
 
 // Operational layers — each depends on the one below
 const LAYERS = [
@@ -147,7 +139,7 @@ export default function ServiceEcosystem() {
           <div>
             {LAYERS.map((layer, i) => (
               <div key={layer.tier}>
-                <Layer {...layer} delay={i * 0.08 + 0.06} />
+                <Layer {...layer} delay={i * 0.010} />
                 {i < LAYERS.length - 1 && (
                   <LayerConnector note={LAYERS[i + 1].dependency} />
                 )}

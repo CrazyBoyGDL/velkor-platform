@@ -10,27 +10,9 @@ import ServiceEcosystem from '@/components/ServiceEcosystem'
 import RiskExposure from '@/components/RiskExposure'
 import ExecutiveDiagnostic from '@/components/ExecutiveDiagnostic'
 import { trackCTA } from '@/components/Analytics'
+import { EASE, reveal as fadeUp, enter as heroUp } from '@/lib/motion'
 
 const NetworkBg = dynamic(() => import('@/components/NetworkBg'), { ssr: false })
-
-// ─── Motion helpers ───────────────────────────────────────────────────────────
-// easeOutExpo — fast deceleration that reads as expensive and intentional
-const EASE = [0.16, 1, 0.3, 1] as const
-
-// For below-fold content: triggers when element enters viewport
-const fadeUp = (delay = 0) => ({
-  initial: { opacity: 0, y: 3 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, amount: 0.05 },
-  transition: { duration: 0.22, ease: EASE, delay },
-})
-
-// For above-fold hero content: animate on mount, don't wait for scroll
-const heroUp = (delay = 0) => ({
-  initial: { opacity: 0, y: 3 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.20, ease: EASE, delay },
-})
 
 // ─── DATA ────────────────────────────────────────────────────────────────────
 const STATS = [
@@ -160,9 +142,9 @@ function SectionHeader({ eyebrow, title, sub, align = 'center' }: {
   const subCls = align === 'left' ? 'text-zinc-500 mt-4 max-w-xl text-base leading-relaxed' : 'text-zinc-500 mt-4 max-w-xl mx-auto text-base leading-relaxed'
   return (
     <div className={cls}>
-      <motion.span {...fadeUp(0)}    className="label block mb-4">{eyebrow}</motion.span>
-      <motion.h2  {...fadeUp(0.06)} className="text-2xl sm:text-[2.4rem] font-bold text-noc-white leading-tight tracking-heading">{title}</motion.h2>
-      {sub && <motion.p {...fadeUp(0.12)} className={subCls}>{sub}</motion.p>}
+      <motion.span {...fadeUp(0)}     className="label block mb-4">{eyebrow}</motion.span>
+      <motion.h2  {...fadeUp(0.010)} className="text-2xl sm:text-[2.4rem] font-bold text-noc-white leading-tight tracking-heading">{title}</motion.h2>
+      {sub && <motion.p {...fadeUp(0.020)} className={subCls}>{sub}</motion.p>}
     </div>
   )
 }
@@ -213,7 +195,7 @@ export default function HomePage() {
           style={{ width: '62%' }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 1.1, ease: EASE, delay: 0.10 }}
+          transition={{ duration: 0.18, ease: EASE, delay: 0.05 }}
         >
           {/* Radial atmosphere — depth behind the topology */}
           <div className="absolute inset-0" style={{
@@ -249,8 +231,8 @@ export default function HomePage() {
               </span>
             </motion.div>
 
-            {/* Headline — editorial weight, tighter scale */}
-            <motion.h1 {...heroUp(0.06)}
+            {/* Headline */}
+            <motion.h1 {...heroUp(0.03)}
               className="font-extrabold leading-[0.95] tracking-display mb-5"
               style={{ fontSize: 'clamp(2.1rem, 4.2vw, 3.4rem)' }}
             >
@@ -259,8 +241,8 @@ export default function HomePage() {
               <span className="text-gradient-steel">de falla.</span>
             </motion.h1>
 
-            {/* Subtext — technical positioning, not benefit list */}
-            <motion.p {...heroUp(0.09)}
+            {/* Subtext */}
+            <motion.p {...heroUp(0.05)}
               className="text-zinc-500 leading-[1.72] mb-9"
               style={{ fontSize: '0.9375rem', maxWidth: '24rem' }}
             >
@@ -268,8 +250,8 @@ export default function HomePage() {
               Tres capas de infraestructura que funcionan como un sistema.
             </motion.p>
 
-            {/* CTAs — present but not dominating */}
-            <motion.div {...heroUp(0.13)} className="flex flex-col sm:flex-row gap-2.5 mb-8">
+            {/* CTAs */}
+            <motion.div {...heroUp(0.07)} className="flex flex-col sm:flex-row gap-2.5 mb-8">
               <Link href="/assessments" className="btn-amber text-[13.5px] px-6 py-3"
                 onClick={() => trackCTA('Hero — Solicitar diagnóstico')}>
                 Solicitar diagnóstico →
@@ -280,8 +262,8 @@ export default function HomePage() {
               </Link>
             </motion.div>
 
-            {/* Operational context — factual, no persuasion mechanics */}
-            <motion.p {...heroUp(0.17)}
+            {/* Operational context */}
+            <motion.p {...heroUp(0.09)}
               className="font-mono text-zinc-600"
               style={{ fontSize: '10.5px', letterSpacing: '0.02em' }}
             >
@@ -291,17 +273,17 @@ export default function HomePage() {
           </div>
         </motion.div>
 
-        {/* ── Scroll cue — quiet ── */}
+        {/* ── Scroll cue ── */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 1.0, duration: 0.6, ease: EASE }}
-          className="absolute bottom-7 left-1/2 -translate-x-1/2 hidden lg:flex flex-col items-center gap-2"
+          transition={{ delay: 0.8, duration: 0.4, ease: EASE }}
+          className="absolute bottom-7 left-1/2 -translate-x-1/2 hidden lg:flex flex-col items-center"
         >
           <motion.div
-            animate={{ y: [0, 5, 0] }}
-            transition={{ repeat: Infinity, duration: 3.2, ease: 'easeInOut', delay: 2.5 }}
-            className="w-px h-6 bg-gradient-to-b from-zinc-700 to-transparent"
+            animate={{ scaleY: [1, 0.6, 1] }}
+            transition={{ repeat: Infinity, duration: 4.5, ease: 'easeInOut', delay: 3 }}
+            className="w-px h-5 origin-top bg-gradient-to-b from-zinc-700 to-transparent"
           />
         </motion.div>
       </section>
@@ -325,7 +307,7 @@ export default function HomePage() {
           {/* Editorial stat strip — numbers breathe in open space, no card boxes */}
           <div className="grid grid-cols-2 md:grid-cols-4">
             {STATS.map(({ val, suf, label, sub, color, prefix }, i) => (
-              <motion.div key={label} {...fadeUp(i * 0.04 + 0.04)}
+              <motion.div key={label} {...fadeUp(i * 0.010)}
                 className={[
                   'px-6 sm:px-8 py-10',
                   i % 2 === 1             ? 'border-l border-surface-border' : '',
@@ -364,26 +346,26 @@ export default function HomePage() {
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-10">
             <div>
               <motion.span {...fadeUp(0)} className="label block mb-4">Lo que hacemos</motion.span>
-              <motion.h2 {...fadeUp(0.06)} className="text-2xl sm:text-[2.3rem] font-bold text-noc-white leading-tight tracking-heading">
+              <motion.h2 {...fadeUp(0.010)} className="text-2xl sm:text-[2.3rem] font-bold text-noc-white leading-tight tracking-heading">
                 Infraestructura IT<br />
                 <span className="text-gradient-white">de principio a fin</span>
               </motion.h2>
             </div>
-            <motion.div {...fadeUp(0.1)}>
+            <motion.div {...fadeUp(0)}>
               <Link href="/servicios" className="btn-ghost text-sm whitespace-nowrap">Catálogo completo →</Link>
             </motion.div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {SERVICES.map((svc, i) => (
-              <motion.div key={svc.title} {...fadeUp(i * 0.025)}>
+              <motion.div key={svc.title} {...fadeUp(i * 0.010)}>
                 <ServicePanel data={svc} />
               </motion.div>
             ))}
           </div>
 
           {/* ── Micro CTA after services ── */}
-          <motion.div {...fadeUp(0.2)} className="mt-8">
+          <motion.div {...fadeUp(0)} className="mt-8">
             <CtaStrip
               text="¿No sabes qué servicio necesitas? 15 minutos con un ingeniero lo aclaran."
               cta="Diagnóstico gratuito"
@@ -404,15 +386,15 @@ export default function HomePage() {
             {/* Left: editorial statement */}
             <div className="lg:sticky lg:top-32">
               <motion.span {...fadeUp(0)} className="label block mb-5">Por qué elegirnos</motion.span>
-              <motion.h2 {...fadeUp(0.06)}
+              <motion.h2 {...fadeUp(0.010)}
                 className="text-2xl sm:text-[2.3rem] font-bold text-noc-white leading-tight tracking-heading mb-6">
                 Sin compromisos<br />vacíos.<br />
                 <span className="text-gradient-green">Solo resultados.</span>
               </motion.h2>
-              <motion.p {...fadeUp(0.12)} className="text-zinc-500 text-base leading-relaxed mb-10 max-w-sm">
+              <motion.p {...fadeUp(0.020)} className="text-zinc-500 text-base leading-relaxed mb-10 max-w-sm">
                 Comprometemos entregables antes de iniciar y los verificamos al cierre. Sin promesas vagas, sin compromisos que no podemos cumplir.
               </motion.p>
-              <motion.div {...fadeUp(0.18)}>
+              <motion.div {...fadeUp(0)}>
                 <Link href="/nosotros" className="btn-ghost text-sm">
                   Conocer al equipo →
                 </Link>
@@ -422,7 +404,7 @@ export default function HomePage() {
             {/* Right: differentiator list — editorial, not card grid */}
             <div>
               {DIFFERENTIATORS.map(({ label, sub }, i) => (
-                <motion.div key={label} {...fadeUp(i * 0.04)}
+                <motion.div key={label} {...fadeUp(0)}
                   className="flex items-start gap-5 py-5 group"
                   style={{ borderBottom: '1px solid rgba(255,255,255,0.045)' }}
                 >
@@ -467,7 +449,7 @@ export default function HomePage() {
               style={{ borderTop: '1px dashed rgba(100,116,139,0.12)' }} />
 
             {STEPS.map(({ n, color, bg, border, title, desc }, i) => (
-              <motion.div key={n} {...fadeUp(i * 0.1)} className="card p-8 relative overflow-hidden">
+              <motion.div key={n} {...fadeUp(0)} className="card p-8 relative overflow-hidden">
                 {/* Large typographic step number — editorial depth element */}
                 <div className="absolute right-5 top-3 font-mono font-black leading-none select-none pointer-events-none tabular-nums"
                   style={{ fontSize: '5.5rem', color, opacity: 0.045 }}>
@@ -534,7 +516,7 @@ export default function HomePage() {
             {/* Secondary testimonials — right 2/5, minimal */}
             <div className="md:col-span-2 flex flex-col gap-0">
               {TESTIMONIALS.slice(1).map(({ quote, author, role, initials }, i) => (
-                <motion.div key={author} {...fadeUp((i + 1) * 0.07)} className="flex flex-col flex-1 py-6 pl-0 md:pl-8 border-b border-surface-border last:border-b-0">
+                <motion.div key={author} {...fadeUp(0)} className="flex flex-col flex-1 py-6 pl-0 md:pl-8 border-b border-surface-border last:border-b-0">
                   <div className="text-xl font-black leading-none text-zinc-700 mb-3 select-none">&ldquo;</div>
                   <p className="text-zinc-400 text-sm leading-relaxed flex-1 mb-5">{quote}</p>
                   <div className="flex items-center gap-2.5 pt-4" style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
@@ -553,7 +535,7 @@ export default function HomePage() {
 
           </div>
 
-          <motion.div {...fadeUp(0.2)}>
+          <motion.div {...fadeUp(0)}>
             <CtaStrip
               text="Podemos mostrar resultados similares en tu infraestructura. El diagnóstico no tiene costo."
               cta="Solicitar diagnóstico"
