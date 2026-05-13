@@ -58,7 +58,7 @@ function outerArc(ax: number, ay: number, bx: number, by: number): string {
 // Angles measured from +x axis (standard SVG/math convention)
 const INNER_NODES = [
   // Security / network perimeter cluster (upper-left)
-  { deg: -82, color: '#f59e0b', label: 'NGFW',     detail: 'FortiGate · Hardened',  dx:  0,  dy: -34, anchor: 'middle' as const },
+  { deg: -82, color: '#3b82f6', label: 'NGFW',     detail: 'FortiGate · Hardened',  dx:  0,  dy: -34, anchor: 'middle' as const },
   { deg: -18, color: '#3b82f6', label: 'NETWORK',  detail: 'VLAN · Segmentación',   dx:  28, dy:  -6, anchor: 'start'  as const },
   // Identity / compliance cluster (right)
   { deg:  42, color: '#22c55e', label: 'IDENTITY', detail: 'Entra ID · SSO',         dx:  28, dy:  -6, anchor: 'start'  as const },
@@ -70,17 +70,19 @@ const INNER_NODES = [
 
 // Outer edge / cloud / audit nodes — smaller, dimmer, more peripheral
 const OUTER_NODES = [
-  { deg: -52, color: '#52525b', label: 'WAN',   detail: 'Edge · ISP',      dx:  0,  dy: -26, anchor: 'middle' as const },
+  { deg: -52, color: '#475569', label: 'WAN',   detail: 'Edge · ISP',      dx:  0,  dy: -26, anchor: 'middle' as const },
   { deg:  14, color: '#22c55e', label: 'FIDO2', detail: 'MFA · Hardware',  dx:  24, dy:  -4, anchor: 'start'  as const },
-  { deg: 178, color: '#f59e0b', label: 'AUDIT', detail: 'Log · SIEM',      dx: -24, dy:  -4, anchor: 'end'    as const },
+  { deg: 178, color: '#64748b', label: 'AUDIT', detail: 'Log · SIEM',      dx: -24, dy:  -4, anchor: 'end'    as const },
 ] as const
 
 // Lateral cross-connections (between related inner nodes, not through hub)
 const CROSS_LINKS = [
-  // FortiGate enforces policy on internal network
-  { from: 0, to: 1, color: '#f59e0b', label: 'Policy·L3' },
-  // Identity governs endpoint access
+  // FortiGate enforces policy on internal network segment
+  { from: 0, to: 1, color: '#3b82f6', label: 'Policy·L3' },
+  // Identity governs endpoint access via MDM
   { from: 2, to: 3, color: '#22c55e', label: 'MDM Sync' },
+  // M365 authenticates via Entra ID — cloud identity plane
+  { from: 4, to: 2, color: '#3b82f6', label: 'Auth·SSO' },
 ] as const
 
 // Dash cycle lengths for spoke animation (dash + gap = period)
@@ -108,19 +110,19 @@ export default function InfraTopology() {
             inner zone / security perimeter / edge+cloud plane
         ══════════════════════════════════════════════════════════ */}
         <circle cx={CX} cy={CY} r={R_RING_OUTER}
-          stroke="rgba(255,255,255,0.022)" strokeWidth={0.5} strokeDasharray="1.5 8" />
+          stroke="rgba(56,100,160,0.08)" strokeWidth={0.6} strokeDasharray="1.5 8" />
         <circle cx={CX} cy={CY} r={R_RING_MID}
-          stroke="rgba(255,255,255,0.028)" strokeWidth={0.75} strokeDasharray="2 7" />
+          stroke="rgba(56,100,160,0.11)" strokeWidth={0.75} strokeDasharray="2 7" />
         <circle cx={CX} cy={CY} r={R_RING_INNER}
-          stroke="rgba(255,255,255,0.018)" strokeWidth={0.5} strokeDasharray="1 8" />
+          stroke="rgba(56,100,160,0.06)" strokeWidth={0.5} strokeDasharray="1 8" />
 
         {/* Outer ring accent marks at each node's angular position */}
         {INNER_NODES.map(({ deg, color }) => {
           const [rx, ry] = polar(deg, R_RING_OUTER)
           return (
             <circle key={`rim-${deg}`}
-              cx={rx} cy={ry} r={1.5}
-              fill={color} fillOpacity={0.22} />
+              cx={rx} cy={ry} r={1.8}
+              fill={color} fillOpacity={0.28} />
           )
         })}
 
@@ -247,8 +249,15 @@ export default function InfraTopology() {
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5, ease: EASE as any, delay: i * 0.07 + 0.42 }}
             >
-              {/* Ambient halo */}
-              <circle cx={nx} cy={ny} r={22} fill={color} fillOpacity={0.04} />
+              {/* Breathing ambient halo — calm living-system pulse */}
+              <motion.circle
+                cx={nx} cy={ny} r={18}
+                fill={color} fillOpacity={0}
+                animate={{ r: [16, 24, 16], fillOpacity: [0.035, 0.008, 0.035] }}
+                transition={{ repeat: Infinity, duration: 5.5 + i * 1.1, ease: 'easeInOut', delay: i * 0.55 }}
+              />
+              {/* Static ambient halo */}
+              <circle cx={nx} cy={ny} r={20} fill={color} fillOpacity={0.04} />
               {/* Hexagonal node body */}
               <polygon
                 points={hexPts(nx, ny, R_HEX1)}
@@ -339,39 +348,39 @@ export default function InfraTopology() {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.75, ease: EASE as any, delay: 0.18 }}
         >
-          {/* Ambient breathing glow */}
+          {/* Ambient breathing glow — cool steel, not amber */}
           <motion.circle
             cx={CX} cy={CY} r={38}
-            fill="rgba(245,158,11,0.05)"
-            animate={{ r: [34, 42, 34], opacity: [0.85, 0.4, 0.85] }}
-            transition={{ repeat: Infinity, duration: 4.8, ease: 'easeInOut' }}
+            fill="rgba(100,116,139,0.05)"
+            animate={{ r: [32, 42, 32], opacity: [0.70, 0.30, 0.70] }}
+            transition={{ repeat: Infinity, duration: 5.5, ease: 'easeInOut' }}
           />
-          {/* Outer orbit ring — dashed hexagonal orbit */}
+          {/* Outer orbit ring — dashed hexagonal reference plane */}
           <polygon
             points={hexPts(CX, CY, R_HUB + 8)}
-            stroke="rgba(245,158,11,0.14)" strokeWidth={0.75}
+            stroke="rgba(148,163,184,0.15)" strokeWidth={0.75}
             strokeDasharray="2 4" fill="none"
           />
-          {/* Main hub hexagon */}
+          {/* Main hub hexagon — steel/platinum */}
           <polygon
             points={hexPts(CX, CY, R_HUB)}
-            stroke="rgba(245,158,11,0.58)" strokeWidth={1.25}
-            fill="rgba(245,158,11,0.065)"
+            stroke="rgba(148,163,184,0.50)" strokeWidth={1.25}
+            fill="rgba(148,163,184,0.055)"
           />
-          {/* Inner structural hexagon — precision detail */}
+          {/* Inner structural hexagon — precision engineering mark */}
           <polygon
             points={hexPts(CX, CY, 10)}
-            stroke="rgba(245,158,11,0.24)" strokeWidth={0.75}
-            fill="rgba(245,158,11,0.03)"
+            stroke="rgba(100,116,139,0.22)" strokeWidth={0.75}
+            fill="rgba(100,116,139,0.03)"
           />
-          {/* Hub identity */}
+          {/* Hub identity — engineered confidence */}
           <text
             x={CX} y={CY - 2}
             textAnchor="middle"
             fontSize={7}
             fontFamily="'JetBrains Mono', 'Fira Code', monospace"
             fontWeight="700"
-            fill="rgba(245,158,11,0.90)"
+            fill="rgba(226,232,240,0.88)"
             letterSpacing="0.14em"
           >
             VELKOR
@@ -381,7 +390,7 @@ export default function InfraTopology() {
             textAnchor="middle"
             fontSize={5.5}
             fontFamily="'JetBrains Mono', 'Fira Code', monospace"
-            fill="rgba(245,158,11,0.36)"
+            fill="rgba(100,116,139,0.48)"
             letterSpacing="0.10em"
           >
             PLATFORM
