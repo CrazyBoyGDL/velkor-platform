@@ -3,7 +3,7 @@ import { useRef, useEffect, useState } from 'react'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
 import { motion, useScroll, useTransform } from 'framer-motion'
-import InfraTopology from '@/components/InfraTopology'
+import HeroOperationalFrame from '@/components/HeroOperationalFrame'
 import ServicePanel, { type ServicePanelData } from '@/components/ServicePanel'
 import OperationalArtifacts from '@/components/OperationalArtifacts'
 import ServiceEcosystem from '@/components/ServiceEcosystem'
@@ -269,21 +269,14 @@ export default function HomePage() {
             </motion.div>
           </div>
 
-          {/* Right: Infrastructure topology — architectural visualization */}
+          {/* Right: Operational command frame — living infrastructure view */}
           <motion.div
-            initial={{ opacity: 0, x: 20 }}
+            initial={{ opacity: 0, x: 16 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.75, ease: EASE, delay: 0.18 }}
+            transition={{ duration: 0.75, ease: EASE, delay: 0.22 }}
             className="relative hidden lg:flex items-center justify-center"
           >
-            {/* Layered atmospheric depth behind topology */}
-            <div className="absolute inset-0 pointer-events-none">
-              <div className="absolute inset-0"
-                style={{ background: 'radial-gradient(ellipse 90% 70% at 50% 50%, rgba(59,130,246,0.03) 0%, transparent 65%)' }} />
-              <div className="absolute inset-0"
-                style={{ background: 'radial-gradient(ellipse 55% 45% at 58% 38%, rgba(37,99,235,0.012) 0%, transparent 60%)' }} />
-            </div>
-            <InfraTopology />
+            <HeroOperationalFrame />
           </motion.div>
         </motion.div>
 
