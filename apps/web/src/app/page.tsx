@@ -17,17 +17,17 @@ const EASE = [0.16, 1, 0.3, 1] as const
 
 // For below-fold content: triggers when element enters viewport
 const fadeUp = (delay = 0) => ({
-  initial: { opacity: 0, y: 8 },
+  initial: { opacity: 0, y: 4 },
   whileInView: { opacity: 1, y: 0 },
   viewport: { once: true, amount: 0.08 },
-  transition: { duration: 0.35, ease: EASE, delay },
+  transition: { duration: 0.28, ease: EASE, delay },
 })
 
 // For above-fold hero content: animate on mount, don't wait for scroll
 const heroUp = (delay = 0) => ({
-  initial: { opacity: 0, y: 8 },
+  initial: { opacity: 0, y: 4 },
   animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.30, ease: EASE, delay },
+  transition: { duration: 0.22, ease: EASE, delay },
 })
 
 // ─── DATA ────────────────────────────────────────────────────────────────────
@@ -160,7 +160,7 @@ function SectionHeader({ eyebrow, title, sub, align = 'center' }: {
   return (
     <div className={cls}>
       <motion.span {...fadeUp(0)}    className="label block mb-4">{eyebrow}</motion.span>
-      <motion.h2  {...fadeUp(0.06)} className="text-3xl sm:text-[2.6rem] font-black text-noc-white leading-tight tracking-heading">{title}</motion.h2>
+      <motion.h2  {...fadeUp(0.06)} className="text-2xl sm:text-[2.4rem] font-bold text-noc-white leading-tight tracking-heading">{title}</motion.h2>
       {sub && <motion.p {...fadeUp(0.12)} className={subCls}>{sub}</motion.p>}
     </div>
   )
@@ -223,13 +223,13 @@ export default function HomePage() {
               <span className="label text-zinc-500">CONSULTORÍA TECNOLÓGICA EMPRESARIAL</span>
             </motion.div>
 
-            {/* Display headline — commanding, tight, editorial */}
+            {/* Display headline — commanding, restrained, editorial */}
             <motion.h1 {...heroUp(0.06)}
-              className="text-[clamp(3rem,7vw,5rem)] font-black leading-[0.97] tracking-display mb-8"
+              className="text-[clamp(2.5rem,5.5vw,4.2rem)] font-extrabold leading-[0.97] tracking-display mb-8"
             >
               Tu operación,<br />
               sin puntos<br />
-              <span className="text-gradient-amber">de falla.</span>
+              <span className="text-gradient-steel">de falla.</span>
             </motion.h1>
 
             <motion.p {...heroUp(0.11)} className="text-zinc-400 text-[1.0625rem] leading-[1.78] max-w-[28rem] mb-10">
@@ -333,15 +333,21 @@ export default function HomePage() {
             <span className="label">Resultados verificados</span>
             <div className="flex-1 h-px" style={{ background: 'linear-gradient(90deg, rgba(255,255,255,0.05), transparent)' }} />
           </motion.div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+          {/* Editorial stat strip — numbers breathe in open space, no card boxes */}
+          <div className="grid grid-cols-2 md:grid-cols-4">
             {STATS.map(({ val, suf, label, sub, color, prefix }, i) => (
               <motion.div key={label} {...fadeUp(i * 0.04 + 0.04)}
-                className="card p-7 sm:p-9"
+                className={[
+                  'px-6 sm:px-8 py-10',
+                  i % 2 === 1             ? 'border-l border-surface-border' : '',
+                  i >= 2                  ? 'border-t border-surface-border md:border-t-0' : '',
+                  i > 0 && i % 2 !== 1   ? 'md:border-l md:border-surface-border' : '',
+                ].join(' ')}
               >
-                <div className="text-[2.6rem] sm:text-5xl font-black mb-3 leading-none tabular-nums tracking-[-0.03em]" style={{ color }}>
+                <div className="text-[3rem] sm:text-[3.5rem] font-black mb-2 leading-none tabular-nums tracking-[-0.03em]" style={{ color }}>
                   <Counter val={val} suf={suf} prefix={prefix ?? ''} />
                 </div>
-                <div className="text-zinc-200 text-sm font-semibold mb-1">{label}</div>
+                <div className="text-zinc-200 text-[13px] font-semibold mb-1.5">{label}</div>
                 <div className="text-zinc-600 text-xs leading-relaxed">{sub}</div>
               </motion.div>
             ))}
@@ -369,7 +375,7 @@ export default function HomePage() {
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-14">
             <div>
               <motion.span {...fadeUp(0)} className="label block mb-4">Lo que hacemos</motion.span>
-              <motion.h2 {...fadeUp(0.06)} className="text-3xl sm:text-[2.5rem] font-black text-noc-white leading-tight tracking-heading">
+              <motion.h2 {...fadeUp(0.06)} className="text-2xl sm:text-[2.3rem] font-bold text-noc-white leading-tight tracking-heading">
                 Infraestructura IT<br />
                 <span className="text-gradient-white">de principio a fin</span>
               </motion.h2>
@@ -410,7 +416,7 @@ export default function HomePage() {
             <div className="lg:sticky lg:top-32">
               <motion.span {...fadeUp(0)} className="label block mb-5">Por qué elegirnos</motion.span>
               <motion.h2 {...fadeUp(0.06)}
-                className="text-3xl sm:text-[2.6rem] font-black text-noc-white leading-tight tracking-heading mb-6">
+                className="text-2xl sm:text-[2.3rem] font-bold text-noc-white leading-tight tracking-heading mb-6">
                 Sin compromisos<br />vacíos.<br />
                 <span className="text-gradient-green">Solo resultados.</span>
               </motion.h2>
@@ -507,17 +513,17 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto">
           <SectionHeader
             eyebrow="Clientes"
-            title={<>Resultados reales,<br /><span className="text-gradient-amber">no promesas</span></>}
+            title={<>Resultados reales,<br /><span className="text-gradient-steel">no promesas</span></>}
             sub="Cada caso tiene métricas documentadas. No publicamos testimonios sin datos."
           />
 
-          {/* Asymmetric editorial layout — featured + two compact */}
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-10">
+          {/* Asymmetric editorial layout — featured + two compact, no boxes */}
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-0 mb-10">
 
-            {/* Featured testimonial — primary, left 3/5 */}
-            <motion.div {...fadeUp(0)} className="md:col-span-3 card p-9 flex flex-col">
-              <div className="text-[3.5rem] font-black leading-none text-amber/18 mb-5 select-none">&ldquo;</div>
-              <p className="text-zinc-300 text-[15px] leading-[1.75] flex-1 mb-8">{TESTIMONIALS[0].quote}</p>
+            {/* Featured testimonial — editorial open layout, no card box */}
+            <motion.div {...fadeUp(0)} className="md:col-span-3 flex flex-col py-8 pr-0 md:pr-12 border-b md:border-b-0 md:border-r border-surface-border">
+              <div className="text-[2.5rem] font-black leading-none text-zinc-700 mb-5 select-none">&ldquo;</div>
+              <p className="text-zinc-300 text-[15px] leading-[1.80] flex-1 mb-8">{TESTIMONIALS[0].quote}</p>
               <div className="flex items-center gap-3 pt-6" style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center text-sm font-bold flex-shrink-0"
                   style={{ background: 'rgba(100,116,139,0.09)', color: '#94a3b8', border: '1px solid rgba(100,116,139,0.18)' }}>
@@ -530,11 +536,11 @@ export default function HomePage() {
               </div>
             </motion.div>
 
-            {/* Secondary testimonials — right 2/5, stacked */}
-            <div className="md:col-span-2 flex flex-col gap-4">
+            {/* Secondary testimonials — right 2/5, minimal */}
+            <div className="md:col-span-2 flex flex-col gap-0">
               {TESTIMONIALS.slice(1).map(({ quote, author, role, initials }, i) => (
-                <motion.div key={author} {...fadeUp((i + 1) * 0.09)} className="card p-6 flex flex-col flex-1">
-                  <div className="text-2xl font-black leading-none text-amber/18 mb-3 select-none">&ldquo;</div>
+                <motion.div key={author} {...fadeUp((i + 1) * 0.07)} className="flex flex-col flex-1 py-6 pl-0 md:pl-8 border-b border-surface-border last:border-b-0">
+                  <div className="text-xl font-black leading-none text-zinc-700 mb-3 select-none">&ldquo;</div>
                   <p className="text-zinc-400 text-sm leading-relaxed flex-1 mb-5">{quote}</p>
                   <div className="flex items-center gap-2.5 pt-4" style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
                     <div className="w-8 h-8 rounded-lg flex items-center justify-center text-[11px] font-bold flex-shrink-0"
@@ -575,9 +581,9 @@ export default function HomePage() {
         <motion.div {...fadeUp(0)} className="relative max-w-xl mx-auto text-center">
           <span className="label block mb-5">¿Listo para empezar?</span>
 
-          <h2 className="text-4xl sm:text-5xl font-black text-noc-white mb-6 leading-[0.98] tracking-display">
+          <h2 className="text-3xl sm:text-4xl font-bold text-noc-white mb-6 leading-[1.05] tracking-heading">
             Diagnóstico gratis<br />
-            <span className="text-gradient-amber">en 24 horas.</span>
+            <span className="text-gradient-steel">en 24 horas.</span>
           </h2>
 
           <p className="text-zinc-500 mb-8 leading-relaxed text-base">

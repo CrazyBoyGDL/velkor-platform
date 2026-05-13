@@ -168,7 +168,7 @@ export default function OperationalArtifacts() {
         </div>
 
         <motion.h2 {...fadeUp(0.04)}
-          className="text-2xl sm:text-3xl font-black text-noc-white leading-tight tracking-heading mb-3">
+          className="text-2xl sm:text-[2.1rem] font-bold text-noc-white leading-tight tracking-heading mb-3">
           Trabajo real,<br />
           <span className="text-zinc-600">no promesas de marketing</span>
         </motion.h2>
