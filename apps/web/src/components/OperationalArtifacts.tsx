@@ -158,7 +158,7 @@ function PolicyCard() {
 // ── Section ───────────────────────────────────────────────────────────────────
 export default function OperationalArtifacts() {
   return (
-    <section className="py-24 px-4 sm:px-8 relative overflow-hidden section-deep">
+    <section className="py-20 px-4 sm:px-8 relative overflow-hidden section-deep">
       <div className="max-w-7xl mx-auto">
 
         {/* Section label */}

@@ -120,7 +120,7 @@ function Layer({
 // ── Section ───────────────────────────────────────────────────────────────────
 export default function ServiceEcosystem() {
   return (
-    <section className="py-24 px-4 sm:px-8 relative overflow-hidden">
+    <section className="py-20 px-4 sm:px-8 relative overflow-hidden">
       <div className="max-w-7xl mx-auto">
 
         {/* Section label */}

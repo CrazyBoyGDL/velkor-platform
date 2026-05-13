@@ -156,7 +156,7 @@ function Counter({ val, suf, prefix = '' }: { val: number; suf: string; prefix?:
 function SectionHeader({ eyebrow, title, sub, align = 'center' }: {
   eyebrow: string; title: React.ReactNode; sub?: string; align?: 'center' | 'left'
 }) {
-  const cls = align === 'left' ? 'text-left mb-16' : 'text-center mb-16'
+  const cls = align === 'left' ? 'text-left mb-12' : 'text-center mb-12'
   const subCls = align === 'left' ? 'text-zinc-500 mt-4 max-w-xl text-base leading-relaxed' : 'text-zinc-500 mt-4 max-w-xl mx-auto text-base leading-relaxed'
   return (
     <div className={cls}>
@@ -214,7 +214,7 @@ export default function HomePage() {
         {/* ── Hero content — asymmetric editorial layout ── */}
         <motion.div
           style={{ y: textY, opacity }}
-          className="relative max-w-7xl mx-auto px-4 sm:px-8 w-full grid grid-cols-1 lg:grid-cols-[1fr_480px] xl:grid-cols-[1fr_540px] gap-16 lg:gap-12 xl:gap-16 items-center py-28 sm:py-32 lg:py-36"
+          className="relative max-w-7xl mx-auto px-4 sm:px-8 w-full grid grid-cols-1 lg:grid-cols-[1fr_480px] xl:grid-cols-[1fr_540px] gap-16 lg:gap-12 xl:gap-16 items-center py-20 sm:py-24 lg:py-28"
         >
           {/* Left: editorial copy — animate on mount (above fold) */}
           <div>
@@ -306,7 +306,7 @@ export default function HomePage() {
       {/* ════════════════════════════════════════════════════════════════
           BENTO STATS — editorial large-number hierarchy
       ════════════════════════════════════════════════════════════════ */}
-      <section className="py-28 px-4 sm:px-8">
+      <section className="py-20 px-4 sm:px-8">
         <div className="max-w-7xl mx-auto">
           {/* Architectural section label — minimal, editorial */}
           <motion.div {...fadeUp(0)} className="flex items-center gap-4 mb-10">
@@ -336,7 +336,7 @@ export default function HomePage() {
       </section>
 
       {/* ── Micro CTA after stats ── */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-8 mb-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 mb-12">
         <CtaStrip
           text="Cada proyecto incluye documentación técnica, entregables verificados y KPIs acordados desde el inicio."
           cta="Ver casos de éxito"
@@ -348,11 +348,11 @@ export default function HomePage() {
           SERVICES
       ════════════════════════════════════════════════════════════════ */}
       <div className="section-divider" />
-      <section className="py-28 px-4 sm:px-8 relative overflow-hidden">
+      <section className="py-20 px-4 sm:px-8 relative overflow-hidden">
         {/* Topology motif — subtle infrastructure grid */}
         <div className="absolute inset-0 bg-topology opacity-40 pointer-events-none" />
         <div className="max-w-7xl mx-auto relative">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-14">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-10">
             <div>
               <motion.span {...fadeUp(0)} className="label block mb-4">Lo que hacemos</motion.span>
               <motion.h2 {...fadeUp(0.06)} className="text-2xl sm:text-[2.3rem] font-bold text-noc-white leading-tight tracking-heading">
@@ -388,7 +388,7 @@ export default function HomePage() {
           POR QUÉ VELKOR — Differentiators grid
       ════════════════════════════════════════════════════════════════ */}
       <div className="section-divider" />
-      <section className="py-28 px-4 sm:px-8 relative overflow-hidden section-deep">
+      <section className="py-20 px-4 sm:px-8 relative overflow-hidden section-deep">
         <div className="max-w-7xl mx-auto relative">
           <div className="grid lg:grid-cols-[1fr_1fr] gap-16 lg:gap-24 items-start">
 
@@ -444,7 +444,7 @@ export default function HomePage() {
           PROCESS
       ════════════════════════════════════════════════════════════════ */}
       <div className="section-divider" />
-      <section className="py-28 px-4 sm:px-8 section-arch">
+      <section className="py-20 px-4 sm:px-8 section-arch">
         <div className="max-w-7xl mx-auto">
           <SectionHeader
             eyebrow="Proceso"
@@ -495,7 +495,7 @@ export default function HomePage() {
           TESTIMONIALS — warm amber atmosphere
       ════════════════════════════════════════════════════════════════ */}
       <div className="section-divider" />
-      <section className="py-28 px-4 sm:px-8 relative overflow-hidden section-warm">
+      <section className="py-20 px-4 sm:px-8 relative overflow-hidden section-warm">
         <div className="max-w-7xl mx-auto">
           <SectionHeader
             eyebrow="Clientes"
@@ -558,7 +558,7 @@ export default function HomePage() {
           FINAL CTA
       ════════════════════════════════════════════════════════════════ */}
       <div className="section-divider" />
-      <section className="py-36 px-4 sm:px-8 relative overflow-hidden">
+      <section className="py-28 px-4 sm:px-8 relative overflow-hidden">
         {/* Ambient bloom */}
         <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
           <div className="w-[600px] h-[400px] bg-[radial-gradient(ellipse,rgba(37,99,235,0.025)_0%,transparent_65%)]" />
