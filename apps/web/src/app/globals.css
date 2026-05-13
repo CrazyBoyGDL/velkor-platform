@@ -10,8 +10,8 @@ body { height: 100%; }
 
 body {
   font-family: 'Inter', system-ui, sans-serif;
-  /* Slightly cooler/deeper than pure black — premium dark canvas */
-  background-color: #06060a;
+  /* Midnight navy-graphite — not pure black, not flat gray */
+  background-color: #080c14;
   color: #f4f4f5;
   -webkit-font-smoothing: antialiased;
   /* Ultra-subtle grain — physical surface quality, not digital flatness */
@@ -20,14 +20,14 @@ body {
 }
 
 ::-webkit-scrollbar { width: 5px; }
-::-webkit-scrollbar-track { background: #0a0a0a; }
-::-webkit-scrollbar-thumb { background: #252525; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(245,158,11,0.4); }
-::selection { background: rgba(245,158,11,0.25); color: #fff; }
+::-webkit-scrollbar-track { background: #060810; }
+::-webkit-scrollbar-thumb { background: #1a2438; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(14,165,233,0.30); }
+::selection { background: rgba(14,165,233,0.16); color: #e2e8f0; }
 
 /* Enterprise-grade focus ring — visible, non-intrusive, keyboard navigable */
 :focus-visible {
-  outline: 1.5px solid rgba(245,158,11,0.5);
+  outline: 1.5px solid rgba(14,165,233,0.40);
   outline-offset: 3px;
   border-radius: 4px;
 }
@@ -44,10 +44,12 @@ body {
   --ease-quart: cubic-bezier(0.25, 1, 0.5, 1);   /* softer version            */
   --ease-inout: cubic-bezier(0.4, 0, 0.2, 1);    /* standard material         */
 
-  /* Enterprise palette — calm steel blue replaces startup amber for CTAs */
-  --enterprise-blue:        #2563eb;   /* blue-600 — main action */
-  --enterprise-blue-hover:  #3b82f6;   /* blue-500 — hover state */
-  --enterprise-blue-active: #1d4ed8;   /* blue-700 — pressed state */
+  /* Sophisticated accent — muted electric cyan, not startup blue */
+  --accent-primary:   #0ea5e9;                    /* sky-500 — primary accent hue */
+  --accent-text:      #94c5e8;                    /* muted sky — button text */
+  --accent-text-hover:#bae6fd;                    /* sky-200 — hover state */
+  --accent-border:    rgba(14,165,233,0.18);       /* subtle cyan border */
+  --accent-border-h:  rgba(14,165,233,0.28);       /* hover border */
 }
 
 @layer components {
@@ -58,17 +60,17 @@ body {
   .card {
     position: relative;
     border-radius: 14px;
-    border: 1px solid rgba(255,255,255,0.065);
+    border: 1px solid rgba(255,255,255,0.055);
     background:
-      linear-gradient(150deg, rgba(18,18,22,0.97) 0%, rgba(10,10,14,0.99) 100%);
+      linear-gradient(150deg, rgba(10,14,26,0.97) 0%, rgba(7,10,20,0.99) 100%);
     box-shadow:
       /* Top-edge inner light — simulates overhead ambient source */
-      0 1px 0 rgba(255,255,255,0.06) inset,
-      /* Side inner edge */
-      1px 0 0 rgba(255,255,255,0.015) inset,
-      /* Depth shadow */
-      0 4px 20px rgba(0,0,0,0.50),
-      0 1px 4px rgba(0,0,0,0.35);
+      0 1px 0 rgba(255,255,255,0.055) inset,
+      /* Side inner edge — subtle depth cue */
+      1px 0 0 rgba(255,255,255,0.012) inset,
+      /* Depth shadow — deeper for dimensional feel */
+      0 4px 24px rgba(0,0,0,0.60),
+      0 1px 4px rgba(0,0,0,0.40);
     transition:
       border-color 0.18s var(--ease-quart),
       box-shadow   0.18s var(--ease-quart),
@@ -85,21 +87,21 @@ body {
     pointer-events: none;
   }
   .card:hover {
-    border-color: rgba(255,255,255,0.10);
-    background: linear-gradient(150deg, rgba(22,22,28,0.98) 0%, rgba(12,12,16,0.99) 100%);
+    border-color: rgba(255,255,255,0.085);
+    background: linear-gradient(150deg, rgba(14,20,34,0.98) 0%, rgba(9,13,24,0.99) 100%);
     box-shadow:
-      0 1px 0 rgba(255,255,255,0.09) inset,
-      1px 0 0 rgba(255,255,255,0.025) inset,
-      0 12px 36px rgba(0,0,0,0.58),
-      0 4px 8px rgba(0,0,0,0.40);
+      0 1px 0 rgba(255,255,255,0.08) inset,
+      1px 0 0 rgba(255,255,255,0.020) inset,
+      0 16px 40px rgba(0,0,0,0.65),
+      0 4px 8px rgba(0,0,0,0.45);
   }
 
   /* Gradient-border accent cards */
   .card-blue {
     @apply card;
     background:
-      linear-gradient(145deg, rgba(22,22,30,0.97), rgba(10,10,14,0.99)) padding-box,
-      linear-gradient(135deg, rgba(59,130,246,0.35), rgba(30,30,40,0.6) 50%, rgba(59,130,246,0.08)) border-box;
+      linear-gradient(145deg, rgba(10,14,28,0.97), rgba(7,10,20,0.99)) padding-box,
+      linear-gradient(135deg, rgba(59,130,246,0.28), rgba(14,18,32,0.7) 50%, rgba(59,130,246,0.06)) border-box;
     border: 1px solid transparent;
   }
   .card-blue:hover {
@@ -111,8 +113,8 @@ body {
   .card-cyan {
     @apply card;
     background:
-      linear-gradient(145deg, rgba(18,24,28,0.97), rgba(10,12,14,0.99)) padding-box,
-      linear-gradient(135deg, rgba(6,182,212,0.3), rgba(20,26,30,0.6) 50%, rgba(6,182,212,0.06)) border-box;
+      linear-gradient(145deg, rgba(8,14,24,0.97), rgba(6,10,18,0.99)) padding-box,
+      linear-gradient(135deg, rgba(6,182,212,0.24), rgba(12,18,26,0.7) 50%, rgba(6,182,212,0.05)) border-box;
     border: 1px solid transparent;
   }
   .card-cyan:hover {
@@ -124,8 +126,8 @@ body {
   .card-green {
     @apply card;
     background:
-      linear-gradient(145deg, rgba(18,24,20,0.97), rgba(10,12,10,0.99)) padding-box,
-      linear-gradient(135deg, rgba(34,197,94,0.3), rgba(20,26,22,0.6) 50%, rgba(34,197,94,0.06)) border-box;
+      linear-gradient(145deg, rgba(8,16,16,0.97), rgba(6,10,10,0.99)) padding-box,
+      linear-gradient(135deg, rgba(34,197,94,0.24), rgba(12,20,14,0.7) 50%, rgba(34,197,94,0.05)) border-box;
     border: 1px solid transparent;
   }
   .card-green:hover {
@@ -175,48 +177,52 @@ body {
   /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      LABELS / BADGES
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-  /* More pronounced tracking — premium editorial signature */
-  .label { @apply text-[11px] font-medium uppercase tracking-[0.20em] text-zinc-500; }
+  /* Precision tracking — engineered, not decorative */
+  .label { @apply text-[10.5px] font-medium uppercase tracking-[0.18em] text-zinc-500; }
   .badge { @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[10px] font-mono font-medium; }
 
   /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      BUTTONS — premium tactile interactions
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-  /* ── Primary CTA — enterprise steel blue (not startup amber) ── */
+  /* ── Primary CTA — dark operational premium (not startup CTA) ── */
   .btn-amber {
     @apply inline-flex items-center justify-center
            px-6 py-3 rounded-xl
            font-semibold text-sm;
-    color: #ffffff;
-    background: var(--enterprise-blue);
+    color: var(--accent-text);
+    background: linear-gradient(145deg, #090f1e 0%, #0b1428 100%);
+    border: 1px solid var(--accent-border);
     box-shadow:
-      0 0 0 1px rgba(37,99,235,0.40),
-      0 4px 14px rgba(37,99,235,0.16),
-      0 1px 0 rgba(255,255,255,0.10) inset;
+      0 1px 0 rgba(255,255,255,0.04) inset,
+      0 4px 16px rgba(0,0,0,0.55),
+      0 1px 3px rgba(0,0,0,0.70);
     transform: translateY(0) scale(1);
     transition:
-      background  0.12s ease,
-      box-shadow  0.16s var(--ease-quart),
-      transform   0.12s var(--ease-quart);
-    will-change: transform, box-shadow;
+      background   0.14s ease,
+      border-color 0.14s ease,
+      color        0.10s ease,
+      box-shadow   0.16s var(--ease-quart),
+      transform    0.12s var(--ease-quart);
+    will-change: transform;
     -webkit-tap-highlight-color: transparent;
     touch-action: manipulation;
   }
   .btn-amber:hover {
-    background: var(--enterprise-blue-hover);
-    transform: translateY(-1px) scale(1.012);
+    color: var(--accent-text-hover);
+    background: linear-gradient(145deg, #0b1428 0%, #0e1c3a 100%);
+    border-color: var(--accent-border-h);
+    transform: translateY(-1px);
     box-shadow:
-      0 0 0 1px rgba(59,130,246,0.50),
-      0 6px 20px rgba(59,130,246,0.18),
-      0 1px 0 rgba(255,255,255,0.14) inset;
+      0 1px 0 rgba(255,255,255,0.06) inset,
+      0 8px 24px rgba(0,0,0,0.58),
+      0 2px 4px rgba(0,0,0,0.60);
   }
   .btn-amber:active {
-    background: var(--enterprise-blue-active);
-    transform: translateY(0px) scale(0.972);
-    box-shadow:
-      0 0 0 1px rgba(29,78,216,0.40),
-      0 2px 8px rgba(37,99,235,0.10),
-      0 1px 0 rgba(255,255,255,0.08) inset;
+    color: #7dd3fc;
+    background: #090f1c;
+    border-color: rgba(14,165,233,0.10);
+    transform: translateY(0) scale(0.975);
+    box-shadow: 0 1px 6px rgba(0,0,0,0.45);
     transition-duration: 0.07s;
   }
 
@@ -225,24 +231,24 @@ body {
            px-6 py-3 rounded-xl
            border border-surface-border text-zinc-400
            text-sm font-medium;
-    background: linear-gradient(145deg, rgba(20,20,20,0.6), rgba(10,10,10,0.8));
+    background: linear-gradient(145deg, rgba(10,14,24,0.55), rgba(7,10,18,0.75));
     transform: translateY(0) scale(1);
     transition:
-      background   0.15s var(--ease-quart),
-      border-color 0.15s var(--ease-quart),
-      color        0.12s ease,
-      box-shadow   0.16s var(--ease-quart),
-      transform    0.14s var(--ease-quart);
+      background   0.14s var(--ease-quart),
+      border-color 0.14s var(--ease-quart),
+      color        0.10s ease,
+      box-shadow   0.15s var(--ease-quart),
+      transform    0.12s var(--ease-quart);
     will-change: transform;
     -webkit-tap-highlight-color: transparent;
     touch-action: manipulation;
   }
   .btn-ghost:hover {
-    border-color: #3f3f46;
-    color: #e4e4e7;
-    background: linear-gradient(145deg, rgba(26,26,26,0.85), rgba(14,14,14,0.92));
+    border-color: rgba(56,100,160,0.35);
+    color: #e2e8f0;
+    background: linear-gradient(145deg, rgba(14,20,34,0.80), rgba(9,13,24,0.90));
     transform: translateY(-1px);
-    box-shadow: 0 4px 16px rgba(0,0,0,0.28), 0 0 0 1px rgba(255,255,255,0.04);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.04);
   }
   .btn-ghost:active {
     transform: translateY(0px) scale(0.975);
@@ -296,26 +302,27 @@ body {
      Used as a background pattern on select sections.
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
   .bg-topology {
+    /* Navy-tinted dot grid — infrastructure spatial motif */
     background-image:
-      radial-gradient(circle, rgba(255,255,255,0.028) 1px, transparent 1px);
+      radial-gradient(circle, rgba(56,100,160,0.08) 1px, transparent 1px);
     background-size: 28px 28px;
   }
 
   /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      SECTION ATMOSPHERES — depth + character per section
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-  /* Subtle neutral bloom — testimonials section (removed warm amber) */
+  /* Subtle deep-navy vignette — dimensional warmth without hue */
   .section-warm::before {
     content: '';
     position: absolute;
     inset: 0;
-    background: radial-gradient(ellipse 90% 60% at 50% 0%,
-      rgba(255,255,255,0.008) 0%, transparent 65%);
+    background: radial-gradient(ellipse 80% 50% at 50% 0%,
+      rgba(20,40,80,0.05) 0%, transparent 65%);
     pointer-events: none;
   }
-  /* Cool deep atmosphere — for why-us / authority sections */
+  /* Deep navy atmosphere — authority, restraint, dimensional */
   .section-deep {
-    background: linear-gradient(180deg, #040408 0%, #060610 50%, #040408 100%);
+    background: linear-gradient(180deg, #030810 0%, #060e1c 50%, #030810 100%);
   }
   /* Architectural — for process / methodology sections (see full definition below) */
 
@@ -332,16 +339,10 @@ body {
   .cta-strip {
     @apply rounded-2xl p-7 flex flex-col sm:flex-row items-center justify-between gap-5;
     background:
-      linear-gradient(135deg,
-        rgba(30,58,138,0.07) 0%,
-        rgba(30,58,138,0.02) 40%,
-        transparent 70%) padding-box,
-      linear-gradient(135deg,
-        rgba(59,130,246,0.16) 0%,
-        rgba(59,130,246,0.05) 50%,
-        rgba(59,130,246,0.02) 100%) border-box;
+      linear-gradient(135deg, rgba(7,12,24,0.90) 0%, rgba(5,9,18,0.96) 100%) padding-box,
+      linear-gradient(135deg, rgba(14,165,233,0.14) 0%, rgba(14,165,233,0.04) 50%, transparent 100%) border-box;
     border: 1px solid transparent;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.35), 0 1px 0 rgba(255,255,255,0.03) inset;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.50), 0 1px 0 rgba(255,255,255,0.03) inset;
   }
 
   /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -385,7 +386,7 @@ body {
      SECTION-ARCH — gradient + topology texture
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
   .section-arch {
-    background: linear-gradient(180deg, #06060a 0%, #040408 100%);
+    background: linear-gradient(180deg, #080c14 0%, #050910 100%);
     position: relative;
     overflow: hidden;
   }
@@ -393,7 +394,8 @@ body {
     content: '';
     position: absolute;
     inset: 0;
-    background-image: radial-gradient(circle, rgba(255,255,255,0.016) 1px, transparent 1px);
+    /* Navy-tinted dot grid — infrastructure motif with atmospheric depth */
+    background-image: radial-gradient(circle, rgba(56,100,160,0.07) 1px, transparent 1px);
     background-size: 32px 32px;
     pointer-events: none;
   }
@@ -409,20 +411,27 @@ body {
 
 /* ── Gradient text ── */
 .text-gradient-amber {
-  /* Muted amber — removed orange (#f97316) endpoint that read as startup/aggressive */
-  background: linear-gradient(135deg, #d97706, #f59e0b 50%, #ca8a04);
+  /* Dark brass — micro-accent only, restrained warm depth */
+  background: linear-gradient(135deg, #92400e, #b45309 50%, #92400e);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+/* Premium steel gradient — hero/display use, engineered confidence */
+.text-gradient-steel {
+  background: linear-gradient(135deg, #94a3b8 0%, #e2e8f0 45%, #94a3b8 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 .text-gradient-white {
-  background: linear-gradient(135deg, #ffffff, #a1a1aa);
+  background: linear-gradient(135deg, #ffffff, #94a3b8);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 .text-gradient-green {
-  background: linear-gradient(135deg, #22c55e, #4ade80);
+  background: linear-gradient(135deg, #16a34a, #4ade80 55%, #16a34a);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;

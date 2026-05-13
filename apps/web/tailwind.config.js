@@ -8,12 +8,12 @@ module.exports = {
         // Base surfaces — 3-tier depth system
         // canvas (#06060a) → card (#0e0e12) → raised (#161618)
         surface: {
-          DEFAULT: '#111113',
-          dark:    '#06060a',   // page canvas — deepest
-          card:    '#0e0e12',   // card background — mid elevation
-          raised:  '#161618',   // raised / hover state — most elevated
-          border:  '#222228',   // border — slightly blue-tinted for depth
-          hover:   '#1a1a1e',   // hover surface
+          DEFAULT: '#0d1120',
+          dark:    '#080c14',   // page canvas — midnight navy-graphite
+          card:    '#0b1018',   // card — deep navy
+          raised:  '#131c2a',   // raised — muted navy
+          border:  '#1c2840',   // border — navy-tinted structural line
+          hover:   '#121c2e',   // hover — deep navy hover
         },
         // Main accent
         amber: {
