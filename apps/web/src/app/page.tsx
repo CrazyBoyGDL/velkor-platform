@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import InfraTopology from '@/components/InfraTopology'
 import ServicePanel, { type ServicePanelData } from '@/components/ServicePanel'
+import OperationalArtifacts from '@/components/OperationalArtifacts'
 import { trackCTA } from '@/components/Analytics'
 
 const NetworkBg = dynamic(() => import('@/components/NetworkBg'), { ssr: false })
@@ -484,6 +485,14 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* ════════════════════════════════════════════════════════════════
+          OPERATIONAL ARTIFACTS — enterprise evidence layer
+          Sanitized project deliverables between process + testimonials:
+          shows what we actually produce, not marketing promises.
+      ════════════════════════════════════════════════════════════════ */}
+      <div className="section-divider" />
+      <OperationalArtifacts />
 
       {/* ════════════════════════════════════════════════════════════════
           TESTIMONIALS — warm amber atmosphere
