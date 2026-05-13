@@ -190,113 +190,118 @@ export default function HomePage() {
   return (
     <>
       {/* ════════════════════════════════════════════════════════════════
-          HERO — cinematic viewport, commanding editorial composition
+          HERO — operational architecture composition
+          Layout: text left ~44%, topology absolute-right ~62%,
+          overlap zone creates compositional tension without a grid border.
       ════════════════════════════════════════════════════════════════ */}
       <section ref={heroRef} className="relative min-h-screen flex items-center overflow-hidden">
 
-        {/* ── Layered atmospheric backgrounds ── */}
+        {/* ── Atmospheric depth — slow parallax ── */}
         <motion.div style={{ y: bgY }} className="absolute inset-0 pointer-events-none">
-          {/* Cool blue bloom — upper-left: calm enterprise depth */}
           <div className="absolute inset-0" style={{
-            background: 'radial-gradient(ellipse 100% 70% at 15% 20%, rgba(37,99,235,0.015) 0%, transparent 55%)',
+            background: 'radial-gradient(ellipse 80% 60% at 10% 30%, rgba(37,99,235,0.012) 0%, transparent 55%)',
           }} />
-          {/* Cool depth — lower-right: recessive atmospheric pressure */}
-          <div className="absolute inset-0" style={{
-            background: 'radial-gradient(ellipse 80% 60% at 85% 85%, rgba(59,130,246,0.012) 0%, transparent 55%)',
-          }} />
-          {/* Topology dot texture — subtle infrastructure motif */}
-          <div className="absolute inset-0 bg-topology opacity-60" />
+          <div className="absolute inset-0 bg-topology opacity-45" />
           <NetworkBg />
-          {/* Bottom fade — transitions smoothly to next section */}
-          <div className="absolute bottom-0 left-0 right-0 h-52 bg-gradient-to-t from-surface-dark to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 h-64 bg-gradient-to-t from-surface-dark to-transparent" />
         </motion.div>
 
-        {/* ── Hero content — asymmetric editorial layout ── */}
+        {/* ── Architecture topology — atmospheric, right side ── */}
+        {/* Absolutely positioned so it can bleed past the text column edge */}
+        <motion.div
+          className="absolute inset-y-0 right-0 hidden lg:flex items-center pointer-events-none"
+          style={{ width: '62%' }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1.1, ease: EASE, delay: 0.10 }}
+        >
+          {/* Radial atmosphere — depth behind the topology */}
+          <div className="absolute inset-0" style={{
+            background: 'radial-gradient(ellipse 75% 65% at 58% 50%, rgba(37,99,235,0.030) 0%, transparent 60%)',
+          }} />
+          {/* Left-edge dissolve — topology fades into the text field */}
+          <div className="absolute inset-y-0 left-0 z-10" style={{
+            width: '42%',
+            background: 'linear-gradient(90deg, #080c14 10%, rgba(8,12,20,0.75) 50%, transparent 100%)',
+          }} />
+          {/* Slow ambient drift — living system feel, not looping visibly */}
+          <motion.div
+            className="w-full"
+            animate={{ y: [0, -4, 1, 3, 0], x: [0, 2, 0, -2, 0] }}
+            transition={{ repeat: Infinity, duration: 24, ease: 'easeInOut', times: [0, 0.3, 0.5, 0.75, 1] }}
+          >
+            <InfraTopology />
+          </motion.div>
+        </motion.div>
+
+        {/* ── Editorial content — z-above topology ── */}
         <motion.div
           style={{ y: textY, opacity }}
-          className="relative max-w-7xl mx-auto px-4 sm:px-8 w-full grid grid-cols-1 lg:grid-cols-[1fr_480px] xl:grid-cols-[1fr_540px] gap-16 lg:gap-12 xl:gap-16 items-center py-20 sm:py-24 lg:py-28"
+          className="relative z-10 max-w-7xl mx-auto px-4 sm:px-8 w-full"
         >
-          {/* Left: editorial copy — animate on mount (above fold) */}
-          <div>
-            {/* Eyebrow — with decorative accent line */}
-            <motion.div {...heroUp(0)} className="flex items-center gap-3 mb-8">
-              <div className="w-8 h-px flex-shrink-0" style={{ background: 'rgba(100,116,139,0.30)' }} />
-              <span className="label text-zinc-500">CONSULTORÍA TECNOLÓGICA EMPRESARIAL</span>
+          <div className="lg:max-w-[44%] py-24 sm:py-28 lg:py-32">
+
+            {/* Eyebrow — precise, technical, no corporate bluster */}
+            <motion.div {...heroUp(0)} className="flex items-center gap-3 mb-7">
+              <div className="w-5 h-px flex-shrink-0" style={{ background: 'rgba(100,116,139,0.20)' }} />
+              <span className="label" style={{ color: 'rgba(100,116,139,0.55)' }}>
+                Ingeniería de infraestructura
+              </span>
             </motion.div>
 
-            {/* Display headline — commanding, restrained, editorial */}
+            {/* Headline — editorial weight, tighter scale */}
             <motion.h1 {...heroUp(0.06)}
-              className="text-[clamp(2.5rem,5.5vw,4.2rem)] font-extrabold leading-[0.97] tracking-display mb-8"
+              className="font-extrabold leading-[0.95] tracking-display mb-5"
+              style={{ fontSize: 'clamp(2.1rem, 4.2vw, 3.4rem)' }}
             >
               Tu operación,<br />
               sin puntos<br />
               <span className="text-gradient-steel">de falla.</span>
             </motion.h1>
 
-            <motion.p {...heroUp(0.11)} className="text-zinc-400 text-[1.0625rem] leading-[1.78] max-w-[28rem] mb-10">
-              Redes, ciberseguridad y gestión de identidad para empresas que no pueden permitirse interrupciones.
+            {/* Subtext — technical positioning, not benefit list */}
+            <motion.p {...heroUp(0.09)}
+              className="text-zinc-500 leading-[1.72] mb-9"
+              style={{ fontSize: '0.9375rem', maxWidth: '24rem' }}
+            >
+              Red segmentada, identidad gobernada, endpoints bajo control.
+              Tres capas de infraestructura que funcionan como un sistema.
             </motion.p>
 
-            {/* CTAs */}
-            <motion.div {...heroUp(0.16)} className="flex flex-col sm:flex-row gap-3 mb-6">
-              <Link href="/assessments" className="btn-amber text-[15px] px-8 py-4"
+            {/* CTAs — present but not dominating */}
+            <motion.div {...heroUp(0.13)} className="flex flex-col sm:flex-row gap-2.5 mb-8">
+              <Link href="/assessments" className="btn-amber text-[13.5px] px-6 py-3"
                 onClick={() => trackCTA('Hero — Solicitar diagnóstico')}>
-                Solicitar diagnóstico gratis
+                Solicitar diagnóstico →
               </Link>
-              <Link href="/servicios" className="btn-ghost text-[15px] px-8 py-4"
+              <Link href="/servicios" className="btn-ghost text-[13.5px] px-6 py-3"
                 onClick={() => trackCTA('Hero — Ver servicios')}>
-                Ver servicios →
+                Ver servicios
               </Link>
             </motion.div>
 
-            <motion.p {...heroUp(0.20)} className="text-xs font-medium text-zinc-600 flex items-center gap-2 mb-9">
-              <span className="w-1.5 h-1.5 rounded-full bg-noc-green animate-pulse-slow inline-block" />
-              Sin contrato mínimo · Diagnóstico técnico sin costo
+            {/* Operational context — factual, no persuasion mechanics */}
+            <motion.p {...heroUp(0.17)}
+              className="font-mono text-zinc-600"
+              style={{ fontSize: '10.5px', letterSpacing: '0.02em' }}
+            >
+              50+ clientes activos · 8 años de operación · MX
             </motion.p>
 
-            {/* Social proof */}
-            <motion.div {...heroUp(0.24)} className="flex items-center gap-3">
-              <div className="flex -space-x-2">
-                {[1,2,3,4].map(n => (
-                  <div key={n} className="w-8 h-8 rounded-full border-2 border-surface-dark flex items-center justify-center"
-                    style={{ background: 'rgba(100,116,139,0.10)', boxShadow: 'none' }}>
-                    <span className="w-3 h-3 rounded-full" style={{ background: 'rgba(100,116,139,0.25)' }} />
-                  </div>
-                ))}
-              </div>
-              <p className="text-zinc-500 text-sm">
-                <span className="text-zinc-200 font-semibold">+50 empresas</span> confían en Velkor
-              </p>
-            </motion.div>
           </div>
-
-          {/* Right: Infrastructure architecture diagram */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.65, ease: EASE, delay: 0.20 }}
-            className="relative hidden lg:flex items-center justify-center"
-          >
-            <div className="absolute inset-0 pointer-events-none">
-              <div className="absolute inset-0"
-                style={{ background: 'radial-gradient(ellipse 90% 70% at 50% 50%, rgba(37,99,235,0.028) 0%, transparent 65%)' }} />
-            </div>
-            <InfraTopology />
-          </motion.div>
         </motion.div>
 
-        {/* ── Editorial scroll indicator ── */}
+        {/* ── Scroll cue — quiet ── */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.85, duration: 0.7, ease: EASE }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 hidden lg:flex flex-col items-center gap-2.5"
+          transition={{ delay: 1.0, duration: 0.6, ease: EASE }}
+          className="absolute bottom-7 left-1/2 -translate-x-1/2 hidden lg:flex flex-col items-center gap-2"
         >
-          <span className="text-zinc-700 text-[9px] font-mono tracking-[0.28em] uppercase">Explorar</span>
           <motion.div
-            animate={{ y: [0, 6, 0] }}
-            transition={{ repeat: Infinity, duration: 2.8, ease: 'easeInOut', delay: 2 }}
-            className="w-px h-7 bg-gradient-to-b from-zinc-600 via-zinc-700 to-transparent"
+            animate={{ y: [0, 5, 0] }}
+            transition={{ repeat: Infinity, duration: 3.2, ease: 'easeInOut', delay: 2.5 }}
+            className="w-px h-6 bg-gradient-to-b from-zinc-700 to-transparent"
           />
         </motion.div>
       </section>
