@@ -7,6 +7,8 @@ import HeroOperationalFrame from '@/components/HeroOperationalFrame'
 import ServicePanel, { type ServicePanelData } from '@/components/ServicePanel'
 import OperationalArtifacts from '@/components/OperationalArtifacts'
 import ServiceEcosystem from '@/components/ServiceEcosystem'
+import RiskExposure from '@/components/RiskExposure'
+import ExecutiveDiagnostic from '@/components/ExecutiveDiagnostic'
 import { trackCTA } from '@/components/Analytics'
 
 const NetworkBg = dynamic(() => import('@/components/NetworkBg'), { ssr: false })
@@ -119,13 +121,6 @@ const DIFFERENTIATORS = [
   { label: 'Sin lock-in',             sub: 'Mes a mes, sin permanencia mínima' },
 ]
 
-// Technology specializations — platforms we implement, not badge claims
-const CERTS = [
-  { name: 'Fortinet FortiGate', dot: '#f59e0b' },
-  { name: 'Microsoft 365',      dot: '#f59e0b' },
-  { name: 'Axis · Hikvision',   dot: '#f59e0b' },
-  { name: 'Cisco · HP Aruba',   dot: '#f59e0b' },
-]
 
 // ─── Scroll-triggered counter ─────────────────────────────────────────────────
 function Counter({ val, suf, prefix = '' }: { val: number; suf: string; prefix?: string }) {
@@ -303,24 +298,10 @@ export default function HomePage() {
       </section>
 
       {/* ════════════════════════════════════════════════════════════════
-          PARTNERS
+          RISK EXPOSURE — intelligence briefs on real threat patterns
       ════════════════════════════════════════════════════════════════ */}
       <div className="section-divider" />
-      <section className="py-5 bg-surface-dark">
-        <div className="max-w-7xl mx-auto px-4 sm:px-8 flex items-center gap-8 overflow-x-auto scrollbar-none">
-          <span className="label flex-shrink-0 text-zinc-700">TECNOLOGÍAS</span>
-          <div className="w-px h-4 bg-surface-border flex-shrink-0" />
-          <div className="flex items-center gap-10 flex-shrink-0">
-            {CERTS.map(({ name }) => (
-              <div key={name} className="flex items-center gap-2 cursor-default flex-shrink-0">
-                <div className="w-1 h-1 rounded-full bg-zinc-700" />
-                <span className="text-zinc-500 text-sm font-medium">{name}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-      <div className="section-divider" />
+      <RiskExposure />
 
       {/* ════════════════════════════════════════════════════════════════
           BENTO STATS — editorial large-number hierarchy
@@ -503,6 +484,12 @@ export default function HomePage() {
       ════════════════════════════════════════════════════════════════ */}
       <div className="section-divider" />
       <OperationalArtifacts />
+
+      {/* ════════════════════════════════════════════════════════════════
+          EXECUTIVE DIAGNOSTIC — consultive questions that surface gaps
+      ════════════════════════════════════════════════════════════════ */}
+      <div className="section-divider" />
+      <ExecutiveDiagnostic />
 
       {/* ════════════════════════════════════════════════════════════════
           TESTIMONIALS — warm amber atmosphere
