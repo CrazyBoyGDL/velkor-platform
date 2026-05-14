@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { strapi }                    from '@/lib/strapi'
 import { scoreAssessment }           from '@/lib/scoring'
 import { classifyLead }              from '@/lib/classification'
+import { assignWorkflow, buildStrapiLeadPayload } from '@/lib/crm'
 import { dispatchWebhook, buildAssessmentCompletedPayload } from '@/lib/webhook'
 import { isHoneypotFilled, isDisposableEmail, verifyTurnstile, logAuditEvent } from '@/lib/security'
 
@@ -150,34 +151,11 @@ export async function POST(req: NextRequest) {
   const classification = classifyLead(answers, scores)
   const reportRef      = `VLK-${Date.now().toString(36).toUpperCase().slice(-6)}`
 
-  // ── Strapi storage ──
-  const assessmentSummary = [
-    `[EVALUACIÓN OPERACIONAL v2 · ${reportRef}]`,
-    `Madurez: ${scores.maturityLabel} (${scores.overall}/100) · Exposición: ${scores.exposureLabel}`,
-    `Infra: ${scores.infrastructure} · Identidad: ${scores.identity} · Ops: ${scores.operations}`,
-    `Hallazgos: ${scores.criticalCount} críticos · ${scores.highCount} altos`,
-    `Segmento: ${classification.segment} · ${classification.engagementLabel}`,
-    `Prioridad: ${classification.priorityLabel}`,
-    '',
-    scores.flags.slice(0, 3).map(f => `[${f.severity.toUpperCase()}] ${f.finding}`).join('\n'),
-    answers.step5.notes ? `\nNota: ${answers.step5.notes}` : '',
-  ].join('\n').trim()
+  // ── CRM workflow assignment ──
+  const workflow = assignWorkflow(classification, scores)
 
-  const SIZE_ENUM: Record<string, string> = {
-    '1-25':   'size_1_10', '26-100':  'size_11_50',
-    '101-500':'size_51_200', '500+':  'size_200_plus',
-  }
-
-  await strapi.post('/leads', {
-    name, email, company,
-    phone:       phone || undefined,
-    companySize: SIZE_ENUM[answers.step1.companySize] ?? 'size_1_10',
-    services:    [classification.engagementType],
-    urgency:     (answers.step5.urgency === 'critical' || answers.step5.urgency === 'urgent') ? 'high' : 'normal',
-    notes:       assessmentSummary,
-    status:      'new',
-    source:      `assessment-v2-${answers.source || 'direct'}`,
-  })
+  // ── Strapi storage (via CRM payload builder) ──
+  await strapi.post('/leads', buildStrapiLeadPayload(answers, scores, classification, workflow, reportRef))
 
   // ── Webhook events ──
   await dispatchWebhook('assessment.completed', buildAssessmentCompletedPayload({
