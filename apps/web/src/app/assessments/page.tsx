@@ -1034,6 +1034,35 @@ export default function AssessmentsPage() {
         maturity: data.scores?.maturity,
         segment:  data.classification?.segment,
       })
+
+      // ── Email notification (non-blocking, fail-silent) ──
+      if (data.scores && data.classification) {
+        fetch('/api/assessment/notify', {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            reportRef: data.reportRef,
+            email,
+            emailData: {
+              recipientName:    name,
+              company,
+              reportRef:        data.reportRef,
+              overallScore:     data.scores.overall,
+              maturityLabel:    data.scores.maturityLabel,
+              exposureLabel:    data.scores.exposureLabel,
+              exposureLevel:    data.scores.exposureLevel,
+              criticalCount:    data.scores.criticalCount,
+              highCount:        data.scores.highCount,
+              topFlags:         (data.scores.flags  ?? []).slice(0, 3),
+              quickWins:        (data.scores.quickWins ?? []).slice(0, 3),
+              recommendedPhase: data.scores.recommendedPhase,
+              engagementLabel:  data.classification.engagementLabel,
+              followUpLabel:    data.classification.followUpLabel,
+              followUpHours:    data.classification.followUpHours,
+            },
+          }),
+        }).catch(() => {}) // silent — email delivery is best-effort
+      }
     } catch {
       setStatus('error')
       setErrorMsg('Error de conexión. Verifica tu internet e intenta de nuevo.')
