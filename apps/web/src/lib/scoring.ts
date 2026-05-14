@@ -1,0 +1,479 @@
+// ─── Velkor Operational Risk Scoring Engine ─────────────────────────────────
+// Based on CIS Controls v8 and NIST CSF maturity framework.
+// Scores are weighted to reflect the risk profile of the Mexican SMB/mid-market.
+
+export type Severity = 'critical' | 'high' | 'medium' | 'low'
+export type MaturityLevel = 'initial' | 'developing' | 'defined' | 'managed' | 'optimized'
+export type ExposureLevel = 'critical' | 'high' | 'medium' | 'managed'
+
+// ─── Assessment answer shapes ────────────────────────────────────────────────
+
+export interface Step1Answers {
+  industry:         string   // manufacturing | healthcare | retail | finance | legal | logistics | services | education | other
+  companySize:      string   // 1-25 | 26-100 | 101-500 | 500+
+  locations:        string   // 1 | 2-5 | 6-20 | 20+
+  remoteWorkforce:  string   // none | partial | significant | full
+  microsoft365:     string   // full | partial | none
+  infrastructure:   string   // cloud | hybrid | on-prem | unformalized
+}
+
+export interface Step2Answers {
+  vlanSegmentation: string   // yes | partial | no
+  firewall:         string   // ngfw | basic | isp-default | none
+  vpn:              string   // business | consumer | none
+  backup:           string   // cloud-verified | local | none
+  wifiSegmentation: string   // yes | partial | no
+  endpointInventory:string   // full | partial | none
+  edrAv:            string   // edr | av | none
+}
+
+export interface Step3Answers {
+  entraId:          string   // full | partial | none
+  mfa:              string   // all | partial | none
+  conditionalAccess:string   // configured | partial | none
+  intune:           string   // full | partial | none
+  privilegedAccess: string   // pam | individual | shared | none
+  onboarding:       string   // automated | manual | none
+}
+
+export interface Step4Answers {
+  documentation:    string   // current | outdated | none
+  monitoring:       string   // siem | basic | none
+  ticketing:        string   // formal | informal | none
+  lastAudit:        string   // recent | dated | never
+  compliance:       string[] // nom-035 | nom-024 | iso27001 | pci-dss | hipaa | none
+  changeManagement: string   // formal | informal | none
+}
+
+export interface Step5Answers {
+  painPoint:        string   // security | compliance | modernization | costs | incidents | visibility | gaps
+  urgency:          string   // critical | urgent | planned | evaluating
+  complianceNeeds:  string[]
+  projectGoals:     string[]
+  notes:            string
+}
+
+export interface AssessmentAnswers {
+  // Contact
+  name:    string
+  email:   string
+  company: string
+  phone:   string
+  // Steps
+  step1: Step1Answers
+  step2: Step2Answers
+  step3: Step3Answers
+  step4: Step4Answers
+  step5: Step5Answers
+  // Meta
+  source?: string
+  utm?:    string
+}
+
+// ─── Risk flag ───────────────────────────────────────────────────────────────
+
+export interface RiskFlag {
+  id:             string
+  severity:       Severity
+  category:       string
+  finding:        string
+  recommendation: string
+}
+
+// ─── Score result ────────────────────────────────────────────────────────────
+
+export interface ScoreResult {
+  infrastructure:   number       // 0–100
+  identity:         number       // 0–100
+  operations:       number       // 0–100
+  overall:          number       // weighted composite
+  maturity:         MaturityLevel
+  maturityLabel:    string
+  maturityDesc:     string
+  exposureLevel:    ExposureLevel
+  exposureLabel:    string
+  flags:            RiskFlag[]
+  criticalCount:    number
+  highCount:        number
+  quickWins:        string[]
+  immediatePriorities: string[]
+  recommendedPhase: string
+  observations:     string[]
+}
+
+// ─── Scoring functions ───────────────────────────────────────────────────────
+
+function scoreInfrastructure(s: Step2Answers): number {
+  let score = 0
+
+  // VLAN segmentation (20 pts) — lateral movement prevention
+  if (s.vlanSegmentation === 'yes')     score += 20
+  else if (s.vlanSegmentation === 'partial') score += 9
+
+  // Firewall quality (20 pts) — perimeter enforcement
+  if (s.firewall === 'ngfw')            score += 20
+  else if (s.firewall === 'basic')      score += 9
+  else if (s.firewall === 'isp-default') score += 3
+
+  // Backup strategy (20 pts) — continuity critical
+  if (s.backup === 'cloud-verified')    score += 20
+  else if (s.backup === 'local')        score += 7
+
+  // Endpoint inventory (15 pts) — visibility prerequisite
+  if (s.endpointInventory === 'full')   score += 15
+  else if (s.endpointInventory === 'partial') score += 7
+
+  // VPN (10 pts) — remote access control
+  if (s.vpn === 'business')             score += 10
+  else if (s.vpn === 'consumer')        score += 4
+
+  // WiFi segmentation (8 pts) — network hygiene
+  if (s.wifiSegmentation === 'yes')     score += 8
+  else if (s.wifiSegmentation === 'partial') score += 4
+
+  // EDR/AV (7 pts) — endpoint threat detection
+  if (s.edrAv === 'edr')                score += 7
+  else if (s.edrAv === 'av')            score += 3
+
+  return Math.min(score, 100)
+}
+
+function scoreIdentity(s: Step3Answers): number {
+  let score = 0
+
+  // MFA enforcement (30 pts) — highest-impact identity control
+  if (s.mfa === 'all')                  score += 30
+  else if (s.mfa === 'partial')         score += 13
+
+  // Conditional Access (20 pts) — policy-based access
+  if (s.conditionalAccess === 'configured') score += 20
+  else if (s.conditionalAccess === 'partial') score += 9
+
+  // Entra ID / directory (15 pts) — identity foundation
+  if (s.entraId === 'full')             score += 15
+  else if (s.entraId === 'partial')     score += 7
+
+  // Privileged access (15 pts) — admin account security
+  if (s.privilegedAccess === 'pam')     score += 15
+  else if (s.privilegedAccess === 'individual') score += 9
+  // shared accounts = 0 (critical gap)
+
+  // Intune MDM (15 pts) — device posture
+  if (s.intune === 'full')              score += 15
+  else if (s.intune === 'partial')      score += 7
+
+  // Onboarding/offboarding (5 pts) — lifecycle governance
+  if (s.onboarding === 'automated')     score += 5
+  else if (s.onboarding === 'manual')   score += 2
+
+  return Math.min(score, 100)
+}
+
+function scoreOperations(s: Step4Answers): number {
+  let score = 0
+
+  // Monitoring & alerting (25 pts) — detection capability
+  if (s.monitoring === 'siem')          score += 25
+  else if (s.monitoring === 'basic')    score += 10
+
+  // Last security audit (20 pts) — assessment discipline
+  if (s.lastAudit === 'recent')         score += 20
+  else if (s.lastAudit === 'dated')     score += 8
+
+  // IT documentation (15 pts) — operational foundation
+  if (s.documentation === 'current')    score += 15
+  else if (s.documentation === 'outdated') score += 5
+
+  // Change management (15 pts) — control environment
+  if (s.changeManagement === 'formal')  score += 15
+  else if (s.changeManagement === 'informal') score += 6
+
+  // Compliance framework (15 pts) — governance
+  if (s.compliance?.length > 0 && !s.compliance.includes('none')) score += 15
+
+  // Ticketing (10 pts) — incident tracking
+  if (s.ticketing === 'formal')         score += 10
+  else if (s.ticketing === 'informal')  score += 4
+
+  return Math.min(score, 100)
+}
+
+// ─── Risk flag generator ──────────────────────────────────────────────────────
+
+function buildFlags(a: AssessmentAnswers): RiskFlag[] {
+  const flags: RiskFlag[] = []
+  const { step2: s2, step3: s3, step4: s4, step5: s5 } = a
+
+  // ── CRITICAL flags ──
+
+  if (s3.mfa === 'none') flags.push({
+    id: 'no-mfa',
+    severity: 'critical',
+    category: 'Identidad',
+    finding: 'Sin MFA — acceso por credencial simple en todos los usuarios',
+    recommendation: 'Implementar MFA obligatorio vía Entra ID con Acceso Condicional (2–4 semanas)',
+  })
+
+  if (s3.privilegedAccess === 'shared') flags.push({
+    id: 'shared-admin',
+    severity: 'critical',
+    category: 'Gobierno',
+    finding: 'Cuentas administrativas compartidas — sin trazabilidad de cambios ni responsabilidad individual',
+    recommendation: 'Migrar a cuentas nominales con PIM just-in-time y log de auditoría completo',
+  })
+
+  if (s2.backup === 'none') flags.push({
+    id: 'no-backup',
+    severity: 'critical',
+    category: 'Continuidad',
+    finding: 'Sin estrategia de respaldo definida ni verificada',
+    recommendation: 'Implementar backup cloud con verificación periódica, RTO/RPO documentados',
+  })
+
+  if (s5.urgency === 'critical') flags.push({
+    id: 'active-incident',
+    severity: 'critical',
+    category: 'Operacional',
+    finding: 'Incidente activo o brecha operacional inmediata reportada',
+    recommendation: 'Evaluación de respuesta a incidente prioritaria — contacto en menos de 4 horas hábiles',
+  })
+
+  // ── HIGH flags ──
+
+  if (s2.vlanSegmentation === 'no') flags.push({
+    id: 'flat-network',
+    severity: 'high',
+    category: 'Infraestructura',
+    finding: 'Red plana — sin segmentación VLAN ni política de acceso lateral',
+    recommendation: 'Diseñar arquitectura de red segmentada con VLANs por función y control inter-VLAN',
+  })
+
+  if (s2.endpointInventory === 'none' || s3.intune === 'none') flags.push({
+    id: 'unmanaged-endpoints',
+    severity: 'high',
+    category: 'Endpoint',
+    finding: 'Endpoints sin inventario ni gestión centralizada — postura de seguridad desconocida',
+    recommendation: 'Implementar Intune MDM con inventario completo, políticas de cumplimiento y Autopilot',
+  })
+
+  if (s2.firewall === 'isp-default' || s2.firewall === 'none') flags.push({
+    id: 'weak-perimeter',
+    severity: 'high',
+    category: 'Infraestructura',
+    finding: 'Perímetro de red sin protección activa — firewall ISP o ausente',
+    recommendation: 'Implementar NGFW con IPS/IDS, reglas de política y visibilidad de tráfico',
+  })
+
+  if (s4.monitoring === 'none') flags.push({
+    id: 'no-monitoring',
+    severity: 'high',
+    category: 'Operaciones',
+    finding: 'Sin monitoreo ni capacidad de detección de incidentes',
+    recommendation: 'Implementar logging centralizado y alertas de seguridad como primer nivel de visibilidad',
+  })
+
+  if (s3.conditionalAccess === 'none' && s3.entraId !== 'none') flags.push({
+    id: 'no-conditional-access',
+    severity: 'high',
+    category: 'Identidad',
+    finding: 'Entra ID sin Acceso Condicional — políticas de acceso no aplicadas por contexto',
+    recommendation: 'Configurar políticas de Acceso Condicional: MFA obligatorio, compliance de dispositivo, bloqueo por riesgo',
+  })
+
+  // ── MEDIUM flags ──
+
+  if (s2.backup === 'local') flags.push({
+    id: 'local-backup',
+    severity: 'medium',
+    category: 'Continuidad',
+    finding: 'Respaldo solo local — sin protección ante desastre físico ni verificación documentada',
+    recommendation: 'Complementar con copia offsite o cloud con prueba de restauración trimestral',
+  })
+
+  if (s4.documentation === 'none') flags.push({
+    id: 'no-documentation',
+    severity: 'medium',
+    category: 'Operaciones',
+    finding: 'Sin documentación de infraestructura — dependencia de conocimiento tácito',
+    recommendation: 'Levantar inventario de red, credenciales (vault), diagramas y procedimientos críticos',
+  })
+
+  if (s4.lastAudit === 'never') flags.push({
+    id: 'no-audit',
+    severity: 'medium',
+    category: 'Gobierno',
+    finding: 'Sin auditoría de seguridad documentada — postura real desconocida',
+    recommendation: 'Programar evaluación de vulnerabilidades y revisión de configuraciones anualmente',
+  })
+
+  if (s2.wifiSegmentation === 'no') flags.push({
+    id: 'unsegmented-wifi',
+    severity: 'medium',
+    category: 'Infraestructura',
+    finding: 'WiFi sin segmentación — invitados y dispositivos IoT en la misma red corporativa',
+    recommendation: 'Crear SSIDs separados con VLAN de aislamiento para invitados y dispositivos de propósito especial',
+  })
+
+  if (s3.onboarding === 'none') flags.push({
+    id: 'no-offboarding',
+    severity: 'medium',
+    category: 'Gobierno',
+    finding: 'Sin proceso de baja de usuario — riesgo de accesos huérfanos activos',
+    recommendation: 'Implementar proceso de offboarding con lista de verificación: desactivación de cuenta, revocación de acceso y recuperación de equipo',
+  })
+
+  // Sort by severity
+  const order: Record<Severity, number> = { critical: 0, high: 1, medium: 2, low: 3 }
+  return flags.sort((a, b) => order[a.severity] - order[b.severity])
+}
+
+// ─── Quick wins generator ─────────────────────────────────────────────────────
+
+function buildQuickWins(a: AssessmentAnswers, flags: RiskFlag[]): string[] {
+  const wins: string[] = []
+  const { step2: s2, step3: s3, step4: s4 } = a
+
+  if (s3.mfa === 'none' || s3.mfa === 'partial')
+    wins.push('Enrolamiento MFA para todos los usuarios: 2–3 semanas')
+  if (s4.documentation === 'none')
+    wins.push('Inventario de activos de red y endpoints: 1 semana')
+  if (s2.backup === 'none')
+    wins.push('Configurar backup cloud con primera verificación: 1–2 semanas')
+  if (s3.privilegedAccess === 'shared' || s3.privilegedAccess === 'none')
+    wins.push('Normalizar cuentas administrativas individuales: 1 semana')
+  if (s3.conditionalAccess === 'none' && s3.entraId !== 'none')
+    wins.push('Activar políticas de Acceso Condicional base: 3–5 días')
+  if (s4.monitoring === 'none')
+    wins.push('Habilitar alertas de inicio de sesión y cambios privilegiados: 2–3 días')
+  if (s2.wifiSegmentation === 'no')
+    wins.push('Crear SSID separado para invitados con aislamiento VLAN: 1–2 días')
+
+  return wins.slice(0, 5)
+}
+
+// ─── Priority generator ───────────────────────────────────────────────────────
+
+function buildPriorities(flags: RiskFlag[]): string[] {
+  return flags
+    .filter(f => f.severity === 'critical' || f.severity === 'high')
+    .slice(0, 5)
+    .map(f => f.recommendation.split(':')[0].split('—')[0].trim())
+}
+
+// ─── Recommended phase ────────────────────────────────────────────────────────
+
+function buildRecommendedPhase(
+  infraScore: number,
+  identityScore: number,
+  opsScore: number,
+  flags: RiskFlag[]
+): string {
+  const critCount = flags.filter(f => f.severity === 'critical').length
+  if (critCount >= 2) return 'Respuesta Operacional Prioritaria — evaluación técnica presencial en 48 h'
+
+  const identityFlags = flags.filter(f => f.category === 'Identidad' || f.category === 'Gobierno').length
+  const infraFlags    = flags.filter(f => f.category === 'Infraestructura' || f.category === 'Endpoint').length
+  const opsFlags      = flags.filter(f => f.category === 'Operaciones').length
+
+  if (identityScore < 30 && identityFlags >= 2) return 'Proyecto de Identidad y Acceso — Entra ID, MFA y Acceso Condicional'
+  if (infraScore < 35 && infraFlags >= 2)       return 'Proyecto de Seguridad de Red — segmentación, NGFW y continuidad'
+  if (opsScore < 35 && opsFlags >= 2)            return 'Programa de Madurez Operacional — documentación, monitoreo y gobierno'
+  return 'Diagnóstico Integral y Roadmap de Modernización'
+}
+
+// ─── Maturity mapping ─────────────────────────────────────────────────────────
+
+const MATURITY_MAP: Array<{
+  min: number; level: MaturityLevel; label: string; desc: string
+}> = [
+  { min: 0,  level: 'initial',    label: 'Inicial',    desc: 'Controles ad-hoc, sin procesos formales. Exposición operacional alta.' },
+  { min: 25, level: 'developing', label: 'Desarrollo', desc: 'Controles básicos presentes, implementación inconsistente.' },
+  { min: 45, level: 'defined',    label: 'Definida',   desc: 'Procesos documentados y parcialmente gestionados.' },
+  { min: 65, level: 'managed',    label: 'Gestionada', desc: 'Controles proactivos, métricas definidas y monitoreo activo.' },
+  { min: 80, level: 'optimized',  label: 'Optimizada', desc: 'Mejora continua, procesos maduros y cobertura integral.' },
+]
+
+function maturityFromScore(score: number) {
+  let m = MATURITY_MAP[0]
+  for (const entry of MATURITY_MAP) {
+    if (score >= entry.min) m = entry
+  }
+  return m
+}
+
+// ─── Observations ─────────────────────────────────────────────────────────────
+
+function buildObservations(a: AssessmentAnswers, scores: { infra: number; identity: number; ops: number }): string[] {
+  const obs: string[] = []
+  const { step1: s1, step3: s3, step4: s4 } = a
+
+  if (s1.remoteWorkforce === 'significant' || s1.remoteWorkforce === 'full') {
+    if (s3.conditionalAccess !== 'configured')
+      obs.push('Fuerza de trabajo remota significativa sin Acceso Condicional configura un vector de exposición directa a credenciales.')
+  }
+  if (s1.microsoft365 === 'full' && s3.mfa === 'none')
+    obs.push('Microsoft 365 activo sin MFA es la combinación de mayor riesgo en entornos empresariales — objetivo primario de ataques de phishing y credential stuffing.')
+  if (s1.infrastructure === 'hybrid' && s3.entraId === 'none')
+    obs.push('Entorno híbrido sin integración Entra ID genera identidades no sincronizadas y puntos ciegos de acceso.')
+  if (s4.lastAudit === 'never' && scores.identity < 40)
+    obs.push('Sin auditoría previa y bajo puntaje de identidad, la brecha real puede ser significativamente mayor que lo que este cuestionario refleja.')
+  if (s1.locations !== '1' && a.step2.vlanSegmentation === 'no')
+    obs.push('Red multi-sede sin segmentación multiplica el radio de impacto ante cualquier incidente de seguridad.')
+  if (scores.infra < 30 && scores.identity < 30)
+    obs.push('Convergencia de debilidades en infraestructura e identidad indica una superficie de ataque amplia. Se recomienda abordar ambos dominios de forma coordinada.')
+
+  return obs.slice(0, 4)
+}
+
+// ─── Main scoring function ───────────────────────────────────────────────────
+
+export function scoreAssessment(a: AssessmentAnswers): ScoreResult {
+  const infra    = scoreInfrastructure(a.step2)
+  const identity = scoreIdentity(a.step3)
+  const ops      = scoreOperations(a.step4)
+
+  // Weighted composite: identity highest weight (Velkor's core expertise + highest impact)
+  const overall = Math.round(infra * 0.35 + identity * 0.40 + ops * 0.25)
+
+  const { level: maturity, label: maturityLabel, desc: maturityDesc } = maturityFromScore(overall)
+
+  const flags         = buildFlags(a)
+  const criticalCount = flags.filter(f => f.severity === 'critical').length
+  const highCount     = flags.filter(f => f.severity === 'high').length
+
+  const exposureLevel: ExposureLevel =
+    criticalCount > 0         ? 'critical' :
+    highCount > 0             ? 'high'     :
+    flags.length > 0          ? 'medium'   : 'managed'
+
+  const EXPOSURE_LABELS: Record<ExposureLevel, string> = {
+    critical: 'Exposición Crítica',
+    high:     'Exposición Alta',
+    medium:   'Exposición Media',
+    managed:  'Exposición Controlada',
+  }
+
+  const quickWins          = buildQuickWins(a, flags)
+  const immediatePriorities = buildPriorities(flags)
+  const recommendedPhase   = buildRecommendedPhase(infra, identity, ops, flags)
+  const observations       = buildObservations(a, { infra, identity, ops })
+
+  return {
+    infrastructure:  Math.round(infra),
+    identity:        Math.round(identity),
+    operations:      Math.round(ops),
+    overall,
+    maturity,
+    maturityLabel,
+    maturityDesc,
+    exposureLevel,
+    exposureLabel:   EXPOSURE_LABELS[exposureLevel],
+    flags,
+    criticalCount,
+    highCount,
+    quickWins,
+    immediatePriorities,
+    recommendedPhase,
+    observations,
+  }
+}
