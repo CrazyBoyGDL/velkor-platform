@@ -318,7 +318,174 @@ ResultsScreen (client) → generateReportHtml(data) → HTML string
 
 ---
 
-## 7. Pending Enhancements
+## 7. CRM Operations Layer (`lib/crm.ts`)
+
+### Workflow Routing
+
+`assignWorkflow(classification, scores)` maps a lead to one of four pipeline tracks:
+
+| Track | Trigger | SLA | First Action |
+|-------|---------|-----|--------------|
+| `immediate-review` | `priority = critical` OR `criticalCount > 0` | 4 h | Llamada técnica urgente |
+| `immediate-review` | `segment = Enterprise` OR `priority = high` | 8 h | Llamada técnica prioritaria |
+| `governance-workflow` | Compliance-Driven engagement | 24 h | Diagnóstico de cumplimiento |
+| `roadmap-workflow` | Modernization or Managed Services | 48 h | Presentación de roadmap |
+| `nurture-sequence` | `priority = low` | 72 h | Propuesta async |
+| `standard` | Default | 24 h | Seguimiento técnico |
+
+**Internal alert levels:** `urgent` (≤8h SLA) · `normal` (24–48h) · `low` (72h+)
+
+### Strapi Payload Structure
+
+`buildStrapiLeadPayload()` assembles all Strapi fields in one place:
+
+```
+data: {
+  // Contact
+  name, email, company, phone,
+  // Scoring
+  overallScore, infraScore, identityScore, opsScore,
+  maturity, exposureLevel, criticalCount, highCount,
+  // Classification
+  segment, engagementType, priority, followUpChannel, followUpHours,
+  // CRM routing
+  workflow, slaHours, assignmentHint, internalAlertLevel, tags[],
+  // Source
+  source, utm, reportRef,
+  // Internal notes block (structured text)
+  notes: "[EVALUACIÓN OPERACIONAL v2 · VLK-...]..."
+}
+```
+
+The `notes` field contains a machine-readable block with maturity context, top flags, workflow assignment, and SLA — parseable by n8n/Make automations without requiring a dedicated Strapi content type.
+
+---
+
+## 8. Evidence Repository (`app/framework/evidence/page.tsx`)
+
+### Architecture
+
+Fully static page — no Strapi dependency, no API calls. Evidence is curated inline in the component.
+
+### Document Catalog (10 documents)
+
+| Category | Count | Types |
+|----------|-------|-------|
+| Identidad & Acceso | 3 | policy, checklist, workflow |
+| Infraestructura de red | 2 | template, checklist |
+| Gestión de dispositivos | 2 | policy, checklist |
+| Planes de implementación | 2 | template, template |
+| Auditoría y gobernanza | 2 | excerpt, template |
+
+**Status badges:**
+- `sanitized` (green) — real fragments, client data removed
+- `reference` (blue) — reference architecture, not client-specific
+- `template` (amber) — reusable template for any engagement
+
+### SVG Diagram Inventory
+
+| Component | Dimensions | Content |
+|-----------|-----------|---------|
+| `VlanDiagram` | 680×380 | FortiGate NGFW → L3 Core → 6 VLANs with device lists + ACL note |
+| `EntraIdGovernanceFlow` | 640×400 | CA evaluation tree → MFA/Intune check → Grant/Deny + PIM annotation |
+| `IntuneDiagram` | 680×200 | 5-step device lifecycle + Retire/Wipe branch |
+| `HybridInfraMap` | 680×300 | On-prem zone ↔ Azure zone with Entra Connect Sync arrow |
+
+All diagrams use `role="img"` + `aria-label`, grid `<pattern>` background, transparent fill. Mobile: wrapped in `.arch-diagram-wrapper` (overflow-x scroll, min-width 420px).
+
+---
+
+## 9. Proposal Automation Foundation (`lib/proposal.ts`)
+
+### `generateProposal(answers, scores, classification): GeneratedProposal`
+
+Constructs a fully structured implementation proposal from assessment output.
+
+### Phase Ordering Logic
+
+```
+1. Critical remediation (if criticalCount > 0)
+   — always first, 1-2 week sprint
+2. Identity & governance (if identity flags present)
+3. Infrastructure hardening (if infra flags present)
+4. Operations & monitoring
+5. Documentation & operational handoff
+   — always last
+```
+
+Phases are skipped if their prerequisite flag category has no active flags and the pillar score is already high.
+
+### Risk Factor Derivation
+
+| Pattern | Risk Factor Added |
+|---------|------------------|
+| `documentation = none` AND `changeManagement = none` | Unformalized IT infrastructure |
+| Remote workforce present AND `conditionalAccess = none` | Remote access without policy enforcement |
+| `compliance` array non-empty OR `complianceNeeds` non-empty | Active compliance deadline |
+| `locations` value indicates multiple sites | Multi-site coordination complexity |
+| `privilegedAccess = shared` | Shared privileged credentials |
+
+### Output Shape
+
+```typescript
+{
+  company, reportRef, generatedAt,
+  scopeStatement,        // 1-sentence engagement description
+  executiveSummary,      // 3-paragraph: company context + risk context + engagement
+  proposedPhases: ProposalPhase[],  // ordered, with estimatedWeeks and priority
+  riskFactors: string[],
+  successCriteria: string[],
+  outOfScope: string[],
+  nextSteps: string[],
+}
+```
+
+---
+
+## 10. Email Notification System (`lib/emailTemplate.ts`, `app/api/assessment/notify/`)
+
+### Delivery Stack
+
+| Layer | Implementation |
+|-------|----------------|
+| Template engine | `generateAssessmentEmail()` — table-based HTML, inline CSS only |
+| Sending provider | Resend API (`https://api.resend.com/emails`) |
+| From address | `Velkor System <noreply@velkor.mx>` |
+| Subject line | `Tu evaluación operacional — VLK-{ref} — {company}` |
+| Dev mode | Fail-open: if `RESEND_API_KEY` absent → log + `{ ok: true, sent: false }` |
+
+### Env Vars
+
+| Var | Effect if set |
+|-----|---------------|
+| `RESEND_API_KEY` | Enables email delivery; emails silently skipped in dev if absent |
+
+### Email Template Sections
+
+1. Branded header (dark background, Velkor System logotype)
+2. Summary box — overall score badge + exposure level + critical/high flag counts
+3. Top 3 risk findings (severity-colored left border, description)
+4. Quick wins — 30–90 day actions
+5. Recommended phase — highlighted engagement label + estimated scope
+6. CTA button → `velkor.mx/contacto`
+7. Footer (report reference, velkor.mx, disclaimer)
+
+### Trigger (client-side, non-blocking)
+
+```typescript
+// assessments/page.tsx — fires after setStatus('done'), errors silently swallowed
+fetch('/api/assessment/notify', { method: 'POST', body: JSON.stringify({
+  reportRef, email, emailData: { /* full EmailData */ }
+}) }).catch(() => {})
+```
+
+### Rate Limiting
+
+Separate rate map: 3 requests / IP / hour (3,600,000 ms window). Silent passthrough — identical 200 response whether delivered or rate-limited.
+
+---
+
+## 11. Pending Enhancements
 
 | Item | Priority | Notes |
 |------|----------|-------|
@@ -327,7 +494,10 @@ ResultsScreen (client) → generateReportHtml(data) → HTML string
 | Dedicated Assessment content type in Strapi | Low | Full structured storage vs embedded summary in `notes` |
 | `assessment.pdf_generated` webhook event | Low | Fire after user opens PDF tab |
 | Persist scores in sessionStorage for back-nav | Low | Allow users to revisit results |
+| Extend Strapi Lead schema | Low | Add new CaseStudy fields (architectureDecisions, constraints, outcomes) |
+| `/framework/evidence` nav link | Low | Currently only reachable via /framework page card |
+| `generateProposal()` → PDF output | Medium | Wire proposal lib into reportHtml pipeline |
 
 ---
 
-*Generated: May 2026 · Velkor System · velkor.mx*
+*Updated: May 2026 · Velkor System · velkor.mx*
