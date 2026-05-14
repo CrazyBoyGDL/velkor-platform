@@ -90,6 +90,7 @@ export default function NetworkBg() {
       ref={canvasRef}
       className="absolute inset-0 w-full h-full"
       style={{ opacity: 0.25 }}
+      aria-hidden="true"
     />
   )
 }

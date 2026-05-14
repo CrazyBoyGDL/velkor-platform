@@ -41,6 +41,7 @@ export default function ServicePanel({ data }: { data: ServicePanelData }) {
       onMouseLeave={onLeave}
       style={{ rotateX, rotateY, transformPerspective: 1000, transformStyle: 'preserve-3d' }}
       whileHover={{ scale: 1.004 }}
+      whileTap={{ scale: 0.98 }}
       transition={{ type: 'spring', stiffness: 360, damping: 32 }}
       className="relative rounded-xl overflow-hidden cursor-default group h-full"
     >

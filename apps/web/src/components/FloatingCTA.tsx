@@ -76,6 +76,7 @@ export default function FloatingCTA() {
             : '0 0 0 1px rgba(245,158,11,0.7), 0 8px 32px rgba(245,158,11,0.4)',
         }}
         aria-label={expanded ? 'Cerrar' : 'Contactar'}
+        aria-expanded={expanded}
       >
         {/* Ping ring when closed */}
         {!expanded && (

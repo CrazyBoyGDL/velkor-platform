@@ -1,7 +1,18 @@
+import type { Metadata } from 'next'
 import { strapi } from '@/lib/strapi'
 import BlogList, { type BlogPost } from '@/components/BlogList'
 
 export const revalidate = 3600
+
+export const metadata: Metadata = {
+  title: 'Blog IT | Redes, Microsoft 365, CCTV y Seguridad',
+  description: 'Guías técnicas y mejores prácticas de infraestructura IT: redes Fortinet, Zero Trust, Microsoft 365, Intune y videovigilancia IP para empresas en México.',
+  alternates: { canonical: 'https://velkor.mx/blog' },
+  openGraph: {
+    title: 'Blog IT | Velkor System',
+    description: 'Guías técnicas sobre redes, seguridad Microsoft 365 y videovigilancia para empresas.',
+  },
+}
 
 const FALLBACK_POSTS: BlogPost[] = [
   {
