@@ -190,7 +190,7 @@ export default function ContactForm() {
             rel="noopener noreferrer"
             onClick={() => trackEvent('CalendlyClick', { page: 'contacto' })}
             className="block card p-6 hover:border-zinc-600 transition-colors group"
-            style={{ borderLeftColor: '#f59e0b', borderLeftWidth: 3 }}
+            style={{ borderLeftColor: '#b07828', borderLeftWidth: 3 }}
           >
             <div className="flex items-center gap-4">
               <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 bg-amber-bg">
@@ -224,7 +224,7 @@ export default function ContactForm() {
         )}
 
         {/* Diagnóstico CTA */}
-        <div className="card p-6" style={{ borderColor: '#f59e0b30' }}>
+        <div className="card p-6" style={{ borderColor: '#b0782830' }}>
           <div className="text-xs font-mono text-zinc-600 mb-3">EVALUACIÓN TÉCNICA</div>
           <h3 className="text-noc-white font-bold text-sm mb-2">¿Necesitas una auditoría completa?</h3>
           <p className="text-zinc-500 text-xs leading-relaxed mb-4">

@@ -7,7 +7,7 @@ const CATEGORIES = [
   {
     id: 'networks',
     label: 'Redes & Conectividad',
-    hex: '#3b82f6',
+    hex: '#4878b0',
     card: 'card-blue',
     services: [
       { name: 'Diseño e implementación LAN/WAN', desc: 'Cableado estructurado, switching, routing y segmentación por VLANs para sitios empresariales.' },
@@ -19,7 +19,7 @@ const CATEGORIES = [
   {
     id: 'cctv',
     label: 'CCTV & Vigilancia',
-    hex: '#06b6d4',
+    hex: '#3d88a5',
     card: 'card-cyan',
     services: [
       { name: 'Diseño de sistema IP', desc: 'Relevamiento técnico, plano de ubicación de cámaras, switching PoE y cableado.' },
@@ -31,7 +31,7 @@ const CATEGORIES = [
   {
     id: 'cloud',
     label: 'Microsoft 365 & Cloud',
-    hex: '#3b82f6',
+    hex: '#4878b0',
     card: 'card-blue',
     services: [
       { name: 'Setup de tenant Microsoft 365', desc: 'Provisionamiento completo: dominio, Exchange Online, Teams y licencias.' },
@@ -43,7 +43,7 @@ const CATEGORIES = [
   {
     id: 'identity',
     label: 'Intune & Entra ID',
-    hex: '#22c55e',
+    hex: '#3a7858',
     card: 'card-green',
     services: [
       { name: 'Configuración Entra ID', desc: 'Tenant, unión híbrida, SSO y sincronización de directorio (Entra Connect).' },

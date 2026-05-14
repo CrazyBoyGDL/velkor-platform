@@ -61,7 +61,7 @@ const PROBLEMS = [
     desc: 'Resolución insuficiente para identificar personas, sin acceso remoto y grabaciones que se pierden o corrompen sin alertas.',
   },
   {
-    hex: '#f59e0b',
+    hex: '#b07828',
     title: 'Sin analítica de comportamiento',
     desc: 'Solo grabas, no detectas. Las alertas llegan horas después del incidente, cuando ya no hay nada que hacer.',
   },
@@ -74,32 +74,32 @@ const PROBLEMS = [
 
 const SOLUTIONS = [
   {
-    hex: '#06b6d4',
+    hex: '#3d88a5',
     title: 'Cámaras IP 4K Axis e Hikvision',
     desc: 'Imagen ultraHD con visión nocturna, WDR y rango dinámico para cualquier condición de iluminación. Conectividad PoE+.',
   },
   {
-    hex: '#06b6d4',
+    hex: '#3d88a5',
     title: 'NVR centralizado multi-sede',
     desc: 'Grabación continua con retención de 30, 60 o 90 días según necesidad. Redundancia RAID y acceso remoto cifrado.',
   },
   {
-    hex: '#06b6d4',
+    hex: '#3d88a5',
     title: 'Analítica con IA',
     desc: 'Detección de intrusos, conteo de personas, zonas restringidas, reconocimiento de vehículos y alertas de comportamiento.',
   },
   {
-    hex: '#06b6d4',
+    hex: '#3d88a5',
     title: 'Acceso remoto y app móvil',
     desc: 'Visualización desde app móvil y web con notificaciones push en tiempo real. Consola unificada para todas las sedes.',
   },
   {
-    hex: '#06b6d4',
+    hex: '#3d88a5',
     title: 'Integración con control de acceso',
     desc: 'Video vinculado a lectores de tarjeta y torniquetes. Correlación de eventos de acceso con imágenes de cámara.',
   },
   {
-    hex: '#06b6d4',
+    hex: '#3d88a5',
     title: 'Diseño profesional y documentación',
     desc: 'Relevamiento técnico, plano de ubicación de cámaras, cableado PoE+ y entrega de manual de operación.',
   },
@@ -176,17 +176,17 @@ export default function VideovigilanciaPage() {
         {/* Hero */}
         <div
           className="mb-14 pl-5"
-          style={{ borderLeft: '3px solid #06b6d4' }}
+          style={{ borderLeft: '3px solid #3d88a5' }}
         >
           <div className="flex items-center gap-3 mb-4">
-            <span className="badge text-[10px] font-mono" style={{ color: '#06b6d4', backgroundColor: '#06b6d418' }}>
+            <span className="badge text-[10px] font-mono" style={{ color: '#3d88a5', backgroundColor: '#3d88a518' }}>
               VIDEOVIGILANCIA IP
             </span>
             <span className="text-zinc-700 text-[10px] font-mono">AXIS ACSR CERTIFIED</span>
           </div>
           <h1 className="text-4xl sm:text-5xl font-black text-noc-white leading-tight mb-4">
             Ve todo.<br />
-            <span style={{ color: '#06b6d4' }}>Responde antes.</span>
+            <span style={{ color: '#3d88a5' }}>Responde antes.</span>
           </h1>
           <p className="text-zinc-400 text-lg leading-relaxed max-w-2xl mb-8">
             Instalamos sistemas IP con cámaras Axis e Hikvision 4K, NVR centralizado con retención hasta 90 días y analítica con IA para detectar incidentes en tiempo real, no horas después.
@@ -231,7 +231,7 @@ export default function VideovigilanciaPage() {
               <div
                 key={title}
                 className="card p-6 hover:border-zinc-600 transition-colors group"
-                style={{ borderLeftColor: '#06b6d4', borderLeftWidth: 2 }}
+                style={{ borderLeftColor: '#3d88a5', borderLeftWidth: 2 }}
               >
                 <h3 className="text-noc-white font-semibold text-sm mb-2 group-hover:text-white transition-colors">
                   {title}
@@ -271,7 +271,7 @@ export default function VideovigilanciaPage() {
         </div>
 
         {/* CTA */}
-        <div className="card p-10 text-center" style={{ borderColor: '#06b6d430' }}>
+        <div className="card p-10 text-center" style={{ borderColor: '#3d88a530' }}>
           <div className="text-xs font-mono text-zinc-600 mb-3">SIGUIENTE PASO</div>
           <h2 className="text-2xl font-black text-noc-white mb-3">
             Diseño de sistema sin costo

@@ -46,7 +46,7 @@ const faqJsonLd = {
 
 const CONTENT = {
   slug: 'fortinet-hardening',
-  hex: '#3b82f6',
+  hex: '#4878b0',
   title: 'Guía de Hardening: Fortinet FortiGate',
   description:
     'Configuraciones esenciales de seguridad para FortiGate en entornos empresariales: desde el acceso administrativo hasta la segmentación por VLAN y el logging hacia SIEM.',
@@ -153,7 +153,7 @@ export default function FortinetHardeningPage() {
         {/* Header */}
         <div className="mb-12">
           <div className="flex items-center gap-3 mb-4">
-            <span className="badge text-[10px] font-mono" style={{ color: '#3b82f6', backgroundColor: '#3b82f618' }}>
+            <span className="badge text-[10px] font-mono" style={{ color: '#4878b0', backgroundColor: '#4878b018' }}>
               REDES & CIBERSEGURIDAD
             </span>
             <span className="text-zinc-700 text-[10px] font-mono">12 min · Revisado por ingenieros Fortinet</span>

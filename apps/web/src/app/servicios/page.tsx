@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 const SERVICES = [
   {
     href: '/servicios/ciberseguridad',
-    hex: '#3b82f6',
+    hex: '#4878b0',
     eyebrow: 'REDES & CIBERSEGURIDAD',
     title: 'Infraestructura segura desde el diseño',
     desc: 'Firewall Fortinet FortiGate, segmentación VLAN, VPN site-to-site y arquitectura Zero Trust para eliminar movimientos laterales y fortalecer el perímetro.',
@@ -20,7 +20,7 @@ const SERVICES = [
   },
   {
     href: '/servicios/identidad-acceso',
-    hex: '#22c55e',
+    hex: '#3a7858',
     eyebrow: 'IDENTIDAD & ACCESO',
     title: 'Cada acceso, auditado y condicional',
     desc: 'Microsoft Entra ID, Intune MDM y MFA por hardware para que cada identidad sea un punto de control, no un punto de riesgo. Cumplimiento desde día uno.',
@@ -29,7 +29,7 @@ const SERVICES = [
   },
   {
     href: '/servicios/videovigilancia',
-    hex: '#06b6d4',
+    hex: '#3d88a5',
     eyebrow: 'VIDEOVIGILANCIA IP',
     title: 'Visibilidad total, en tiempo real',
     desc: 'Cámaras IP Axis e Hikvision 4K, NVR centralizado con retención 30–90 días y analítica con IA para detectar incidentes antes de que escalen.',

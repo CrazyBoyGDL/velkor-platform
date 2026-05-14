@@ -61,7 +61,7 @@ const PROBLEMS = [
     desc: 'El 81 % de las brechas comienzan con credenciales robadas. Sin MFA, una sola contraseña comprometida da acceso irrestricto a todo.',
   },
   {
-    hex: '#f59e0b',
+    hex: '#b07828',
     title: 'Dispositivos sin inventario ni política',
     desc: 'Equipos sin MDM pueden acceder a datos corporativos sin que IT lo sepa, sin cifrado y sin posibilidad de borrado remoto.',
   },
@@ -74,32 +74,32 @@ const PROBLEMS = [
 
 const SOLUTIONS = [
   {
-    hex: '#22c55e',
+    hex: '#3a7858',
     title: 'Microsoft Entra ID',
     desc: 'Configuración de tenant, SSO, sincronización con Active Directory (Entra Connect) y unión híbrida de dispositivos.',
   },
   {
-    hex: '#22c55e',
+    hex: '#3a7858',
     title: 'Acceso Condicional',
     desc: 'MFA obligatorio por riesgo, cumplimiento de dispositivos, restricciones por ubicación y bloqueo de acceso legacy.',
   },
   {
-    hex: '#22c55e',
+    hex: '#3a7858',
     title: 'Intune MDM/MAM',
     desc: 'Inventario de dispositivos, políticas de cumplimiento, despliegue de apps, Windows Autopilot y borrado remoto.',
   },
   {
-    hex: '#22c55e',
+    hex: '#3a7858',
     title: 'MFA y FIDO2',
     desc: 'Microsoft Authenticator, llaves físicas FIDO2 y passkeys para eliminar el riesgo de phishing de credenciales.',
   },
   {
-    hex: '#22c55e',
+    hex: '#3a7858',
     title: 'PIM — Privileged Identity Management',
     desc: 'Acceso privilegiado just-in-time con aprobación y auditoría. Sin cuentas admin permanentes.',
   },
   {
-    hex: '#22c55e',
+    hex: '#3a7858',
     title: 'DLP y protección de datos',
     desc: 'Microsoft Purview DLP para evitar fuga de datos sensibles por correo, Teams, SharePoint y dispositivos.',
   },
@@ -176,17 +176,17 @@ export default function IdentidadAccesoPage() {
         {/* Hero */}
         <div
           className="mb-14 pl-5"
-          style={{ borderLeft: '3px solid #22c55e' }}
+          style={{ borderLeft: '3px solid #3a7858' }}
         >
           <div className="flex items-center gap-3 mb-4">
-            <span className="badge text-[10px] font-mono" style={{ color: '#22c55e', backgroundColor: '#22c55e18' }}>
+            <span className="badge text-[10px] font-mono" style={{ color: '#3a7858', backgroundColor: '#3a785818' }}>
               IDENTIDAD & ACCESO
             </span>
             <span className="text-zinc-700 text-[10px] font-mono">MICROSOFT CERTIFIED</span>
           </div>
           <h1 className="text-4xl sm:text-5xl font-black text-noc-white leading-tight mb-4">
             Cada identidad,<br />
-            <span style={{ color: '#22c55e' }}>bajo control.</span>
+            <span style={{ color: '#3a7858' }}>bajo control.</span>
           </h1>
           <p className="text-zinc-400 text-lg leading-relaxed max-w-2xl mb-8">
             Implementamos Microsoft Entra ID, Intune y MFA para que cada acceso en tu empresa sea auditado, condicional y revocable en tiempo real. Zero Trust por diseño.
@@ -231,7 +231,7 @@ export default function IdentidadAccesoPage() {
               <div
                 key={title}
                 className="card p-6 hover:border-zinc-600 transition-colors group"
-                style={{ borderLeftColor: '#22c55e', borderLeftWidth: 2 }}
+                style={{ borderLeftColor: '#3a7858', borderLeftWidth: 2 }}
               >
                 <h3 className="text-noc-white font-semibold text-sm mb-2 group-hover:text-white transition-colors">
                   {title}
@@ -271,7 +271,7 @@ export default function IdentidadAccesoPage() {
         </div>
 
         {/* CTA */}
-        <div className="card p-10 text-center" style={{ borderColor: '#22c55e30' }}>
+        <div className="card p-10 text-center" style={{ borderColor: '#3a785830' }}>
           <div className="text-xs font-mono text-zinc-600 mb-3">SIGUIENTE PASO</div>
           <h2 className="text-2xl font-black text-noc-white mb-3">
             Auditoría de identidad en 24 horas

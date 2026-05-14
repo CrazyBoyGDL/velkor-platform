@@ -11,7 +11,7 @@ function DocHeader({ tag, title, meta }: { tag: string; title: string; meta: str
   return (
     <div className="flex items-start justify-between mb-1">
       <div>
-        <div className="text-[8.5px] font-bold font-mono tracking-widest mb-1.5" style={{ color: 'rgba(245,158,11,0.7)' }}>
+        <div className="text-[8.5px] font-bold font-mono tracking-widest mb-1.5" style={{ color: 'rgba(176,120,40,0.7)' }}>
           {tag}
         </div>
         <div className="text-zinc-300 text-[10.5px] font-mono">{title}</div>
@@ -95,7 +95,7 @@ function TimelineCard() {
             <div className="h-0.5 rounded-full" style={{ background: 'rgba(255,255,255,0.06)' }}>
               <div
                 className="h-full rounded-full"
-                style={{ width: '100%', background: 'rgba(34,197,94,0.45)' }}
+                style={{ width: '100%', background: 'rgba(58,120,88,0.45)' }}
               />
             </div>
           </div>
@@ -103,7 +103,7 @@ function TimelineCard() {
       </div>
       <DocLine />
       <div className="flex items-center justify-between">
-        <span style={{ color: 'rgba(34,197,94,0.65)', fontSize: '9px' }}>✓ Cerrado · 28 días</span>
+        <span style={{ color: 'rgba(58,120,88,0.65)', fontSize: '9px' }}>✓ Cerrado · 28 días</span>
         <span className="text-zinc-700 text-[8.5px]">NOM-024 compliant</span>
       </div>
     </div>
@@ -141,7 +141,7 @@ function PolicyCard() {
       <DocLine />
       <div className="flex items-center justify-between">
         <span className="text-zinc-600 text-[8.5px]">Revisado: 2025-02-28</span>
-        <span className="text-[8.5px]" style={{ color: 'rgba(34,197,94,0.65)' }}>✓ Activo</span>
+        <span className="text-[8.5px]" style={{ color: 'rgba(58,120,88,0.65)' }}>✓ Activo</span>
       </div>
     </div>
   )

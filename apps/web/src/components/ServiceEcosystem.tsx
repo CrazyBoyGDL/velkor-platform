@@ -7,23 +7,23 @@ const LAYERS = [
   {
     tier: '01',
     label: 'Infraestructura base',
-    color: '#3b82f6',
+    color: '#4878b0',
     description:
       'La red es el sistema nervioso central. Sin segmentación, todo lo que construyas encima es frágil.',
     services: [
-      { name: 'Redes segmentadas · FortiGate NGFW · VPN', color: '#3b82f6' },
-      { name: 'CCTV IP · Visibilidad física · Analítica IA', color: '#06b6d4' },
+      { name: 'Redes segmentadas · FortiGate NGFW · VPN', color: '#4878b0' },
+      { name: 'CCTV IP · Visibilidad física · Analítica IA', color: '#3d88a5' },
     ],
   },
   {
     tier: '02',
     label: 'Identidad y control de acceso',
-    color: '#22c55e',
+    color: '#3a7858',
     description:
       'Quién accede, desde qué dispositivo, bajo qué condiciones. Política, no excepción.',
     services: [
-      { name: 'Entra ID · Acceso Condicional · MFA', color: '#22c55e' },
-      { name: 'Intune MDM · Autopilot · PIM just-in-time', color: '#22c55e' },
+      { name: 'Entra ID · Acceso Condicional · MFA', color: '#3a7858' },
+      { name: 'Intune MDM · Autopilot · PIM just-in-time', color: '#3a7858' },
     ],
     dependency: 'Requiere red segmentada para aplicar políticas por segmento',
   },
@@ -34,7 +34,7 @@ const LAYERS = [
     description:
       'El trabajo fluye sobre una base verificada. Colaboración, correo y datos protegidos por diseño.',
     services: [
-      { name: 'Microsoft 365 · Exchange · Teams · SharePoint', color: '#3b82f6' },
+      { name: 'Microsoft 365 · Exchange · Teams · SharePoint', color: '#4878b0' },
       { name: 'Soporte activo · Revisiones periódicas · Documentación', color: '#64748b' },
     ],
     dependency: 'Identidad gobernada + dispositivos conformes = M365 seguro',

@@ -46,7 +46,7 @@ const faqJsonLd = {
 
 const CONTENT = {
   slug: 'cctv-evaluacion',
-  hex: '#06b6d4',
+  hex: '#3d88a5',
   title: 'Guía de evaluación: Sistema CCTV IP empresarial',
   description:
     'Criterios técnicos para evaluar, dimensionar y especificar correctamente un sistema de videovigilancia IP empresarial: desde el relevamiento hasta la integración con sistemas de acceso.',
@@ -152,7 +152,7 @@ export default function CctvEvaluacionPage() {
         {/* Header */}
         <div className="mb-12">
           <div className="flex items-center gap-3 mb-4">
-            <span className="badge text-[10px] font-mono" style={{ color: '#06b6d4', backgroundColor: '#06b6d418' }}>
+            <span className="badge text-[10px] font-mono" style={{ color: '#3d88a5', backgroundColor: '#3d88a518' }}>
               VIDEOVIGILANCIA IP
             </span>
             <span className="text-zinc-700 text-[10px] font-mono">8 min · ACSR verified</span>

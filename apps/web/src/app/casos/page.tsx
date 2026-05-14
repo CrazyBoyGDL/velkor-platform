@@ -60,7 +60,7 @@ const FALLBACK_CASES: CaseStudy[] = [
     ],
     result: '0 incidentes',
     resultSub: 'en 14 meses',
-    hex: '#3b82f6',
+    hex: '#4878b0',
     tags: ['Redes', 'FortiGate', 'VLAN', 'Zero Trust', 'Soporte'],
   },
   {
@@ -85,7 +85,7 @@ const FALLBACK_CASES: CaseStudy[] = [
     ],
     result: 'NOM-024',
     resultSub: 'en 6 semanas',
-    hex: '#22c55e',
+    hex: '#3a7858',
     tags: ['Entra ID', 'Intune', 'MFA', 'Compliance', 'DLP', 'NOM-024'],
   },
   {
@@ -110,7 +110,7 @@ const FALLBACK_CASES: CaseStudy[] = [
     ],
     result: '−34% robos',
     resultSub: 'primer trimestre',
-    hex: '#06b6d4',
+    hex: '#3d88a5',
     tags: ['CCTV', 'Axis', 'NVR 4K', 'IA Analytics', 'PoE+'],
   },
 ]
@@ -136,7 +136,7 @@ async function getCasos(): Promise<CaseStudy[]> {
     phases:        Array.isArray(a.phases) ? a.phases : undefined,
     result:        a.result    ?? '',
     resultSub:     a.resultSub ?? '',
-    hex:           a.hex       || '#3b82f6',
+    hex:           a.hex       || '#4878b0',
     tags:          Array.isArray(a.tags) ? a.tags : [],
   }))
 }

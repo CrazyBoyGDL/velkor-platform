@@ -27,7 +27,7 @@ const FALLBACK: Testimonial[] = [
     role: 'Director de Operaciones',
     company: 'Empresa de distribución · Monterrey',
     initials: 'DO',
-    hex: '#f59e0b',
+    hex: '#b07828',
   },
   {
     quote:
@@ -35,7 +35,7 @@ const FALLBACK: Testimonial[] = [
     role: 'Responsable TI',
     company: 'Grupo de salud · CDMX',
     initials: 'RT',
-    hex: '#22c55e',
+    hex: '#3a7858',
   },
   {
     quote:
@@ -43,7 +43,7 @@ const FALLBACK: Testimonial[] = [
     role: 'Gerente General',
     company: 'Cadena de retail · Guadalajara',
     initials: 'GG',
-    hex: '#06b6d4',
+    hex: '#3d88a5',
   },
 ]
 
@@ -58,7 +58,7 @@ async function getTestimonials(): Promise<Testimonial[]> {
     role:     a.role,
     company:  a.company,
     initials: a.initials ?? a.role.slice(0, 2).toUpperCase(),
-    hex:      a.hex ?? '#f59e0b',
+    hex:      a.hex ?? '#b07828',
   }))
 }
 

@@ -22,7 +22,7 @@ const FALLBACK_POSTS: BlogPost[] = [
     category: 'Redes',
     date: '8 May 2026',
     readTime: '8 min',
-    hex: '#3b82f6',
+    hex: '#4878b0',
   },
   {
     slug: 'cctv-ai-analytics',
@@ -31,7 +31,7 @@ const FALLBACK_POSTS: BlogPost[] = [
     category: 'CCTV',
     date: '1 May 2026',
     readTime: '6 min',
-    hex: '#06b6d4',
+    hex: '#3d88a5',
   },
   {
     slug: 'm365-conditional-access',
@@ -40,7 +40,7 @@ const FALLBACK_POSTS: BlogPost[] = [
     category: 'Cloud',
     date: '22 Abr 2026',
     readTime: '12 min',
-    hex: '#3b82f6',
+    hex: '#4878b0',
   },
   {
     slug: 'intune-windows-autopilot',
@@ -49,7 +49,7 @@ const FALLBACK_POSTS: BlogPost[] = [
     category: 'Intune',
     date: '15 Abr 2026',
     readTime: '10 min',
-    hex: '#22c55e',
+    hex: '#3a7858',
   },
 ]
 
@@ -85,7 +85,7 @@ async function getPosts(): Promise<BlogPost[]> {
     category: a.category,
     date: formatDate(a.publishedAt),
     readTime: a.readTime ?? '',
-    hex: a.hex ?? '#f59e0b',
+    hex: a.hex ?? '#b07828',
   }))
 }
 

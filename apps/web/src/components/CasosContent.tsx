@@ -224,7 +224,7 @@ export default function CasosContent({ cases }: { cases: CaseStudy[] }) {
       >
         <div
           className="text-4xl font-black font-mono mb-2 tabular-nums"
-          style={{ color: '#3b82f6' }}
+          style={{ color: '#4878b0' }}
         >
           +50
         </div>

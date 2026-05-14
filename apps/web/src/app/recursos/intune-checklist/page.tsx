@@ -46,7 +46,7 @@ const faqJsonLd = {
 
 const CONTENT = {
   slug: 'intune-checklist',
-  hex: '#22c55e',
+  hex: '#3a7858',
   title: 'Lista de verificación: Implementación de Microsoft Intune',
   description:
     'Checklist técnico de 30+ puntos para implementar Intune de forma correcta y completa, desde la configuración inicial hasta Autopilot y Acceso Condicional.',
@@ -151,7 +151,7 @@ export default function IntuneChecklistPage() {
         {/* Header */}
         <div className="mb-12">
           <div className="flex items-center gap-3 mb-4">
-            <span className="badge text-[10px] font-mono" style={{ color: '#22c55e', backgroundColor: '#22c55e18' }}>
+            <span className="badge text-[10px] font-mono" style={{ color: '#3a7858', backgroundColor: '#3a785818' }}>
               IDENTIDAD & ACCESO
             </span>
             <span className="text-zinc-700 text-[10px] font-mono">10 min · 30+ puntos</span>

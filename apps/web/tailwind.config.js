@@ -6,34 +6,33 @@ module.exports = {
     extend: {
       colors: {
         // Base surfaces — 3-tier depth system
-        // canvas (#06060a) → card (#0e0e12) → raised (#161618)
         surface: {
           DEFAULT: '#0d1120',
-          dark:    '#080c14',   // page canvas — midnight navy-graphite
-          card:    '#0b1018',   // card — deep navy
-          raised:  '#131c2a',   // raised — muted navy
-          border:  '#1c2840',   // border — navy-tinted structural line
-          hover:   '#121c2e',   // hover — deep navy hover
+          dark:    '#080c14',   // page canvas — deep navy
+          card:    '#0b1018',   // card surface
+          raised:  '#131c2a',   // raised elements
+          border:  '#1c2840',   // structural border — navy-graphite
+          hover:   '#121c2e',   // hover state
         },
-        // Main accent
+        // Warm brass — restrained CTA accent (not electric amber)
         amber: {
-          DEFAULT: '#f59e0b',
-          light:   '#fbbf24',
-          dark:    '#d97706',
-          bg:      'rgba(245,158,11,0.12)',
+          DEFAULT: '#b07828',   // warm brass
+          light:   '#c88e38',   // muted gold
+          dark:    '#9a6518',   // deep brass
+          bg:      'rgba(176,120,40,0.10)',
         },
-        // NOC status colors
+        // Domain and status palette — all desaturated/institutional
         noc: {
-          green:      '#22c55e',
-          'green-bg': 'rgba(34,197,94,0.12)',
-          'green-dim':'#166534',
-          yellow:     '#eab308',
-          'yellow-bg':'rgba(234,179,8,0.12)',
-          red:        '#ef4444',
-          'red-bg':   'rgba(239,68,68,0.12)',
-          blue:       '#3b82f6',
-          'blue-bg':  'rgba(59,130,246,0.12)',
-          cyan:       '#06b6d4',
+          green:      '#3a7858',   // restrained emerald (identity/Intune)
+          'green-bg': 'rgba(58,120,88,0.10)',
+          'green-dim':'#1e4030',
+          yellow:     '#b09020',   // muted yellow-gold
+          'yellow-bg':'rgba(176,144,32,0.10)',
+          red:        '#c04040',   // muted operational red
+          'red-bg':   'rgba(192,64,64,0.10)',
+          blue:       '#4878b0',   // graphite steel blue (networks/cloud)
+          'blue-bg':  'rgba(72,120,176,0.10)',
+          cyan:       '#3d88a5',   // muted steel cyan (CCTV/video)
           gray:       '#6b7280',
           'gray-mid': '#9ca3af',
           white:      '#f4f4f5',
@@ -47,24 +46,21 @@ module.exports = {
         'grid-subtle': `linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
                         linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)`,
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'hero-glow': 'radial-gradient(ellipse 80% 60% at 50% 0%, rgba(245,158,11,0.08) 0%, transparent 70%)',
+        // Reduced-intensity hero atmosphere
+        'hero-glow': 'radial-gradient(ellipse 80% 60% at 50% 0%, rgba(176,120,40,0.05) 0%, transparent 70%)',
       },
       boxShadow: {
-        'amber':       '0 0 24px rgba(245,158,11,0.2)',
-        'amber-sm':    '0 0 12px rgba(245,158,11,0.15)',
-        'noc-green':   '0 0 20px rgba(34,197,94,0.15)',
+        'amber':       '0 0 24px rgba(176,120,40,0.15)',
+        'amber-sm':    '0 0 12px rgba(176,120,40,0.10)',
+        'noc-green':   '0 0 20px rgba(58,120,88,0.12)',
         'card':        '0 1px 3px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.04)',
       },
       animation: {
-        // Status / ambient
         'pulse-slow':      'pulse 3.5s cubic-bezier(0.4,0,0.6,1) infinite',
         'pulse-fast':      'pulse 1.5s cubic-bezier(0.4,0,0.6,1) infinite',
-        // Hero atmosphere — very slow, subtle drift
         'ambient-breath':  'ambientBreath 14s ease-in-out infinite',
-        // Entry animations (CSS-only fallback)
         'fade-in':         'fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards',
         'fade-up-in':      'fadeUpIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
-        // Utility
         'tick':            'tick 60s linear infinite',
         'draw':            'draw 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards',
         'float':           'float 7s ease-in-out infinite',

@@ -61,7 +61,7 @@ const PROBLEMS = [
     desc: 'Un dispositivo comprometido puede moverse libremente entre servidores, impresoras y endpoints. Un solo punto de falla afecta toda la organización.',
   },
   {
-    hex: '#f59e0b',
+    hex: '#b07828',
     title: 'Firewall sin inspección profunda',
     desc: 'Los firewalls básicos solo filtran puertos y IPs. Sin IPS/IDS ni Application Control, el malware en tráfico HTTPS pasa sin alarmas.',
   },
@@ -74,32 +74,32 @@ const PROBLEMS = [
 
 const SOLUTIONS = [
   {
-    hex: '#3b82f6',
+    hex: '#4878b0',
     title: 'Fortinet FortiGate NGFW',
     desc: 'Firewall de próxima generación con IPS, Application Control, Anti-Malware y SSL Inspection. Visibilidad total del tráfico.',
   },
   {
-    hex: '#3b82f6',
+    hex: '#4878b0',
     title: 'Segmentación por VLAN',
     desc: 'Red de usuarios separada de servidores, IoT, impresoras e invitados. Movimiento lateral bloqueado por diseño.',
   },
   {
-    hex: '#3b82f6',
+    hex: '#4878b0',
     title: 'VPN corporativa',
     desc: 'Site-to-site IPsec para sucursales y SSL VPN para acceso remoto seguro. Autenticación de doble factor integrada.',
   },
   {
-    hex: '#3b82f6',
+    hex: '#4878b0',
     title: 'Arquitectura Zero Trust',
     desc: 'Ningún dispositivo o usuario es confiable por defecto. Cada acceso requiere verificación, sin importar la ubicación.',
   },
   {
-    hex: '#3b82f6',
+    hex: '#4878b0',
     title: 'Alertas y visibilidad',
     desc: 'Configuración de alertas ante comportamientos anómalos, intentos de intrusión y tráfico sospechoso. Visibilidad activa de la red.',
   },
   {
-    hex: '#3b82f6',
+    hex: '#4878b0',
     title: 'Documentación completa',
     desc: 'Diagrama de red actualizado, runbook de operación y procedimientos de respuesta ante incidentes entregados al cierre.',
   },
@@ -176,17 +176,17 @@ export default function CiberseguridadPage() {
         {/* Hero */}
         <div
           className="mb-14 pl-5"
-          style={{ borderLeft: '3px solid #3b82f6' }}
+          style={{ borderLeft: '3px solid #4878b0' }}
         >
           <div className="flex items-center gap-3 mb-4">
-            <span className="badge text-[10px] font-mono" style={{ color: '#3b82f6', backgroundColor: '#3b82f618' }}>
+            <span className="badge text-[10px] font-mono" style={{ color: '#4878b0', backgroundColor: '#4878b018' }}>
               REDES & CIBERSEGURIDAD
             </span>
             <span className="text-zinc-700 text-[10px] font-mono">ESPECIALISTAS FORTINET</span>
           </div>
           <h1 className="text-4xl sm:text-5xl font-black text-noc-white leading-tight mb-4">
             Tu red, blindada<br />
-            <span style={{ color: '#3b82f6' }}>desde adentro.</span>
+            <span style={{ color: '#4878b0' }}>desde adentro.</span>
           </h1>
           <p className="text-zinc-400 text-lg leading-relaxed max-w-2xl mb-8">
             Diseñamos e implementamos arquitecturas de red seguras con firewalls Fortinet FortiGate, segmentación VLAN y controles de acceso que eliminan movimientos laterales desde el primer día.
@@ -231,7 +231,7 @@ export default function CiberseguridadPage() {
               <div
                 key={title}
                 className="card p-6 hover:border-zinc-600 transition-colors group"
-                style={{ borderLeftColor: '#3b82f6', borderLeftWidth: 2 }}
+                style={{ borderLeftColor: '#4878b0', borderLeftWidth: 2 }}
               >
                 <h3 className="text-noc-white font-semibold text-sm mb-2 group-hover:text-white transition-colors">
                   {title}

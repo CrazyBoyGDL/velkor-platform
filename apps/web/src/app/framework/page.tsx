@@ -17,9 +17,9 @@ export const metadata: Metadata = {
 const STEPS = [
   {
     n: '01',
-    color: '#f59e0b',
-    bg: 'rgba(245,158,11,0.08)',
-    border: 'rgba(245,158,11,0.25)',
+    color: '#b07828',
+    bg: 'rgba(176,120,40,0.08)',
+    border: 'rgba(176,120,40,0.25)',
     title: 'Diagnóstico',
     duration: 'Semana 1',
     desc: 'Evaluación técnica profunda de la infraestructura actual: topología de red, identidades, dispositivos, cámaras y brechas de seguridad. Sin costo.',
@@ -31,9 +31,9 @@ const STEPS = [
   },
   {
     n: '02',
-    color: '#3b82f6',
-    bg: 'rgba(59,130,246,0.08)',
-    border: 'rgba(59,130,246,0.25)',
+    color: '#4878b0',
+    bg: 'rgba(72,120,176,0.08)',
+    border: 'rgba(72,120,176,0.25)',
     title: 'Diseño',
     duration: 'Semana 2',
     desc: 'Arquitectura de solución: topología de red propuesta, tecnologías seleccionadas, licencias necesarias y cronograma de implementación.',
@@ -59,9 +59,9 @@ const STEPS = [
   },
   {
     n: '04',
-    color: '#22c55e',
-    bg: 'rgba(34,197,94,0.08)',
-    border: 'rgba(34,197,94,0.25)',
+    color: '#3a7858',
+    bg: 'rgba(58,120,88,0.08)',
+    border: 'rgba(58,120,88,0.25)',
     title: 'Validación',
     duration: 'Semana 7',
     desc: 'Verificación formal de que los KPIs comprometidos en el diseño se cumplen. Pruebas de seguridad básicas, revisión de alertas y aceptación técnica.',
@@ -73,9 +73,9 @@ const STEPS = [
   },
   {
     n: '05',
-    color: '#06b6d4',
-    bg: 'rgba(6,182,212,0.08)',
-    border: 'rgba(6,182,212,0.25)',
+    color: '#3d88a5',
+    bg: 'rgba(61,136,165,0.08)',
+    border: 'rgba(61,136,165,0.25)',
     title: 'Handoff',
     duration: 'Semana 8',
     desc: 'Transferencia formal de conocimiento al equipo interno: capacitación, documentación de operación y activación del SLA de soporte continuo.',
@@ -139,7 +139,7 @@ export default function FrameworkPage() {
           {/* Vertical connector line */}
           <div
             className="absolute left-[27px] top-10 bottom-10 w-px hidden sm:block"
-            style={{ background: 'linear-gradient(180deg, rgba(245,158,11,0.3) 0%, rgba(6,182,212,0.3) 100%)' }}
+            style={{ background: 'linear-gradient(180deg, rgba(176,120,40,0.3) 0%, rgba(61,136,165,0.3) 100%)' }}
           />
 
           <div className="space-y-6">
@@ -207,7 +207,7 @@ export default function FrameworkPage() {
               <div
                 key={title}
                 className="card p-6 hover:border-zinc-600 transition-colors"
-                style={{ borderLeftColor: '#f59e0b', borderLeftWidth: 2 }}
+                style={{ borderLeftColor: '#b07828', borderLeftWidth: 2 }}
               >
                 <div className="flex items-center gap-2 mb-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-amber flex-shrink-0" />

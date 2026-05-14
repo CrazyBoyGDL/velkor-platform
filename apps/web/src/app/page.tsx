@@ -16,10 +16,10 @@ const NetworkBg = dynamic(() => import('@/components/NetworkBg'), { ssr: false }
 
 // ─── DATA ────────────────────────────────────────────────────────────────────
 const STATS = [
-  { val: 50,  suf: '+',  label: 'Clientes activos',      sub: 'Pymes y corporativos',          color: '#3b82f6' },
+  { val: 50,  suf: '+',  label: 'Clientes activos',      sub: 'Pymes y corporativos',          color: '#4878b0' },
   { val: 8,   suf: 'yr', label: 'Años de experiencia',   sub: 'Fundados en 2016',              color: '#64748b' },
-  { val: 24,  suf: 'h',  label: 'Propuesta técnica',     sub: 'Diagnóstico inicial incluido',  color: '#22c55e', prefix: '<' },
-  { val: 100, suf: '%',  label: 'Proyectos documentados', sub: 'KPIs verificados al cierre',   color: '#3b82f6' },
+  { val: 24,  suf: 'h',  label: 'Propuesta técnica',     sub: 'Diagnóstico inicial incluido',  color: '#3a7858', prefix: '<' },
+  { val: 100, suf: '%',  label: 'Proyectos documentados', sub: 'KPIs verificados al cierre',   color: '#4878b0' },
 ]
 
 const SERVICES: ServicePanelData[] = [
@@ -28,7 +28,7 @@ const SERVICES: ServicePanelData[] = [
     desc: 'Segmentación y hardening de red para eliminar movimiento lateral. FortiGate NGFW, VLANs y Zero Trust arquitecturados desde el primer día, no adaptados después.',
     outcome: 'Ref: Red de distribución industrial · 85 hosts · 3 sedes · FortiGate 80F · 4 semanas',
     scope: 'Red plana → 4 VLANs segmentadas · política de acceso por segmento · IPS/IDS activo',
-    hex: '#3b82f6',
+    hex: '#4878b0',
     tags: ['FortiGate NGFW', 'VLAN', 'Zero Trust', 'VPN', 'IPS/IDS'],
     href: '/servicios/ciberseguridad',
   },
@@ -37,7 +37,7 @@ const SERVICES: ServicePanelData[] = [
     desc: 'Visibilidad total de tus instalaciones con detección de incidentes en tiempo real. Cámaras 4K, NVR centralizado y analítica con IA para actuar antes de que escalen.',
     outcome: 'Ref: Cadena de retail · 8 sucursales · 96 cámaras · −34% incidentes físicos',
     scope: 'Axis P-series · Milestone NVR · PoE+ switching · analítica de intrusión perimetral',
-    hex: '#06b6d4',
+    hex: '#3d88a5',
     tags: ['Axis', 'NVR 4K', 'IA Analytics', 'PoE+', 'ONVIF'],
     href: '/servicios/videovigilancia',
   },
@@ -45,7 +45,7 @@ const SERVICES: ServicePanelData[] = [
     icon: '⬢', title: 'Microsoft 365 & Cloud',
     desc: 'Microsoft 365 en producción completa en menos de 5 días hábiles: correo, colaboración y cumplimiento. Sin migraciones incompletas ni usuarios sin configurar.',
     scope: 'Tenant M365 · Exchange Online · Teams · SharePoint · Defender for Office 365',
-    hex: '#3b82f6',
+    hex: '#4878b0',
     tags: ['Exchange', 'Teams', 'SharePoint', 'Entra ID', 'OneDrive'],
     href: '/servicios/identidad-acceso',
   },
@@ -54,7 +54,7 @@ const SERVICES: ServicePanelData[] = [
     desc: 'Gobernanza total de dispositivos e identidades. Ningún endpoint sin gestionar. Ninguna credencial sin MFA. Acceso condicional por política, no por excepción.',
     outcome: 'Ref: Centro de salud · 62 usuarios · NOM-024 compliant · 6 semanas',
     scope: 'Entra ID · Acceso Condicional · Intune MDM · Autopilot · PIM just-in-time',
-    hex: '#22c55e',
+    hex: '#3a7858',
     tags: ['MDM', 'MFA', 'Autopilot', 'PIM', 'Conditional Access'],
     href: '/servicios/identidad-acceso',
   },
@@ -70,22 +70,22 @@ const SERVICES: ServicePanelData[] = [
     icon: '◇', title: 'Consultoría & Diagnóstico',
     desc: 'Mapa técnico completo de tu infraestructura en 24 horas: brechas documentadas, riesgos priorizados y propuesta de remediación con costos reales.',
     scope: 'Auditoría LAN/WAN · inventario de endpoints · análisis de políticas IAM · informe técnico',
-    hex: '#06b6d4',
+    hex: '#3d88a5',
     tags: ['Auditoría', 'Propuesta 24h', 'Sin costo', 'Ingenieros Fortinet'],
     href: '/assessments',
   },
 ]
 
 const STEPS = [
-  { n: '01', color: '#f59e0b', bg: 'rgba(245,158,11,0.1)',  border: 'rgba(245,158,11,0.3)',  title: 'Diagnóstico',      desc: 'Evaluamos tu infraestructura: redes, identidades, dispositivos y seguridad. Informe técnico en 24 h.' },
-  { n: '02', color: '#3b82f6', bg: 'rgba(59,130,246,0.1)',  border: 'rgba(59,130,246,0.3)',  title: 'Propuesta',        desc: 'Plan de trabajo con alcance, tecnologías, cronograma y cotización detallada. Sin letra pequeña.' },
-  { n: '03', color: '#22c55e', bg: 'rgba(34,197,94,0.1)',   border: 'rgba(34,197,94,0.3)',   title: 'Implementación',   desc: 'Ingenieros especializados en campo, documentación de cada cambio y transferencia de conocimiento a tu equipo.' },
+  { n: '01', color: '#b07828', bg: 'rgba(176,120,40,0.1)',  border: 'rgba(176,120,40,0.3)',  title: 'Diagnóstico',      desc: 'Evaluamos tu infraestructura: redes, identidades, dispositivos y seguridad. Informe técnico en 24 h.' },
+  { n: '02', color: '#4878b0', bg: 'rgba(72,120,176,0.1)',  border: 'rgba(72,120,176,0.3)',  title: 'Propuesta',        desc: 'Plan de trabajo con alcance, tecnologías, cronograma y cotización detallada. Sin letra pequeña.' },
+  { n: '03', color: '#3a7858', bg: 'rgba(58,120,88,0.1)',   border: 'rgba(58,120,88,0.3)',   title: 'Implementación',   desc: 'Ingenieros especializados en campo, documentación de cada cambio y transferencia de conocimiento a tu equipo.' },
 ]
 
 const TESTIMONIALS = [
-  { quote: 'Rediseñaron nuestra red y migraron 80 usuarios a Microsoft 365 en un fin de semana. Cero interrupciones, documentación entregada el lunes.', author: 'Director de Operaciones', role: 'Empresa de distribución · Monterrey', color: '#f59e0b', initials: 'DO' },
-  { quote: 'Implementaron Intune y acceso condicional en 3 semanas. Ahora tenemos visibilidad total de 150 dispositivos desde un solo panel.', author: 'IT Manager', role: 'Grupo de salud · CDMX', color: '#f59e0b', initials: 'IT' },
-  { quote: 'El sistema CCTV con analítica de video detectó un incidente antes de que llegara el equipo de seguridad. El ROI fue evidente en el primer mes.', author: 'Gerente General', role: 'Cadena de retail · Guadalajara', color: '#f59e0b', initials: 'GG' },
+  { quote: 'Rediseñaron nuestra red y migraron 80 usuarios a Microsoft 365 en un fin de semana. Cero interrupciones, documentación entregada el lunes.', author: 'Director de Operaciones', role: 'Empresa de distribución · Monterrey', color: '#b07828', initials: 'DO' },
+  { quote: 'Implementaron Intune y acceso condicional en 3 semanas. Ahora tenemos visibilidad total de 150 dispositivos desde un solo panel.', author: 'IT Manager', role: 'Grupo de salud · CDMX', color: '#b07828', initials: 'IT' },
+  { quote: 'El sistema CCTV con analítica de video detectó un incidente antes de que llegara el equipo de seguridad. El ROI fue evidente en el primer mes.', author: 'Gerente General', role: 'Cadena de retail · Guadalajara', color: '#b07828', initials: 'GG' },
 ]
 
 const DIFFERENTIATORS = [
@@ -436,7 +436,7 @@ export default function HomePage() {
                 >
                   {/* Architectural accent mark */}
                   <div className="w-4 h-px mt-[11px] flex-shrink-0 transition-all duration-300"
-                    style={{ background: 'rgba(34,197,94,0.35)' }} />
+                    style={{ background: 'rgba(58,120,88,0.35)' }} />
                   <div>
                     <div className="text-zinc-100 font-semibold text-[15px] leading-snug mb-1.5 group-hover:text-white transition-colors">{label}</div>
                     <div className="text-zinc-500 text-sm leading-relaxed">{sub}</div>

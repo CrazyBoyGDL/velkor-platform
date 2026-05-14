@@ -51,8 +51,8 @@ export default function FloatingCTA() {
             href="/assessments"
             className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-sm font-bold text-black transition-all duration-200"
             style={{
-              background: 'linear-gradient(135deg, #f59e0b, #fbbf24)',
-              boxShadow: '0 0 0 1px rgba(245,158,11,0.6), 0 4px 20px rgba(245,158,11,0.35)',
+              background: 'linear-gradient(135deg, #b07828, #c88e38)',
+              boxShadow: '0 0 0 1px rgba(176,120,40,0.6), 0 4px 20px rgba(176,120,40,0.35)',
             }}
           >
             <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 flex-shrink-0">
@@ -70,10 +70,10 @@ export default function FloatingCTA() {
         style={{
           background: expanded
             ? 'linear-gradient(135deg, #1e1e1e, #111)'
-            : 'linear-gradient(135deg, #f59e0b, #fbbf24)',
+            : 'linear-gradient(135deg, #b07828, #c88e38)',
           boxShadow: expanded
             ? '0 0 0 1px #333, 0 8px 24px rgba(0,0,0,0.5)'
-            : '0 0 0 1px rgba(245,158,11,0.7), 0 8px 32px rgba(245,158,11,0.4)',
+            : '0 0 0 1px rgba(176,120,40,0.7), 0 8px 32px rgba(176,120,40,0.4)',
         }}
         aria-label={expanded ? 'Cerrar' : 'Contactar'}
         aria-expanded={expanded}
@@ -84,7 +84,7 @@ export default function FloatingCTA() {
             className="absolute inset-0 rounded-2xl"
             style={{
               animation: 'glowPing 3.5s ease-out infinite',
-              background: 'rgba(245,158,11,0.18)',
+              background: 'rgba(176,120,40,0.18)',
             }}
           />
         )}

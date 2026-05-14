@@ -6,25 +6,25 @@ import { reveal as appear } from '@/lib/motion'
 // Four diagnostic questions — the ones a senior engineer asks on a first visit
 const QUESTIONS = [
   {
-    color:    '#3b82f6',
+    color:    '#4878b0',
     question: '¿Sabes cuántos endpoints de tu red no tienen un parche activo?',
     context:  'La mayoría de los equipos de IT responden "la mayoría" o "no sé exactamente." Eso es un gap operacional, no una preferencia. Un solo endpoint sin parchear con un CVE explotable es vector de entrada suficiente.',
     implication: 'Diagnóstico de inventario incluido en la evaluación inicial.',
   },
   {
-    color:    '#22c55e',
+    color:    '#3a7858',
     question: '¿Cuánto tiempo tardarías en recuperar operaciones si cifran tus servidores hoy?',
     context:  'Sin segmentación y sin backups verificados, la respuesta honesta suele ser: días. Con frecuencia, sin fecha. El tiempo promedio de recuperación sin un plan documentado es de 21 días; el costo promedio supera los $200k USD.',
     implication: 'Evaluamos el plan de recuperación como parte del diagnóstico.',
   },
   {
-    color:    '#22c55e',
+    color:    '#3a7858',
     question: '¿Qué pasa si un empleado deja la empresa hoy y no desactivas su cuenta?',
     context:  'Sin automatización de offboarding en Entra ID, las credenciales permanecen activas indefinidamente. El 58% de los incidentes internos documentados involucran cuentas de ex-empleados no desactivadas a tiempo.',
     implication: 'La gestión de ciclo de vida de identidades forma parte del alcance.',
   },
   {
-    color:    '#06b6d4',
+    color:    '#3d88a5',
     question: '¿Tienes visibilidad completa de quién accede físicamente a tus instalaciones críticas?',
     context:  'Servidores, cuartos de cómputo y bodegas sin cobertura CCTV representan el vector físico más ignorado. El 34% de las brechas de datos documentadas en DBIR 2024 involucran acceso físico no autorizado.',
     implication: 'Incluimos evaluación de cobertura física en el mismo diagnóstico.',

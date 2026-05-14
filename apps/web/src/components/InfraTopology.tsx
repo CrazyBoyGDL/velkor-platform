@@ -57,31 +57,31 @@ function outerArc(ax: number, ay: number, bx: number, by: number): string {
 // Angles measured from +x axis (standard SVG/math convention)
 const INNER_NODES = [
   // Security / network perimeter cluster (upper-left)
-  { deg: -82, color: '#3b82f6', label: 'NGFW',     detail: 'FortiGate · Hardened',  dx:  0,  dy: -34, anchor: 'middle' as const },
-  { deg: -18, color: '#3b82f6', label: 'NETWORK',  detail: 'VLAN · Segmentación',   dx:  28, dy:  -6, anchor: 'start'  as const },
+  { deg: -82, color: '#4878b0', label: 'NGFW',     detail: 'FortiGate · Hardened',  dx:  0,  dy: -34, anchor: 'middle' as const },
+  { deg: -18, color: '#4878b0', label: 'NETWORK',  detail: 'VLAN · Segmentación',   dx:  28, dy:  -6, anchor: 'start'  as const },
   // Identity / compliance cluster (right)
-  { deg:  42, color: '#22c55e', label: 'IDENTITY', detail: 'Entra ID · SSO',         dx:  28, dy:  -6, anchor: 'start'  as const },
-  { deg: 102, color: '#22c55e', label: 'ENDPOINT', detail: 'Intune · Autopilot',     dx:  0,  dy:  34, anchor: 'middle' as const },
+  { deg:  42, color: '#3a7858', label: 'IDENTITY', detail: 'Entra ID · SSO',         dx:  28, dy:  -6, anchor: 'start'  as const },
+  { deg: 102, color: '#3a7858', label: 'ENDPOINT', detail: 'Intune · Autopilot',     dx:  0,  dy:  34, anchor: 'middle' as const },
   // Cloud / collaboration cluster (lower-left)
-  { deg: 162, color: '#3b82f6', label: 'M365',     detail: 'Exchange · Teams',       dx: -28, dy:  -6, anchor: 'end'    as const },
-  { deg: 222, color: '#06b6d4', label: 'CCTV',     detail: 'Axis · NVR · IA',        dx: -28, dy:  -6, anchor: 'end'    as const },
+  { deg: 162, color: '#4878b0', label: 'M365',     detail: 'Exchange · Teams',       dx: -28, dy:  -6, anchor: 'end'    as const },
+  { deg: 222, color: '#3d88a5', label: 'CCTV',     detail: 'Axis · NVR · IA',        dx: -28, dy:  -6, anchor: 'end'    as const },
 ] as const
 
 // Outer edge / cloud / audit nodes — smaller, dimmer, more peripheral
 const OUTER_NODES = [
   { deg: -52, color: '#475569', label: 'WAN',   detail: 'Edge · ISP',      dx:  0,  dy: -26, anchor: 'middle' as const },
-  { deg:  14, color: '#22c55e', label: 'FIDO2', detail: 'MFA · Hardware',  dx:  24, dy:  -4, anchor: 'start'  as const },
+  { deg:  14, color: '#3a7858', label: 'FIDO2', detail: 'MFA · Hardware',  dx:  24, dy:  -4, anchor: 'start'  as const },
   { deg: 178, color: '#64748b', label: 'AUDIT', detail: 'Log · SIEM',      dx: -24, dy:  -4, anchor: 'end'    as const },
 ] as const
 
 // Lateral cross-connections (between related inner nodes, not through hub)
 const CROSS_LINKS = [
   // FortiGate enforces policy on internal network segment
-  { from: 0, to: 1, color: '#3b82f6', label: 'Policy·L3' },
+  { from: 0, to: 1, color: '#4878b0', label: 'Policy·L3' },
   // Identity governs endpoint access via MDM
-  { from: 2, to: 3, color: '#22c55e', label: 'MDM Sync' },
+  { from: 2, to: 3, color: '#3a7858', label: 'MDM Sync' },
   // M365 authenticates via Entra ID — cloud identity plane
-  { from: 4, to: 2, color: '#3b82f6', label: 'Auth·SSO' },
+  { from: 4, to: 2, color: '#4878b0', label: 'Auth·SSO' },
 ] as const
 
 // Dash cycle lengths for spoke animation (dash + gap = period)

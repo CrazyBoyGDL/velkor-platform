@@ -6,7 +6,7 @@ import { reveal as appear } from '@/lib/motion'
 const RISKS = [
   {
     domain:  'Red',
-    color:   '#3b82f6',
+    color:   '#4878b0',
     title:   'Movimiento lateral sin restricción',
     body:    'Redes planas — sin segmentación VLAN — permiten a un solo endpoint comprometido alcanzar servidores, controladores de dominio y NAS de forma simultánea. La propagación de ransomware tarda minutos, no horas.',
     signals: [
@@ -17,7 +17,7 @@ const RISKS = [
   },
   {
     domain:  'Identidad',
-    color:   '#22c55e',
+    color:   '#3a7858',
     title:   'Credenciales sin segundo factor',
     body:    'Sin MFA, una contraseña filtrada en un breach es suficiente para obtener acceso completo a correo, archivos y sistemas desde cualquier punto del mundo. La protección de identidad no es una opción avanzada.',
     signals: [
@@ -28,7 +28,7 @@ const RISKS = [
   },
   {
     domain:  'Endpoints',
-    color:   '#22c55e',
+    color:   '#3a7858',
     title:   'Dispositivos sin gestión centralizada',
     body:    'Sin MDM activo, los dispositivos corren versiones desactualizadas de sistema operativo y aplicaciones. Un CVE explotable en producción tiene el mismo nivel de riesgo que una brecha de red completa.',
     signals: [

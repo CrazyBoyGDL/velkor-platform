@@ -21,9 +21,9 @@ const LINKS = {
 }
 
 const SPECS = [
-  { label: 'Fortinet FortiGate', color: '#3b82f6' },
-  { label: 'Microsoft 365',      color: '#22c55e' },
-  { label: 'Axis · Hikvision',   color: '#06b6d4' },
+  { label: 'Fortinet FortiGate', color: '#4878b0' },
+  { label: 'Microsoft 365',      color: '#3a7858' },
+  { label: 'Axis · Hikvision',   color: '#3d88a5' },
 ]
 
 export default function Footer() {

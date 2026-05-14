@@ -57,7 +57,7 @@ async function getRelatedPosts(excludeSlug: string): Promise<RelatedPost[]> {
     excerpt: a.excerpt ?? '',
     category: a.category,
     readTime: a.readTime ?? '',
-    hex: a.hex ?? '#f59e0b',
+    hex: a.hex ?? '#b07828',
   }))
 }
 
@@ -101,7 +101,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
   if (!post) notFound()
 
   const date = formatDate(post.publishedAt)
-  const hex  = post.hex || '#f59e0b'
+  const hex  = post.hex || '#b07828'
 
   return (
     <div className="min-h-screen py-16 px-4 sm:px-8">

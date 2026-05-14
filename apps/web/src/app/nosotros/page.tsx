@@ -4,15 +4,15 @@ import { motion } from 'framer-motion'
 import { reveal as fadeUp } from '@/lib/motion'
 
 const STATS = [
-  { val: '2016',  label: 'Año de fundación',      color: '#f59e0b' },
-  { val: '50+',   label: 'Clientes activos',       color: '#22c55e' },
-  { val: '3',     label: 'Áreas de especialidad',  color: '#3b82f6' },
-  { val: '<48h',  label: 'Primera propuesta',      color: '#06b6d4' },
+  { val: '2016',  label: 'Año de fundación',      color: '#b07828' },
+  { val: '50+',   label: 'Clientes activos',       color: '#3a7858' },
+  { val: '3',     label: 'Áreas de especialidad',  color: '#4878b0' },
+  { val: '<48h',  label: 'Primera propuesta',      color: '#3d88a5' },
 ]
 
 const VALUES = [
   {
-    color: '#f59e0b',
+    color: '#b07828',
     title: 'Respuesta inmediata',
     desc: 'Compromiso de respuesta documentado para cada proyecto. Nuestro equipo técnico atiende directamente, sin intermediarios ni escalaciones a centros externos.',
     icon: (
@@ -22,7 +22,7 @@ const VALUES = [
     ),
   },
   {
-    color: '#3b82f6',
+    color: '#4878b0',
     title: 'Seguridad por diseño',
     desc: 'Cada implementación sigue el principio de least privilege y el modelo Zero Trust. Seguridad integrada desde la arquitectura.',
     icon: (
@@ -32,7 +32,7 @@ const VALUES = [
     ),
   },
   {
-    color: '#22c55e',
+    color: '#3a7858',
     title: 'Transparencia total',
     desc: 'Documentación del proyecto actualizada en cada fase, acceso del cliente a entregables y visibilidad completa del avance de implementación.',
     icon: (
@@ -42,7 +42,7 @@ const VALUES = [
     ),
   },
   {
-    color: '#06b6d4',
+    color: '#3d88a5',
     title: 'Resultados medibles',
     desc: 'Comprometemos KPIs antes de firmar. Cada proyecto tiene métricas de éxito definidas, medidas y documentadas al cierre.',
     icon: (
@@ -55,11 +55,11 @@ const VALUES = [
 
 // Technology specializations — platforms we implement operationally
 const CERTS = [
-  { label: 'Fortinet FortiGate', color: '#3b82f6' },
-  { label: 'Microsoft 365',      color: '#22c55e' },
-  { label: 'Intune & Entra ID',  color: '#22c55e' },
-  { label: 'Axis · Hikvision',   color: '#06b6d4' },
-  { label: 'Cisco · HP Aruba',   color: '#3b82f6' },
+  { label: 'Fortinet FortiGate', color: '#4878b0' },
+  { label: 'Microsoft 365',      color: '#3a7858' },
+  { label: 'Intune & Entra ID',  color: '#3a7858' },
+  { label: 'Axis · Hikvision',   color: '#3d88a5' },
+  { label: 'Cisco · HP Aruba',   color: '#4878b0' },
 ]
 
 export default function NosotrosPage() {

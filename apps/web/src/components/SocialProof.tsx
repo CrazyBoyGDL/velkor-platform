@@ -57,7 +57,7 @@ export default function SocialProof() {
           <div className="p-4">
             <div className="flex items-start gap-3">
               <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
-                style={{ background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.15)' }}>
+                style={{ background: 'rgba(176,120,40,0.1)', border: '1px solid rgba(176,120,40,0.15)' }}>
                 <span className="w-2 h-2 rounded-full bg-amber opacity-60" />
               </div>
               <div className="flex-1 min-w-0">

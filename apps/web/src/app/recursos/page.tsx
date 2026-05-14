@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 const RESOURCES = [
   {
     href: '/recursos/intune-checklist',
-    hex: '#22c55e',
+    hex: '#3a7858',
     eyebrow: 'IDENTIDAD & ACCESO',
     title: 'Lista de verificación: Implementación de Microsoft Intune',
     desc: 'Checklist de 30+ puntos para desplegar Intune correctamente: desde licencias hasta Autopilot y políticas de cumplimiento.',
@@ -24,7 +24,7 @@ const RESOURCES = [
   },
   {
     href: '/recursos/fortinet-hardening',
-    hex: '#3b82f6',
+    hex: '#4878b0',
     eyebrow: 'REDES & CIBERSEGURIDAD',
     title: 'Guía de Hardening: Fortinet FortiGate',
     desc: 'Configuraciones esenciales para asegurar tu FortiGate: acceso administrativo, IPS, logging, VLAN segmentation y SSL inspection.',
@@ -33,7 +33,7 @@ const RESOURCES = [
   },
   {
     href: '/recursos/cctv-evaluacion',
-    hex: '#06b6d4',
+    hex: '#3d88a5',
     eyebrow: 'VIDEOVIGILANCIA IP',
     title: 'Guía de evaluación: Sistema CCTV IP empresarial',
     desc: 'Criterios técnicos para evaluar, dimensionar e implementar un sistema de videovigilancia IP: cámaras, NVR, red y analítica.',

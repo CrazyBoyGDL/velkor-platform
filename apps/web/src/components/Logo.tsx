@@ -30,7 +30,7 @@ const EDGES = [
 
 export default function Logo({
   className = 'w-10 h-10',
-  color = '#f59e0b',
+  color = '#b07828',
   animated = true,
   variant = 'dark',
 }: LogoProps) {
