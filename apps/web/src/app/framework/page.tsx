@@ -219,6 +219,34 @@ export default function FrameworkPage() {
           </div>
         </div>
 
+        {/* Evidence library link */}
+        <div
+          className="mb-16 p-6 sm:p-8"
+          style={{
+            border: '1px solid rgba(72,120,176,0.14)',
+            background: 'rgba(72,120,176,0.035)',
+            borderRadius: '14px',
+          }}
+        >
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5">
+            <div>
+              <div className="label text-[9.5px] mb-2">Repositorio de evidencia técnica</div>
+              <h3 className="text-noc-white font-black text-lg mb-2">
+                Políticas, diagramas y documentación operacional
+              </h3>
+              <p className="text-zinc-500 text-sm leading-relaxed max-w-lg">
+                Fragmentos sanitizados de Acceso Condicional, planes de implementación MFA, diagramas VLAN, ciclos de vida Intune y estructuras de gobierno derivadas de proyectos reales.
+              </p>
+            </div>
+            <Link
+              href="/framework/evidence"
+              className="btn-ghost px-6 py-3 flex-shrink-0 text-center text-sm"
+            >
+              Ver evidencia operacional →
+            </Link>
+          </div>
+        </div>
+
         {/* Testimonials */}
         <TestimonialSection
           title="Lo que dicen nuestros clientes"

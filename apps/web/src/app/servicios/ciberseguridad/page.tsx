@@ -75,33 +75,33 @@ const PROBLEMS = [
 const SOLUTIONS = [
   {
     hex: '#4878b0',
-    title: 'Fortinet FortiGate NGFW',
-    desc: 'Firewall de próxima generación con IPS, Application Control, Anti-Malware y SSL Inspection. Visibilidad total del tráfico.',
+    title: 'Segmentación operacional que contiene el radio de impacto',
+    desc: 'Un incidente en la VLAN de usuarios no puede alcanzar servidores ni el ERP. El movimiento lateral queda bloqueado por diseño, no por esperanza.',
   },
   {
     hex: '#4878b0',
-    title: 'Segmentación por VLAN',
-    desc: 'Red de usuarios separada de servidores, IoT, impresoras e invitados. Movimiento lateral bloqueado por diseño.',
+    title: 'Inspección profunda sin puntos ciegos en tráfico cifrado',
+    desc: 'SSL Inspection + Application Control sobre tráfico HTTPS. El malware que entra en sesiones cifradas deja de pasar sin alarma.',
   },
   {
     hex: '#4878b0',
-    title: 'VPN corporativa',
-    desc: 'Site-to-site IPsec para sucursales y SSL VPN para acceso remoto seguro. Autenticación de doble factor integrada.',
+    title: 'Acceso remoto con trazabilidad y revocación en tiempo real',
+    desc: 'VPN corporativa con autenticación de doble factor. Cada sesión remota es auditable, limitada en tiempo y revocable sin dependencia de usuario.',
   },
   {
     hex: '#4878b0',
-    title: 'Arquitectura Zero Trust',
-    desc: 'Ningún dispositivo o usuario es confiable por defecto. Cada acceso requiere verificación, sin importar la ubicación.',
+    title: 'Detección activa — no reactiva — de comportamiento anómalo',
+    desc: 'IPS con perfiles calibrados al entorno, no plantillas genéricas. Alertas de tráfico lateral inusual antes de que el daño sea visible.',
   },
   {
     hex: '#4878b0',
-    title: 'Alertas y visibilidad',
-    desc: 'Configuración de alertas ante comportamientos anómalos, intentos de intrusión y tráfico sospechoso. Visibilidad activa de la red.',
+    title: 'Sucursales conectadas con failover automático y cifrado en tránsito',
+    desc: 'SD-WAN sobre ISPs múltiples con IPsec site-to-site. Si el enlace principal cae, el failover es transparente al usuario en menos de 60 segundos.',
   },
   {
     hex: '#4878b0',
-    title: 'Documentación completa',
-    desc: 'Diagrama de red actualizado, runbook de operación y procedimientos de respuesta ante incidentes entregados al cierre.',
+    title: 'Topología documentada y runbook operacional al cierre',
+    desc: 'Diagrama L2/L3 actualizado, políticas de firewall explicadas y procedimiento de respuesta ante incidente. Tu equipo no depende de quien implementó.',
   },
 ]
 

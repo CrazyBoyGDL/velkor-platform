@@ -75,33 +75,33 @@ const PROBLEMS = [
 const SOLUTIONS = [
   {
     hex: '#3a7858',
-    title: 'Microsoft Entra ID',
-    desc: 'Configuración de tenant, SSO, sincronización con Active Directory (Entra Connect) y unión híbrida de dispositivos.',
+    title: 'Cada acceso evalúa contexto — no solo contraseña',
+    desc: 'Acceso Condicional: ¿quién es, desde qué dispositivo, desde dónde y con qué riesgo? El acceso se concede o bloquea por política, no por inercia.',
   },
   {
     hex: '#3a7858',
-    title: 'Acceso Condicional',
-    desc: 'MFA obligatorio por riesgo, cumplimiento de dispositivos, restricciones por ubicación y bloqueo de acceso legacy.',
+    title: 'Credencial comprometida no alcanza los datos',
+    desc: 'MFA obligatorio con Authenticator o FIDO2. Si la contraseña se filtra, el atacante se detiene en la segunda barrera — sin excepción.',
   },
   {
     hex: '#3a7858',
-    title: 'Intune MDM/MAM',
-    desc: 'Inventario de dispositivos, políticas de cumplimiento, despliegue de apps, Windows Autopilot y borrado remoto.',
+    title: 'Dispositivos sin gestión dejan de tener acceso corporativo',
+    desc: 'Intune MDM evalúa cumplimiento antes de que el dispositivo acceda a M365. Un equipo sin cifrado o sin AV activo no llega a los datos, aunque tenga credenciales válidas.',
   },
   {
     hex: '#3a7858',
-    title: 'MFA y FIDO2',
-    desc: 'Microsoft Authenticator, llaves físicas FIDO2 y passkeys para eliminar el riesgo de phishing de credenciales.',
+    title: 'Nuevos empleados acceden al 100% de sus herramientas desde el día uno',
+    desc: 'Autopilot + provisioning automático. El equipo llega por mensajería, el usuario lo enciende y en 45 minutos tiene todo configurado sin intervención de IT.',
   },
   {
     hex: '#3a7858',
-    title: 'PIM — Privileged Identity Management',
-    desc: 'Acceso privilegiado just-in-time con aprobación y auditoría. Sin cuentas admin permanentes.',
+    title: 'Administradores sin privilegios permanentes — sin superficie de ataque',
+    desc: 'PIM just-in-time: los admins elevan permisos cuando los necesitan, por el tiempo justo, con aprobación. Sin cuentas con acceso root las 24 horas.',
   },
   {
     hex: '#3a7858',
-    title: 'DLP y protección de datos',
-    desc: 'Microsoft Purview DLP para evitar fuga de datos sensibles por correo, Teams, SharePoint y dispositivos.',
+    title: 'Datos sensibles que no pueden salir de los canales autorizados',
+    desc: 'Purview DLP previene que información de pacientes, contratos o datos financieros salga por correo personal, USB o share externo — sin bloquear el flujo de trabajo normal.',
   },
 ]
 
