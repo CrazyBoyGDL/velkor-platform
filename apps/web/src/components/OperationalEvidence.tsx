@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { systemReveal, useOperationalActivity } from '@/lib/motion/operationalMotion'
+import { systemReveal, useOperationalActivity, useProximitySurface } from '@/lib/motion/operationalMotion'
 
 export type EvidenceTone = 'network' | 'identity' | 'video' | 'risk' | 'neutral'
 
@@ -41,10 +41,16 @@ export function ArchitectureSnapshot({
   accent?: string
 }) {
   const { ref, active } = useOperationalActivity<HTMLDivElement>(0.18)
+  const proximity = useProximitySurface<HTMLDivElement>()
   const byId = new Map(nodes.map(node => [node.id, node]))
 
   return (
-    <motion.div ref={ref} {...systemReveal(0, 'center')} className="architecture-snapshot">
+    <motion.div
+      ref={ref}
+      {...proximity.handlers}
+      {...systemReveal(0, 'center')}
+      className="architecture-snapshot depth-2 proximity-surface"
+    >
       <div className="visual-evidence-heading">
         <span>Architecture snapshot</span>
         <span style={{ color: accent }}>{title}</span>
@@ -141,8 +147,10 @@ export function DeploymentDiff({
   after: string[]
   accent?: string
 }) {
+  const proximity = useProximitySurface<HTMLDivElement>()
+
   return (
-    <motion.div {...systemReveal(0, 'right')} className="deployment-diff">
+    <motion.div {...proximity.handlers} {...systemReveal(0, 'right')} className="deployment-diff depth-1 proximity-surface">
       <div className="visual-evidence-heading">
         <span>Deployment diff</span>
         <span style={{ color: accent }}>antes / despues</span>
@@ -174,8 +182,10 @@ export function PolicyOverlay({
   policies: string[]
   accent?: string
 }) {
+  const proximity = useProximitySurface<HTMLDivElement>()
+
   return (
-    <motion.div {...systemReveal(0, 'up')} className="policy-overlay">
+    <motion.div {...proximity.handlers} {...systemReveal(0, 'up')} className="policy-overlay depth-1 proximity-surface">
       <div className="visual-evidence-heading">
         <span>Policy overlay</span>
         <span style={{ color: accent }}>{title}</span>
@@ -201,8 +211,10 @@ export function AuditFragment({
   rows: Array<{ label: string; value: string }>
   accent?: string
 }) {
+  const proximity = useProximitySurface<HTMLDivElement>()
+
   return (
-    <motion.div {...systemReveal(0, 'left')} className="audit-fragment">
+    <motion.div {...proximity.handlers} {...systemReveal(0, 'left')} className="audit-fragment depth-1 proximity-surface">
       <div className="visual-evidence-heading">
         <span>Audit fragment</span>
         <span style={{ color: accent }}>{title}</span>
@@ -230,8 +242,10 @@ export function InfrastructureStatePanel({
   tags: string[]
   accent?: string
 }) {
+  const proximity = useProximitySurface<HTMLElement>()
+
   return (
-    <motion.aside {...systemReveal(0, 'center')} className="infra-state-panel">
+    <motion.aside {...proximity.handlers} {...systemReveal(0, 'center')} className="infra-state-panel depth-1 proximity-surface">
       <div className="visual-evidence-heading">
         <span>Capa afectada</span>
         <span style={{ color: accent }}>{layer}</span>

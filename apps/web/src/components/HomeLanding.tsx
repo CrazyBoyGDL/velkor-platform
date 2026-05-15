@@ -45,8 +45,9 @@ const WORKFLOW = [
 
 function Hero() {
   return (
-    <section className="relative flex items-start lg:items-center overflow-hidden lg:min-h-[82vh]">
+    <section className="relative flex items-start lg:items-center overflow-hidden lg:min-h-[82vh] hero-depth-stage">
       <div className="absolute inset-0 pointer-events-none">
+        <div className="hero-atmospheric-layer" />
         <div className="absolute inset-0 bg-topology opacity-20" />
         <NetworkBg />
         <div className="absolute bottom-0 left-0 right-0 h-56 hero-bottom-fade" />
@@ -81,7 +82,7 @@ function Hero() {
           </motion.h1>
 
           <motion.p {...heroUp(0.04)} className="editorial-lede mb-8 max-w-[34rem]">
-            Velkor diagnostica redes, identidad y endpoints para convertir entornos desordenados en operaciones gobernables.
+            Velkor ordena redes, identidad y endpoints para operar con alcance claro, evidencia y control.
           </motion.p>
 
           <motion.div {...heroUp(0.06)} className="flex flex-col sm:flex-row gap-3 mb-9">
@@ -101,7 +102,7 @@ function Hero() {
             </Link>
           </motion.div>
 
-          <motion.div {...heroUp(0.08)} className="hidden sm:grid sm:grid-cols-3 gap-3 max-w-3xl">
+          <motion.div {...heroUp(0.08)} className="hidden sm:grid sm:grid-cols-3 gap-3 max-w-3xl hero-operational-rail">
             {HERO_SIGNALS.map((signal) => (
               <div key={signal} className="home-signal">
                 {signal}
@@ -116,7 +117,7 @@ function Hero() {
 
 function WorkflowSection() {
   return (
-    <section className="home-section px-4 sm:px-8">
+    <section className="home-section px-4 sm:px-8 continuity-section">
       <div className="max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-[0.76fr_1.24fr] gap-12 lg:gap-20 items-start">
           <motion.div {...fadeUp(0)}>
@@ -127,7 +128,7 @@ function WorkflowSection() {
             </p>
           </motion.div>
 
-          <div className="home-process">
+          <div className="home-process depth-0">
             {WORKFLOW.map(({ step, title, detail }) => (
               <motion.div key={step} {...fadeUp(0)} className="home-process-row">
                 <span className="font-mono text-[11px] text-zinc-700 tabular-nums">{step}</span>
@@ -146,7 +147,7 @@ function WorkflowSection() {
 
 function FeaturedCaseSection({ featuredCase }: { featuredCase: FeaturedCaseSummary }) {
   return (
-    <section className="home-section px-4 sm:px-8 section-arch">
+    <section className="home-section px-4 sm:px-8 section-arch continuity-section">
       <div className="max-w-7xl mx-auto relative">
         <div className="grid lg:grid-cols-[0.9fr_1.1fr] gap-12 lg:gap-20 items-center">
           <motion.div {...fadeUp(0)}>
@@ -155,7 +156,7 @@ function FeaturedCaseSection({ featuredCase }: { featuredCase: FeaturedCaseSumma
             <p className="text-zinc-500 text-base leading-relaxed max-w-xl">{featuredCase.summary}</p>
           </motion.div>
 
-          <motion.div {...fadeUp(0.02)} className="home-case-panel">
+          <motion.div {...fadeUp(0.02)} className="home-case-panel depth-focus proximity-surface">
             <div className="flex items-center justify-between gap-4 mb-8">
               <div>
                 <div className="text-[10px] font-mono text-zinc-700 mb-2">SECTOR</div>

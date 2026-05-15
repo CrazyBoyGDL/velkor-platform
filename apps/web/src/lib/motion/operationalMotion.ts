@@ -260,3 +260,36 @@ export function useOperationalHover<T extends HTMLElement>(intensity = 1.2) {
 
   return { ref, handlers, style, reducedMotion }
 }
+
+export function useProximitySurface<T extends HTMLElement>() {
+  const reducedMotion = useOperationalReducedMotion()
+
+  const handlers = useMemo(() => ({
+    onPointerMove(event: PointerEvent<T>) {
+      if (reducedMotion || event.pointerType === 'touch') return
+      const element = event.currentTarget
+      const rect = element.getBoundingClientRect()
+      const x = ((event.clientX - rect.left) / rect.width) * 100
+      const y = ((event.clientY - rect.top) / rect.height) * 100
+
+      element.style.setProperty('--px', `${x.toFixed(2)}%`)
+      element.style.setProperty('--py', `${y.toFixed(2)}%`)
+      element.style.setProperty('--proximity', '1')
+    },
+    onPointerLeave(event: PointerEvent<T>) {
+      const element = event.currentTarget
+      element.style.setProperty('--px', '50%')
+      element.style.setProperty('--py', '18%')
+      element.style.setProperty('--proximity', '0')
+    },
+    onPointerDown(event: PointerEvent<T>) {
+      if (reducedMotion || event.pointerType === 'touch') return
+      event.currentTarget.style.setProperty('--pressure', '1')
+    },
+    onPointerUp(event: PointerEvent<T>) {
+      event.currentTarget.style.setProperty('--pressure', '0')
+    },
+  }), [reducedMotion])
+
+  return { handlers, reducedMotion }
+}
