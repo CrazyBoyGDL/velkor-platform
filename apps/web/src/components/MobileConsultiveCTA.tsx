@@ -1,9 +1,11 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { trackCTA } from '@/components/Analytics'
+import { trackAdaptiveCTA, trackLeadIntelligenceSignal } from '@/components/Analytics'
+import { getConsultiveCTA } from '@/lib/consultiveCta'
+import { recordLeadSignal } from '@/lib/leadIntelligence'
 import { rafThrottle } from '@/lib/motion/operationalMotion'
 
 const HIDDEN_PREFIXES = ['/assessments', '/contacto', '/legal']
@@ -11,6 +13,10 @@ const HIDDEN_PREFIXES = ['/assessments', '/contacto', '/legal']
 export default function MobileConsultiveCTA() {
   const pathname = usePathname()
   const [visible, setVisible] = useState(false)
+  const cta = useMemo(
+    () => getConsultiveCTA({ pathname, source: 'mobile-sticky' }),
+    [pathname]
+  )
 
   const hidden = HIDDEN_PREFIXES.some(prefix => pathname.startsWith(prefix))
 
@@ -31,13 +37,26 @@ export default function MobileConsultiveCTA() {
   return (
     <div className={`mobile-sticky-cta ${visible ? 'mobile-sticky-cta-visible' : ''}`}>
       <Link
-        href="/assessments"
+        href={cta.href}
         className="mobile-sticky-cta-inner"
-        onClick={() => trackCTA('Mobile sticky - Evaluación técnica', 'mobile-sticky')}
+        onClick={() => {
+          trackAdaptiveCTA(cta.intent, cta.label, 'mobile-sticky', 'click', { service: cta.service })
+          recordLeadSignal({
+            type: 'adaptive-cta-clicked',
+            source: 'mobile-sticky',
+            weight: 3,
+            service: cta.service,
+            intent: cta.intent,
+          })
+          trackLeadIntelligenceSignal('adaptive-cta-clicked', 'mobile-sticky', 3, {
+            service: cta.service,
+            intent: cta.intent,
+          })
+        }}
       >
         <span>
-          <strong>Evaluación técnica</strong>
-          <small>Alcance claro antes de tocar producción</small>
+          <strong>{cta.label}</strong>
+          <small>{cta.supporting}</small>
         </span>
         <span aria-hidden="true">→</span>
       </Link>

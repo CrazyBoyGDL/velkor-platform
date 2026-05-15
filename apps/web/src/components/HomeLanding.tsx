@@ -3,7 +3,9 @@
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
 import { motion } from 'framer-motion'
+import AdaptiveCTA from '@/components/AdaptiveCTA'
 import InfraTopology from '@/components/InfraTopology'
+import InlineDiagnostics from '@/components/InlineDiagnostics'
 import RiskExposure from '@/components/RiskExposure'
 import TrustValidationLayer from '@/components/TrustValidationLayer'
 import { trackCTA } from '@/components/Analytics'
@@ -41,6 +43,18 @@ const WORKFLOW = [
     title: 'Implementación',
     detail: 'Ejecutamos por ventanas, con rollback, evidencia y transferencia para el equipo que queda operando.',
   },
+]
+
+const PROCESS_PROOF = [
+  'Validacion de dependencias antes de ventana',
+  'Rollback aprobado antes de cambio',
+  'Evidencia tecnica al cierre',
+]
+
+const AVOIDED_PATTERNS = [
+  'MFA parcial sin excepciones documentadas',
+  'Segmentacion superficial sin reglas entre zonas',
+  'Monitoreo que no dispara responsables reales',
 ]
 
 function Hero() {
@@ -86,13 +100,7 @@ function Hero() {
           </motion.p>
 
           <motion.div {...heroUp(0.06)} className="flex flex-col sm:flex-row gap-3 mb-9">
-            <Link
-              href="/assessments"
-              className="btn-amber text-[14px] px-7 py-3.5"
-              onClick={() => trackCTA('Hero - Evaluación técnica', 'hero')}
-            >
-              Solicitar evaluación técnica →
-            </Link>
+            <AdaptiveCTA intent="operational-review" location="hero" compact className="adaptive-cta-hero" />
             <Link
               href="/casos"
               className="btn-ghost text-[14px] px-7 py-3.5"
@@ -138,6 +146,17 @@ function WorkflowSection() {
                 </div>
               </motion.div>
             ))}
+            <div className="home-process-proof">
+              {PROCESS_PROOF.map(item => (
+                <span key={item}>{item}</span>
+              ))}
+            </div>
+            <div className="home-avoidance">
+              <span>Lo que evitamos</span>
+              {AVOIDED_PATTERNS.map(item => (
+                <p key={item}>{item}</p>
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -191,6 +210,11 @@ export default function HomeLanding({ featuredCase }: { featuredCase: FeaturedCa
       <Hero />
       <div className="section-divider" />
       <RiskExposure />
+      <div className="home-diagnostic-wrap px-4 sm:px-8">
+        <div className="max-w-7xl mx-auto">
+          <InlineDiagnostics setId="exposure-estimator" location="home-risk" maxQuestions={5} />
+        </div>
+      </div>
       <WorkflowSection />
       <FeaturedCaseSection featuredCase={featuredCase} />
       <TrustValidationLayer />

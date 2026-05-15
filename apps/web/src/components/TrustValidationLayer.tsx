@@ -3,7 +3,8 @@
 import { useEffect } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { trackCTA, trackMobileTrustEngagement, trackTrustSignal } from '@/components/Analytics'
+import AdaptiveCTA from '@/components/AdaptiveCTA'
+import { trackMobileTrustEngagement, trackTrustSignal } from '@/components/Analytics'
 import { TRUST } from '@/lib/config'
 import { reveal as fadeUp } from '@/lib/motion'
 
@@ -44,16 +45,7 @@ export default function TrustValidationLayer() {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-3">
-              <Link
-                href="/assessments"
-                className="btn-amber text-sm px-7 py-3.5"
-                onClick={() => {
-                  trackCTA('Final trust CTA - Evaluación técnica', 'trust-layer')
-                  trackTrustSignal('assessment-cta', 'trust-layer', 'click')
-                }}
-              >
-                Iniciar evaluación →
-              </Link>
+              <AdaptiveCTA intent="operational-review" location="trust-layer" compact />
               <Link
                 href="/contacto"
                 className="btn-ghost text-sm px-7 py-3.5"

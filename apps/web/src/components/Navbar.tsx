@@ -94,7 +94,7 @@ export default function Navbar() {
             </div>
             <ThemeToggle />
             <Link href="/assessments" className="btn-amber text-sm px-5 py-2">
-              Evaluación técnica →
+              Validar entorno →
             </Link>
           </div>
 
@@ -146,7 +146,7 @@ export default function Navbar() {
               ))}
               <div className="pt-3 border-t border-white/[0.05]">
                 <Link href="/assessments" className="block btn-amber text-center py-3">
-                  Evaluación técnica →
+                  Validar entorno →
                 </Link>
               </div>
             </div>

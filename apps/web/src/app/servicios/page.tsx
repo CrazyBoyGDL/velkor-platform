@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
 import type { CSSProperties } from 'react'
 import Link from 'next/link'
+import AdaptiveCTA from '@/components/AdaptiveCTA'
+import InlineDiagnostics from '@/components/InlineDiagnostics'
 import {
   ArchitectureSnapshot,
   DeploymentDiff,
@@ -26,6 +28,7 @@ type ServiceModule = {
   layer: string
   objective: string
   outcome: string
+  diagnosticId: string
   tags: string[]
   nodes: ArchitectureNode[]
   links: ArchitectureLink[]
@@ -45,6 +48,7 @@ const SERVICES: ServiceModule[] = [
     layer: 'Network / Perimeter',
     objective: 'Separar usuarios, servidores, invitados, cámaras y gestión sin detener operación.',
     outcome: 'Reglas explícitas, rollback por sede y topología L2/L3 documentada al cierre.',
+    diagnosticId: 'segmentation-maturity',
     tags: ['FortiGate', 'VLAN', 'IPsec', 'IPS', 'Runbook'],
     nodes: [
       { id: 'wan', label: 'WAN', x: 48, y: 46, tone: 'neutral' },
@@ -73,6 +77,7 @@ const SERVICES: ServiceModule[] = [
     layer: 'Identity / Endpoint',
     objective: 'Bloquear accesos sin contexto y retirar privilegios permanentes sin romper el trabajo diario.',
     outcome: 'MFA, Conditional Access, cumplimiento Intune y PIM con evidencia de auditoría.',
+    diagnosticId: 'identity-risk-scan',
     tags: ['Entra ID', 'Intune', 'CA', 'PIM', 'FIDO2'],
     nodes: [
       { id: 'user', label: 'USER', x: 52, y: 98, tone: 'identity' },
@@ -101,6 +106,7 @@ const SERVICES: ServiceModule[] = [
     layer: 'Physical Security / Video Network',
     objective: 'Centralizar cámaras, aislar tráfico de video y mantener grabación local aunque falle internet.',
     outcome: 'Mapa de cobertura, NVR dimensionado, VLAN vigilancia y runbook de revisión de incidentes.',
+    diagnosticId: 'exposure-estimator',
     tags: ['Axis', 'NVR', 'PoE+', 'ONVIF', 'VLAN CCTV'],
     nodes: [
       { id: 'cam', label: 'CAM', x: 52, y: 60, tone: 'video' },
@@ -137,6 +143,12 @@ function ServiceCapability({ service, index }: { service: ServiceModule; index: 
             outcome={service.outcome}
             tags={service.tags}
             accent={service.accent}
+          />
+          <InlineDiagnostics
+            setId={service.diagnosticId}
+            location={`service-${service.href.split('/').join('-')}`}
+            maxQuestions={3}
+            compact
           />
           <Link href={service.href} className="service-capability-link">
             Ver capacidad operacional →
@@ -190,9 +202,7 @@ export default function ServiciosPage() {
               Validar entorno. Luego tocar producción.
             </h2>
           </div>
-          <Link href="/assessments" className="btn-amber px-8 py-3.5">
-            Solicitar evaluación técnica →
-          </Link>
+          <AdaptiveCTA intent="operational-review" location="services-close" compact className="adaptive-cta-service-close" />
         </section>
       </div>
     </div>
