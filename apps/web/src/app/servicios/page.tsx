@@ -1,5 +1,14 @@
 import type { Metadata } from 'next'
+import type { CSSProperties } from 'react'
 import Link from 'next/link'
+import {
+  ArchitectureSnapshot,
+  DeploymentDiff,
+  InfrastructureStatePanel,
+  PolicyOverlay,
+  type ArchitectureLink,
+  type ArchitectureNode,
+} from '@/components/OperationalEvidence'
 
 export const metadata: Metadata = {
   title: 'Servicios IT Empresariales',
@@ -8,110 +17,183 @@ export const metadata: Metadata = {
   alternates: { canonical: 'https://velkor.mx/servicios' },
 }
 
-const SERVICES = [
+type ServiceModule = {
+  href: string
+  accent: string
+  eyebrow: string
+  title: string
+  summary: string
+  layer: string
+  objective: string
+  outcome: string
+  tags: string[]
+  nodes: ArchitectureNode[]
+  links: ArchitectureLink[]
+  before: string[]
+  after: string[]
+  policies: string[]
+}
+
+const SERVICES: ServiceModule[] = [
   {
     href: '/servicios/ciberseguridad',
-    hex: '#4878b0',
-    eyebrow: 'REDES & CIBERSEGURIDAD',
-    title: 'Infraestructura segura desde el diseño',
-    desc: 'Firewall Fortinet FortiGate, segmentación VLAN, VPN site-to-site y arquitectura de acceso gobernado para reducir movimientos laterales y fortalecer el perímetro.',
-    tags: ['FortiGate NGFW', 'VLAN', 'Acceso gobernado', 'VPN', 'IPS/IDS'],
-    cta: 'Ver servicio →',
+    accent: '#587694',
+    eyebrow: 'Redes & ciberseguridad',
+    title: 'Segmentación, perímetro y acceso remoto gobernable.',
+    summary:
+      'Diseñamos la red para contener incidentes, reducir reglas heredadas y dejar trazabilidad operativa antes de ampliar conectividad o VPN.',
+    layer: 'Network / Perimeter',
+    objective: 'Separar usuarios, servidores, invitados, cámaras y gestión sin detener operación.',
+    outcome: 'Reglas explícitas, rollback por sede y topología L2/L3 documentada al cierre.',
+    tags: ['FortiGate', 'VLAN', 'IPsec', 'IPS', 'Runbook'],
+    nodes: [
+      { id: 'wan', label: 'WAN', x: 48, y: 46, tone: 'neutral' },
+      { id: 'ngfw', label: 'NGFW', x: 140, y: 72, tone: 'network' },
+      { id: 'core', label: 'CORE', x: 218, y: 96, tone: 'network' },
+      { id: 'srv', label: 'SRV', x: 304, y: 54, tone: 'risk' },
+      { id: 'users', label: 'USR', x: 302, y: 136, tone: 'identity' },
+    ],
+    links: [
+      { from: 'wan', to: 'ngfw', label: 'ISP' },
+      { from: 'ngfw', to: 'core', label: 'ACL' },
+      { from: 'core', to: 'srv', label: 'VLAN20' },
+      { from: 'core', to: 'users', label: 'VLAN10' },
+    ],
+    before: ['Red plana /20', 'Reglas any-any', 'VPN compartida'],
+    after: ['Zonas funcionales', 'Deny implícito', 'MFA antes de VPN'],
+    policies: ['Inventario de puertos antes de mover VLANs', 'Ventana por sede con reversa documentada', 'Excepciones con dueño y fecha de retiro'],
   },
   {
     href: '/servicios/identidad-acceso',
-    hex: '#3a7858',
-    eyebrow: 'IDENTIDAD & ACCESO',
-    title: 'Cada acceso, auditado y condicional',
-    desc: 'Microsoft Entra ID, Intune MDM y MFA por hardware para que cada identidad sea un punto de control, no un punto de riesgo. Cumplimiento desde día uno.',
-    tags: ['Entra ID', 'Intune', 'MFA', 'Acceso Condicional', 'PIM'],
-    cta: 'Ver servicio →',
+    accent: '#3f775c',
+    eyebrow: 'Identidad & acceso',
+    title: 'Acceso condicional y dispositivos confiables.',
+    summary:
+      'Convertimos M365, Entra ID e Intune en un plano de control: identidad, dispositivo, ubicación, riesgo y privilegios temporales.',
+    layer: 'Identity / Endpoint',
+    objective: 'Bloquear accesos sin contexto y retirar privilegios permanentes sin romper el trabajo diario.',
+    outcome: 'MFA, Conditional Access, cumplimiento Intune y PIM con evidencia de auditoría.',
+    tags: ['Entra ID', 'Intune', 'CA', 'PIM', 'FIDO2'],
+    nodes: [
+      { id: 'user', label: 'USER', x: 52, y: 98, tone: 'identity' },
+      { id: 'entra', label: 'ENTRA', x: 142, y: 70, tone: 'identity' },
+      { id: 'risk', label: 'RISK', x: 224, y: 52, tone: 'risk' },
+      { id: 'mdm', label: 'MDM', x: 222, y: 134, tone: 'identity' },
+      { id: 'm365', label: 'M365', x: 308, y: 96, tone: 'network' },
+    ],
+    links: [
+      { from: 'user', to: 'entra', label: 'Auth' },
+      { from: 'entra', to: 'risk', label: 'Signal' },
+      { from: 'entra', to: 'mdm', label: 'Device' },
+      { from: 'entra', to: 'm365', label: 'Grant' },
+    ],
+    before: ['Admins permanentes', 'MFA parcial', 'Equipos sin postura'],
+    after: ['PIM JIT', 'MFA obligatorio', 'Acceso por cumplimiento'],
+    policies: ['Report-only antes de bloquear', 'Break-glass excluido con alerta', 'Sesión limitada en equipos no registrados'],
   },
   {
     href: '/servicios/videovigilancia',
-    hex: '#3d88a5',
-    eyebrow: 'VIDEOVIGILANCIA IP',
-    title: 'Visibilidad total, en tiempo real',
-    desc: 'Cámaras IP Axis e Hikvision 4K, NVR centralizado con retención 30–90 días y analítica con IA para detectar incidentes antes de que escalen.',
-    tags: ['Axis', 'Hikvision', 'NVR 4K', 'IA Analytics', 'PoE+'],
-    cta: 'Ver servicio →',
+    accent: '#638fa9',
+    eyebrow: 'Videovigilancia IP',
+    title: 'Visibilidad física integrada a la operación.',
+    summary:
+      'Diseñamos CCTV IP como infraestructura: PoE, VLAN de vigilancia, retención, acceso remoto y operación multi-sede con evidencia revisable.',
+    layer: 'Physical Security / Video Network',
+    objective: 'Centralizar cámaras, aislar tráfico de video y mantener grabación local aunque falle internet.',
+    outcome: 'Mapa de cobertura, NVR dimensionado, VLAN vigilancia y runbook de revisión de incidentes.',
+    tags: ['Axis', 'NVR', 'PoE+', 'ONVIF', 'VLAN CCTV'],
+    nodes: [
+      { id: 'cam', label: 'CAM', x: 52, y: 60, tone: 'video' },
+      { id: 'poe', label: 'POE', x: 134, y: 98, tone: 'video' },
+      { id: 'nvr', label: 'NVR', x: 220, y: 74, tone: 'network' },
+      { id: 'ops', label: 'OPS', x: 306, y: 96, tone: 'identity' },
+      { id: 'edge', label: 'EDGE', x: 140, y: 146, tone: 'neutral' },
+    ],
+    links: [
+      { from: 'cam', to: 'poe', label: 'PoE+' },
+      { from: 'poe', to: 'nvr', label: 'VLAN' },
+      { from: 'nvr', to: 'ops', label: 'View' },
+      { from: 'edge', to: 'nvr', label: 'Remote' },
+    ],
+    before: ['DVR aislado', 'Sin mapa de cobertura', 'Acceso remoto informal'],
+    after: ['NVR centralizado', 'Cobertura documentada', 'Acceso auditable'],
+    policies: ['Cámaras fuera de red corporativa', 'Retención definida por área', 'Credenciales y acceso móvil nominados'],
   },
 ]
 
-export default function ServiciosPage() {
-  return (
-    <div className="min-h-screen py-16 px-4 sm:px-8">
-      <div className="max-w-5xl mx-auto">
+function ServiceCapability({ service, index }: { service: ServiceModule; index: number }) {
+  const flip = index % 2 === 1
 
-        {/* Header */}
-        <div className="mb-14">
-          <span className="label">Catálogo de servicios</span>
-          <h1 className="text-4xl sm:text-5xl font-black text-noc-white mt-3 mb-4 leading-tight">
-            Infraestructura IT<br />
-            <span className="text-gradient-amber">de principio a fin</span>
-          </h1>
-          <p className="text-zinc-500 max-w-xl text-base leading-relaxed">
-            Tres especialidades integradas. Desde el firewall perimetral hasta la cámara en la sucursal más remota, gestionadas por un solo equipo con entregables documentados.
-          </p>
+  return (
+    <section className="service-capability" style={{ '--service-accent': service.accent } as CSSProperties}>
+      <div className={`service-capability-grid ${flip ? 'service-capability-grid-flip' : ''}`}>
+        <div className="service-capability-copy">
+          <span className="label">{service.eyebrow}</span>
+          <h2 className="section-heading mt-4 mb-5 max-w-2xl">{service.title}</h2>
+          <p className="text-zinc-500 text-base leading-relaxed max-w-xl">{service.summary}</p>
+          <InfrastructureStatePanel
+            layer={service.layer}
+            objective={service.objective}
+            outcome={service.outcome}
+            tags={service.tags}
+            accent={service.accent}
+          />
+          <Link href={service.href} className="service-capability-link">
+            Ver capacidad operacional →
+          </Link>
         </div>
 
-        {/* Service cards */}
-        <div className="space-y-5 mb-16">
-          {SERVICES.map(({ href, hex, eyebrow, title, desc, tags, cta }) => (
-            <Link
-              key={href}
-              href={href}
-              className="block group card p-0 overflow-hidden hover:border-zinc-600 transition-all duration-300"
-              style={{ borderLeftColor: hex, borderLeftWidth: 3 }}
-            >
-              <div className="p-7 sm:p-8">
-                <div className="flex items-center gap-3 mb-4">
-                  <span
-                    className="badge text-[10px] font-mono"
-                    style={{ color: hex, backgroundColor: hex + '18' }}
-                  >
-                    {eyebrow}
-                  </span>
-                </div>
+        <div className="service-visual-stack">
+          <ArchitectureSnapshot
+            title={service.eyebrow}
+            caption={service.outcome}
+            nodes={service.nodes}
+            links={service.links}
+            accent={service.accent}
+          />
+          <div className="grid md:grid-cols-[0.86fr_1.14fr] gap-4">
+            <DeploymentDiff before={service.before} after={service.after} accent={service.accent} />
+            <PolicyOverlay title="Controles de despliegue" policies={service.policies} accent={service.accent} />
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
 
-                <h2 className="text-noc-white font-black text-xl sm:text-2xl mb-3 group-hover:text-white transition-colors leading-snug">
-                  {title}
-                </h2>
-                <p className="text-zinc-500 text-sm leading-relaxed max-w-2xl mb-5">{desc}</p>
+export default function ServiciosPage() {
+  return (
+    <div className="min-h-screen py-14 sm:py-16 px-4 sm:px-8">
+      <div className="max-w-7xl mx-auto">
+        <header className="service-index-hero">
+          <span className="label">Capacidades operacionales</span>
+          <div className="service-index-heading">
+            <h1 className="display-heading max-w-4xl">
+              Servicios como infraestructura operable, no como catálogo.
+            </h1>
+            <p className="editorial-lede max-w-xl">
+              Cada capacidad se diseña con objetivo técnico, evidencia de despliegue, capa afectada y resultado esperado.
+            </p>
+          </div>
+        </header>
 
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                  <div className="flex flex-wrap gap-2">
-                    {tags.map(t => (
-                      <span
-                        key={t}
-                        className="text-[10px] font-mono text-zinc-600 bg-surface-raised px-2 py-0.5 rounded"
-                      >
-                        {t}
-                      </span>
-                    ))}
-                  </div>
-                  <span
-                    className="text-[12px] font-mono font-semibold flex-shrink-0 opacity-60 group-hover:opacity-100 transition-opacity"
-                    style={{ color: hex }}
-                  >
-                    {cta}
-                  </span>
-                </div>
-              </div>
-            </Link>
+        <div className="service-module-sequence">
+          {SERVICES.map((service, index) => (
+            <ServiceCapability key={service.href} service={service} index={index} />
           ))}
         </div>
 
-        {/* Bottom CTA */}
-        <div className="card p-10 text-center border-amber/20">
-          <h3 className="text-xl font-black text-noc-white mb-3">¿No sabes qué servicio necesitas?</h3>
-          <p className="text-zinc-500 mb-6 text-sm max-w-sm mx-auto leading-relaxed">
-            15 minutos con un ingeniero responsable aclaran exactamente qué requiere tu infraestructura.
-          </p>
-          <Link href="/assessments" className="btn-amber px-10 py-3.5 text-[15px]">
-            Evaluación técnica →
+        <section className="service-consultive-close">
+          <div>
+            <span className="label block mb-4">No empezar por el producto</span>
+            <h2 className="text-noc-white text-2xl sm:text-3xl font-semibold leading-tight max-w-2xl">
+              Primero se valida el entorno. Luego se decide qué tocar.
+            </h2>
+          </div>
+          <Link href="/assessments" className="btn-amber px-8 py-3.5">
+            Solicitar evaluación técnica →
           </Link>
-        </div>
+        </section>
       </div>
     </div>
   )

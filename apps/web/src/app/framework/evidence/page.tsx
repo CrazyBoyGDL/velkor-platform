@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { VlanDiagram, EntraIdGovernanceFlow, IntuneDiagram, HybridInfraMap } from '@/components/ArchDiagrams'
 import { DiagramTracker, EvidenceLibraryTracker, EvidenceRequestLink } from '@/components/EvidenceInteraction'
+import { AuditFragment } from '@/components/OperationalEvidence'
 
 export const metadata: Metadata = {
   title: 'Evidencia Operacional | Fragmentos de Arquitectura y Documentación — Velkor System',
@@ -423,6 +424,33 @@ export default function EvidencePage() {
               </div>
             ))}
           </div>
+        </div>
+
+        <div className="evidence-proof-strip mb-14">
+          <AuditFragment
+            title="VLAN rollout"
+            rows={[
+              { label: 'Hallazgo', value: 'Uplinks sin etiqueta y reglas any-any heredadas.' },
+              { label: 'Decisión', value: 'Mover VLANs por ventana, con rollback y dueño de excepción.' },
+            ]}
+            accent="#587694"
+          />
+          <AuditFragment
+            title="Acceso condicional"
+            rows={[
+              { label: 'Hallazgo', value: 'Legacy auth activo antes de exigir MFA global.' },
+              { label: 'Decisión', value: 'Report-only, bloqueo legacy y break-glass monitoreado.' },
+            ]}
+            accent="#3f775c"
+          />
+          <AuditFragment
+            title="Onboarding"
+            rows={[
+              { label: 'Hallazgo', value: 'Permisos de archivos sin responsable claro.' },
+              { label: 'Decisión', value: 'Aprobación previa para SharePoint y VPN por área.' },
+            ]}
+            accent="#a47135"
+          />
         </div>
 
         {/* Evidence by category */}

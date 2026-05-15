@@ -470,6 +470,224 @@ body {
     box-shadow: 0 2px 16px rgba(0,0,0,0.35);
   }
 
+  .operational-state-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    min-height: 2rem;
+    padding: 0 0.75rem;
+    border: 1px solid rgba(148,163,184,0.10);
+    border-radius: 999px;
+    color: #748093;
+    background: rgba(255,255,255,0.018);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+  }
+  .operational-state-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: #3f775c;
+    box-shadow: 0 0 0 4px rgba(63,119,92,0.08);
+    animation: operationalPulse 4.8s ease-in-out infinite;
+  }
+
+  .service-index-hero {
+    padding: 2.5rem 0 4.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+  .service-index-heading {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(18rem, 0.85fr);
+    gap: 4rem;
+    align-items: end;
+    margin-top: 1.25rem;
+  }
+  .service-module-sequence {
+    display: grid;
+    gap: 0;
+  }
+  .service-capability {
+    position: relative;
+    padding: 5.5rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .service-capability::before {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 1px;
+    background: linear-gradient(180deg, transparent, color-mix(in srgb, var(--service-accent) 42%, transparent), transparent);
+    opacity: 0.7;
+  }
+  .service-capability-grid {
+    display: grid;
+    grid-template-columns: minmax(18rem, 0.78fr) minmax(0, 1.22fr);
+    gap: 4.5rem;
+    align-items: center;
+  }
+  .service-capability-grid-flip {
+    grid-template-columns: minmax(0, 1.22fr) minmax(18rem, 0.78fr);
+  }
+  .service-capability-grid-flip .service-capability-copy {
+    order: 2;
+  }
+  .service-capability-copy {
+    display: grid;
+    align-content: start;
+    gap: 1.25rem;
+  }
+  .service-visual-stack {
+    display: grid;
+    gap: 1rem;
+  }
+  .service-capability-link {
+    width: fit-content;
+    color: color-mix(in srgb, var(--service-accent) 72%, #dbeafe);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    transition: color 0.16s var(--ease-quart), transform 0.16s var(--ease-quart);
+  }
+  .service-capability-link:hover {
+    color: #e5eef8;
+    transform: translateX(2px);
+  }
+  .service-consultive-close {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    padding: 4rem 0 1rem;
+  }
+
+  .architecture-snapshot,
+  .deployment-diff,
+  .policy-overlay,
+  .audit-fragment,
+  .infra-state-panel {
+    position: relative;
+    border: 1px solid rgba(148,163,184,0.095);
+    border-radius: 8px;
+    background:
+      linear-gradient(180deg, rgba(255,255,255,0.026), rgba(255,255,255,0.010)),
+      rgba(7,12,20,0.64);
+    overflow: hidden;
+  }
+  .architecture-snapshot {
+    padding: 1rem;
+  }
+  .visual-evidence-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-bottom: 0.75rem;
+    color: #687386;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .visual-evidence-caption {
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(255,255,255,0.045);
+    color: #748093;
+    font-size: 11px;
+    line-height: 1.65;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .deployment-diff,
+  .policy-overlay,
+  .audit-fragment,
+  .infra-state-panel {
+    padding: 1rem;
+  }
+  .deployment-diff-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+  .diff-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #5f6a7c;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+  }
+  .diff-row {
+    min-height: 34px;
+    padding: 0.55rem 0;
+    border-top: 1px solid rgba(255,255,255,0.04);
+    color: #7f8a9c;
+    font-size: 11px;
+    line-height: 1.45;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .diff-before {
+    color: #776f6c;
+  }
+  .diff-after {
+    color: #9aa7b8;
+  }
+  .policy-stack,
+  .infra-state-copy {
+    display: grid;
+    gap: 0.55rem;
+  }
+  .policy-row,
+  .audit-row {
+    display: grid;
+    grid-template-columns: 2rem minmax(0, 1fr);
+    gap: 0.75rem;
+    padding: 0.55rem 0;
+    border-top: 1px solid rgba(255,255,255,0.04);
+    color: #8994a5;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    line-height: 1.55;
+  }
+  .audit-row {
+    grid-template-columns: 5.5rem minmax(0, 1fr);
+  }
+  .audit-row > span,
+  .infra-state-copy > span {
+    color: #5f6a7c;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+  }
+  .infra-state-copy {
+    padding: 0.9rem 0;
+    border-top: 1px solid rgba(255,255,255,0.045);
+  }
+  .infra-state-copy p {
+    color: #8a95a6;
+    font-size: 12px;
+    line-height: 1.65;
+  }
+  .infra-state-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    padding-top: 0.9rem;
+    border-top: 1px solid rgba(255,255,255,0.045);
+  }
+  .infra-state-tags span {
+    border: 1px solid rgba(148,163,184,0.10);
+    border-radius: 999px;
+    padding: 0.25rem 0.55rem;
+    color: #738097;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+  }
+  .evidence-proof-strip {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.8rem;
+  }
+
   /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      TOPOLOGY DOT GRID — subtle infrastructure motif
      Used as a background pattern on select sections.
@@ -615,6 +833,11 @@ body {
   0%, 100% { opacity: 0.55; transform: scale(1)    translate(0, 0);      }
   35%       { opacity: 0.85; transform: scale(1.07) translate(14px, -6px); }
   65%       { opacity: 0.70; transform: scale(1.04) translate(-8px, 5px);  }
+}
+
+@keyframes operationalPulse {
+  0%, 100% { opacity: 0.62; transform: scale(1); }
+  45%      { opacity: 1; transform: scale(1.18); }
 }
 
 /* ── Animated gradient border (pulse) ── */
