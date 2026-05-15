@@ -448,15 +448,20 @@ body {
   }
 
   .display-heading {
-    @apply text-4xl sm:text-5xl lg:text-6xl font-semibold leading-[0.98] tracking-display text-noc-white;
+    @apply text-4xl sm:text-5xl lg:text-6xl leading-[0.99] tracking-display text-noc-white;
+    font-weight: 580;
+    text-wrap: balance;
   }
 
   .section-heading {
-    @apply text-3xl sm:text-4xl lg:text-5xl font-semibold leading-[1.05] tracking-heading text-noc-white;
+    @apply text-3xl sm:text-4xl lg:text-5xl leading-[1.06] tracking-heading text-noc-white;
+    font-weight: 560;
+    text-wrap: balance;
   }
 
   .editorial-lede {
     @apply text-base sm:text-lg leading-8 text-zinc-400 font-normal;
+    text-wrap: pretty;
   }
 
   .home-section {
@@ -498,6 +503,9 @@ body {
     gap: 1.5rem;
     padding: 1.65rem 0;
     border-bottom: 1px solid rgba(255,255,255,0.055);
+  }
+  .home-process-row h3 {
+    font-weight: 560;
   }
 
   .home-case-panel {
@@ -712,6 +720,7 @@ body {
     position: relative;
     padding: 5.5rem 0;
     border-bottom: 1px solid rgba(255,255,255,0.06);
+    contain: layout paint;
   }
   .service-capability::before {
     content: '';
@@ -770,6 +779,7 @@ body {
     border: 1px solid rgba(148,163,184,0.085);
     border-radius: 8px;
     overflow: hidden;
+    contain: layout paint;
   }
   .architecture-snapshot::before,
   .deployment-diff::before,
@@ -1593,7 +1603,7 @@ html.light::-webkit-scrollbar-thumb { background: #d1d1d6; }
     gap: 1.25rem;
   }
   .service-capability {
-    padding: 3rem 0;
+    padding: 2.65rem 0;
   }
   .service-capability::before {
     display: none;
@@ -1610,6 +1620,22 @@ html.light::-webkit-scrollbar-thumb { background: #d1d1d6; }
   }
   .architecture-snapshot {
     padding: 0.75rem;
+  }
+  .packet-route-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.45rem 0.7rem;
+  }
+  .packet-route-node {
+    font-size: 9px;
+    min-height: 28px;
+  }
+  .trust-boundary-map,
+  .deployment-state-line {
+    font-size: 8px;
+  }
+  .continuity-section::before,
+  .operational-atmosphere__spine {
+    opacity: 0.24;
   }
   .visual-evidence-heading {
     align-items: flex-start;
@@ -1670,7 +1696,7 @@ html.light::-webkit-scrollbar-thumb { background: #d1d1d6; }
     order: 0;
   }
   .service-capability {
-    padding: 4rem 0;
+    padding: 3.35rem 0;
   }
   .service-consultive-close {
     align-items: flex-start;

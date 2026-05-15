@@ -8,8 +8,8 @@ const RISKS = [
     domain:  'Red',
     color:   '#4878b0',
     title:   'Red plana con demasiada confianza interna',
-    body:    'Un equipo comprometido no debería alcanzar servidores, respaldos y administración. El primer control es contención.',
-    control: 'Segmentos claros, administración restringida y reglas entre zonas revisables.',
+    body:    'Un equipo comprometido no debería alcanzar servidores y respaldos.',
+    control: 'Segmentos claros y reglas entre zonas revisables.',
     signals: [
       'Todo el tráfico interno en la misma subred',
       'Reglas "any-any" activas en el firewall',
@@ -20,8 +20,8 @@ const RISKS = [
     domain:  'Identidad',
     color:   '#3a7858',
     title:   'Identidad sin contexto suficiente',
-    body:    'Una contraseña filtrada no puede ser el único filtro para correo, archivos y sistemas críticos.',
-    control: 'MFA, acceso condicional y roles administrativos temporales.',
+    body:    'Una contraseña filtrada no puede abrir correo, archivos y sistemas críticos.',
+    control: 'MFA, acceso condicional y roles temporales.',
     signals: [
       'Cuentas de administrador sin MFA obligatorio',
       'Política de contraseñas sin complejidad mínima',
@@ -32,8 +32,8 @@ const RISKS = [
     domain:  'Endpoints',
     color:   '#3a7858',
     title:   'Endpoints fuera de inventario operativo',
-    body:    'Cuando aparece una vulnerabilidad, el equipo no debería empezar preguntando cuántas laptops existen.',
-    control: 'Inventario activo, políticas MDM y ventanas de parcheo con responsable.',
+    body:    'Ante una vulnerabilidad, el conteo de laptops no debería empezar desde cero.',
+    control: 'Inventario activo, MDM y parcheo con responsable.',
     signals: [
       'Endpoints con parches pendientes de más de 90 días',
       'Sin inventario automatizado de software instalado',
@@ -66,7 +66,7 @@ function RiskItem({ risk }: { risk: typeof RISKS[number] }) {
             <p className="text-zinc-400 text-[12.5px] leading-relaxed">{control}</p>
           </div>
           <div className="grid gap-1.5">
-            {signals.slice(0, 2).map((s) => (
+            {signals.slice(0, 1).map((s) => (
               <span key={s} className="text-[10px] font-mono leading-snug text-zinc-700">
                 {s}
               </span>
@@ -98,7 +98,7 @@ export default function RiskExposure() {
               Problemas reales que frenan la operación.
             </motion.h2>
             <motion.p {...appear(0.010)} className="text-zinc-600 text-sm leading-relaxed max-w-xs">
-              Pocos controles, bien priorizados, suelen bajar más riesgo que otro proyecto grande sin dueño.
+              Pocos controles bien priorizados bajan más riesgo que otro proyecto sin dueño.
             </motion.p>
           </div>
 

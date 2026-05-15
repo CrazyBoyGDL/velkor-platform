@@ -589,6 +589,20 @@ This phase adds living infrastructure motion and richer consultive visual eviden
 
 Detailed notes: `docs/PREMIUM_OPERATIONAL_VISUAL_SYSTEM.md`.
 
+## 18. Final Premium Refinement Addendum
+
+This phase tightens depth, continuity, visual language, and microinteractions without adding pages, CMS fields, backend systems, or duplicate motion engines:
+
+- Root layout now includes a CSS-first operational atmosphere with pointer-throttled directional light.
+- Reusable depth planes (`depth-0`, `depth-1`, `depth-2`, `depth-focus`) separate background, content, evidence, and focus surfaces.
+- Evidence panels now use the existing motion system for proximity lighting and material response.
+- Service metadata now renders as packet routes instead of generic pills.
+- Deployment diffs and policy overlays include state lines and trust-boundary microdiagrams.
+- Typography weights and visible copy were reduced on home/services to lower visual fatigue.
+- Mobile spacing, evidence routes, and continuity lines were softened for a lighter consultive rhythm.
+
+Detailed notes: `docs/PREMIUM_OPERATIONAL_VISUAL_SYSTEM.md`.
+
 ---
 
 *Updated: May 2026 · Velkor Operations · velkor.mx*

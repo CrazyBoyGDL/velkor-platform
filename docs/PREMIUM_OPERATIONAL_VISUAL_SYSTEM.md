@@ -66,3 +66,34 @@ No backend, Strapi, CRM, scoring, proposal, automation, webhook, or content-type
 - Individual service detail pages still use older problem/solution card grids. They should be refactored next using the same `OperationalEvidence` components.
 - `/services` remains a legacy English-path service catalog. It should either redirect to `/servicios` or be visually aligned in a later cleanup.
 - More Strapi-managed service fields could eventually feed the visual modules, but no schema change was made in this phase.
+
+## Final Premium Refinement Addendum
+
+### Added
+
+- Global operational atmosphere in `OperationalAtmosphere.tsx`, wired through the root layout.
+- Reusable depth planes: `depth-0`, `depth-1`, `depth-2`, and `depth-focus`.
+- Cursor proximity variables and surface handlers inside the existing `operationalMotion.ts` system.
+- Infrastructure micro-visuals in `OperationalEvidence.tsx`:
+  - packet route strip
+  - deployment state line
+  - trust boundary map
+  - blueprint mesh inside architecture snapshots
+
+### Reduced
+
+- Service-page copy was shortened so evidence and topology carry more of the explanation.
+- Risk exposure text now shows fewer signals and tighter operational wording.
+- Typography weights were softened to reduce the “all bold” feel.
+- Tag pills in service metadata were replaced with packet-route visuals.
+
+### Performance Notes
+
+- New atmosphere layer is CSS-first and pointer-throttled through the existing RAF helper.
+- Evidence panels use layout/paint containment to reduce repaint scope.
+- Existing reduced-motion behavior is preserved; proximity and pointer motion are disabled for reduced-motion users.
+
+### Human Direction Still Useful
+
+- Decide whether the legacy `/services` English route should redirect, stay indexed, or become a thin compatibility route.
+- Decide whether service-detail pages should receive the same infrastructure visual language now or after content is normalized in Strapi.
