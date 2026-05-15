@@ -1,6 +1,7 @@
 'use client'
 import { motion } from 'framer-motion'
 import { reveal as fadeUp } from '@/lib/motion'
+import { AnimeGridReveal } from '@/components/AnimeMotion'
 
 // ── Shared primitives ─────────────────────────────────────────────────────────
 function DocLine() {
@@ -37,8 +38,8 @@ function AssessmentCard() {
     <div className="card p-5 h-full font-mono text-[10.5px] leading-relaxed">
       <DocHeader
         tag="ASSESSMENT · LAN/WAN"
-        title="Empresa manufactura · 85 hosts · 3 sedes"
-        meta={'REF-2024-047\nQ4 2024'}
+        title="Muestra industrial · 85 hosts · 3 sedes"
+        meta={'EJEMPLO\nLAN/WAN'}
       />
       <DocLine />
       <div className="space-y-1.5">
@@ -80,8 +81,8 @@ function TimelineCard() {
     <div className="card p-5 h-full font-mono text-[10.5px] leading-relaxed">
       <DocHeader
         tag="PROYECTO · M365 + INTUNE"
-        title="62 usuarios · Sector salud · CDMX"
-        meta={'PROJ-2025-011\nQ1 2025'}
+        title="62 usuarios · Entorno regulado"
+        meta={'EJEMPLO\n4 SEM'}
       />
       <DocLine />
       <div className="space-y-2.5">
@@ -104,7 +105,7 @@ function TimelineCard() {
       <DocLine />
       <div className="flex items-center justify-between">
         <span style={{ color: 'rgba(58,120,88,0.65)', fontSize: '9px' }}>✓ Cerrado · 28 días</span>
-        <span className="text-zinc-700 text-[8.5px]">NOM-024 compliant</span>
+        <span className="text-zinc-700 text-[8.5px]">políticas revisadas</span>
       </div>
     </div>
   )
@@ -125,7 +126,7 @@ function PolicyCard() {
       <DocHeader
         tag="POLÍTICA · ACCESO CONDICIONAL"
         title="Entra ID · Acceso corporativo"
-        meta={'CAP-001-v2\nRev. 2025-02'}
+        meta={'CAP-001\nMUESTRA'}
       />
       <DocLine />
       <div className="space-y-2">
@@ -161,32 +162,32 @@ export default function OperationalArtifacts() {
 
         <motion.h2 {...fadeUp(0.04)}
           className="text-2xl sm:text-[2.1rem] font-bold text-noc-white leading-tight tracking-heading mb-3">
-          Trabajo real,<br />
-          <span className="text-zinc-600">no promesas de marketing</span>
+          Evidencia que se puede revisar,<br />
+          <span className="text-zinc-600">no promesas que se evaporan</span>
         </motion.h2>
         <motion.p {...fadeUp(0.08)}
           className="text-zinc-600 text-sm mb-10 max-w-lg leading-relaxed">
-          Fragmentos anonimizados de entregas reales. Así se ven los documentos que producimos para cada proyecto.
+          Muestras anonimizadas del tipo de entregables que usamos para explicar hallazgos, decisiones y cierre de proyecto.
         </motion.p>
 
         {/* Three-column artifact grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <motion.div {...fadeUp(0)} className="h-full">
+        <AnimeGridReveal className="grid grid-cols-1 md:grid-cols-3 gap-4" delay={82} from="center">
+          <div className="h-full">
             <AssessmentCard />
-          </motion.div>
-          <motion.div {...fadeUp(0.010)} className="h-full">
+          </div>
+          <div className="h-full">
             <TimelineCard />
-          </motion.div>
-          <motion.div {...fadeUp(0.020)} className="h-full">
+          </div>
+          <div className="h-full">
             <PolicyCard />
-          </motion.div>
-        </div>
+          </div>
+        </AnimeGridReveal>
 
         {/* Authenticity disclaimer */}
         <motion.p {...fadeUp(0)}
           className="text-center text-[10px] font-mono mt-5"
           style={{ color: 'rgba(255,255,255,0.14)' }}>
-          Datos de proyecto anonimizados · Referencias completas disponibles bajo NDA
+          Muestras representativas · Referencias completas solo cuando el cliente autoriza compartirlas
         </motion.p>
 
       </div>

@@ -1,6 +1,7 @@
 'use client'
 import { motion } from 'framer-motion'
 import { reveal as fadeUp } from '@/lib/motion'
+import { AnimeGridReveal } from '@/components/AnimeMotion'
 
 // Operational layers — each depends on the one below
 const LAYERS = [
@@ -9,7 +10,7 @@ const LAYERS = [
     label: 'Infraestructura base',
     color: '#4878b0',
     description:
-      'La red es el sistema nervioso central. Sin segmentación, todo lo que construyas encima es frágil.',
+      'La red marca el terreno. Si no está segmentada, cada servicio nuevo hereda la misma fragilidad.',
     services: [
       { name: 'Redes segmentadas · FortiGate NGFW · VPN', color: '#4878b0' },
       { name: 'CCTV IP · Visibilidad física · Analítica IA', color: '#3d88a5' },
@@ -20,7 +21,7 @@ const LAYERS = [
     label: 'Identidad y control de acceso',
     color: '#3a7858',
     description:
-      'Quién accede, desde qué dispositivo, bajo qué condiciones. Política, no excepción.',
+      'Quién entra, desde qué dispositivo y bajo qué condiciones. Reglas claras antes de excepciones urgentes.',
     services: [
       { name: 'Entra ID · Acceso Condicional · MFA', color: '#3a7858' },
       { name: 'Intune MDM · Autopilot · PIM just-in-time', color: '#3a7858' },
@@ -32,7 +33,7 @@ const LAYERS = [
     label: 'Productividad y continuidad',
     color: '#64748b',
     description:
-      'El trabajo fluye sobre una base verificada. Colaboración, correo y datos protegidos por diseño.',
+      'Correo, colaboración y soporte funcionan mejor cuando identidad y dispositivos ya tienen gobierno.',
     services: [
       { name: 'Microsoft 365 · Exchange · Teams · SharePoint', color: '#4878b0' },
       { name: 'Soporte activo · Revisiones periódicas · Documentación', color: '#64748b' },
@@ -59,13 +60,13 @@ function LayerConnector({ note }: { note?: string }) {
 
 // ── Single operational layer row ──────────────────────────────────────────────
 function Layer({
-  tier, label, color, description, services, delay,
+  tier, label, color, description, services,
 }: {
   tier: string; label: string; color: string; description: string
-  services: { name: string; color: string }[]; delay: number
+  services: { name: string; color: string }[]
 }) {
   return (
-    <motion.div {...fadeUp(delay)} className="flex items-stretch gap-5">
+    <div className="flex items-stretch gap-5">
       {/* Tier number — vertical axis */}
       <div className="flex flex-col items-center flex-shrink-0 w-10">
         <div
@@ -101,7 +102,7 @@ function Layer({
           ))}
         </div>
       </div>
-    </motion.div>
+    </div>
   )
 }
 
@@ -127,21 +128,21 @@ export default function ServiceEcosystem() {
               <span className="text-zinc-600">no crean seguridad.</span>
             </motion.h2>
             <motion.p {...fadeUp(0.08)} className="text-zinc-500 text-sm leading-relaxed max-w-sm">
-              Cada capa depende de la anterior. Diseñamos el ecosistema completo — no parcheamos servicios sueltos sobre infraestructura frágil.
+              Cada capa depende de la anterior. Diseñamos el sistema completo para que tu equipo no tenga que unir piezas a presión después.
             </motion.p>
           </div>
 
           {/* Right: layer stack */}
-          <div>
+          <AnimeGridReveal grid={false} from="first" delay={80}>
             {LAYERS.map((layer, i) => (
               <div key={layer.tier}>
-                <Layer {...layer} delay={i * 0.010} />
+                <Layer {...layer} />
                 {i < LAYERS.length - 1 && (
                   <LayerConnector note={LAYERS[i + 1].dependency} />
                 )}
               </div>
             ))}
-          </div>
+          </AnimeGridReveal>
 
         </div>
       </div>

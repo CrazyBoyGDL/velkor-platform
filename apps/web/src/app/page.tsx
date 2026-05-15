@@ -9,6 +9,7 @@ import OperationalArtifacts from '@/components/OperationalArtifacts'
 import ServiceEcosystem from '@/components/ServiceEcosystem'
 import RiskExposure from '@/components/RiskExposure'
 import ExecutiveDiagnostic from '@/components/ExecutiveDiagnostic'
+import { AnimeGridReveal, ScrambleText } from '@/components/AnimeMotion'
 import { trackCTA } from '@/components/Analytics'
 import { EASE, reveal as fadeUp, enter as heroUp } from '@/lib/motion'
 
@@ -16,17 +17,24 @@ const NetworkBg = dynamic(() => import('@/components/NetworkBg'), { ssr: false }
 
 // ─── DATA ────────────────────────────────────────────────────────────────────
 const STATS = [
-  { val: 50,  suf: '+',  label: 'Clientes activos',      sub: 'Pymes y corporativos',          color: '#4878b0' },
-  { val: 8,   suf: 'yr', label: 'Años de experiencia',   sub: 'Fundados en 2016',              color: '#64748b' },
-  { val: 24,  suf: 'h',  label: 'Propuesta técnica',     sub: 'Diagnóstico inicial incluido',  color: '#3a7858', prefix: '<' },
-  { val: 100, suf: '%',  label: 'Proyectos documentados', sub: 'KPIs verificados al cierre',   color: '#4878b0' },
+  { val: 50,  suf: '+',  label: 'Equipos atendidos',      sub: 'Pymes y corporativos que operan todos los días', color: '#4878b0' },
+  { val: 8,   suf: 'yr', label: 'Años en campo',          sub: 'Redes, Microsoft 365, seguridad y soporte',       color: '#64748b' },
+  { val: 24,  suf: 'h',  label: 'Ruta inicial',           sub: 'Diagnóstico, prioridades y siguiente paso',       color: '#3a7858', prefix: '<' },
+  { val: 100, suf: '%',  label: 'Entregas documentadas',  sub: 'Cambios, evidencias y pendientes visibles',       color: '#4878b0' },
+]
+
+const HERO_SIGNALS = [
+  { label: 'Diagnóstico sin humo', detail: 'Te decimos qué conviene corregir primero y por qué.' },
+  { label: 'Implementación visible', detail: 'Cada cambio queda documentado para tu equipo.' },
+  { label: 'Operación acompañada', detail: 'Soporte técnico que entiende el contexto completo.' },
+  { label: 'Sin venta forzada', detail: 'Si no hace falta comprar algo, también lo decimos.' },
 ]
 
 const SERVICES: ServicePanelData[] = [
   {
     icon: '⬡', title: 'Redes & Ciberseguridad',
-    desc: 'Segmentación y hardening de red para eliminar movimiento lateral. FortiGate NGFW, VLANs y Zero Trust arquitecturados desde el primer día, no adaptados después.',
-    outcome: 'Ref: Red de distribución industrial · 85 hosts · 3 sedes · FortiGate 80F · 4 semanas',
+    desc: 'Separamos lo crítico, cerramos accesos innecesarios y dejamos políticas que tu equipo puede auditar sin depender de memoria tribal.',
+    outcome: 'Referencia anonimizada: red industrial · 85 hosts · 3 sedes · FortiGate 80F · 4 semanas',
     scope: 'Red plana → 4 VLANs segmentadas · política de acceso por segmento · IPS/IDS activo',
     hex: '#4878b0',
     tags: ['FortiGate NGFW', 'VLAN', 'Zero Trust', 'VPN', 'IPS/IDS'],
@@ -34,8 +42,8 @@ const SERVICES: ServicePanelData[] = [
   },
   {
     icon: '◉', title: 'CCTV & Videovigilancia',
-    desc: 'Visibilidad total de tus instalaciones con detección de incidentes en tiempo real. Cámaras 4K, NVR centralizado y analítica con IA para actuar antes de que escalen.',
-    outcome: 'Ref: Cadena de retail · 8 sucursales · 96 cámaras · −34% incidentes físicos',
+    desc: 'Diseñamos cobertura para que seguridad y operaciones vean lo que importa: accesos, perímetros, puntos ciegos y eventos que sí requieren atención.',
+    outcome: 'Referencia anonimizada: retail · 8 sucursales · 96 cámaras · menos incidentes repetidos',
     scope: 'Axis P-series · Milestone NVR · PoE+ switching · analítica de intrusión perimetral',
     hex: '#3d88a5',
     tags: ['Axis', 'NVR 4K', 'IA Analytics', 'PoE+', 'ONVIF'],
@@ -43,7 +51,7 @@ const SERVICES: ServicePanelData[] = [
   },
   {
     icon: '⬢', title: 'Microsoft 365 & Cloud',
-    desc: 'Microsoft 365 en producción completa en menos de 5 días hábiles: correo, colaboración y cumplimiento. Sin migraciones incompletas ni usuarios sin configurar.',
+    desc: 'Migramos correo, colaboración y archivos con una ruta clara para usuarios, permisos y continuidad. Menos caos, más adopción real.',
     scope: 'Tenant M365 · Exchange Online · Teams · SharePoint · Defender for Office 365',
     hex: '#4878b0',
     tags: ['Exchange', 'Teams', 'SharePoint', 'Entra ID', 'OneDrive'],
@@ -51,8 +59,8 @@ const SERVICES: ServicePanelData[] = [
   },
   {
     icon: '⬟', title: 'Intune & Entra ID',
-    desc: 'Gobernanza total de dispositivos e identidades. Ningún endpoint sin gestionar. Ninguna credencial sin MFA. Acceso condicional por política, no por excepción.',
-    outcome: 'Ref: Centro de salud · 62 usuarios · NOM-024 compliant · 6 semanas',
+    desc: 'Ordenamos identidades, MFA, dispositivos y acceso condicional para que entrar a sistemas críticos dependa de reglas, no de favores.',
+    outcome: 'Referencia anonimizada: salud · 62 usuarios · gobierno de identidad · 6 semanas',
     scope: 'Entra ID · Acceso Condicional · Intune MDM · Autopilot · PIM just-in-time',
     hex: '#3a7858',
     tags: ['MDM', 'MFA', 'Autopilot', 'PIM', 'Conditional Access'],
@@ -60,7 +68,7 @@ const SERVICES: ServicePanelData[] = [
   },
   {
     icon: '◈', title: 'Continuidad & Soporte',
-    desc: 'Revisiones proactivas periódicas y respuesta a incidentes antes de que afecten la operación. Sin contrato mínimo ni permanencia forzada.',
+    desc: 'Acompañamos la operación con revisiones, parches, documentación y respuesta a incidentes. La idea es que tu equipo no opere a ciegas.',
     scope: 'Revisión mensual · parcheo de endpoints · documentación técnica actualizada · multi-sede',
     hex: '#64748b',
     tags: ['Soporte activo', 'Revisiones', 'Atención incidentes', 'Documentación', 'Fortinet'],
@@ -68,7 +76,7 @@ const SERVICES: ServicePanelData[] = [
   },
   {
     icon: '◇', title: 'Consultoría & Diagnóstico',
-    desc: 'Mapa técnico completo de tu infraestructura en 24 horas: brechas documentadas, riesgos priorizados y propuesta de remediación con costos reales.',
+    desc: 'Nos sentamos con tu equipo, revisamos el entorno y salimos con prioridades claras, costos aterrizados y una ruta que se puede ejecutar.',
     scope: 'Auditoría LAN/WAN · inventario de endpoints · análisis de políticas IAM · informe técnico',
     hex: '#3d88a5',
     tags: ['Auditoría', 'Propuesta 24h', 'Sin costo', 'Ingenieros Fortinet'],
@@ -77,24 +85,24 @@ const SERVICES: ServicePanelData[] = [
 ]
 
 const STEPS = [
-  { n: '01', color: '#b07828', bg: 'rgba(176,120,40,0.1)',  border: 'rgba(176,120,40,0.3)',  title: 'Diagnóstico',      desc: 'Evaluamos tu infraestructura: redes, identidades, dispositivos y seguridad. Informe técnico en 24 h.' },
-  { n: '02', color: '#4878b0', bg: 'rgba(72,120,176,0.1)',  border: 'rgba(72,120,176,0.3)',  title: 'Propuesta',        desc: 'Plan de trabajo con alcance, tecnologías, cronograma y cotización detallada. Sin letra pequeña.' },
-  { n: '03', color: '#3a7858', bg: 'rgba(58,120,88,0.1)',   border: 'rgba(58,120,88,0.3)',   title: 'Implementación',   desc: 'Ingenieros especializados en campo, documentación de cada cambio y transferencia de conocimiento a tu equipo.' },
+  { n: '01', color: '#b07828', bg: 'rgba(176,120,40,0.1)',  border: 'rgba(176,120,40,0.3)',  title: 'Diagnóstico',      desc: 'Revisamos red, identidad, dispositivos y seguridad con tu equipo. El resultado: hallazgos claros, no una lista infinita.' },
+  { n: '02', color: '#4878b0', bg: 'rgba(72,120,176,0.1)',  border: 'rgba(72,120,176,0.3)',  title: 'Ruta técnica',     desc: 'Definimos alcance, prioridades, tecnologías, cronograma y costos. Sin empujar compras que no resuelven el problema.' },
+  { n: '03', color: '#3a7858', bg: 'rgba(58,120,88,0.1)',   border: 'rgba(58,120,88,0.3)',   title: 'Implementación',   desc: 'Ejecutamos con ingeniería en campo, evidencia de cambios y transferencia para que la operación quede en buenas manos.' },
 ]
 
 const TESTIMONIALS = [
-  { quote: 'Rediseñaron nuestra red y migraron 80 usuarios a Microsoft 365 en un fin de semana. Cero interrupciones, documentación entregada el lunes.', author: 'Director de Operaciones', role: 'Empresa de distribución · Monterrey', color: '#b07828', initials: 'DO' },
-  { quote: 'Implementaron Intune y acceso condicional en 3 semanas. Ahora tenemos visibilidad total de 150 dispositivos desde un solo panel.', author: 'IT Manager', role: 'Grupo de salud · CDMX', color: '#b07828', initials: 'IT' },
-  { quote: 'El sistema CCTV con analítica de video detectó un incidente antes de que llegara el equipo de seguridad. El ROI fue evidente en el primer mes.', author: 'Gerente General', role: 'Cadena de retail · Guadalajara', color: '#b07828', initials: 'GG' },
+  { quote: 'Lo valioso no fue solo migrar; fue que el lunes sabíamos exactamente qué cambió, qué faltaba y a quién llamar si algo se movía.', author: 'Director de Operaciones', role: 'Distribución · Monterrey', color: '#b07828', initials: 'DO' },
+  { quote: 'Pasamos de administrar dispositivos por urgencia a tener políticas claras. El equipo de IT por fin tenía visibilidad sin perseguir hojas de cálculo.', author: 'IT Manager', role: 'Salud · CDMX', color: '#b07828', initials: 'IT' },
+  { quote: 'La videovigilancia dejó de ser un gasto pasivo. Ahora operaciones revisa eventos útiles y seguridad tiene evidencia cuando necesita actuar.', author: 'Gerente General', role: 'Retail · Guadalajara', color: '#b07828', initials: 'GG' },
 ]
 
 const DIFFERENTIATORS = [
-  { label: 'Entregables firmados',    sub: 'Alcance, costos y cronograma acordados antes de iniciar' },
-  { label: 'Zero Trust por diseño',   sub: 'Arquitectura segura desde el primer día, no adaptada después' },
-  { label: 'Proyecto documentado',    sub: 'Estado y entregables visibles en cada fase' },
-  { label: 'KPIs comprometidos',      sub: 'Métricas acordadas y verificadas al cierre' },
-  { label: 'Ingenieros especializados', sub: 'Experiencia directa en Fortinet, Microsoft 365 y redes IP' },
-  { label: 'Sin lock-in',             sub: 'Mes a mes, sin permanencia mínima' },
+  { label: 'Alcance entendible',      sub: 'Antes de iniciar, sabes qué se hará, cuánto cuesta y qué queda fuera' },
+  { label: 'Seguridad por diseño',    sub: 'Segmentación, identidad y dispositivos se piensan juntos, no como parches' },
+  { label: 'Proyecto documentado',    sub: 'Tu equipo recibe evidencia de cambios, decisiones y pendientes' },
+  { label: 'Cierre verificable',      sub: 'Acordamos métricas y revisamos el resultado contra lo prometido' },
+  { label: 'Ingenieros en campo',     sub: 'Experiencia directa en Fortinet, Microsoft 365, redes IP e identidad' },
+  { label: 'Relación sin candados',   sub: 'Trabajamos por confianza y claridad, no por permanencia forzada' },
 ]
 
 
@@ -157,9 +165,9 @@ function CtaStrip({ text, cta, href }: { text: string; cta: string; href: string
 }
 
 // ─── Service row — editorial catalog item ────────────────────────────────────
-function ServiceRow({ svc, delay }: { svc: ServicePanelData; delay: number }) {
+function ServiceRow({ svc }: { svc: ServicePanelData }) {
   return (
-    <motion.div {...fadeUp(delay)}
+    <div
       className="group flex items-start gap-5 py-6"
       style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}
     >
@@ -183,7 +191,7 @@ function ServiceRow({ svc, delay }: { svc: ServicePanelData; delay: number }) {
           ))}
         </div>
       </div>
-    </motion.div>
+    </div>
   )
 }
 
@@ -253,7 +261,7 @@ export default function HomePage() {
             <motion.div {...heroUp(0)} className="flex items-center gap-3 mb-7">
               <div className="w-5 h-px flex-shrink-0" style={{ background: 'rgba(100,116,139,0.20)' }} />
               <span className="label" style={{ color: 'rgba(100,116,139,0.55)' }}>
-                Ingeniería de infraestructura
+                <ScrambleText text="Ingeniería de infraestructura" delay={120} />
               </span>
             </motion.div>
 
@@ -262,9 +270,9 @@ export default function HomePage() {
               className="font-extrabold leading-[0.95] tracking-display mb-5"
               style={{ fontSize: 'clamp(2.1rem, 4.2vw, 3.4rem)' }}
             >
-              Tu operación,<br />
-              sin puntos<br />
-              <span className="text-gradient-steel">de falla.</span>
+              Infraestructura<br />
+              clara para operar<br />
+              <span className="text-gradient-steel">sin sorpresas.</span>
             </motion.h1>
 
             {/* Subtext */}
@@ -272,15 +280,14 @@ export default function HomePage() {
               className="text-zinc-500 leading-[1.72] mb-9"
               style={{ fontSize: '0.9375rem', maxWidth: '24rem' }}
             >
-              Red segmentada, identidad gobernada, endpoints bajo control.
-              Tres capas de infraestructura que funcionan como un sistema.
+              Entramos con diagnóstico, ordenamos red, identidad y endpoints, y dejamos evidencia para que tu equipo sepa qué cambió y por qué.
             </motion.p>
 
             {/* CTAs */}
             <motion.div {...heroUp(0.07)} className="flex flex-col sm:flex-row gap-2.5 mb-8">
               <Link href="/assessments" className="btn-amber text-[13.5px] px-6 py-3"
                 onClick={() => trackCTA('Hero — Solicitar diagnóstico')}>
-                Solicitar diagnóstico →
+                Agendar diagnóstico →
               </Link>
               <Link href="/servicios" className="btn-ghost text-[13.5px] px-6 py-3"
                 onClick={() => trackCTA('Hero — Ver servicios')}>
@@ -290,11 +297,27 @@ export default function HomePage() {
 
             {/* Operational context */}
             <motion.p {...heroUp(0.09)}
-              className="font-mono text-zinc-600"
+              className="font-mono text-zinc-600 mb-6"
               style={{ fontSize: '10.5px', letterSpacing: '0.02em' }}
             >
-              50+ clientes activos · 8 años de operación · MX
+              <ScrambleText text="red / identidad / endpoints / evidencia" delay={260} seed={32} />
             </motion.p>
+
+            <AnimeGridReveal
+              className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-w-[28rem]"
+              delay={58}
+              threshold={0.2}
+            >
+              {HERO_SIGNALS.map(({ label, detail }) => (
+                <div
+                  key={label}
+                  className="rounded-lg border border-white/[0.055] bg-white/[0.018] px-3.5 py-3"
+                >
+                  <div className="text-zinc-300 text-[12px] font-semibold leading-snug mb-1">{label}</div>
+                  <div className="text-zinc-600 text-[11px] leading-relaxed">{detail}</div>
+                </div>
+              ))}
+            </AnimeGridReveal>
 
           </div>
         </motion.div>
@@ -331,9 +354,9 @@ export default function HomePage() {
             <div className="flex-1 h-px" style={{ background: 'linear-gradient(90deg, rgba(255,255,255,0.05), transparent)' }} />
           </motion.div>
           {/* Editorial stat strip — numbers breathe in open space, no card boxes */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-0">
-            {STATS.map(({ val, suf, label, sub, color, prefix }, i) => (
-              <motion.div key={label} {...fadeUp(i * 0.010)}
+          <AnimeGridReveal className="grid grid-cols-2 md:grid-cols-4 gap-0" delay={70} from="center">
+            {STATS.map(({ val, suf, label, sub, color, prefix }) => (
+              <div key={label}
                 className="px-6 sm:px-10 py-12"
               >
                 <div className="text-[3rem] sm:text-[3.5rem] font-black mb-2 leading-none tabular-nums tracking-[-0.03em]" style={{ color }}>
@@ -341,16 +364,16 @@ export default function HomePage() {
                 </div>
                 <div className="text-zinc-200 text-[13px] font-semibold mb-1.5">{label}</div>
                 <div className="text-zinc-600 text-xs leading-relaxed">{sub}</div>
-              </motion.div>
+              </div>
             ))}
-          </div>
+          </AnimeGridReveal>
         </div>
       </section>
 
       {/* ── Micro CTA after stats ── */}
       <div className="max-w-7xl mx-auto px-4 sm:px-8 mb-12">
-        <CtaStrip
-          text="Cada proyecto incluye documentación técnica, entregables verificados y KPIs acordados desde el inicio."
+          <CtaStrip
+          text="Cada proyecto deja una ruta clara: qué se detectó, qué se corrigió, qué sigue y qué evidencia lo respalda."
           cta="Ver casos de éxito"
           href="/casos"
         />
@@ -369,7 +392,7 @@ export default function HomePage() {
               <motion.span {...fadeUp(0)} className="label block mb-4">Lo que hacemos</motion.span>
               <motion.h2 {...fadeUp(0.010)} className="text-2xl sm:text-[2.3rem] font-bold text-noc-white leading-tight tracking-heading">
                 Infraestructura IT<br />
-                <span className="text-gradient-white">de principio a fin</span>
+                <span className="text-gradient-white">que se puede operar</span>
               </motion.h2>
             </div>
             <motion.div {...fadeUp(0)}>
@@ -381,11 +404,11 @@ export default function HomePage() {
           <div className="grid lg:grid-cols-[1fr_284px] gap-16 items-start">
 
             {/* Left: service index — all 6 as editorial rows */}
-            <div>
-              {SERVICES.map((svc, i) => (
-                <ServiceRow key={svc.title} svc={svc} delay={i * 0.010} />
+            <AnimeGridReveal grid={false} from="first" delay={54}>
+              {SERVICES.map((svc) => (
+                <ServiceRow key={svc.title} svc={svc} />
               ))}
-            </div>
+            </AnimeGridReveal>
 
             {/* Right: 2 anchor ServicePanels — selective containment */}
             <div className="hidden lg:flex flex-col gap-5 sticky top-24">
@@ -395,7 +418,7 @@ export default function HomePage() {
           </div>
 
           <CtaStrip
-            text="¿No sabes qué servicio necesitas? 15 minutos con un ingeniero lo aclaran."
+            text="¿No sabes por dónde empezar? En 15 minutos podemos separar urgencias, riesgos reales y mejoras que sí convienen."
             cta="Diagnóstico gratuito"
             href="/assessments"
           />
@@ -414,11 +437,12 @@ export default function HomePage() {
               <motion.span {...fadeUp(0)} className="label block mb-5">Por qué elegirnos</motion.span>
               <motion.h2 {...fadeUp(0.010)}
                 className="text-2xl sm:text-[2.3rem] font-bold text-noc-white leading-tight tracking-heading mb-6">
-                Sin compromisos<br />vacíos.<br />
-                <span className="text-gradient-green">Solo resultados.</span>
+                Menos promesas.<br />
+                Más claridad.<br />
+                <span className="text-gradient-green">Mejor operación.</span>
               </motion.h2>
               <motion.p {...fadeUp(0.020)} className="text-zinc-500 text-base leading-relaxed mb-10 max-w-sm">
-                Comprometemos entregables antes de iniciar y los verificamos al cierre. Sin promesas vagas, sin compromisos que no podemos cumplir.
+                La confianza se construye con decisiones visibles: alcance claro, evidencia técnica y un equipo que explica sin esconderse detrás de jerga.
               </motion.p>
               <motion.div {...fadeUp(0)}>
                 <Link href="/nosotros" className="btn-ghost text-sm">
@@ -428,9 +452,9 @@ export default function HomePage() {
             </div>
 
             {/* Right: differentiator list — editorial, not card grid */}
-            <div>
-              {DIFFERENTIATORS.map(({ label, sub }, i) => (
-                <motion.div key={label} {...fadeUp(0)}
+            <AnimeGridReveal grid={false} from="first" delay={48}>
+              {DIFFERENTIATORS.map(({ label, sub }) => (
+                <div key={label}
                   className="flex items-start gap-5 py-5 group"
                   style={{ borderBottom: '1px solid rgba(255,255,255,0.045)' }}
                 >
@@ -441,9 +465,9 @@ export default function HomePage() {
                     <div className="text-zinc-100 font-semibold text-[15px] leading-snug mb-1.5 group-hover:text-white transition-colors">{label}</div>
                     <div className="text-zinc-500 text-sm leading-relaxed">{sub}</div>
                   </div>
-                </motion.div>
+                </div>
               ))}
-            </div>
+            </AnimeGridReveal>
 
           </div>
         </div>
@@ -464,12 +488,12 @@ export default function HomePage() {
           <SectionHeader
             eyebrow="Proceso"
             title="Cómo trabajamos"
-            sub="Desde el primer contacto hasta la operación continua, en tres pasos con fechas y entregables claros."
+            sub="Tres momentos simples: entender el entorno, decidir con criterio y ejecutar sin perder contexto."
           />
 
-          <div className="grid grid-cols-1 md:grid-cols-3">
+          <AnimeGridReveal className="grid grid-cols-1 md:grid-cols-3" delay={90} from="first">
             {STEPS.map(({ n, color, title, desc }, i) => (
-              <motion.div key={n} {...fadeUp(0)}
+              <div key={n}
                 className="relative pt-8 pb-12 overflow-hidden"
                 style={i > 0 ? { borderLeft: '1px solid rgba(255,255,255,0.04)', paddingLeft: '2.75rem' } : {}}
               >
@@ -487,9 +511,9 @@ export default function HomePage() {
 
                 <h3 className="text-zinc-100 font-bold text-[17px] mb-3 tracking-title">{title}</h3>
                 <p className="text-zinc-500 text-sm leading-relaxed">{desc}</p>
-              </motion.div>
+              </div>
             ))}
-          </div>
+          </AnimeGridReveal>
         </div>
       </section>
 
@@ -512,8 +536,8 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto">
           <SectionHeader
             eyebrow="Clientes"
-            title={<>Resultados reales,<br /><span className="text-gradient-steel">no promesas</span></>}
-            sub="Cada caso tiene métricas documentadas. No publicamos testimonios sin datos."
+            title={<>Cuando hay orden,<br /><span className="text-gradient-steel">se nota en la operación</span></>}
+            sub="Comentarios anonimizados de equipos que necesitaban menos incertidumbre y más control técnico."
           />
 
           {/* Asymmetric editorial layout — featured + two compact, no boxes */}
@@ -537,7 +561,7 @@ export default function HomePage() {
 
             {/* Secondary testimonials — right 2/5, minimal */}
             <div className="md:col-span-2 flex flex-col gap-0">
-              {TESTIMONIALS.slice(1).map(({ quote, author, role, initials }, i) => (
+              {TESTIMONIALS.slice(1).map(({ quote, author, role, initials }) => (
                 <motion.div key={author} {...fadeUp(0)} className="flex flex-col flex-1 py-6 pl-0 md:pl-8 border-b border-surface-border last:border-b-0">
                   <div className="text-xl font-black leading-none text-zinc-700 mb-3 select-none">&ldquo;</div>
                   <p className="text-zinc-400 text-sm leading-relaxed flex-1 mb-5">{quote}</p>
@@ -560,7 +584,7 @@ export default function HomePage() {
           <motion.div {...fadeUp(0)}>
             <CtaStrip
               text="Podemos mostrar resultados similares en tu infraestructura. El diagnóstico no tiene costo."
-              cta="Solicitar diagnóstico"
+              cta="Agendar diagnóstico"
               href="/assessments"
             />
           </motion.div>
@@ -581,18 +605,18 @@ export default function HomePage() {
           <span className="label block mb-5">¿Listo para empezar?</span>
 
           <h2 className="text-3xl sm:text-4xl font-bold text-noc-white mb-6 leading-[1.05] tracking-heading">
-            Diagnóstico gratis<br />
+            Diagnóstico claro<br />
             <span className="text-gradient-steel">en 24 horas.</span>
           </h2>
 
           <p className="text-zinc-500 mb-8 leading-relaxed text-base">
-            Nuestros ingenieros evalúan tu infraestructura y entregan un informe técnico con recomendaciones y costos reales.
+            Un ingeniero revisa tu infraestructura, prioriza riesgos y te entrega una ruta técnica que tu equipo puede discutir, ajustar y ejecutar.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3 justify-center mb-10">
             <Link href="/assessments" className="btn-amber text-[15px] px-10 py-4"
               onClick={() => trackCTA('Final CTA — Solicitar diagnóstico')}>
-              Solicitar diagnóstico →
+              Agendar diagnóstico →
             </Link>
             <Link href="/casos" className="btn-ghost text-[15px] px-10 py-4"
               onClick={() => trackCTA('Final CTA — Ver casos')}>

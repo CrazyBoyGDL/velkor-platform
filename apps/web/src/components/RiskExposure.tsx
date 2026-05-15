@@ -1,6 +1,7 @@
 'use client'
 import { motion } from 'framer-motion'
 import { reveal as appear } from '@/lib/motion'
+import { AnimeGridReveal } from '@/components/AnimeMotion'
 
 // Three structural failure patterns observed in SMB/mid-market engagements
 const RISKS = [
@@ -8,7 +9,7 @@ const RISKS = [
     domain:  'Red',
     color:   '#4878b0',
     title:   'Movimiento lateral sin restricción',
-    body:    'Redes planas — sin segmentación VLAN — permiten a un solo endpoint comprometido alcanzar servidores, controladores de dominio y NAS de forma simultánea. La propagación de ransomware tarda minutos, no horas.',
+    body:    'En una red plana, un equipo comprometido puede tocar servidores, controladores de dominio y respaldos. La segmentación no es lujo: es contención.',
     signals: [
       'Todo el tráfico interno en la misma subred',
       'Reglas "any-any" activas en el firewall',
@@ -19,7 +20,7 @@ const RISKS = [
     domain:  'Identidad',
     color:   '#3a7858',
     title:   'Credenciales sin segundo factor',
-    body:    'Sin MFA, una contraseña filtrada en un breach es suficiente para obtener acceso completo a correo, archivos y sistemas desde cualquier punto del mundo. La protección de identidad no es una opción avanzada.',
+    body:    'Una contraseña filtrada no debería abrir correo, archivos y sistemas críticos. MFA y acceso condicional ponen contexto antes de permitir la entrada.',
     signals: [
       'Cuentas de administrador sin MFA obligatorio',
       'Política de contraseñas sin complejidad mínima',
@@ -30,7 +31,7 @@ const RISKS = [
     domain:  'Endpoints',
     color:   '#3a7858',
     title:   'Dispositivos sin gestión centralizada',
-    body:    'Sin MDM activo, los dispositivos corren versiones desactualizadas de sistema operativo y aplicaciones. Un CVE explotable en producción tiene el mismo nivel de riesgo que una brecha de red completa.',
+    body:    'Sin MDM, parches e inventario viven dispersos. Cuando aparece una vulnerabilidad, nadie quiere empezar preguntando cuántos equipos existen.',
     signals: [
       'Endpoints con parches pendientes de más de 90 días',
       'Sin inventario automatizado de software instalado',
@@ -40,10 +41,10 @@ const RISKS = [
 ]
 
 // ── Single risk item — editorial text block, no box ───────────────────────
-function RiskItem({ risk, delay }: { risk: typeof RISKS[number]; delay: number }) {
+function RiskItem({ risk }: { risk: typeof RISKS[number] }) {
   const { domain, color, title, body, signals } = risk
   return (
-    <motion.div {...appear(delay)} className="pt-7" style={{ borderTop: `1px solid rgba(255,255,255,0.045)` }}>
+    <div className="pt-7" style={{ borderTop: `1px solid rgba(255,255,255,0.045)` }}>
 
       {/* Domain label */}
       <div className="flex items-center gap-2 mb-3">
@@ -67,7 +68,7 @@ function RiskItem({ risk, delay }: { risk: typeof RISKS[number]; delay: number }
           </li>
         ))}
       </ul>
-    </motion.div>
+    </div>
   )
 }
 
@@ -93,16 +94,16 @@ export default function RiskExposure() {
               <span className="text-zinc-600">existen en tu red.</span>
             </motion.h2>
             <motion.p {...appear(0.010)} className="text-zinc-600 text-sm leading-relaxed max-w-xs">
-              Estos vectores aparecen en más del 80% de los diagnósticos que realizamos. No son hipotéticos.
+              Son patrones que vemos una y otra vez cuando una infraestructura crece sin pausas para ordenar.
             </motion.p>
           </div>
 
           {/* Right: three risk items as editorial text blocks */}
-          <div>
-            {RISKS.map((risk, i) => (
-              <RiskItem key={risk.title} risk={risk} delay={i * 0.010} />
+          <AnimeGridReveal grid={false} from="first" delay={64}>
+            {RISKS.map((risk) => (
+              <RiskItem key={risk.title} risk={risk} />
             ))}
-          </div>
+          </AnimeGridReveal>
 
         </div>
       </div>
