@@ -116,6 +116,78 @@ export function trackCTA(
   trackEvent(Events.CtaClicked, { label, location, ...extra })
 }
 
+export function trackAdaptiveCTA(
+  intent: string,
+  label: string,
+  location: string,
+  interaction: 'view' | 'click',
+  extra?: Record<string, string>
+): void {
+  trackEvent(interaction === 'click' ? Events.AdaptiveCtaClicked : Events.AdaptiveCtaShown, {
+    intent,
+    label,
+    location,
+    ...extra,
+  })
+  if (interaction === 'click') {
+    trackCTA(label, location, { intent, ...extra })
+  }
+}
+
+export function trackDiagnosticStarted(diagnosticId: string, location: string): void {
+  trackEvent(Events.DiagnosticStarted, { diagnostic_id: diagnosticId, location })
+}
+
+export function trackDiagnosticAnswered(
+  diagnosticId: string,
+  questionId: string,
+  answer: string,
+  riskDelta: string | number
+): void {
+  trackEvent(Events.DiagnosticAnswered, {
+    diagnostic_id: diagnosticId,
+    question_id: questionId,
+    answer,
+    risk_delta: riskDelta,
+  })
+}
+
+export function trackDiagnosticCompleted(
+  diagnosticId: string,
+  score: number,
+  exposure: string,
+  service: string,
+  ctaIntent: string
+): void {
+  trackEvent(Events.DiagnosticCompleted, {
+    diagnostic_id: diagnosticId,
+    score,
+    exposure,
+    service,
+    cta_intent: ctaIntent,
+  })
+  trackEvent(Events.CalculatorCompleted, {
+    calculator_id: diagnosticId,
+    score,
+    exposure,
+    service,
+  })
+}
+
+export function trackLeadIntelligenceSignal(
+  signal: string,
+  source: string,
+  weight: number,
+  extra?: Record<string, string>
+): void {
+  trackEvent(Events.LeadIntelligenceSignal, {
+    signal,
+    source,
+    weight,
+    ...extra,
+  })
+}
+
 /**
  * Track an evidence document click in the evidence library.
  * @param docTitle  Title of the document

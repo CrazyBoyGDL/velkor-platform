@@ -101,6 +101,61 @@ export interface ScoreResult {
   observations:     string[]
 }
 
+// ─── Inline consultive diagnostics ───────────────────────────────────────────
+
+export type DiagnosticAnswer = 'yes' | 'partial' | 'no' | 'unknown'
+export type DiagnosticDomain = 'network' | 'identity' | 'endpoint' | 'video' | 'operations'
+export type DiagnosticCtaIntent =
+  | 'operational-review'
+  | 'segmentation-validation'
+  | 'identity-exposure-review'
+  | 'endpoint-governance-check'
+  | 'mfa-gap-review'
+  | 'remote-access-review'
+
+export interface DiagnosticQuestion {
+  id: string
+  domain: DiagnosticDomain
+  question: string
+  context: string
+  riskWhen: DiagnosticAnswer
+  weight: number
+  signal: string
+}
+
+export interface DiagnosticSet {
+  id: string
+  title: string
+  description: string
+  service: string
+  ctaIntent: DiagnosticCtaIntent
+  questions: DiagnosticQuestion[]
+}
+
+export interface DiagnosticFinding {
+  questionId: string
+  domain: DiagnosticDomain
+  severity: Severity
+  finding: string
+  recommendation: string
+}
+
+export interface DiagnosticResult {
+  diagnosticId: string
+  score: number
+  exposureLevel: ExposureLevel
+  exposureLabel: string
+  service: string
+  ctaIntent: DiagnosticCtaIntent
+  answeredCount: number
+  totalQuestions: number
+  topFinding: string
+  recommendation: string
+  findings: DiagnosticFinding[]
+  leadSignals: string[]
+  domainScores: Partial<Record<DiagnosticDomain, number>>
+}
+
 // ─── Scoring functions ───────────────────────────────────────────────────────
 
 function scoreInfrastructure(s: Step2Answers): number {
@@ -475,5 +530,369 @@ export function scoreAssessment(a: AssessmentAnswers): ScoreResult {
     immediatePriorities,
     recommendedPhase,
     observations,
+  }
+}
+
+export const DIAGNOSTIC_SETS: DiagnosticSet[] = [
+  {
+    id: 'exposure-estimator',
+    title: 'Estimador rapido de exposicion',
+    description: 'Cinco controles que suelen revelar si el entorno puede contener un incidente sin frenar la operacion.',
+    service: 'operaciones',
+    ctaIntent: 'operational-review',
+    questions: [
+      {
+        id: 'vlans-with-acl',
+        domain: 'network',
+        question: '¿Tus VLAN tienen ACL entre segmentos?',
+        context: 'No basta separar subredes si usuarios, camaras y servidores pueden cruzarse sin politica.',
+        riskWhen: 'no',
+        weight: 1.2,
+        signal: 'segmentation-gap',
+      },
+      {
+        id: 'admin-mfa',
+        domain: 'identity',
+        question: '¿Admins usan MFA obligatorio?',
+        context: 'La primera cuenta privilegiada sin MFA suele definir el radio real de un incidente.',
+        riskWhen: 'no',
+        weight: 1.35,
+        signal: 'admin-mfa-gap',
+      },
+      {
+        id: 'personal-endpoints',
+        domain: 'endpoint',
+        question: '¿Endpoints personales acceden a recursos internos?',
+        context: 'BYOD sin postura complica respuesta, evidencia y revocacion de acceso.',
+        riskWhen: 'yes',
+        weight: 1.1,
+        signal: 'unmanaged-device-access',
+      },
+      {
+        id: 'shared-accounts',
+        domain: 'identity',
+        question: '¿Usuarios comparten cuentas o credenciales operativas?',
+        context: 'Una cuenta compartida elimina trazabilidad justo cuando mas se necesita reconstruir cambios.',
+        riskWhen: 'yes',
+        weight: 1.3,
+        signal: 'shared-account-risk',
+      },
+      {
+        id: 'camera-isolation',
+        domain: 'video',
+        question: '¿Tus camaras estan aisladas de la red corporativa?',
+        context: 'Video, invitados y operacion interna no deberian vivir en la misma zona de confianza.',
+        riskWhen: 'no',
+        weight: 0.95,
+        signal: 'video-network-exposure',
+      },
+    ],
+  },
+  {
+    id: 'segmentation-maturity',
+    title: 'Indicador de madurez de segmentacion',
+    description: 'Evalua si la red contiene trafico lateral o solo esta ordenada visualmente.',
+    service: 'ciberseguridad',
+    ctaIntent: 'segmentation-validation',
+    questions: [
+      {
+        id: 'critical-zone-acl',
+        domain: 'network',
+        question: '¿Servidores, usuarios, invitados y camaras tienen reglas explicitas entre zonas?',
+        context: 'La segmentacion util se mide por politica aplicada, no por cantidad de VLANs.',
+        riskWhen: 'no',
+        weight: 1.35,
+        signal: 'missing-zone-policy',
+      },
+      {
+        id: 'deny-by-default',
+        domain: 'network',
+        question: '¿El firewall usa deny implicito entre segmentos?',
+        context: 'Las excepciones deben tener dueno, motivo y fecha de retiro.',
+        riskWhen: 'no',
+        weight: 1.2,
+        signal: 'permissive-internal-policy',
+      },
+      {
+        id: 'rollback-plan',
+        domain: 'operations',
+        question: '¿Cada cambio de red tiene rollback probado antes de ventana?',
+        context: 'Un cambio correcto tambien necesita reversa si una app heredada falla.',
+        riskWhen: 'no',
+        weight: 1,
+        signal: 'network-rollback-gap',
+      },
+      {
+        id: 'intervlan-logging',
+        domain: 'network',
+        question: '¿Se registran los cruces relevantes entre VLANs?',
+        context: 'Sin logs, la segmentacion no produce evidencia para investigar.',
+        riskWhen: 'no',
+        weight: 0.9,
+        signal: 'lateral-traffic-blindspot',
+      },
+    ],
+  },
+  {
+    id: 'identity-risk-scan',
+    title: 'Escaneo rapido de identidad',
+    description: 'Detecta accesos con privilegio, sesiones sin contexto y huecos de gobierno en Entra ID.',
+    service: 'identidad',
+    ctaIntent: 'identity-exposure-review',
+    questions: [
+      {
+        id: 'all-users-mfa',
+        domain: 'identity',
+        question: '¿MFA aplica a todos los usuarios, incluyendo externos y admins?',
+        context: 'La excepcion no documentada suele convertirse en el camino de menor resistencia.',
+        riskWhen: 'no',
+        weight: 1.35,
+        signal: 'mfa-coverage-gap',
+      },
+      {
+        id: 'conditional-access-context',
+        domain: 'identity',
+        question: '¿Acceso Condicional valida ubicacion, dispositivo y riesgo?',
+        context: 'MFA por si solo no decide si el dispositivo o la sesion son confiables.',
+        riskWhen: 'no',
+        weight: 1.25,
+        signal: 'conditional-access-gap',
+      },
+      {
+        id: 'shared-admins',
+        domain: 'identity',
+        question: '¿Existen cuentas administrativas compartidas?',
+        context: 'Si varios operadores usan la misma cuenta, auditoria y responsabilidad quedan rotas.',
+        riskWhen: 'yes',
+        weight: 1.3,
+        signal: 'shared-admin-risk',
+      },
+      {
+        id: 'offboarding-same-day',
+        domain: 'operations',
+        question: '¿La baja de usuario revoca accesos el mismo dia?',
+        context: 'Los accesos huerfanos son deuda operativa, no solo administrativa.',
+        riskWhen: 'no',
+        weight: 0.95,
+        signal: 'offboarding-gap',
+      },
+    ],
+  },
+  {
+    id: 'endpoint-governance',
+    title: 'Check de gobierno de endpoints',
+    description: 'Revisa inventario, postura y control de equipos antes de ampliar acceso remoto.',
+    service: 'endpoint',
+    ctaIntent: 'endpoint-governance-check',
+    questions: [
+      {
+        id: 'endpoint-inventory',
+        domain: 'endpoint',
+        question: '¿Tienes inventario confiable de endpoints activos?',
+        context: 'No se puede parchear, aislar o investigar un equipo que no aparece en inventario.',
+        riskWhen: 'no',
+        weight: 1.25,
+        signal: 'endpoint-inventory-gap',
+      },
+      {
+        id: 'device-compliance',
+        domain: 'endpoint',
+        question: '¿El acceso a M365 exige cumplimiento de dispositivo?',
+        context: 'El control mas efectivo combina identidad, dispositivo y contexto de sesion.',
+        riskWhen: 'no',
+        weight: 1.2,
+        signal: 'device-compliance-gap',
+      },
+      {
+        id: 'personal-device-access',
+        domain: 'endpoint',
+        question: '¿Equipos personales abren correo, archivos o VPN?',
+        context: 'Si no puedes aplicar postura, el acceso debe limitarse por capa y sensibilidad.',
+        riskWhen: 'yes',
+        weight: 1.15,
+        signal: 'personal-device-exposure',
+      },
+      {
+        id: 'patching-owner',
+        domain: 'operations',
+        question: '¿Hay responsable y cadencia de parcheo documentada?',
+        context: 'El atraso de parches casi siempre es un problema de ownership, no de herramienta.',
+        riskWhen: 'no',
+        weight: 0.95,
+        signal: 'patch-ownership-gap',
+      },
+    ],
+  },
+  {
+    id: 'mfa-gap-detector',
+    title: 'Detector de brecha MFA',
+    description: 'Ubica excepciones de autenticacion fuerte antes de convertirlas en incidente.',
+    service: 'identidad',
+    ctaIntent: 'mfa-gap-review',
+    questions: [
+      {
+        id: 'legacy-auth-blocked',
+        domain: 'identity',
+        question: '¿Autenticacion heredada esta bloqueada?',
+        context: 'Protocolos heredados pueden saltarse controles modernos si quedan habilitados.',
+        riskWhen: 'no',
+        weight: 1.25,
+        signal: 'legacy-auth-exposure',
+      },
+      {
+        id: 'break-glass-monitored',
+        domain: 'identity',
+        question: '¿Cuentas break-glass tienen alerta y revision mensual?',
+        context: 'Una cuenta de emergencia sin monitoreo termina siendo acceso permanente.',
+        riskWhen: 'no',
+        weight: 1,
+        signal: 'break-glass-monitoring-gap',
+      },
+      {
+        id: 'external-users-mfa',
+        domain: 'identity',
+        question: '¿Usuarios externos y proveedores pasan por MFA?',
+        context: 'Los proveedores suelen tener acceso suficiente para mover datos o configuraciones.',
+        riskWhen: 'no',
+        weight: 1.15,
+        signal: 'vendor-mfa-gap',
+      },
+      {
+        id: 'privileged-mfa-proof',
+        domain: 'identity',
+        question: '¿Puedes probar con evidencia que todos los privilegios usan MFA?',
+        context: 'La configuracion declarada no reemplaza un export o log revisable.',
+        riskWhen: 'no',
+        weight: 1.2,
+        signal: 'privileged-mfa-evidence-gap',
+      },
+    ],
+  },
+]
+
+const DIAGNOSTIC_EXPOSURE_LABELS: Record<ExposureLevel, string> = {
+  critical: 'Exposicion inmediata',
+  high: 'Exposicion alta',
+  medium: 'Exposicion revisable',
+  managed: 'Control razonable',
+}
+
+const ANSWER_CONTROL_SCORE: Record<DiagnosticAnswer, number> = {
+  yes: 100,
+  partial: 55,
+  unknown: 35,
+  no: 8,
+}
+
+function scoreDiagnosticAnswer(answer: DiagnosticAnswer, riskWhen: DiagnosticAnswer): number {
+  if (answer === 'unknown') return ANSWER_CONTROL_SCORE.unknown
+  if (riskWhen === 'yes') {
+    if (answer === 'yes') return 8
+    if (answer === 'partial') return 45
+    return 100
+  }
+  return ANSWER_CONTROL_SCORE[answer]
+}
+
+function diagnosticSeverity(score: number): Severity {
+  if (score < 25) return 'critical'
+  if (score < 50) return 'high'
+  if (score < 72) return 'medium'
+  return 'low'
+}
+
+function diagnosticExposureFromScore(score: number, findings: DiagnosticFinding[]): ExposureLevel {
+  if (findings.some(f => f.severity === 'critical') || score < 28) return 'critical'
+  if (findings.some(f => f.severity === 'high') || score < 52) return 'high'
+  if (findings.length > 0 || score < 78) return 'medium'
+  return 'managed'
+}
+
+function diagnosticFindingText(question: DiagnosticQuestion, answer: DiagnosticAnswer): string {
+  if (answer === 'unknown') return `No hay evidencia clara para "${question.question}".`
+  if (question.riskWhen === 'yes') return `${question.question} La respuesta indica exposicion operativa.`
+  return `${question.question} La respuesta indica control insuficiente o parcial.`
+}
+
+function diagnosticRecommendation(question: DiagnosticQuestion): string {
+  const recommendations: Record<DiagnosticDomain, string> = {
+    network: 'Validar reglas entre zonas, dependencias y rollback antes de ampliar conectividad.',
+    identity: 'Revisar cobertura MFA, privilegios y Acceso Condicional con evidencia exportable.',
+    endpoint: 'Normalizar inventario, postura de dispositivo y ownership de parcheo.',
+    video: 'Aislar trafico de video, credenciales y acceso remoto de CCTV.',
+    operations: 'Documentar responsable, ventana, evidencia y reversa para cada cambio critico.',
+  }
+  return recommendations[question.domain]
+}
+
+export function getDiagnosticSet(id: string): DiagnosticSet | undefined {
+  return DIAGNOSTIC_SETS.find(set => set.id === id)
+}
+
+export function scoreDiagnosticAnswers(
+  diagnosticId: string,
+  answers: Partial<Record<string, DiagnosticAnswer>>
+): DiagnosticResult {
+  const diagnostic = getDiagnosticSet(diagnosticId) ?? DIAGNOSTIC_SETS[0]
+  const answeredQuestions = diagnostic.questions.filter(q => answers[q.id])
+
+  let weightedScore = 0
+  let totalWeight = 0
+  const domainWeighted: Partial<Record<DiagnosticDomain, { score: number; weight: number }>> = {}
+  const findings: DiagnosticFinding[] = []
+
+  for (const question of answeredQuestions) {
+    const answer = answers[question.id]
+    if (!answer) continue
+    const score = scoreDiagnosticAnswer(answer, question.riskWhen)
+    weightedScore += score * question.weight
+    totalWeight += question.weight
+
+    const current = domainWeighted[question.domain] ?? { score: 0, weight: 0 }
+    current.score += score * question.weight
+    current.weight += question.weight
+    domainWeighted[question.domain] = current
+
+    const severity = diagnosticSeverity(score)
+    if (severity !== 'low') {
+      findings.push({
+        questionId: question.id,
+        domain: question.domain,
+        severity,
+        finding: diagnosticFindingText(question, answer),
+        recommendation: diagnosticRecommendation(question),
+      })
+    }
+  }
+
+  const score = totalWeight > 0 ? Math.round(weightedScore / totalWeight) : 0
+  const domainScores = Object.fromEntries(
+    Object.entries(domainWeighted).map(([domain, value]) => [
+      domain,
+      Math.round(value.score / Math.max(value.weight, 1)),
+    ])
+  ) as Partial<Record<DiagnosticDomain, number>>
+  const sortedFindings = findings.sort((a, b) => {
+    const order: Record<Severity, number> = { critical: 0, high: 1, medium: 2, low: 3 }
+    return order[a.severity] - order[b.severity]
+  })
+  const exposureLevel = diagnosticExposureFromScore(score, sortedFindings)
+  const topFinding = sortedFindings[0]?.finding ?? 'No aparece una brecha critica con las respuestas actuales.'
+  const recommendation = sortedFindings[0]?.recommendation ?? 'Mantener evidencia, responsables y revision periodica de controles.'
+
+  return {
+    diagnosticId: diagnostic.id,
+    score,
+    exposureLevel,
+    exposureLabel: DIAGNOSTIC_EXPOSURE_LABELS[exposureLevel],
+    service: diagnostic.service,
+    ctaIntent: diagnostic.ctaIntent,
+    answeredCount: answeredQuestions.length,
+    totalQuestions: diagnostic.questions.length,
+    topFinding,
+    recommendation,
+    findings: sortedFindings,
+    leadSignals: sortedFindings.map(f => `${f.domain}:${f.severity}`),
+    domainScores,
   }
 }

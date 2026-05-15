@@ -47,6 +47,15 @@ export const Events = {
   AssessmentCtaClicked:      'Assessment CTA Clicked',
   ContactCtaClicked:         'Contact CTA Clicked',
   ProposalCtaClicked:        'Proposal CTA Clicked',
+  AdaptiveCtaShown:          'Adaptive CTA Shown',
+  AdaptiveCtaClicked:        'Adaptive CTA Clicked',
+
+  // Consultive diagnostics
+  DiagnosticStarted:         'Diagnostic Started',
+  DiagnosticAnswered:        'Diagnostic Answered',
+  DiagnosticCompleted:       'Diagnostic Completed',
+  CalculatorCompleted:       'Calculator Completed',
+  LeadIntelligenceSignal:    'Lead Intelligence Signal',
 
   // Navigation
   NavLinkClicked:            'Nav Link Clicked',
@@ -131,6 +140,38 @@ export interface CtaClickedProps {
   label:    string
   location: string   // 'hero' | 'blog-inline' | 'case-study' | 'assessment-results' | etc.
   source?:  string
+}
+
+export interface AdaptiveCtaProps {
+  intent:      string
+  label:       string
+  location:    string
+  risk_level?: string
+  service?:    string
+}
+
+export interface DiagnosticAnsweredProps {
+  diagnostic_id: string
+  question_id:   string
+  answer:        string
+  risk_delta:    string | number
+}
+
+export interface DiagnosticCompletedProps {
+  diagnostic_id: string
+  score:         string | number
+  exposure:      string
+  service:       string
+  cta_intent:    string
+}
+
+export interface LeadIntelligenceSignalProps {
+  signal:    string
+  source:    string
+  weight:    string | number
+  service?:  string
+  urgency?:  string
+  maturity?: string
 }
 
 export interface TrustSignalInteractionProps {
