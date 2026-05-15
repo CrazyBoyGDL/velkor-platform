@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import MobileConsultiveCTA from '@/components/MobileConsultiveCTA'
 import ThemeProvider from '@/components/ThemeProvider'
 import { Analytics } from '@/components/Analytics'
 import { COMPANY, SITE_URL } from '@/lib/config'
@@ -121,6 +122,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <main className="flex-1 pt-[64px]">
             {children}
           </main>
+          <MobileConsultiveCTA />
           <Footer />
         </ThemeProvider>
       </body>
