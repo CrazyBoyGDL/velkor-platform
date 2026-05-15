@@ -329,7 +329,7 @@ function buildFlags(a: AssessmentAnswers): RiskFlag[] {
 
 // ─── Quick wins generator ─────────────────────────────────────────────────────
 
-function buildQuickWins(a: AssessmentAnswers, flags: RiskFlag[]): string[] {
+function buildQuickWins(a: AssessmentAnswers, _flags: RiskFlag[]): string[] {
   const wins: string[] = []
   const { step2: s2, step3: s3, step4: s4 } = a
 

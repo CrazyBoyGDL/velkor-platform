@@ -32,10 +32,7 @@ export default function Logo({
   className = 'w-10 h-10',
   color = '#b07828',
   animated = true,
-  variant = 'dark',
 }: LogoProps) {
-  const id = `logo-${Math.random().toString(36).slice(2, 7)}`
-
   return (
     <svg
       viewBox="0 0 48 48"

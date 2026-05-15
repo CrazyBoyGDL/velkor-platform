@@ -296,7 +296,7 @@ export default function InfraTopology() {
             OUTER EDGE / CLOUD NODES (R2)
             Peripheral: WAN entry, hardware MFA, audit/SIEM — smaller, dimmer
         ══════════════════════════════════════════════════════════ */}
-        {OUTER_NODES.map(({ deg, color, label, detail, dx, dy, anchor }, i) => {
+        {OUTER_NODES.map(({ deg, color, label, detail, dx, dy, anchor }) => {
           const [nx, ny] = polar(deg, R2)
           const lx = nx + dx, ly = ny + dy
           return (

@@ -1,7 +1,9 @@
 'use client'
+import { useEffect } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { reveal as fadeUp } from '@/lib/motion'
+import { trackCaseStudyEngagement } from '@/components/Analytics'
 
 // ─── Data model ───────────────────────────────────────────────────────────────
 
@@ -35,6 +37,15 @@ export type DependencyItem = {
   note?:  string
 }
 
+export type OperationalNarrativeItem = string | {
+  title?: string
+  label?: string
+  description?: string
+  note?: string
+  owner?: string
+  phase?: string
+}
+
 export type CaseStudy = {
   // Header
   client:        string   // anonymized: "Empresa distribuidora · Monterrey"
@@ -63,8 +74,25 @@ export type CaseStudy = {
   // Depth V2 — governance & dependencies
   governanceMatrix?: GovernanceMatrixRow[]  // operational ownership matrix
   dependencyMap?:    DependencyItem[]       // inter-system dependency chain
-  riskResidual?:     string[]               // documented residual risks at handoff
+  riskResidual?:     OperationalNarrativeItem[]  // documented residual risks at handoff
   postmortemNote?:   string                 // engineering postmortem observation
+
+  // Operational authority metadata from Strapi
+  industry?:                  string
+  technicalLevel?:            string
+  technicalCategory?:         string
+  operationalTags?:           string[]
+  maturityLevel?:             string
+  engagementType?:            string
+  architectureDiagram?:       string | { title?: string; summary?: string; href?: string } | null
+  rolloutPhases?:             CasePhase[]
+  deploymentDependencies?:    OperationalNarrativeItem[]
+  operationalTradeoffs?:      OperationalNarrativeItem[]
+  rollbackConsiderations?:    OperationalNarrativeItem[]
+  lessonsLearned?:            OperationalNarrativeItem[]
+  implementationConstraints?: OperationalNarrativeItem[]
+  governanceNotes?:           string
+  relatedEvidence?:           string[]
 
   // Display
   hex:  string
@@ -89,10 +117,6 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
       {children}
     </div>
   )
-}
-
-function Separator() {
-  return <div className="h-px w-full" style={{ background: 'rgba(255,255,255,0.046)' }} />
 }
 
 // ─── Operational context strip ────────────────────────────────────────────────
@@ -189,7 +213,7 @@ function ArchDecisions({ decisions, hex }: { decisions: ArchDecision[]; hex: str
       <SectionLabel>Decisiones de arquitectura</SectionLabel>
       <div className="space-y-3">
         {decisions.map((d, i) => (
-          <div key={i} className="flex items-start gap-3">
+          <div key={i} className="arch-decision-row flex items-start gap-3">
             <span
               className="text-[9px] font-mono font-bold flex-shrink-0 tabular-nums mt-0.5"
               style={{ color: hex + 'aa', minWidth: '1.4rem' }}
@@ -217,7 +241,7 @@ function Timeline({ phases, hex }: { phases: CasePhase[]; hex: string }) {
       <SectionLabel>Despliegue</SectionLabel>
       <div className="flex flex-wrap gap-0 relative">
         {phases.map(({ label, weeks, milestone }, i) => (
-          <div key={i} className="flex items-start gap-0 flex-1 min-w-[120px] max-w-[200px]">
+          <div key={i} className="timeline-phase flex items-start gap-0 flex-1 min-w-[120px] max-w-[200px]">
             {/* Phase block */}
             <div className="flex-1 pr-3">
               <div
@@ -237,6 +261,124 @@ function Timeline({ phases, hex }: { phases: CasePhase[]; hex: string }) {
             )}
           </div>
         ))}
+      </div>
+    </div>
+  )
+}
+
+// ─── Operational depth blocks ────────────────────────────────────────────────
+
+function itemText(item: OperationalNarrativeItem): string {
+  if (typeof item === 'string') return item
+  return [item.title ?? item.label, item.description ?? item.note, item.owner ? `Owner: ${item.owner}` : null, item.phase ? `Fase: ${item.phase}` : null]
+    .filter(Boolean)
+    .join(' · ')
+}
+
+function OperationalList({
+  title, items, accent,
+}: {
+  title: string
+  items?: OperationalNarrativeItem[]
+  accent: string
+}) {
+  if (!items?.length) return null
+  return (
+    <div>
+      <SectionLabel>{title}</SectionLabel>
+      <div className="space-y-2">
+        {items.slice(0, 4).map((item, i) => (
+          <div key={`${title}-${i}`} className="flex items-start gap-2.5">
+            <span className="text-[9px] font-mono flex-shrink-0 mt-0.5" style={{ color: accent }}>{String(i + 1).padStart(2, '0')}</span>
+            <span className="text-[10.5px] font-mono text-zinc-500 leading-snug">{itemText(item)}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function GovernanceMatrix({ rows }: { rows?: GovernanceMatrixRow[] }) {
+  if (!rows?.length) return null
+  return (
+    <div>
+      <SectionLabel>Matriz de gobierno</SectionLabel>
+      <div className="space-y-2">
+        {rows.slice(0, 4).map(row => (
+          <div key={`${row.system}-${row.owner}`} className="rounded p-2" style={{ background: 'rgba(255,255,255,0.018)', border: '1px solid rgba(255,255,255,0.045)' }}>
+            <div className="text-[11px] text-zinc-400 font-medium">{row.system}</div>
+            <div className="text-[9.5px] font-mono text-zinc-700 mt-0.5">{row.owner} · {row.operations} · {row.reviewCycle}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function DependencyMap({ items }: { items?: DependencyItem[] }) {
+  if (!items?.length) return null
+  return (
+    <div>
+      <SectionLabel>Dependencias de despliegue</SectionLabel>
+      <div className="space-y-2">
+        {items.slice(0, 4).map(item => (
+          <div key={`${item.from}-${item.to}`} className="text-[10.5px] font-mono text-zinc-500 leading-snug">
+            <span className="text-zinc-700">{item.from}</span>
+            <span className="text-[#4878b0] mx-1">{item.type}</span>
+            <span className="text-zinc-600">{item.to}</span>
+            {item.note && <span className="text-zinc-700"> · {item.note}</span>}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function OperationalReview({ c }: { c: CaseStudy }) {
+  const hasDepth = Boolean(
+    c.governanceMatrix?.length ||
+    c.dependencyMap?.length ||
+    c.deploymentDependencies?.length ||
+    c.operationalTradeoffs?.length ||
+    c.rollbackConsiderations?.length ||
+    c.lessonsLearned?.length ||
+    c.implementationConstraints?.length ||
+    c.riskResidual?.length ||
+    c.governanceNotes ||
+    c.postmortemNote ||
+    c.architectureDiagram
+  )
+
+  if (!hasDepth) return null
+
+  const architectureNote = typeof c.architectureDiagram === 'string'
+    ? c.architectureDiagram
+    : c.architectureDiagram?.summary ?? c.architectureDiagram?.title
+
+  return (
+    <div className="px-6 py-5" style={{ borderBottom: '1px solid rgba(255,255,255,0.046)' }}>
+      <SectionLabel>Madurez operativa documentada</SectionLabel>
+      <div className="grid sm:grid-cols-2 gap-5">
+        {architectureNote && (
+          <div>
+            <SectionLabel>Overlay de arquitectura</SectionLabel>
+            <p className="text-[10.5px] font-mono text-zinc-500 leading-relaxed">{architectureNote}</p>
+          </div>
+        )}
+        <GovernanceMatrix rows={c.governanceMatrix} />
+        <DependencyMap items={c.dependencyMap} />
+        <OperationalList title="Dependencias" items={c.deploymentDependencies} accent="#4878b0" />
+        <OperationalList title="Tradeoffs" items={c.operationalTradeoffs} accent="#b07828" />
+        <OperationalList title="Rollback" items={c.rollbackConsiderations} accent="#c04040" />
+        <OperationalList title="Restricciones" items={c.implementationConstraints} accent="#b07828" />
+        <OperationalList title="Lecciones aprendidas" items={c.lessonsLearned} accent="#3a7858" />
+        <OperationalList title="Riesgo residual" items={c.riskResidual} accent="#7a7050" />
+        {(c.governanceNotes || c.postmortemNote) && (
+          <div>
+            <SectionLabel>Nota de handoff</SectionLabel>
+            <p className="text-[10.5px] font-mono text-zinc-500 leading-relaxed">{c.governanceNotes ?? c.postmortemNote}</p>
+          </div>
+        )}
       </div>
     </div>
   )
@@ -298,6 +440,15 @@ function DeliverablesOutcomes({ c }: { c: CaseStudy }) {
 // ─── Case card ────────────────────────────────────────────────────────────────
 
 function CaseCard({ c, i }: { c: CaseStudy; i: number }) {
+  const metadata = [
+    c.technicalCategory,
+    c.technicalLevel,
+    c.maturityLevel ? `madurez:${c.maturityLevel}` : null,
+    c.engagementType,
+  ].filter((item): item is string => Boolean(item))
+  const timeline = c.rolloutPhases?.length ? c.rolloutPhases : c.phases
+  const tags = c.operationalTags?.length ? c.operationalTags : c.tags
+
   return (
     <motion.article
       {...fadeUp(i * 0.06)}
@@ -321,11 +472,14 @@ function CaseCard({ c, i }: { c: CaseStudy; i: number }) {
             className="text-[9.5px] font-mono px-2 py-0.5 rounded font-bold uppercase tracking-[0.1em]"
             style={{ color: c.hex, background: c.hex + '18', border: `1px solid ${c.hex}28` }}
           >
-            {c.sector}
+            {c.industry ?? c.sector}
           </span>
           <h3 className="text-zinc-200 font-semibold text-[13px] leading-snug">{c.client}</h3>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 flex-wrap justify-end">
+          {metadata.slice(0, 3).map(item => (
+            <span key={item} className="text-[9px] font-mono text-zinc-700">{item}</span>
+          ))}
           <span className="text-[10px] font-mono text-zinc-700">{c.year}</span>
         </div>
       </div>
@@ -343,16 +497,19 @@ function CaseCard({ c, i }: { c: CaseStudy; i: number }) {
       <ArchDecisions decisions={c.architectureDecisions} hex={c.hex} />
 
       {/* Timeline */}
-      <Timeline phases={c.phases} hex={c.hex} />
+      <Timeline phases={timeline} hex={c.hex} />
 
       {/* Deliverables + outcomes */}
       <DeliverablesOutcomes c={c} />
+
+      {/* Operational documentation depth */}
+      <OperationalReview c={c} />
 
       {/* Tags footer */}
       <div
         className="px-6 py-3 flex flex-wrap items-center gap-2"
       >
-        {c.tags.map(t => (
+        {tags.map(t => (
           <span
             key={t}
             className="text-[9.5px] font-mono text-zinc-700 px-2 py-0.5 rounded"
@@ -369,6 +526,10 @@ function CaseCard({ c, i }: { c: CaseStudy; i: number }) {
 // ─── Main export ──────────────────────────────────────────────────────────────
 
 export default function CasosContent({ cases }: { cases: CaseStudy[] }) {
+  useEffect(() => {
+    trackCaseStudyEngagement('case-index', cases.map(c => c.sector).join(','), 'view')
+  }, [cases])
+
   return (
     <>
       <div className="space-y-5">

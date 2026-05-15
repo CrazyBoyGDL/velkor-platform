@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { strapi } from '@/lib/strapi'
+import { architectureReferenceHref, asDownloadableArtifact, asStringArray } from '@/lib/contentEngine'
 import BlogList, { type BlogPost } from '@/components/BlogList'
 
 export const revalidate = 3600
@@ -93,6 +94,17 @@ type StrapiPost = {
     publishedAt: string
     readTime: string
     hex: string
+    technicalCategory?: string
+    technicalLevel?: string
+    operationalTags?: unknown
+    maturityLevel?: string
+    engagementType?: string
+    relatedEvidence?: unknown
+    relatedCases?: unknown
+    relatedFrameworks?: unknown
+    downloadableArtifact?: unknown
+    architectureDiagram?: unknown
+    governanceNotes?: string
   }
 }
 
@@ -116,6 +128,17 @@ async function getPosts(): Promise<BlogPost[]> {
     date: formatDate(a.publishedAt),
     readTime: a.readTime ?? '',
     hex: a.hex ?? '#b07828',
+    technicalCategory: a.technicalCategory,
+    technicalLevel: a.technicalLevel,
+    operationalTags: asStringArray(a.operationalTags),
+    maturityLevel: a.maturityLevel,
+    engagementType: a.engagementType,
+    relatedEvidence: asStringArray(a.relatedEvidence),
+    relatedCases: asStringArray(a.relatedCases),
+    relatedFrameworks: asStringArray(a.relatedFrameworks),
+    downloadableArtifact: asDownloadableArtifact(a.downloadableArtifact),
+    architectureRef: architectureReferenceHref(a.architectureDiagram),
+    governanceNotes: a.governanceNotes ?? null,
   }))
 }
 

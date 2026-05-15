@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { contentTemplates } from '@/lib/contentEngine'
+import { authorityAssetRules, contentTemplates, operationalTagGroups, technicalCategories } from '@/lib/contentEngine'
 import type { ContentTemplate, ContentField } from '@/lib/contentEngine'
 
 export const metadata: Metadata = {
@@ -15,6 +15,8 @@ const TYPE_COLORS: Record<string, string> = {
   'mini-case-breakdown': '#3d88a5',
   'governance-insight': '#b07828',
   'operational-constraint': '#a855f7',
+  'evidence-brief': '#3a7858',
+  'rollout-playbook': '#4878b0',
 }
 
 function FieldRow({ field }: { field: ContentField }) {
@@ -159,8 +161,62 @@ export default function ContentEnginePage() {
             style={{ background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.07)' }}
           >
             <div className="font-mono text-[10px] text-zinc-600">
-              {contentTemplates.length} formatos · LinkedIn · ~800–1,600 caracteres · Basado en proyectos reales
+              {contentTemplates.length} formatos · Activos de autoridad · Evidencia · Casos · Frameworks · Basado en proyectos reales
             </div>
+          </div>
+        </div>
+
+        {/* Authority architecture */}
+        <div className="grid lg:grid-cols-[1.15fr_0.85fr] gap-4 mb-12">
+          <div
+            className="p-5 rounded-xl"
+            style={{ background: 'rgba(255,255,255,0.018)', border: '1px solid rgba(255,255,255,0.06)' }}
+          >
+            <div className="font-mono text-[10px] text-zinc-600 mb-4 uppercase tracking-wider">Categorías técnicas</div>
+            <div className="grid sm:grid-cols-2 gap-3">
+              {Object.entries(technicalCategories).map(([key, cat]) => (
+                <div key={key} className="rounded-lg p-3" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)' }}>
+                  <div className="text-zinc-300 text-[12px] font-semibold mb-1">{cat.label}</div>
+                  <p className="text-zinc-600 text-[11px] leading-relaxed">{cat.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div
+            className="p-5 rounded-xl"
+            style={{ background: 'rgba(72,120,176,0.035)', border: '1px solid rgba(72,120,176,0.12)' }}
+          >
+            <div className="font-mono text-[10px] text-zinc-600 mb-4 uppercase tracking-wider">Reglas del asset</div>
+            <div className="space-y-3">
+              {authorityAssetRules.map((rule, i) => (
+                <div key={rule} className="flex items-start gap-3">
+                  <span className="text-[10px] font-mono text-[#4878b0] tabular-nums">{String(i + 1).padStart(2, '0')}</span>
+                  <p className="text-zinc-500 text-[11px] leading-relaxed">{rule}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div
+          className="mb-12 p-5 rounded-xl"
+          style={{ background: 'rgba(255,255,255,0.018)', border: '1px solid rgba(255,255,255,0.06)' }}
+        >
+          <div className="font-mono text-[10px] text-zinc-600 mb-4 uppercase tracking-wider">Taxonomía operacional</div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            {operationalTagGroups.map(group => (
+              <div key={group.group} className="rounded-lg p-3" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)' }}>
+                <div className="text-zinc-400 text-[11px] font-semibold mb-2">{group.group}</div>
+                <div className="flex flex-wrap gap-1.5">
+                  {group.tags.map(tag => (
+                    <span key={tag} className="text-[9px] font-mono text-zinc-700 px-1.5 py-0.5 rounded" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)' }}>
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
 

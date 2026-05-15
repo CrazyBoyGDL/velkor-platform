@@ -20,6 +20,7 @@
  */
 import Script from 'next/script'
 import { useEffect, useRef } from 'react'
+import { ASSESSMENT_STEP_NAMES, Events, type EventName } from '@/lib/analyticsEvents'
 
 const PLAUSIBLE_DOMAIN = process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN
 const POSTHOG_KEY      = process.env.NEXT_PUBLIC_POSTHOG_KEY
@@ -27,17 +28,18 @@ const POSTHOG_HOST     = process.env.NEXT_PUBLIC_POSTHOG_HOST ?? 'https://app.po
 
 // ─── Provider types ────────────────────────────────────────────────────────────
 
-type PlausibleFn = (event: string, options?: { props?: Record<string, string | number> }) => void
-type PostHogFn   = { capture: (event: string, props?: Record<string, string | number>) => void }
+type AnalyticsProps = Record<string, string | number>
+type PlausibleFn = (event: string, options?: { props?: AnalyticsProps }) => void
+type PostHogFn   = { capture: (event: string, props?: AnalyticsProps) => void }
 
 function getPlausible(): PlausibleFn | undefined {
   if (typeof window === 'undefined') return undefined
-  return (window as Record<string, unknown>).plausible as PlausibleFn | undefined
+  return (window as unknown as { plausible?: PlausibleFn }).plausible
 }
 
 function getPostHog(): PostHogFn | undefined {
   if (typeof window === 'undefined') return undefined
-  return (window as Record<string, unknown>).posthog as PostHogFn | undefined
+  return (window as unknown as { posthog?: PostHogFn }).posthog
 }
 
 // ─── Analytics script tags ─────────────────────────────────────────────────────
@@ -79,8 +81,8 @@ export function Analytics() {
  * Safe to call when no provider is loaded — noop in that case.
  */
 export function trackEvent(
-  event: string,
-  props?: Record<string, string | number>
+  event: EventName | string,
+  props?: AnalyticsProps
 ): void {
   if (typeof window === 'undefined') return
 
@@ -108,7 +110,7 @@ export function trackCTA(
   location: string = 'unknown',
   extra?:   Record<string, string>
 ): void {
-  trackEvent('CTA Click', { label, location, ...extra })
+  trackEvent(Events.CtaClicked, { label, location, ...extra })
 }
 
 /**
@@ -122,7 +124,7 @@ export function trackEvidenceClick(
   category:  string,
   status:    string
 ): void {
-  trackEvent('Evidence Document Clicked', { doc_title: docTitle, category, status })
+  trackEvent(Events.EvidenceDocumentClicked, { doc_title: docTitle, category, status })
 }
 
 /**
@@ -131,7 +133,40 @@ export function trackEvidenceClick(
  * @param context    Page context (e.g. 'evidence-library', 'case-study')
  */
 export function trackDiagramView(diagramId: string, context: string): void {
-  trackEvent('Evidence Diagram Viewed', { diagram_id: diagramId, context })
+  trackEvent(Events.EvidenceDiagramViewed, { diagram_id: diagramId, context })
+}
+
+export function trackDownload(
+  artifactTitle: string,
+  artifactType: string,
+  source: string,
+  gated = false
+): void {
+  trackEvent(Events.ArtifactDownloaded, {
+    artifact_title: artifactTitle,
+    artifact_type: artifactType,
+    gated: String(gated),
+    source,
+  })
+}
+
+export function trackCaseStudyEngagement(caseSlug: string, sector: string, depth: string): void {
+  trackEvent(Events.CaseStudyEngagement, { case_slug: caseSlug, sector, depth })
+}
+
+export function trackLeadSourceAttribution(source: string, utm: string, conversionPath: string): void {
+  trackEvent(Events.LeadSourceAttributed, {
+    source: source || 'direct',
+    utm: utm || 'none',
+    conversion_path: conversionPath,
+  })
+}
+
+export function trackDeviceBehavior(page: string, behavior: string): void {
+  if (typeof window === 'undefined') return
+  const width = window.innerWidth
+  const device = width < 640 ? 'mobile' : width < 1024 ? 'tablet' : 'desktop'
+  trackEvent(Events.DeviceBehaviorDetected, { page, behavior, device })
 }
 
 // ─── Scroll depth hook ─────────────────────────────────────────────────────────
@@ -157,7 +192,7 @@ export function useScrollDepth(page: string): void {
       for (const t of THRESHOLDS) {
         if (!fired.has(t) && pct >= t) {
           fired.add(t)
-          trackEvent('Scroll Depth', { page, depth: `${t}%` })
+          trackEvent(Events.BlogScrollDepth, { page, depth: `${t}%` })
         }
       }
     }
@@ -169,14 +204,6 @@ export function useScrollDepth(page: string): void {
 }
 
 // ─── Assessment step tracking hook ────────────────────────────────────────────
-
-const STEP_NAMES: Record<number, string> = {
-  1: 'Contexto empresarial',
-  2: 'Infraestructura de red',
-  3: 'Identidad y acceso',
-  4: 'Operaciones y gobernanza',
-  5: 'Objetivos y urgencia',
-}
 
 /**
  * Hook: tracks assessment step progression.
@@ -191,20 +218,30 @@ export function useAssessmentStep(currentStep: number, status: string): void {
   const prevStep   = useRef<number>(0)
   const startTime  = useRef<number>(Date.now())
   const stepStart  = useRef<number>(Date.now())
+  const currentStepRef = useRef<number>(currentStep)
+  const statusRef = useRef<string>(status)
+
+  useEffect(() => {
+    currentStepRef.current = currentStep
+    statusRef.current = status
+  }, [currentStep, status])
 
   useEffect(() => {
     if (currentStep === 1 && prevStep.current === 0) {
-      trackEvent('Assessment Started', {
+      trackEvent(Events.AssessmentStarted, {
         device: window.innerWidth < 640 ? 'mobile' : 'desktop',
       })
+      if (window.innerWidth < 640) {
+        trackEvent(Events.MobileAssessmentStarted, { page: 'assessment' })
+      }
       startTime.current = Date.now()
     }
 
     if (currentStep > prevStep.current && prevStep.current > 0) {
       const timeSpent = Math.round((Date.now() - stepStart.current) / 1000)
-      trackEvent('Assessment Step Completed', {
+      trackEvent(Events.AssessmentStepCompleted, {
         step:      String(prevStep.current),
-        step_name: STEP_NAMES[prevStep.current] ?? `Step ${prevStep.current}`,
+        step_name: ASSESSMENT_STEP_NAMES[prevStep.current] ?? `Step ${prevStep.current}`,
         time_spent: String(timeSpent),
       })
     }
@@ -215,9 +252,21 @@ export function useAssessmentStep(currentStep: number, status: string): void {
 
   useEffect(() => {
     if (status === 'done') {
-      trackEvent('Assessment Results Viewed', {
+      trackEvent(Events.AssessmentResultsViewed, {
         total_time: String(Math.round((Date.now() - startTime.current) / 1000)),
       })
     }
   }, [status])
+
+  useEffect(() => {
+    return () => {
+      if (statusRef.current === 'done') return
+      const abandonedStep = currentStepRef.current
+      trackEvent(Events.AssessmentStepAbandoned, {
+        step: String(abandonedStep),
+        step_name: ASSESSMENT_STEP_NAMES[abandonedStep] ?? `Step ${abandonedStep}`,
+        reason: 'navigation',
+      })
+    }
+  }, [])
 }

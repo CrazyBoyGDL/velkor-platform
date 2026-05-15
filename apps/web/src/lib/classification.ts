@@ -1,7 +1,7 @@
 // ─── Velkor Lead Classification Engine ─────────────────────────────────────
 // Classifies leads by size, engagement type, priority, and recommended follow-up.
 
-import type { AssessmentAnswers, ScoreResult, ExposureLevel } from './scoring'
+import type { AssessmentAnswers, ScoreResult } from './scoring'
 
 export type LeadSegment =
   | 'SMB'
@@ -47,7 +47,7 @@ function getSegment(size: string): LeadSegment {
 // ─── Engagement type from answer patterns ────────────────────────────────────
 
 function getEngagementType(a: AssessmentAnswers, scores: ScoreResult): EngagementType {
-  const { step3: s3, step4: s4, step5: s5 } = a
+  const { step4: s4, step5: s5 } = a
 
   // Compliance-driven: has compliance requirements or regulatory pressure
   const hasCompliance = s4.compliance?.length > 0 && !s4.compliance.includes('none')

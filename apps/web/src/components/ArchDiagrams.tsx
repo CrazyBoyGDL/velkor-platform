@@ -67,19 +67,6 @@ function Box({ x, y, w, h, color, bg, label, sublabel, mono = true }: {
   )
 }
 
-function Line({ x1, y1, x2, y2, color = '#2a2a3a', dashed = false }: {
-  x1: number; y1: number; x2: number; y2: number; color?: string; dashed?: boolean
-}) {
-  return (
-    <line
-      x1={x1} y1={y1} x2={x2} y2={y2}
-      stroke={color}
-      strokeWidth={0.8}
-      strokeDasharray={dashed ? '3,3' : undefined}
-    />
-  )
-}
-
 function Arrow({ x1, y1, x2, y2, color = '#3a3a50' }: {
   x1: number; y1: number; x2: number; y2: number; color?: string
 }) {
@@ -256,7 +243,7 @@ export function EntraIdGovernanceFlow({ className = '' }: { className?: string }
       <Box x={200} y={332} w={100} h={30} color="#3a7858" bg="rgba(58,120,88,0.08)" label="ACCESO" sublabel="CONCEDIDO" />
 
       <Arrow x1={360} y1={316} x2={420} y2={345} color="#3a3a58" />
-      <Box x={380} y={332} width={100} h={30} color="#c04040" bg="rgba(192,64,64,0.08)" label="ACCESO" sublabel="DENEGADO" />
+      <Box x={380} y={332} w={100} h={30} color="#c04040" bg="rgba(192,64,64,0.08)" label="ACCESO" sublabel="DENEGADO" />
 
       {/* PIM note */}
       <rect x={20} y={310} width={160} height={50} rx={3} fill="rgba(72,120,176,0.05)" stroke="rgba(72,120,176,0.18)" strokeWidth={0.6} />

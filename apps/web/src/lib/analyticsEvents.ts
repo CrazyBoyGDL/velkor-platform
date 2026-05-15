@@ -21,6 +21,7 @@ export const Events = {
 
   // Assessment results
   AssessmentPdfOpened:       'Assessment PDF Opened',
+  AssessmentPdfDownloaded:   'Assessment PDF Downloaded',
   AssessmentResultsViewed:   'Assessment Results Viewed',
   AssessmentReportRefCopied: 'Assessment Report Ref Copied',
 
@@ -29,11 +30,14 @@ export const Events = {
   BlogScrollDepth:           'Scroll Depth',              // shared with existing
   EvidenceLibraryViewed:     'Evidence Library Viewed',
   EvidenceDocumentClicked:   'Evidence Document Clicked',
+  EvidenceInteraction:       'Evidence Interaction',
   EvidenceDiagramViewed:     'Evidence Diagram Viewed',
   CaseStudyViewed:           'Case Study Viewed',
   CaseStudyDepthReached:     'Case Study Depth Reached',  // 50% / 100% scroll
+  CaseStudyEngagement:       'Case Study Engagement',
   OperationalFrameworkViewed:'Operational Framework Viewed',
   FrameworkStageExpanded:    'Framework Stage Expanded',
+  ArtifactDownloaded:        'Artifact Downloaded',
 
   // CTA engagement
   CtaClicked:                'CTA Click',                 // shared with existing
@@ -48,13 +52,17 @@ export const Events = {
   // Conversion signals
   ContactFormStarted:        'Contact Form Started',
   ContactFormSubmitted:      'Contact Form Submitted',
+  ResourceLeadSubmitted:     'Resource Lead Submitted',
+  ConversionPathUpdated:     'Conversion Path Updated',
 
   // Device behavior
   MobileAssessmentStarted:   'Mobile Assessment Started',
   DiagramScrolled:           'Diagram Scrolled',           // arch diagram mobile scroll
+  DeviceBehaviorDetected:    'Device Behavior Detected',
 
   // Source tracking
   UtmSourceDetected:         'UTM Source Detected',
+  LeadSourceAttributed:      'Lead Source Attributed',
 } as const
 
 export type EventName = typeof Events[keyof typeof Events]
@@ -88,6 +96,19 @@ export interface EvidenceDocumentClickedProps {
   status:     string   // 'sanitized' | 'reference' | 'template'
 }
 
+export interface ArtifactDownloadedProps {
+  artifact_title: string
+  artifact_type:  string
+  gated:          string
+  source:         string
+}
+
+export interface CaseStudyEngagementProps {
+  case_slug: string
+  sector:    string
+  depth:     string
+}
+
 export interface CtaClickedProps {
   label:    string
   location: string   // 'hero' | 'blog-inline' | 'case-study' | 'assessment-results' | etc.
@@ -98,6 +119,18 @@ export interface AssessmentStepAbandonedProps {
   step:      string
   step_name: string
   reason?:   string   // 'navigation' | 'timeout' | 'error'
+}
+
+export interface LeadSourceAttributedProps {
+  source:          string
+  utm:             string
+  conversion_path: string
+}
+
+export interface DeviceBehaviorDetectedProps {
+  device:   'mobile' | 'tablet' | 'desktop'
+  page:     string
+  behavior: string
 }
 
 // ─── Step name map (used by assessment wizard) ────────────────────────────────

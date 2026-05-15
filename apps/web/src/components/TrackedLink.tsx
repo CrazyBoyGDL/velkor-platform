@@ -27,7 +27,7 @@ export default function TrackedLink({
     <Link
       {...props}
       onClick={(e) => {
-        trackCTA(trackLabel, trackProps)
+        trackCTA(trackLabel, trackProps?.location ?? 'tracked-link', trackProps)
         onClick?.(e)
       }}
     >

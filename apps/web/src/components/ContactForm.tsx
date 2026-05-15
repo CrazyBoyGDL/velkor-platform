@@ -1,7 +1,8 @@
 'use client'
 import { useState } from 'react'
 import Link from 'next/link'
-import { trackEvent } from '@/components/Analytics'
+import { trackCTA, trackEvent } from '@/components/Analytics'
+import { Events } from '@/lib/analyticsEvents'
 
 const SERVICES = [
   'Redes & Ciberseguridad',
@@ -29,6 +30,13 @@ export default function ContactForm() {
   const [service, setService] = useState('')
   const [message, setMessage] = useState('')
   const [status,  setStatus]  = useState<Status>('idle')
+  const [started, setStarted] = useState(false)
+
+  const markStarted = () => {
+    if (started) return
+    setStarted(true)
+    trackEvent(Events.ContactFormStarted, { page: 'contacto' })
+  }
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -41,7 +49,7 @@ export default function ContactForm() {
       })
       if (!res.ok) { setStatus('error'); return }
       setStatus('done')
-      trackEvent('ContactoEnviado', { service })
+      trackEvent(Events.ContactFormSubmitted, { service: service || 'unspecified' })
     } catch {
       setStatus('error')
     }
@@ -70,7 +78,7 @@ export default function ContactForm() {
     <div className="grid lg:grid-cols-[1fr_400px] gap-10 items-start">
 
       {/* Left — form */}
-      <form onSubmit={submit} className="card p-8 space-y-6">
+      <form onSubmit={submit} onFocus={markStarted} className="card p-8 space-y-6">
         <h2 className="text-noc-white font-black text-xl mb-2">Envíanos un mensaje</h2>
 
         {/* Contact fields */}
@@ -161,7 +169,7 @@ export default function ContactForm() {
             href={WA_HREF}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => trackEvent('WhatsAppClick', { page: 'contacto' })}
+            onClick={() => trackCTA('WhatsApp contacto', 'contact-alternatives', { channel: 'whatsapp' })}
             className="block card p-6 hover:border-zinc-600 transition-colors group"
             style={{ borderLeftColor: '#25d366', borderLeftWidth: 3 }}
           >
@@ -188,7 +196,7 @@ export default function ContactForm() {
             href={CALENDLY_URL}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => trackEvent('CalendlyClick', { page: 'contacto' })}
+            onClick={() => trackCTA('Calendly contacto', 'contact-alternatives', { channel: 'calendar' })}
             className="block card p-6 hover:border-zinc-600 transition-colors group"
             style={{ borderLeftColor: '#b07828', borderLeftWidth: 3 }}
           >

@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react'
-import { trackEvent } from '@/components/Analytics'
+import { trackDownload, trackEvent } from '@/components/Analytics'
+import { Events } from '@/lib/analyticsEvents'
 
 type Section = {
   title: string
@@ -38,7 +39,8 @@ export default function RecursoGate({
       })
       if (!res.ok) { setStatus('error'); return }
       setStatus('success')
-      trackEvent('RecursoDesbloqueado', { recurso: slug })
+      trackEvent(Events.ResourceLeadSubmitted, { recurso: slug })
+      trackDownload(title, 'resource', `recurso-${slug}`, true)
     } catch {
       setStatus('error')
     }

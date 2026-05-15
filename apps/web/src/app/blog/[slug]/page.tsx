@@ -2,6 +2,13 @@ import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { strapi } from '@/lib/strapi'
+import {
+  architectureReferenceHref,
+  asAuthorityReferences,
+  asDownloadableArtifact,
+  asStringArray,
+  type AuthorityReference,
+} from '@/lib/contentEngine'
 import ScrollDepthTracker from '@/components/ScrollDepthTracker'
 import TrackedLink from '@/components/TrackedLink'
 
@@ -20,6 +27,17 @@ type StrapiPost = {
     publishedAt: string
     readTime: string
     hex: string
+    technicalCategory?: string
+    technicalLevel?: string
+    operationalTags?: unknown
+    maturityLevel?: string
+    engagementType?: string
+    relatedEvidence?: unknown
+    relatedCases?: unknown
+    relatedFrameworks?: unknown
+    downloadableArtifact?: unknown
+    architectureDiagram?: unknown
+    governanceNotes?: string
   }
 }
 
@@ -71,6 +89,50 @@ function formatDate(iso: string): string {
   }
 }
 
+const TECHNICAL_CATEGORY_LABEL: Record<string, string> = {
+  'identity-governance': 'Identidad y gobernanza',
+  'network-infrastructure': 'Infraestructura de red',
+  'endpoint-management': 'Gestión de endpoints',
+  'security-operations': 'Operaciones de seguridad',
+  'continuity-resilience': 'Continuidad',
+  'cloud-modernization': 'Modernización cloud',
+  'video-operations': 'Operaciones de video',
+}
+
+const TECHNICAL_LEVEL_LABEL: Record<string, string> = {
+  executive: 'Ejecutivo',
+  technical: 'Técnico',
+  architecture: 'Arquitectura',
+  governance: 'Gobernanza',
+}
+
+function ReferenceLink({ refItem }: { refItem: AuthorityReference }) {
+  const href = refItem.href ?? (refItem.evidenceId ? `/framework/evidence#${refItem.evidenceId}` : null)
+  const label = (
+    <>
+      <span style={{ color: '#4878b0' }}>→</span> {refItem.label}
+    </>
+  )
+
+  if (!href) {
+    return <span className="text-zinc-600 text-xs font-mono flex items-center gap-1">{label}</span>
+  }
+
+  if (href.startsWith('/')) {
+    return (
+      <Link href={href} className="text-zinc-500 hover:text-zinc-300 text-xs font-mono transition-colors flex items-center gap-1">
+        {label}
+      </Link>
+    )
+  }
+
+  return (
+    <a href={href} className="text-zinc-500 hover:text-zinc-300 text-xs font-mono transition-colors flex items-center gap-1" target="_blank" rel="noreferrer">
+      {label}
+    </a>
+  )
+}
+
 // ── Static params (pre-build known slugs at deploy time) ─────────────────────
 export async function generateStaticParams() {
   const data = await strapi.get<StrapiListResponse>(
@@ -102,6 +164,24 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
 
   const date = formatDate(post.publishedAt)
   const hex  = post.hex || '#b07828'
+  const operationalTags = asStringArray(post.operationalTags)
+  const relatedEvidence = asAuthorityReferences(post.relatedEvidence, 'evidence')
+  const relatedCases = asAuthorityReferences(post.relatedCases, 'case-study')
+  const relatedFrameworks = asAuthorityReferences(post.relatedFrameworks, 'framework')
+  const downloadableArtifact = asDownloadableArtifact(post.downloadableArtifact)
+  const architectureRef = architectureReferenceHref(post.architectureDiagram)
+  const metadataItems = [
+    post.technicalCategory ? TECHNICAL_CATEGORY_LABEL[post.technicalCategory] ?? post.technicalCategory : null,
+    post.technicalLevel ? TECHNICAL_LEVEL_LABEL[post.technicalLevel] ?? post.technicalLevel : null,
+    post.maturityLevel ? `Madurez ${post.maturityLevel}` : null,
+    post.engagementType ? post.engagementType : null,
+  ].filter((item): item is string => Boolean(item))
+  const dynamicReferences: AuthorityReference[] = [
+    ...relatedEvidence,
+    ...relatedCases,
+    ...relatedFrameworks,
+    ...(architectureRef ? [{ label: 'Diagrama de arquitectura asociado', href: architectureRef, relation: 'architecture' as const }] : []),
+  ]
 
   return (
     <div className="min-h-screen py-16 px-4 sm:px-8">
@@ -144,6 +224,21 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
           )}
 
           <div className="text-zinc-700 text-xs font-mono">{date}</div>
+
+          {(metadataItems.length > 0 || operationalTags.length > 0) && (
+            <div className="mt-5 flex flex-wrap gap-2">
+              {metadataItems.map(item => (
+                <span key={item} className="text-[10px] font-mono text-zinc-600 px-2 py-0.5 rounded" style={{ background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.05)' }}>
+                  {item}
+                </span>
+              ))}
+              {operationalTags.slice(0, 6).map(tag => (
+                <span key={tag} className="text-[10px] font-mono text-zinc-700 px-2 py-0.5 rounded" style={{ background: 'rgba(255,255,255,0.018)', border: '1px solid rgba(255,255,255,0.045)' }}>
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
         </header>
 
         {/* Content */}
@@ -154,6 +249,24 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
           />
         ) : (
           <p className="text-zinc-600 text-sm italic">Contenido completo próximamente.</p>
+        )}
+
+        {(downloadableArtifact || post.governanceNotes) && (
+          <div className="my-10 p-5 rounded-xl" style={{ background: 'rgba(58,120,88,0.04)', border: '1px solid rgba(58,120,88,0.12)' }}>
+            <div className="text-[10px] font-mono text-zinc-600 mb-2">ACTIVO OPERACIONAL</div>
+            {downloadableArtifact && (
+              <div className="mb-3">
+                <div className="text-zinc-300 text-sm font-semibold">{downloadableArtifact.title}</div>
+                <p className="text-zinc-600 text-[11px] font-mono mt-1">
+                  {downloadableArtifact.gated ? 'Disponible bajo NDA o discovery técnico' : 'Artefacto disponible para descarga'}
+                  {downloadableArtifact.format ? ` · ${downloadableArtifact.format.toUpperCase()}` : ''}
+                </p>
+              </div>
+            )}
+            {post.governanceNotes && (
+              <p className="text-zinc-500 text-xs leading-relaxed">{post.governanceNotes}</p>
+            )}
+          </div>
         )}
 
         {/* Inline CTA — service contact prompt */}
@@ -184,15 +297,13 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
         <div className="my-10 p-5 rounded-xl" style={{ background: 'rgba(72,120,176,0.04)', border: '1px solid rgba(72,120,176,0.12)' }}>
           <div className="text-[10px] font-mono text-zinc-600 mb-2">REFERENCIAS TÉCNICAS</div>
           <div className="flex flex-wrap gap-3">
-            <Link href="/framework/evidence" className="text-zinc-500 hover:text-zinc-300 text-xs font-mono transition-colors flex items-center gap-1">
-              <span style={{ color: '#4878b0' }}>→</span> Biblioteca de evidencia operacional
-            </Link>
-            <Link href="/framework/operational-framework" className="text-zinc-500 hover:text-zinc-300 text-xs font-mono transition-colors flex items-center gap-1">
-              <span style={{ color: '#4878b0' }}>→</span> Framework operacional de 8 etapas
-            </Link>
-            <Link href="/casos" className="text-zinc-500 hover:text-zinc-300 text-xs font-mono transition-colors flex items-center gap-1">
-              <span style={{ color: '#4878b0' }}>→</span> Narrativas de transformación
-            </Link>
+            {(dynamicReferences.length > 0 ? dynamicReferences : [
+              { label: 'Biblioteca de evidencia operacional', href: '/framework/evidence', relation: 'evidence' as const },
+              { label: 'Framework operacional de 8 etapas', href: '/framework/operational-framework', relation: 'framework' as const },
+              { label: 'Narrativas de transformación', href: '/casos', relation: 'case-study' as const },
+            ]).map(refItem => (
+              <ReferenceLink key={`${refItem.relation}-${refItem.label}`} refItem={refItem} />
+            ))}
           </div>
         </div>
 

@@ -1,7 +1,8 @@
 'use client'
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
-import { trackEvent } from '@/components/Analytics'
+import { trackDownload, trackEvent, trackLeadSourceAttribution, useAssessmentStep } from '@/components/Analytics'
+import { Events } from '@/lib/analyticsEvents'
 import { generateReportHtml } from '@/lib/reportHtml'
 import type { ScoreResult, AssessmentAnswers } from '@/lib/scoring'
 import type { LeadClassification } from '@/lib/classification'
@@ -36,7 +37,7 @@ function QLabel({ children, hint }: { children: React.ReactNode; hint?: string }
 }
 
 function Radio({
-  value, selected, label, sub, onChange,
+  selected, label, sub, onChange,
 }: { value: string; selected: boolean; label: string; sub?: string; onChange: () => void }) {
   return (
     <button
@@ -55,7 +56,7 @@ function Radio({
 }
 
 function Check({
-  value, selected, label, onChange,
+  selected, label, onChange,
 }: { value: string; selected: boolean; label: string; onChange: () => void }) {
   return (
     <button
@@ -193,7 +194,8 @@ function ResultsScreen({
     if (win) {
       win.document.write(html)
       win.document.close()
-      trackEvent('PDF Report Generated', { reportRef })
+      trackEvent(Events.AssessmentPdfOpened, { reportRef })
+      trackDownload('Informe de evaluación operacional', 'pdf', 'assessment-results', true)
     }
   }, [answers, scores, classification, reportRef])
 
@@ -925,13 +927,24 @@ export default function AssessmentsPage() {
   const [source, setSource] = useState('')
   const [utm,    setUtm]    = useState('')
 
+  useAssessmentStep(step, status)
+
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
     const utmSrc = params.get('utm_source') || params.get('ref')
-    if (utmSrc) { setSource(utmSrc); setUtm(params.toString()); return }
+    if (utmSrc) {
+      const utmValue = params.toString()
+      setSource(utmSrc)
+      setUtm(utmValue)
+      trackLeadSourceAttribution(utmSrc, utmValue, 'assessment-entry')
+      return
+    }
     try {
       const ref = document.referrer ? new URL(document.referrer).hostname : ''
-      if (ref && ref !== 'velkor.mx') setSource(ref)
+      if (ref && ref !== 'velkor.mx') {
+        setSource(ref)
+        trackLeadSourceAttribution(ref, 'none', 'assessment-referrer')
+      }
     } catch { /* ignore */ }
   }, [])
 
@@ -989,7 +1002,6 @@ export default function AssessmentsPage() {
   const nextStep = () => {
     if (!canProceed()) return
     if (step < 5) {
-      trackEvent('Assessment Step Completed', { step })
       setStep(s => s + 1)
       window.scrollTo({ top: 0, behavior: 'smooth' })
     }
@@ -1002,6 +1014,10 @@ export default function AssessmentsPage() {
   const submit = async () => {
     if (!canProceed()) return
     setStatus('submitting')
+    trackEvent(Events.AssessmentSubmitted, {
+      source: source || 'direct',
+      step: String(step),
+    })
 
     const payload = {
       name, email, company, phone, source, utm,
@@ -1021,6 +1037,7 @@ export default function AssessmentsPage() {
       if (!res.ok) {
         setStatus('error')
         setErrorMsg(data.error || 'Error al procesar la evaluación. Intenta de nuevo.')
+        trackEvent(Events.AssessmentError, { reason: data.error || 'request-error' })
         return
       }
 
@@ -1029,7 +1046,7 @@ export default function AssessmentsPage() {
       setReportRef(data.reportRef)
       setStatus('done')
 
-      trackEvent('Assessment Completed', {
+      trackEvent(Events.AssessmentCompleted, {
         score:    data.scores?.overall,
         maturity: data.scores?.maturity,
         segment:  data.classification?.segment,
@@ -1066,6 +1083,7 @@ export default function AssessmentsPage() {
     } catch {
       setStatus('error')
       setErrorMsg('Error de conexión. Verifica tu internet e intenta de nuevo.')
+      trackEvent(Events.AssessmentError, { reason: 'network-error' })
     }
   }
 
@@ -1175,12 +1193,12 @@ export default function AssessmentsPage() {
         )}
 
         {/* Navigation */}
-        <div className="flex items-center justify-between gap-4">
+        <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
           <button
             type="button"
             onClick={prevStep}
             disabled={step === 1}
-            className="btn-ghost px-5 py-3 disabled:opacity-30 disabled:cursor-not-allowed"
+            className="btn-ghost w-full sm:w-auto px-5 py-3 disabled:opacity-30 disabled:cursor-not-allowed"
           >
             ← Anterior
           </button>
@@ -1190,7 +1208,7 @@ export default function AssessmentsPage() {
               type="button"
               onClick={nextStep}
               disabled={!canProceed()}
-              className="btn-amber px-8 py-3 disabled:opacity-40 disabled:cursor-not-allowed"
+              className="btn-amber w-full sm:w-auto px-8 py-3 disabled:opacity-40 disabled:cursor-not-allowed"
             >
               Siguiente →
             </button>
@@ -1199,7 +1217,7 @@ export default function AssessmentsPage() {
               type="button"
               onClick={submit}
               disabled={status === 'submitting' || !canProceed()}
-              className="btn-amber px-8 py-3 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn-amber w-full sm:w-auto px-8 py-3 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {status === 'submitting' ? 'Procesando evaluación...' : 'Generar evaluación →'}
             </button>

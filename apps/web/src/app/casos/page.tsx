@@ -1,6 +1,15 @@
 import type { Metadata } from 'next'
 import { strapi } from '@/lib/strapi'
-import CasosContent, { type CaseStudy } from '@/components/CasosContent'
+import { asJsonArray, asStringArray } from '@/lib/contentEngine'
+import CasosContent, {
+  type ArchDecision,
+  type CaseOutcome,
+  type CasePhase,
+  type CaseStudy,
+  type DependencyItem,
+  type GovernanceMatrixRow,
+  type OperationalNarrativeItem,
+} from '@/components/CasosContent'
 
 export const revalidate = 3600
 
@@ -33,6 +42,31 @@ type StrapiCase = {
     hex: string
     tags: string[] | null
     publishedAt: string
+    industry?: string
+    envSize?: string
+    envEndpoints?: string
+    envPlatform?: string
+    technicalLevel?: string
+    technicalCategory?: string
+    operationalTags?: unknown
+    maturityLevel?: string
+    engagementType?: string
+    relatedEvidence?: unknown
+    architectureDiagram?: CaseStudy['architectureDiagram']
+    architectureDecisions?: unknown
+    rolloutPhases?: unknown
+    deliverables?: unknown
+    outcomes?: unknown
+    governanceMatrix?: unknown
+    dependencyMap?: unknown
+    governanceNotes?: string
+    deploymentDependencies?: unknown
+    operationalTradeoffs?: unknown
+    rollbackConsiderations?: unknown
+    lessonsLearned?: unknown
+    implementationConstraints?: unknown
+    riskResidual?: unknown
+    postmortemNote?: string
   }
 }
 
@@ -108,6 +142,32 @@ const FALLBACK_CASES: CaseStudy[] = [
       { metric: 'MTTR ante incidente: < 2h',      detail: 'Antes: sin visibilidad · tiempo de detección indefinido' },
     ],
 
+    architectureDiagram: { title: 'Overlay L2/L3', summary: 'Mapa por sede con core, enlaces MPLS, VLANs funcionales, reglas inter-VLAN y ruta de failover ISP.' },
+    governanceMatrix: [
+      { system: 'FortiGate / FortiManager', owner: 'Administrador IT interno', operations: 'Cambios de politica, backup y monitoreo', reviewCycle: 'Mensual' },
+      { system: 'VLAN ERP', owner: 'Finanzas + IT', operations: 'Altas de usuarios nominados y excepciones', reviewCycle: 'Quincenal' },
+    ],
+    dependencyMap: [
+      { from: 'Core switch', to: 'VLAN ERP', type: 'feeds', note: 'El cambio de trunks antecede politicas NGFW' },
+      { from: 'FortiAnalyzer', to: 'Respuesta a incidente', type: 'monitors', note: 'Alertas de movimiento lateral' },
+    ],
+    deploymentDependencies: [
+      'Ventana de 2h por sede aprobada por operaciones',
+      'Inventario de puertos fisicos validado antes de mover VLANs',
+    ],
+    operationalTradeoffs: [
+      'IPS restrictivo solo en norte-sur para conservar latencia LAN',
+      'ERP se mantuvo con excepciones temporales mientras se validaban flujos reales',
+    ],
+    rollbackConsiderations: [
+      'Snapshot de configuracion FortiGate previo a cada sede',
+      'Plan de retorno a VLAN plana documentado solo para contingencia P1',
+    ],
+    lessonsLearned: [
+      'El inventario fisico de switchports fue mas critico que el diagrama heredado',
+      'La reduccion de reglas any/any requiere observacion de trafico antes de bloquear',
+    ],
+
     hex:  '#4878b0',
     tags: ['FortiGate 100F', 'VLAN', 'SD-WAN', 'IPS/IDS', 'FortiManager', 'Zero Trust', 'Segmentación'],
   },
@@ -180,6 +240,28 @@ const FALLBACK_CASES: CaseStudy[] = [
       { metric: 'Onboarding: 4 h → 45 min',     detail: 'Autopilot + provisioning automático M365 · sin intervención manual' },
       { metric: 'Acceso admin just-in-time',     detail: '3 cuentas admin sin privilegios permanentes · log completo de activación' },
       { metric: '0 eventos de exfiltración',     detail: 'Purview DLP activo · 8 intentos de share externo bloqueados en 30 días' },
+    ],
+
+    architectureDiagram: { title: 'Gobierno Entra ID + Intune', summary: 'Overlay de identidad con CA, PIM, MAM-WE, DLP y matriz de acceso a expediente clinico.' },
+    governanceMatrix: [
+      { system: 'Entra ID / Conditional Access', owner: 'IT Manager', operations: 'Excepciones, report-only, enforcement', reviewCycle: 'Mensual' },
+      { system: 'PIM', owner: 'Direccion medica + IT', operations: 'Aprobacion de elevaciones admin', reviewCycle: 'Trimestral' },
+    ],
+    dependencyMap: [
+      { from: 'MFA enrollment', to: 'Conditional Access', type: 'requires', note: 'Sin cobertura MFA no se aplica bloqueo' },
+      { from: 'Intune compliance', to: 'Acceso a expediente', type: 'feeds', note: 'Dispositivo conforme como condicion de acceso' },
+    ],
+    operationalTradeoffs: [
+      'MAM-WE para dispositivos personales de medicos en lugar de MDM completo',
+      'PIM sobre cuentas existentes antes de rediseñar roles clinicos completos',
+    ],
+    rollbackConsiderations: [
+      'Break-glass account monitoreada y excluida de CA',
+      'Politicas CA avanzadas se mantuvieron 14 dias en report-only',
+    ],
+    lessonsLearned: [
+      'La comunicacion clinica redujo mas friccion que ampliar excepciones tecnicas',
+      'Los accesos privilegiados requieren dueno operativo, no solo configuracion PIM',
     ],
 
     hex:  '#3a7858',
@@ -257,10 +339,39 @@ const FALLBACK_CASES: CaseStudy[] = [
       { metric: '3 eventos resueltos con video', detail: '2 recuperaciones de mercancía · 1 investigación de fraude interno' },
     ],
 
+    architectureDiagram: { title: 'CCTV IP centralizado', summary: 'Overlay de video por sucursal con VLAN dedicada, NAS edge, NVR central y perfiles de retencion.' },
+    governanceMatrix: [
+      { system: 'Axis Camera Station', owner: 'Seguridad corporativa', operations: 'Alta de operadores, extraccion de evidencia', reviewCycle: 'Mensual' },
+      { system: 'NAS edge por sucursal', owner: 'IT regional', operations: 'Salud de discos y retencion local', reviewCycle: 'Semanal' },
+    ],
+    dependencyMap: [
+      { from: 'VLAN vigilancia', to: 'NVR central', type: 'feeds', note: 'Aisla trafico de video de LAN corporativa' },
+      { from: 'NAS edge', to: 'Retencion operativa', type: 'syncs', note: 'Resiliencia ante corte WAN' },
+    ],
+    implementationConstraints: [
+      'Instalacion sin cierre de tienda',
+      'Reutilizacion parcial de coaxial legacy donde Cat6A no era viable',
+    ],
+    operationalTradeoffs: [
+      'Retencion edge de 7 dias para contener costo de almacenamiento por sucursal',
+      'Analitica avanzada limitada a accesos para reducir falsos positivos',
+    ],
+    rollbackConsiderations: [
+      'DVR analogico se mantuvo en paralelo durante aceptacion por sucursal',
+      'Cutover por zonas para evitar perdida de evidencia durante horario comercial',
+    ],
+
     hex:  '#3d88a5',
     tags: ['Axis 4K', 'NVR centralizado', 'PoE+', 'Axis Camera Station', 'VLAN vigilancia', 'Cat6A'],
   },
 ]
+
+function operationalItemToText(item: OperationalNarrativeItem): string {
+  if (typeof item === 'string') return item
+  return [item.title ?? item.label, item.description ?? item.note, item.owner ? `Owner: ${item.owner}` : null, item.phase ? `Fase: ${item.phase}` : null]
+    .filter(Boolean)
+    .join(' · ')
+}
 
 // ── Data fetching ─────────────────────────────────────────────────────────────
 async function getCasos(): Promise<CaseStudy[]> {
@@ -277,18 +388,41 @@ async function getCasos(): Promise<CaseStudy[]> {
     sector:        a.sector    ?? '',
     year:          a.year      ?? '',
     durationWeeks: a.durationWeeks ?? 0,
-    envSize:      a.context   ?? '',
-    envEndpoints: '',
-    envPlatform:  '',
+    envSize:       a.envSize ?? a.context ?? '',
+    envEndpoints:  a.envEndpoints ?? '',
+    envPlatform:   a.envPlatform ?? '',
     challenge:     a.challenge ?? '',
     initialState:  Array.isArray(a.beforeState) ? a.beforeState : [],
-    constraints:   [],
-    architectureDecisions: [],
-    phases:        Array.isArray(a.phases) ? a.phases : [],
-    deliverables:  [],
-    outcomes:      a.result ? [{ metric: a.result, detail: a.resultSub ?? '' }] : [],
+    constraints:   asJsonArray<OperationalNarrativeItem>(a.implementationConstraints).map(operationalItemToText),
+    architectureDecisions: asJsonArray<ArchDecision>(a.architectureDecisions),
+    phases:        asJsonArray<CasePhase>(a.phases),
+    deliverables:  asStringArray(a.deliverables),
+    outcomes:      asJsonArray<CaseOutcome>(a.outcomes).length
+      ? asJsonArray<CaseOutcome>(a.outcomes)
+      : a.result
+      ? [{ metric: a.result, detail: a.resultSub ?? '' }]
+      : [],
     hex:           a.hex || '#4878b0',
     tags:          Array.isArray(a.tags) ? a.tags : [],
+    industry:      a.industry,
+    technicalLevel:    a.technicalLevel,
+    technicalCategory: a.technicalCategory,
+    operationalTags:   asStringArray(a.operationalTags),
+    maturityLevel:     a.maturityLevel,
+    engagementType:    a.engagementType,
+    relatedEvidence:   asStringArray(a.relatedEvidence),
+    architectureDiagram: a.architectureDiagram ?? null,
+    rolloutPhases:      asJsonArray<CasePhase>(a.rolloutPhases),
+    governanceMatrix:   asJsonArray<GovernanceMatrixRow>(a.governanceMatrix),
+    dependencyMap:      asJsonArray<DependencyItem>(a.dependencyMap),
+    governanceNotes:    a.governanceNotes,
+    deploymentDependencies:    asJsonArray<OperationalNarrativeItem>(a.deploymentDependencies),
+    operationalTradeoffs:      asJsonArray<OperationalNarrativeItem>(a.operationalTradeoffs),
+    rollbackConsiderations:    asJsonArray<OperationalNarrativeItem>(a.rollbackConsiderations),
+    lessonsLearned:            asJsonArray<OperationalNarrativeItem>(a.lessonsLearned),
+    implementationConstraints: asJsonArray<OperationalNarrativeItem>(a.implementationConstraints),
+    riskResidual:              asJsonArray<OperationalNarrativeItem>(a.riskResidual),
+    postmortemNote:            a.postmortemNote,
     // Legacy
     solution:  a.solution,
     result:    a.result,

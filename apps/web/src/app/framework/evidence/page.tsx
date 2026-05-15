@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { VlanDiagram, EntraIdGovernanceFlow, IntuneDiagram, HybridInfraMap } from '@/components/ArchDiagrams'
+import { DiagramTracker, EvidenceRequestLink } from '@/components/EvidenceInteraction'
 
 export const metadata: Metadata = {
   title: 'Evidencia Operacional | Fragmentos de Arquitectura y Documentación — Velkor System',
@@ -290,9 +291,9 @@ function EvidenceCard({ item }: { item: EvidenceItem }) {
         >
           Contenido incluido
         </div>
-        <div className="space-y-1.5">
+        <div className="evidence-elements-mobile space-y-1.5" data-hidden-count="Más controles disponibles en versión completa">
           {item.elements.map((el, i) => (
-            <div key={i} className="flex items-start gap-2">
+            <div key={i} className="evidence-element flex items-start gap-2">
               <span className="text-[9px] font-mono text-zinc-700 flex-shrink-0 mt-0.5">→</span>
               <span className="text-[10px] font-mono text-zinc-500 leading-snug">{el}</span>
             </div>
@@ -310,12 +311,14 @@ function EvidenceCard({ item }: { item: EvidenceItem }) {
            item.status === 'template'  ? 'Disponible bajo NDA' :
                                          'Arquitectura de referencia'}
         </span>
-        <Link
+        <EvidenceRequestLink
           href="/contacto"
-          className="text-[9.5px] font-mono text-zinc-600 hover:text-zinc-400 transition-colors"
+          title={item.title}
+          category={item.category}
+          status={item.status}
         >
           Solicitar versión completa →
-        </Link>
+        </EvidenceRequestLink>
       </div>
     </div>
   )
@@ -382,7 +385,7 @@ export default function EvidencePage() {
                 <span className="text-zinc-300 font-semibold text-sm">{cat}</span>
                 <span className="text-zinc-700 text-[10px] font-mono">{items.length} documentos</span>
               </div>
-              <div className="grid sm:grid-cols-2 gap-4">
+              <div className="evidence-grid grid sm:grid-cols-2 gap-4">
                 {items.map(item => (
                   <EvidenceCard key={item.id} item={item} />
                 ))}
@@ -415,6 +418,7 @@ export default function EvidencePage() {
                 <span className="text-[9px] font-mono text-zinc-700">Referencia</span>
               </div>
               <div className="p-5" style={{ background: '#06080f' }}>
+                <DiagramTracker diagramId="vlan-architecture" context="evidence-library" />
                 <p className="diagram-scroll-hint text-[9px] font-mono text-zinc-700 mb-2 items-center gap-1">
                   <span>←</span><span>Desplaza para ver el diagrama</span><span>→</span>
                 </p>
@@ -440,6 +444,7 @@ export default function EvidencePage() {
                 <span className="text-[9px] font-mono text-zinc-700">Referencia</span>
               </div>
               <div className="p-5" style={{ background: '#06080f' }}>
+                <DiagramTracker diagramId="entra-id-governance-flow" context="evidence-library" />
                 <div className="arch-diagram-wrapper">
                   <EntraIdGovernanceFlow />
                 </div>
@@ -462,6 +467,7 @@ export default function EvidencePage() {
                 <span className="text-[9px] font-mono text-zinc-700">Referencia</span>
               </div>
               <div className="p-5" style={{ background: '#06080f' }}>
+                <DiagramTracker diagramId="intune-lifecycle" context="evidence-library" />
                 <div className="arch-diagram-wrapper">
                   <IntuneDiagram />
                 </div>
@@ -484,6 +490,7 @@ export default function EvidencePage() {
                 <span className="text-[9px] font-mono text-zinc-700">Referencia</span>
               </div>
               <div className="p-5" style={{ background: '#06080f' }}>
+                <DiagramTracker diagramId="hybrid-infra-map" context="evidence-library" />
                 <div className="arch-diagram-wrapper">
                   <HybridInfraMap />
                 </div>

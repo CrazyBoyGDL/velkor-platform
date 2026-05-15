@@ -4,6 +4,50 @@ export type ContentTemplateType =
   | 'mini-case-breakdown'
   | 'governance-insight'
   | 'operational-constraint'
+  | 'evidence-brief'
+  | 'rollout-playbook'
+
+export type TechnicalCategory =
+  | 'identity-governance'
+  | 'network-infrastructure'
+  | 'endpoint-management'
+  | 'security-operations'
+  | 'continuity-resilience'
+  | 'cloud-modernization'
+  | 'video-operations'
+
+export type TechnicalLevel = 'executive' | 'technical' | 'architecture' | 'governance'
+export type MaturityLevel = 'reactive' | 'controlled' | 'governed' | 'optimized'
+export type EngagementType = 'assessment' | 'implementation' | 'managed-services' | 'governance' | 'advisory'
+
+export interface AuthorityReference {
+  label: string
+  href?: string
+  evidenceId?: string
+  relation: 'evidence' | 'case-study' | 'framework' | 'architecture' | 'artifact'
+}
+
+export interface DownloadableArtifact {
+  title: string
+  url?: string
+  format?: 'pdf' | 'xlsx' | 'docx' | 'diagram' | 'runbook'
+  gated?: boolean
+  evidenceId?: string
+}
+
+export interface OperationalContentMetadata {
+  technicalCategory?: TechnicalCategory
+  technicalLevel?: TechnicalLevel
+  operationalTags?: string[]
+  maturityLevel?: MaturityLevel
+  engagementType?: EngagementType
+  relatedEvidence?: AuthorityReference[]
+  relatedCases?: AuthorityReference[]
+  relatedFrameworks?: AuthorityReference[]
+  architectureReferences?: AuthorityReference[]
+  downloadableArtifact?: DownloadableArtifact
+  governanceNotes?: string
+}
 
 export interface ContentField {
   key: string
@@ -21,6 +65,126 @@ export interface ContentTemplate {
   example: Record<string, string>
   linkedinHook: string
   estimatedLength: string
+  metadata?: OperationalContentMetadata
+}
+
+export const technicalCategories: Record<TechnicalCategory, { label: string; description: string }> = {
+  'identity-governance': {
+    label: 'Identidad y gobernanza',
+    description: 'Acceso, privilegios, ciclo de vida, cumplimiento y decisiones de control.',
+  },
+  'network-infrastructure': {
+    label: 'Infraestructura de red',
+    description: 'Segmentacion, perimetro, SD-WAN, visibilidad y dependencias fisicas.',
+  },
+  'endpoint-management': {
+    label: 'Gestion de endpoints',
+    description: 'Intune, MDM/MAM, inventario, compliance y operacion del parque.',
+  },
+  'security-operations': {
+    label: 'Operaciones de seguridad',
+    description: 'Monitoreo, respuesta, alertamiento, trazabilidad y handoff operativo.',
+  },
+  'continuity-resilience': {
+    label: 'Continuidad y resiliencia',
+    description: 'Backup, restauracion, ventanas, rollback y reduccion de interrupcion.',
+  },
+  'cloud-modernization': {
+    label: 'Modernizacion cloud',
+    description: 'Migraciones, Microsoft 365, hibrido y transicion de gobierno cloud.',
+  },
+  'video-operations': {
+    label: 'Operaciones de video',
+    description: 'CCTV IP, evidencia legal, retencion, red de camaras y acceso remoto.',
+  },
+}
+
+export const operationalTagGroups = [
+  {
+    group: 'Gobernanza',
+    tags: ['ownership', 'change-management', 'privileged-access', 'audit-readiness', 'policy-lifecycle'],
+  },
+  {
+    group: 'Implementacion',
+    tags: ['dependency-map', 'rollback-plan', 'phased-rollout', 'field-constraint', 'handoff'],
+  },
+  {
+    group: 'Evidencia',
+    tags: ['architecture-diagram', 'runbook', 'baseline', 'sanitized-artifact', 'nda-ready'],
+  },
+  {
+    group: 'CRM',
+    tags: ['enterprise-risk', 'compliance-deadline', 'modernization-roadmap', 'managed-services-fit'],
+  },
+] as const
+
+export const authorityAssetRules = [
+  'Todo post tecnico debe declarar categoria tecnica, nivel, etiquetas operacionales y una relacion con evidencia, caso o framework cuando exista.',
+  'Los casos se escriben como documentacion de ejecucion: restricciones, decisiones, dependencias, rollback y lecciones aprendidas.',
+  'Los recursos descargables se tratan como artefactos operativos reutilizables, no como lead magnets genericos.',
+  'La evidencia sanitizada mantiene valor tecnico propio aunque el documento completo requiera NDA.',
+] as const
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value)
+}
+
+export function asStringArray(value: unknown): string[] {
+  if (!Array.isArray(value)) return []
+  return value
+    .filter((item): item is string => typeof item === 'string')
+    .map(item => item.trim())
+    .filter(Boolean)
+}
+
+export function asJsonArray<T>(value: unknown): T[] {
+  return Array.isArray(value) ? (value.filter(Boolean) as T[]) : []
+}
+
+export function asDownloadableArtifact(value: unknown): DownloadableArtifact | null {
+  if (!isRecord(value)) return null
+  const title = typeof value.title === 'string' ? value.title.trim() : ''
+  if (!title) return null
+  const artifact: DownloadableArtifact = { title }
+
+  if (typeof value.url === 'string') artifact.url = value.url
+  if (typeof value.format === 'string') artifact.format = value.format as DownloadableArtifact['format']
+  if (typeof value.gated === 'boolean') artifact.gated = value.gated
+  if (typeof value.evidenceId === 'string') artifact.evidenceId = value.evidenceId
+
+  return artifact
+}
+
+export function asAuthorityReferences(value: unknown, relation: AuthorityReference['relation']): AuthorityReference[] {
+  if (!Array.isArray(value)) return []
+  return value.flatMap(item => {
+    if (typeof item === 'string') return [{ label: item, relation }]
+    if (!isRecord(item)) return []
+
+    const label = typeof item.label === 'string'
+      ? item.label
+      : typeof item.title === 'string'
+      ? item.title
+      : ''
+
+    if (!label) return []
+
+    return [{
+      label,
+      relation,
+      href: typeof item.href === 'string' ? item.href : undefined,
+      evidenceId: typeof item.evidenceId === 'string' ? item.evidenceId : undefined,
+    }]
+  })
+}
+
+export function architectureReferenceHref(value: unknown): string | null {
+  if (typeof value === 'string' && value.trim()) return value
+  if (!isRecord(value)) return null
+  if (typeof value.href === 'string') return value.href
+  if (typeof value.route === 'string') return value.route
+  if (typeof value.evidenceId === 'string') return `/framework/evidence#${value.evidenceId}`
+  return null
 }
 
 export const contentTemplates: ContentTemplate[] = [
@@ -47,6 +211,13 @@ export const contentTemplates: ContentTemplate[] = [
     },
     linkedinHook: 'Cuando el cliente dijo "el sistema se pone lento en las horas de mayor venta", el problema no era la red — era la arquitectura de enrutamiento.',
     estimatedLength: '800–1,200 caracteres',
+    metadata: {
+      technicalCategory: 'network-infrastructure',
+      technicalLevel: 'architecture',
+      operationalTags: ['dependency-map', 'field-constraint', 'architecture-diagram'],
+      maturityLevel: 'controlled',
+      engagementType: 'implementation',
+    },
   },
   {
     id: 'impl-lesson-001',
@@ -71,6 +242,13 @@ export const contentTemplates: ContentTemplate[] = [
     },
     linkedinHook: 'El grupo de exclusión que creamos para "no bloquear operaciones el día 1" terminó siendo la política de acceso del 40% de los usuarios seis semanas después.',
     estimatedLength: '900–1,400 caracteres',
+    metadata: {
+      technicalCategory: 'identity-governance',
+      technicalLevel: 'technical',
+      operationalTags: ['phased-rollout', 'rollback-plan', 'handoff'],
+      maturityLevel: 'controlled',
+      engagementType: 'implementation',
+    },
   },
   {
     id: 'mini-case-001',
@@ -95,6 +273,13 @@ export const contentTemplates: ContentTemplate[] = [
     },
     linkedinHook: 'Un corporativo médico con operación 24/7, médicos con contrato independiente y presupuesto limitado. Estas son las restricciones reales que definen la arquitectura.',
     estimatedLength: '1,000–1,600 caracteres',
+    metadata: {
+      technicalCategory: 'identity-governance',
+      technicalLevel: 'governance',
+      operationalTags: ['audit-readiness', 'privileged-access', 'policy-lifecycle'],
+      maturityLevel: 'governed',
+      engagementType: 'governance',
+    },
   },
   {
     id: 'gov-insight-001',
@@ -117,6 +302,13 @@ export const contentTemplates: ContentTemplate[] = [
     },
     linkedinHook: 'Las cuentas de administrador compartidas no existen porque el equipo IT sea descuidado. Existen porque el proceso de acceso privilegiado nunca se diseñó para ser usable.',
     estimatedLength: '700–1,100 caracteres',
+    metadata: {
+      technicalCategory: 'identity-governance',
+      technicalLevel: 'governance',
+      operationalTags: ['privileged-access', 'audit-readiness', 'ownership'],
+      maturityLevel: 'reactive',
+      engagementType: 'advisory',
+    },
   },
   {
     id: 'op-constraint-001',
@@ -139,5 +331,70 @@ export const contentTemplates: ContentTemplate[] = [
     },
     linkedinHook: 'El cliente no tenía ventana de mantenimiento. El ERP era 24/7. La segmentación era necesaria. Este es el diseño que resultó de esas tres verdades simultáneas.',
     estimatedLength: '900–1,400 caracteres',
+    metadata: {
+      technicalCategory: 'continuity-resilience',
+      technicalLevel: 'architecture',
+      operationalTags: ['field-constraint', 'rollback-plan', 'phased-rollout'],
+      maturityLevel: 'controlled',
+      engagementType: 'implementation',
+    },
+  },
+  {
+    id: 'evidence-brief-001',
+    type: 'evidence-brief',
+    name: 'Brief de evidencia operacional',
+    purpose: 'Convertir un artefacto sanitizado en una pieza de autoridad reutilizable: que evidencia, donde aplica, que decision soporta y que version completa existe bajo NDA.',
+    fields: [
+      { key: 'artefacto', label: 'Artefacto', hint: 'Tipo, origen sanitizado, version y estado de acceso', required: true },
+      { key: 'contexto', label: 'Contexto de uso', hint: 'Industria, escala, sistema o etapa donde se uso', required: true },
+      { key: 'controles', label: 'Controles cubiertos', hint: 'Politicas, dependencias o checks verificables que contiene', required: true },
+      { key: 'decision', label: 'Decision soportada', hint: 'Que decision de arquitectura o gobierno permite tomar', required: true },
+      { key: 'limitaciones', label: 'Limitaciones', hint: 'Que no demuestra el artefacto y que requiere validacion adicional', required: true },
+    ],
+    example: {
+      artefacto: 'Checklist FortiGate post-implementacion, version sanitizada. 28 controles, sin IPs ni nombres de cliente.',
+      contexto: 'Cierre de proyecto de segmentacion para empresa multi-sede con FortiGate en perimetro y switches gestionados.',
+      controles: 'Acceso administrativo restringido, SNMPv3, backup de configuracion, IPS activo, reglas any/any eliminadas y deny implicito validado.',
+      decision: 'Permite decidir si el firewall esta listo para handoff operativo o requiere fase adicional de hardening.',
+      limitaciones: 'No reemplaza una revision en vivo del appliance. La version completa incluye capturas, politica exportada y evidencia de pruebas.',
+    },
+    linkedinHook: 'Un checklist no es evidencia por existir. Es evidencia cuando muestra que controles fueron validados, por quien y contra que criterio operativo.',
+    estimatedLength: '700–1,000 caracteres',
+    metadata: {
+      technicalCategory: 'security-operations',
+      technicalLevel: 'technical',
+      operationalTags: ['baseline', 'sanitized-artifact', 'handoff'],
+      maturityLevel: 'governed',
+      engagementType: 'assessment',
+    },
+  },
+  {
+    id: 'rollout-playbook-001',
+    type: 'rollout-playbook',
+    name: 'Playbook de despliegue escalonado',
+    purpose: 'Documentar una implementacion por fases con propietarios, dependencias, criterios de avance y condiciones de rollback.',
+    fields: [
+      { key: 'objetivo', label: 'Objetivo operativo', hint: 'Resultado buscado, no solo tecnologia a instalar', required: true },
+      { key: 'dependencias', label: 'Dependencias', hint: 'Sistemas, personas, ventanas, licencias o datos requeridos antes de avanzar', required: true },
+      { key: 'fases', label: 'Fases', hint: 'Secuencia de despliegue con duracion, responsable y criterio de salida', required: true },
+      { key: 'rollback', label: 'Rollback', hint: 'Condiciones para volver atras y tiempo maximo aceptable', required: true },
+      { key: 'handoff', label: 'Handoff', hint: 'Que queda documentado y quien lo opera despues', required: true },
+    ],
+    example: {
+      objetivo: 'Activar MFA y Acceso Condicional sin bloquear usuarios criticos durante cierre contable.',
+      dependencias: 'Inventario de cuentas privilegiadas, grupo piloto, break-glass account, comunicacion a usuarios y soporte de primer nivel.',
+      fases: 'Fase 1 report-only. Fase 2 piloto IT/direccion. Fase 3 departamentos de bajo riesgo. Fase 4 usuarios criticos con soporte dedicado.',
+      rollback: 'Si tickets P1 superan umbral acordado o un sistema financiero queda inaccesible, revertir politica CA a report-only y abrir incidente de excepcion.',
+      handoff: 'Runbook de excepciones, matriz de propietarios, calendario de access reviews y registro de cambios.',
+    },
+    linkedinHook: 'El exito de Acceso Condicional rara vez depende de la politica. Depende del orden en que se despliega.',
+    estimatedLength: '900–1,300 caracteres',
+    metadata: {
+      technicalCategory: 'identity-governance',
+      technicalLevel: 'architecture',
+      operationalTags: ['phased-rollout', 'rollback-plan', 'ownership'],
+      maturityLevel: 'governed',
+      engagementType: 'implementation',
+    },
   },
 ]
