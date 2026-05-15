@@ -562,7 +562,7 @@ export default function CasosContent({ cases }: { cases: CaseStudy[] }) {
           <div>
             <div className="label text-[9.5px] mb-2">¿Tu entorno tiene condiciones similares?</div>
             <h2 className="text-xl font-black text-noc-white mb-2">
-              Evaluación técnica sin compromiso
+              Evaluación técnica acotada
             </h2>
             <p className="text-zinc-500 text-sm leading-relaxed max-w-md">
               15 preguntas · 10 minutos · Resultado inmediato con nivel de madurez, hallazgos y prioridades operacionales específicas.

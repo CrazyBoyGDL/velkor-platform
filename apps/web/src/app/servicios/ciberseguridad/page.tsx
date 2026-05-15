@@ -4,14 +4,14 @@ import TrackedLink from '@/components/TrackedLink'
 import ScrollDepthTracker from '@/components/ScrollDepthTracker'
 
 export const metadata: Metadata = {
-  title: 'Ciberseguridad Empresarial | Fortinet · Zero Trust · Redes',
+  title: 'Ciberseguridad Empresarial | Fortinet · Segmentación · Redes',
   description:
-    'Firewall Fortinet FortiGate, segmentación VLAN, VPN y arquitectura Zero Trust para empresas en México. Ingenieros especializados. Diagnóstico gratuito.',
+    'Firewall Fortinet FortiGate, segmentación VLAN, VPN y arquitectura de acceso gobernable para empresas en México. Evaluación técnica con ingenieros especializados.',
   alternates: { canonical: 'https://velkor.mx/servicios/ciberseguridad' },
   openGraph: {
     title: 'Ciberseguridad Empresarial | Velkor',
     description:
-      'Fortinet FortiGate, segmentación VLAN y arquitectura Zero Trust para empresas.',
+      'Fortinet FortiGate, segmentación VLAN y arquitectura de acceso gobernado para empresas.',
   },
 }
 
@@ -37,7 +37,7 @@ const faqJsonLd = {
     },
     {
       '@type': 'Question',
-      name: '¿Qué es Zero Trust en la práctica?',
+      name: '¿Qué significa acceso gobernado en la práctica?',
       acceptedAnswer: {
         '@type': 'Answer',
         text: 'Verificar siempre, nunca confiar por defecto. Cada dispositivo debe demostrar que cumple políticas antes de acceder a recursos, independientemente de si está dentro o fuera de la red.',
@@ -121,7 +121,7 @@ const FAQ = [
     a: 'Sí. Nuestros ingenieros tienen experiencia directa implementando FortiGate en producción, con proyectos activos en empresas de distintos sectores en México.',
   },
   {
-    q: '¿Qué es Zero Trust en la práctica?',
+    q: '¿Qué significa acceso gobernado en la práctica?',
     a: 'Verificar siempre, nunca confiar por defecto. Cada dispositivo debe demostrar que cumple políticas antes de acceder a recursos, independientemente de si está dentro o fuera de la red.',
   },
   {
@@ -135,7 +135,7 @@ const jsonLd = {
   '@type': 'Service',
   name: 'Ciberseguridad Empresarial',
   description:
-    'Diseño e implementación de arquitecturas de red seguras: Fortinet FortiGate, segmentación VLAN, VPN y Zero Trust.',
+    'Diseño e implementación de arquitecturas de red seguras: Fortinet FortiGate, segmentación VLAN, VPN y acceso gobernado.',
   provider: { '@type': 'Organization', name: 'Velkor System', url: 'https://velkor.mx' },
   areaServed: { '@type': 'Country', name: 'México' },
   serviceType: 'Ciberseguridad Empresarial',
@@ -194,11 +194,11 @@ export default function CiberseguridadPage() {
           <div className="flex flex-col sm:flex-row gap-3">
             <TrackedLink href="/assessments" className="btn-amber px-8 py-3.5 text-[15px]"
               trackLabel="Ciberseguridad — Hero CTA">
-              Diagnóstico de red gratuito →
+              Evaluación de red →
             </TrackedLink>
             <TrackedLink href="/casos" className="btn-ghost px-8 py-3.5 text-[15px]"
               trackLabel="Ciberseguridad — Ver casos">
-              Ver casos de éxito
+              Ver casos técnicos
             </TrackedLink>
           </div>
         </div>

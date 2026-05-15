@@ -194,7 +194,7 @@ export default function VideovigilanciaPage() {
           <div className="flex flex-col sm:flex-row gap-3">
             <TrackedLink href="/assessments" className="btn-amber px-8 py-3.5 text-[15px]"
               trackLabel="Videovigilancia — Hero CTA">
-              Diseño de sistema gratuito →
+              Evaluación de cobertura →
             </TrackedLink>
             <TrackedLink href="/casos" className="btn-ghost px-8 py-3.5 text-[15px]"
               trackLabel="Videovigilancia — Ver casos">

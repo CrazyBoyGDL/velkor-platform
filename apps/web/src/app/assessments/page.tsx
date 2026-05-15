@@ -1138,7 +1138,7 @@ export default function AssessmentsPage() {
           <span className="label">Evaluación operacional de infraestructura IT</span>
           <h1 className="text-3xl sm:text-4xl font-black text-noc-white mt-3 mb-3 leading-tight tracking-heading">
             Diagnóstico técnico<br />
-            <span className="text-zinc-500">sin compromiso</span>
+            <span className="text-zinc-500">acotada y documentada</span>
           </h1>
           <p className="text-zinc-600 text-sm leading-relaxed max-w-lg">
             5 módulos · 10–15 minutos · Resultado inmediato con nivel de madurez, hallazgos y prioridades.

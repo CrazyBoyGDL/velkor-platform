@@ -100,7 +100,7 @@ export default function RecursoGate({
         {/* Right — form */}
         <div className="card p-7">
           <div className="mb-6">
-            <h3 className="text-noc-white font-black text-lg mb-1">Acceso gratuito</h3>
+            <h3 className="text-noc-white font-black text-lg mb-1">Acceso técnico</h3>
             <p className="text-zinc-500 text-sm">Sin spam. Sin compromiso. Información técnica real.</p>
           </div>
 

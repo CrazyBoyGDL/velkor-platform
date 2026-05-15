@@ -169,7 +169,7 @@ const FALLBACK_CASES: CaseStudy[] = [
     ],
 
     hex:  '#4878b0',
-    tags: ['FortiGate 100F', 'VLAN', 'SD-WAN', 'IPS/IDS', 'FortiManager', 'Zero Trust', 'Segmentación'],
+    tags: ['FortiGate 100F', 'VLAN', 'SD-WAN', 'IPS/IDS', 'FortiManager', 'Acceso gobernado', 'Segmentación'],
   },
 
   // ── Case 2: Identity governance ────────────────────────────────────────────

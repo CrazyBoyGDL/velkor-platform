@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   alternates: { canonical: 'https://velkor.mx/nosotros' },
   openGraph: {
     title: 'Quiénes Somos | Velkor System',
-    description: 'Ingeniería certificada con ejecución directa en campo desde 2016.',
+    description: 'Ingeniería operativa con ejecución directa en campo desde 2016.',
   },
 }
 

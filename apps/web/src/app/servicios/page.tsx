@@ -14,8 +14,8 @@ const SERVICES = [
     hex: '#4878b0',
     eyebrow: 'REDES & CIBERSEGURIDAD',
     title: 'Infraestructura segura desde el diseño',
-    desc: 'Firewall Fortinet FortiGate, segmentación VLAN, VPN site-to-site y arquitectura Zero Trust para eliminar movimientos laterales y fortalecer el perímetro.',
-    tags: ['FortiGate NGFW', 'VLAN', 'Zero Trust', 'VPN', 'IPS/IDS'],
+    desc: 'Firewall Fortinet FortiGate, segmentación VLAN, VPN site-to-site y arquitectura de acceso gobernado para reducir movimientos laterales y fortalecer el perímetro.',
+    tags: ['FortiGate NGFW', 'VLAN', 'Acceso gobernado', 'VPN', 'IPS/IDS'],
     cta: 'Ver servicio →',
   },
   {
@@ -106,10 +106,10 @@ export default function ServiciosPage() {
         <div className="card p-10 text-center border-amber/20">
           <h3 className="text-xl font-black text-noc-white mb-3">¿No sabes qué servicio necesitas?</h3>
           <p className="text-zinc-500 mb-6 text-sm max-w-sm mx-auto leading-relaxed">
-            15 minutos con un ingeniero certificado aclaran exactamente qué requiere tu infraestructura.
+            15 minutos con un ingeniero responsable aclaran exactamente qué requiere tu infraestructura.
           </p>
           <Link href="/assessments" className="btn-amber px-10 py-3.5 text-[15px]">
-            Diagnóstico gratuito →
+            Evaluación técnica →
           </Link>
         </div>
       </div>

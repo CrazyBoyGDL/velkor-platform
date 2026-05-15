@@ -4,17 +4,17 @@ import { motion } from 'framer-motion'
 import { reveal as fadeUp } from '@/lib/motion'
 
 const STATS = [
-  { val: '2016',  label: 'Año de fundación',      color: '#b07828' },
-  { val: '50+',   label: 'Clientes activos',       color: '#3a7858' },
+  { val: '2016',  label: 'Experiencia en campo',   color: '#b07828' },
+  { val: '50+',   label: 'Entornos revisados',     color: '#3a7858' },
   { val: '3',     label: 'Áreas de especialidad',  color: '#4878b0' },
-  { val: '<48h',  label: 'Primera propuesta',      color: '#3d88a5' },
+  { val: '<48h',  label: 'Ruta inicial',           color: '#3d88a5' },
 ]
 
 const VALUES = [
   {
     color: '#b07828',
     title: 'Respuesta inmediata',
-    desc: 'Compromiso de respuesta documentado para cada proyecto. Nuestro equipo técnico atiende directamente, sin intermediarios ni escalaciones a centros externos.',
+    desc: 'Respuesta con contexto técnico. Cuando algo se escala, lo atiende alguien que puede leer la configuración y hablar con el responsable operativo.',
     icon: (
       <svg viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
         <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-13a.75.75 0 00-1.5 0v5c0 .414.336.75.75.75h4a.75.75 0 000-1.5h-3.25V5z" clipRule="evenodd" />
@@ -24,7 +24,7 @@ const VALUES = [
   {
     color: '#4878b0',
     title: 'Seguridad por diseño',
-    desc: 'Cada implementación sigue el principio de least privilege y el modelo Zero Trust. Seguridad integrada desde la arquitectura.',
+    desc: 'Primero se corrigen accesos de mayor riesgo, cuentas compartidas y rutas externas. Después se madura la arquitectura sin detener operación.',
     icon: (
       <svg viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
         <path fillRule="evenodd" d="M9.661 2.237a.531.531 0 01.678 0 11.947 11.947 0 007.078 2.749.5.5 0 01.479.425c.069.52.104 1.05.104 1.589 0 5.162-3.26 9.563-7.834 11.256a.48.48 0 01-.332 0C5.26 16.563 2 12.162 2 7a11.8 11.8 0 01.104-1.589.5.5 0 01.48-.425 11.947 11.947 0 007.077-2.749z" clipRule="evenodd" />
@@ -34,7 +34,7 @@ const VALUES = [
   {
     color: '#3a7858',
     title: 'Transparencia total',
-    desc: 'Documentación del proyecto actualizada en cada fase, acceso del cliente a entregables y visibilidad completa del avance de implementación.',
+    desc: 'Documentación de cambios, decisiones, excepciones y pendientes aceptados. El cliente sabe qué se tocó y qué falta revisar.',
     icon: (
       <svg viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
         <path d="M15.5 2A1.5 1.5 0 0014 3.5v13a1.5 1.5 0 001.5 1.5h1a1.5 1.5 0 001.5-1.5v-13A1.5 1.5 0 0016.5 2h-1zM9.5 6A1.5 1.5 0 008 7.5v9A1.5 1.5 0 009.5 18h1a1.5 1.5 0 001.5-1.5v-9A1.5 1.5 0 0010.5 6h-1zM3.5 10A1.5 1.5 0 002 11.5v5A1.5 1.5 0 003.5 18h1A1.5 1.5 0 006 16.5v-5A1.5 1.5 0 004.5 10h-1z" />
@@ -44,7 +44,7 @@ const VALUES = [
   {
     color: '#3d88a5',
     title: 'Resultados medibles',
-    desc: 'Comprometemos KPIs antes de firmar. Cada proyecto tiene métricas de éxito definidas, medidas y documentadas al cierre.',
+    desc: 'Acordamos criterios de cierre antes de iniciar: evidencia, validación con usuarios y pendientes que quedan bajo dueño interno.',
     icon: (
       <svg viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
         <path fillRule="evenodd" d="M10 1a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V1.75A.75.75 0 0110 1zM5.05 3.05a.75.75 0 011.06 0l1.062 1.06A.75.75 0 116.11 5.173L5.05 4.11a.75.75 0 010-1.06zm9.9 0a.75.75 0 010 1.06l-1.06 1.062a.75.75 0 01-1.062-1.061l1.061-1.06a.75.75 0 011.06 0zM3 8a.75.75 0 01.75-.75h1.5a.75.75 0 010 1.5H3.75A.75.75 0 013 8zm11 0a.75.75 0 01.75-.75h1.5a.75.75 0 010 1.5h-1.5A.75.75 0 0114 8zm-6.828 2.172a.75.75 0 010 1.06L6.11 12.294a.75.75 0 01-1.06-1.06l1.06-1.062a.75.75 0 011.06 0zm3.656 0a.75.75 0 011.06 0l1.062 1.06a.75.75 0 11-1.061 1.062l-1.06-1.061a.75.75 0 010-1.061zM10 11a1 1 0 110 2 1 1 0 010-2z" clipRule="evenodd" />
@@ -75,7 +75,7 @@ export default function NosotrosPage() {
             <span className="text-gradient-amber">no solo asesora</span>
           </h1>
           <p className="text-zinc-400 text-lg leading-relaxed max-w-2xl">
-            Desde 2016 operamos como el equipo de IT de más de 50 empresas en México. Combinamos ingeniería certificada con ejecución directa en campo: cada proyecto tiene un ingeniero responsable de principio a cierre.
+            Desde 2016 trabajamos con redes, identidad, seguridad y soporte para empresas en México. Cada proyecto conserva un ingeniero responsable de principio a cierre, con decisiones y pendientes documentados.
           </p>
         </motion.div>
 
@@ -111,9 +111,9 @@ export default function NosotrosPage() {
           ))}
         </div>
 
-        {/* Certs */}
+        {/* Technology stack */}
         <motion.div {...fadeUp(0)} className="mb-16">
-          <span className="label block mb-5">Certificaciones</span>
+          <span className="label block mb-5">Stack operativo</span>
           <div className="flex flex-wrap gap-x-7 gap-y-4">
             {CERTS.map(({ label, color }) => (
               <div key={label} className="flex items-center gap-2.5">
@@ -128,10 +128,10 @@ export default function NosotrosPage() {
         <motion.div {...fadeUp(0)} className="text-center border-t border-surface-border pt-14">
           <h3 className="text-2xl font-black text-noc-white mb-3">¿Listo para trabajar juntos?</h3>
           <p className="text-zinc-500 mb-6 max-w-sm mx-auto">
-            Empieza con un diagnóstico gratuito. Sin compromiso, con resultados claros.
+            Empecemos con una evaluación técnica acotada: contexto, riesgos reales y siguiente paso sin venta forzada.
           </p>
           <Link href="/assessments" className="btn-amber px-10 py-4 text-[15px]">
-            Solicitar diagnóstico →
+            Solicitar evaluación →
           </Link>
         </motion.div>
 

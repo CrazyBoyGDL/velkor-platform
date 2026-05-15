@@ -161,7 +161,7 @@ export default function CctvEvaluacionPage() {
             {CONTENT.title}
           </h1>
           <p className="text-zinc-400 text-base leading-relaxed max-w-2xl">
-            Guía técnica para evaluar, dimensionar e instalar correctamente un sistema CCTV IP profesional. Creada por ingenieros certificados Axis ACSR con proyectos en retail, salud y manufactura.
+            Guía técnica para evaluar, dimensionar e instalar correctamente un sistema CCTV IP profesional. Basada en proyectos de campo en retail, salud y manufactura.
           </p>
         </div>
 

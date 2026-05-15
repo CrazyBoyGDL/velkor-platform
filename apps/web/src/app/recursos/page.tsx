@@ -88,7 +88,7 @@ export default function RecursosPage() {
                     ))}
                   </div>
                   <span className="text-[12px] font-mono font-semibold flex-shrink-0 opacity-60 group-hover:opacity-100 transition-opacity" style={{ color: hex }}>
-                    Acceder gratis →
+                    Acceder al recurso →
                   </span>
                 </div>
               </div>
@@ -103,7 +103,7 @@ export default function RecursosPage() {
             Nuestros ingenieros pueden revisar tu caso específico y orientarte más allá de cualquier guía genérica.
           </p>
           <Link href="/assessments" className="btn-amber px-10 py-3.5 text-[15px]">
-            Diagnóstico técnico gratuito →
+            Evaluación técnica →
           </Link>
         </div>
       </div>

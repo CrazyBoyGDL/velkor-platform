@@ -73,7 +73,7 @@ export default function TermsPage() {
           </section>
 
           <section>
-            <h2 className="text-noc-white font-bold text-base mb-3">3. Diagnóstico operacional gratuito</h2>
+            <h2 className="text-noc-white font-bold text-base mb-3">3. Evaluación operacional inicial</h2>
             <p>
               El diagnóstico operacional disponible en este sitio es una herramienta de evaluación de referencia.
               Los resultados son indicativos y no constituyen una auditoría técnica formal. {COMPANY.name} no

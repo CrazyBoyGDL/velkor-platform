@@ -6,7 +6,7 @@ import ScrollDepthTracker from '@/components/ScrollDepthTracker'
 export const metadata: Metadata = {
   title: 'Gestión de Identidad y Acceso | Entra ID · Intune · MFA',
   description:
-    'Implementación de Microsoft Entra ID, Intune y MFA para empresas en México. Acceso Condicional, Zero Trust y gobernanza de identidades. Ingenieros Microsoft certificados.',
+    'Implementación de Microsoft Entra ID, Intune y MFA para empresas en México. Acceso Condicional, gobierno de identidades y operación documentada.',
   alternates: { canonical: 'https://velkor.mx/servicios/identidad-acceso' },
   openGraph: {
     title: 'Gestión de Identidad y Acceso | Velkor',
@@ -135,7 +135,7 @@ const jsonLd = {
   '@type': 'Service',
   name: 'Gestión de Identidad y Acceso Empresarial',
   description:
-    'Implementación de Microsoft Entra ID, Intune y MFA. Acceso Condicional, Zero Trust y gobernanza de identidades.',
+    'Implementación de Microsoft Entra ID, Intune y MFA. Acceso Condicional, gobierno de identidades y operación documentada.',
   provider: { '@type': 'Organization', name: 'Velkor System', url: 'https://velkor.mx' },
   areaServed: { '@type': 'Country', name: 'México' },
   serviceType: 'Identity and Access Management',
@@ -189,16 +189,16 @@ export default function IdentidadAccesoPage() {
             <span style={{ color: '#3a7858' }}>bajo control.</span>
           </h1>
           <p className="text-zinc-400 text-lg leading-relaxed max-w-2xl mb-8">
-            Implementamos Microsoft Entra ID, Intune y MFA para que cada acceso en tu empresa sea auditado, condicional y revocable en tiempo real. Zero Trust por diseño.
+            Implementamos Microsoft Entra ID, Intune y MFA para que cada acceso en tu empresa sea auditado, condicional y revocable cuando cambia el contexto operativo.
           </p>
           <div className="flex flex-col sm:flex-row gap-3">
             <TrackedLink href="/assessments" className="btn-amber px-8 py-3.5 text-[15px]"
               trackLabel="Identidad — Hero CTA">
-              Diagnóstico de identidad gratuito →
+              Evaluación de identidad →
             </TrackedLink>
             <TrackedLink href="/casos" className="btn-ghost px-8 py-3.5 text-[15px]"
               trackLabel="Identidad — Ver casos">
-              Ver casos de éxito
+              Ver casos técnicos
             </TrackedLink>
           </div>
         </div>

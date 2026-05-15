@@ -306,7 +306,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
           <div className="flex flex-col sm:flex-row gap-3">
             <TrackedLink href="/assessments" className="btn-amber px-6 py-2.5 text-sm"
               trackLabel={`Blog inline CTA — ${post.category}`}>
-              Diagnóstico gratuito →
+              Evaluación técnica →
             </TrackedLink>
             <TrackedLink href="/contacto" className="btn-ghost px-6 py-2.5 text-sm"
               trackLabel={`Blog contact CTA — ${post.category}`}>

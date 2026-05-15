@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   keywords: [
     'consultoría IT', 'ciberseguridad empresarial', 'Fortinet', 'Microsoft 365',
     'Intune', 'Entra ID', 'CCTV IP', 'videovigilancia empresarial',
-    'redes empresariales', 'Zero Trust', 'MDM', 'México',
+    'redes empresariales', 'acceso gobernado', 'MDM', 'México',
   ],
   authors: [{ name: COMPANY.name, url: SITE_URL }],
   creator: COMPANY.name,
@@ -86,7 +86,7 @@ const jsonLd = {
       knowsAbout: [
         'Fortinet', 'Microsoft 365', 'Entra ID', 'Microsoft Intune',
         'Ciberseguridad', 'Redes Empresariales', 'Videovigilancia IP', 'CCTV',
-        'Zero Trust', 'MDM', 'SD-WAN',
+        'Acceso gobernado', 'MDM', 'SD-WAN',
       ],
     },
     {
