@@ -543,6 +543,24 @@ This iteration activates authority distribution and CRM operations without redes
 - Strapi bootstrap additions passed `node -c` syntax checks.
 - Deployment validation is performed on Railway after pushing to `main`.
 
+## 15. Human Operational Trust Layer Addendum
+
+This phase increases authenticity without replacing platform systems:
+
+- Home evidence now uses sanitized field fragments with notes, blockers, governance decisions, and accepted exceptions.
+- `/framework/evidence` keeps the existing static evidence repository but enriches selected items with `environment`, `fieldNote`, `decision`, and `redaction` metadata.
+- Trust content is centralized through `TrustValidationLayer.tsx` and company trust constants in `config.ts`.
+- The footer now exposes engagement models, service boundaries, secure communication posture, and responsible disclosure readiness.
+- Copy was cleaned to reduce "free diagnosis", generic success, and unverifiable certification language.
+- Analytics now includes `Trust Signal Interaction`, `Evidence Depth Reached`, `Mobile Trust Engagement`, and `Session Replay Ready` readiness events through the existing dispatcher.
+
+### Trust-Layer Guardrails
+
+- Do not claim certifications, partner status, or guaranteed outcomes unless verifiable.
+- Preserve operational imperfections: blockers, exceptions, rollback notes, and pending work make the evidence credible.
+- Do not create a parallel evidence CMS. When ready, extend existing Strapi `recurso`, `caso`, or `post` schemas.
+- Keep mobile trust content short, contextual, and readable without compressing desktop-only layouts.
+
 ---
 
 *Updated: May 2026 · Velkor System · velkor.mx*

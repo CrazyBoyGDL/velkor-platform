@@ -29,8 +29,11 @@ The analytics layer is centralized in `apps/web/src/lib/analyticsEvents.ts` and 
 | `Blog Article Viewed` | Technical article view with slug, category, read time, and technical level. |
 | `Evidence Document Clicked` | NDA/full-document request from evidence library. |
 | `Evidence Diagram Viewed` | Architecture diagram rendered in evidence context. |
+| `Evidence Depth Reached` | Evidence library viewed or deeper evidence context reached. |
 | `Case Study Engagement` | Case-study index engagement. |
 | `Case Study Depth Reached` | Case-study depth thresholds at 50% and 90%. |
+| `Trust Signal Interaction` | Human trust layer views, clicks, and evidence requests. |
+| `Engagement Expectation Viewed` | Reserved for consultive expectation blocks. |
 | `Scroll Depth` | Blog/content depth thresholds. |
 | `CTA Click` | Shared CTA wrapper for high-value links. |
 | `Artifact Downloaded` | Download/open action for reports, resources, or operational artifacts. |
@@ -44,6 +47,10 @@ The analytics layer is centralized in `apps/web/src/lib/analyticsEvents.ts` and 
 | `Case Study Engagement` | `case_slug`, `sector`, `depth` |
 | `Case Study Depth Reached` | `case_slug`, `sector`, `depth` |
 | `Evidence Document Clicked` | `doc_title`, `category`, `status` |
+| `Evidence Depth Reached` | `source`, `depth`, `category` |
+| `Trust Signal Interaction` | `signal`, `location`, `interaction` |
+| `Mobile Trust Engagement` | `page`, `signal`, `quality` |
+| `Session Replay Ready` | `page`, `provider`, `enabled` |
 | `Artifact Downloaded` | `artifact_title`, `artifact_type`, `gated`, `source` |
 | `Device Behavior Detected` | `page`, `behavior`, `device` |
 
@@ -57,6 +64,8 @@ The analytics layer is centralized in `apps/web/src/lib/analyticsEvents.ts` and 
 | `Lead Source Attributed` | UTM/referrer attribution on assessment entry. |
 | `Conversion Path Updated` | Reserved event for future cross-session path enrichment. |
 | `Device Behavior Detected` | Privacy-safe device behavior signal. |
+| `Mobile Trust Engagement` | Mobile-specific trust layer view signal. |
+| `Session Replay Ready` | Readiness marker only; no session replay script is loaded by default. |
 
 ## Privacy Posture
 
