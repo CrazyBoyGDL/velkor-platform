@@ -73,6 +73,7 @@ export function ArchitectureSnapshot({
                 strokeOpacity="0.20"
                 strokeWidth="1"
                 strokeDasharray="4 7"
+                strokeDashoffset={0}
                 animate={active ? { strokeDashoffset: [0, -22] } : { strokeDashoffset: 0 }}
                 transition={{ repeat: active ? Infinity : 0, duration: 5.4 + index * 0.6, ease: 'linear' }}
               />
@@ -106,6 +107,7 @@ export function ArchitectureSnapshot({
                 cy={node.y}
                 r="17"
                 fill={color}
+                fillOpacity={0.02}
                 animate={active ? { fillOpacity: [0.035, 0.012, 0.035] } : { fillOpacity: 0.02 }}
                 transition={{ repeat: active ? Infinity : 0, duration: 5.8 + index * 0.5, ease: 'easeInOut' }}
               />

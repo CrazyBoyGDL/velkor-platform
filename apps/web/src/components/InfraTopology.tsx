@@ -148,6 +148,7 @@ export default function InfraTopology() {
                 stroke={color}
                 strokeWidth={1.1}
                 strokeDasharray="3 11"
+                strokeDashoffset={0}
                 animate={running
                   ? { opacity: 0.45, pathLength: 1, strokeDashoffset: [DASH_R1, 0] }
                   : { opacity: 0.22, pathLength: 1, strokeDashoffset: 0 }}
@@ -167,6 +168,7 @@ export default function InfraTopology() {
                 r={1.9}
                 fill={color}
                 fillOpacity={0.72}
+                opacity={0}
                 animate={running
                   ? {
                       cx: [CX, nx],
@@ -201,6 +203,7 @@ export default function InfraTopology() {
                 stroke={color}
                 strokeWidth={0.85}
                 strokeDasharray="2 12"
+                strokeDashoffset={0}
                 animate={running
                   ? { opacity: 0.28, pathLength: 1, strokeDashoffset: [DASH_R2, 0] }
                   : { opacity: 0.14, pathLength: 1, strokeDashoffset: 0 }}
@@ -243,6 +246,7 @@ export default function InfraTopology() {
               <motion.path d={path}
                 stroke={color} strokeWidth={0.75} strokeOpacity={0.22}
                 strokeDasharray="2 5" fill="none"
+                strokeDashoffset={0}
                 animate={running ? { strokeDashoffset: [0, -14] } : { strokeDashoffset: 0 }}
                 transition={{ repeat: running ? Infinity : 0, duration: 5.2 + i * 0.35, ease: 'linear', delay: i * 0.8 }}
               />
@@ -276,6 +280,7 @@ export default function InfraTopology() {
               <motion.circle
                 cx={nx} cy={ny} r={18}
                 fill={color} fillOpacity={0}
+                initial={{ fillOpacity: 0.018 }}
                 animate={running ? { fillOpacity: [0.04, 0.01, 0.04] } : { fillOpacity: 0.018 }}
                 transition={{ repeat: running ? Infinity : 0, duration: 5.5 + i * 1.1, ease: 'easeInOut', delay: i * 0.55 }}
               />
@@ -373,6 +378,7 @@ export default function InfraTopology() {
           <motion.circle
             cx={CX} cy={CY} r={38}
             fill="rgba(100,116,139,0.05)"
+            initial={{ opacity: 0.36 }}
             animate={running ? { opacity: [0.70, 0.30, 0.70] } : { opacity: 0.36 }}
             transition={{ repeat: running ? Infinity : 0, duration: 5.5, ease: 'easeInOut' }}
           />
