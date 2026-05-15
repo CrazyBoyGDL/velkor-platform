@@ -1,5 +1,7 @@
 # Velkor Platform - Architecture
 
+> Current note, May 2026: this document began as an early target architecture and contains historical references such as Strapi v5 and an `automation/` directory. The deployed backend is Strapi v4.22.1. Current operational architecture is documented in `docs/PLATFORM.md`, `docs/CONTENT_ARCHITECTURE.md`, `docs/CRM_LIFECYCLE.md`, and `docs/ANALYTICS_EVENT_CATALOG.md`.
+
 ## Overview
 
 Velkor Platform is a **monorepo enterprise application** with clear separation of concerns:
@@ -8,8 +10,7 @@ Velkor Platform is a **monorepo enterprise application** with clear separation o
 velkor-platform/
 ├── apps/
 │   ├── web/       → Next.js 14 (SOC-NOC UI)
-│   └── api/       → Strapi v5 (Headless CMS)
-├── automation/    → Make/n8n workflows
+│   └── api/       → Strapi v4.22.1 (Headless CMS)
 └── docker-compose.yml
 ```
 

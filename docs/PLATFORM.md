@@ -525,6 +525,24 @@ New optional Strapi fields support:
 - Connected existing mobile CSS classes to case, evidence, and assessment components.
 - Preserved legacy Strapi fields and route behavior for backward compatibility.
 
+## 14. Operational Activation Addendum
+
+This iteration activates authority distribution and CRM operations without redesigning the site:
+
+- `post` now supports industry context, architecture references, multiple downloadable artifacts, and typed article blocks.
+- Strapi startup seeds three flagship authority articles if missing, then leaves existing CMS entries untouched.
+- Technical article blocks render architecture callouts, operational warnings, governance insights, evidence references, and rollout considerations.
+- LinkedIn authority formats are defined in the existing content engine and surfaced in `/framework/content-engine`.
+- Analytics now tracks article views, article scroll depth, case-study depth, CTA clicks, assessment behavior, evidence interactions, and device behavior through the same dispatcher.
+- CRM payloads include `engagementAuditTrail`, lifecycle transition helpers, follow-up scheduling, stale-lead support, owner routing, and escalation context.
+- Trust readiness now includes a cookie policy placeholder, enterprise footer signal, canonical/domain configuration, and CSP readiness for Cloudflare Turnstile.
+
+### Activation Validation
+
+- Web type-check passed with `npm run type-check -w apps/web`.
+- Strapi bootstrap additions passed `node -c` syntax checks.
+- Deployment validation is performed on Railway after pushing to `main`.
+
 ---
 
 *Updated: May 2026 · Velkor System · velkor.mx*

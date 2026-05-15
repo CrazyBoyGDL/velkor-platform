@@ -1,7 +1,9 @@
 # Velkor Platform — Strapi CMS Audit
 **Date:** 2026-05-11  
 **Strapi Version:** 4.22.1 (NOT v5 as stated in docs/ARCHITECTURE.md)  
-**Status:** Blank install — no content model exists
+**Status:** Historical audit, superseded by operational activation work in May 2026
+
+> Current state: Strapi now includes operational content-types for posts, cases, services, resources, leads, testimonials, and FAQ items. This document is preserved as historical context for the initial repository state and should not be treated as current architecture.
 
 ---
 

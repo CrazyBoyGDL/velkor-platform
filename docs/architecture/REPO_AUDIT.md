@@ -3,6 +3,8 @@
 **Auditor:** Claude Sonnet 4.6  
 **Scope:** Full repository read-only audit — no changes made
 
+> Historical note: this audit reflects the pre-operational state from 2026-05-11. The platform now has Strapi content-types, assessment persistence, centralized analytics, CRM workflow logic, and authority content operations. Use `docs/PLATFORM.md`, `docs/CONTENT_ARCHITECTURE.md`, `docs/CRM_LIFECYCLE.md`, and `docs/ANALYTICS_EVENT_CATALOG.md` for current architecture.
+
 ---
 
 ## Executive Summary

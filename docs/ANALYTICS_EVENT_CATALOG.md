@@ -26,11 +26,26 @@ The analytics layer is centralized in `apps/web/src/lib/analyticsEvents.ts` and 
 
 | Event | Purpose |
 | --- | --- |
+| `Blog Article Viewed` | Technical article view with slug, category, read time, and technical level. |
 | `Evidence Document Clicked` | NDA/full-document request from evidence library. |
 | `Evidence Diagram Viewed` | Architecture diagram rendered in evidence context. |
 | `Case Study Engagement` | Case-study index engagement. |
+| `Case Study Depth Reached` | Case-study depth thresholds at 50% and 90%. |
 | `Scroll Depth` | Blog/content depth thresholds. |
 | `CTA Click` | Shared CTA wrapper for high-value links. |
+| `Artifact Downloaded` | Download/open action for reports, resources, or operational artifacts. |
+
+## Event Properties
+
+| Event | Core props |
+| --- | --- |
+| `Blog Article Viewed` | `slug`, `category`, `read_time`, `technical_level` |
+| `Scroll Depth` | `page`, `depth` |
+| `Case Study Engagement` | `case_slug`, `sector`, `depth` |
+| `Case Study Depth Reached` | `case_slug`, `sector`, `depth` |
+| `Evidence Document Clicked` | `doc_title`, `category`, `status` |
+| `Artifact Downloaded` | `artifact_title`, `artifact_type`, `gated`, `source` |
+| `Device Behavior Detected` | `page`, `behavior`, `device` |
 
 ## Conversion and Attribution
 
@@ -46,3 +61,10 @@ The analytics layer is centralized in `apps/web/src/lib/analyticsEvents.ts` and 
 ## Privacy Posture
 
 Events carry operational context only: source, stage, category, score band, artifact labels, and device class. No PII is sent by the analytics helpers.
+
+## Implementation Notes
+
+- Event names are centralized in `apps/web/src/lib/analyticsEvents.ts`.
+- Dispatch is centralized in `apps/web/src/components/Analytics.tsx`.
+- Article and case-study tracking use small mounted client components/hooks; server components do not inline provider calls.
+- Provider scripts are only loaded when env vars are present.

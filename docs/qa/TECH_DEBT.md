@@ -1,6 +1,8 @@
 # Velkor Platform — Technical Debt Register
 **Date:** 2026-05-11 | **Methodology:** Read-only audit, no changes made
 
+> Historical register: several critical items below were remediated during the May 2026 operational maturity and activation work, including lead persistence, Strapi content-types, security headers, sitemap/robots, and centralized analytics. Keep this file as original debt context; use `docs/CLEANUP_REPORT.md` for current cleanup status.
+
 Severity scale: 🔴 Critical | 🟠 High | 🟡 Medium | 🟢 Low
 
 ---

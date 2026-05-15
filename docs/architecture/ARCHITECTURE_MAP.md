@@ -1,6 +1,8 @@
 # Velkor Platform — Architecture Map
 **Date:** 2026-05-11 | **Status:** As-built (what actually exists)
 
+> Current addendum, May 2026: the original topology notes below captured the initial disconnected state. The platform now fetches Strapi posts/cases/resources, persists leads, centralizes analytics, and uses Strapi as the source of truth for operational content. Legacy diagrams are retained for history; current operational summaries live in `docs/PLATFORM.md`, `docs/CONTENT_ARCHITECTURE.md`, and `docs/CRM_LIFECYCLE.md`.
+
 ---
 
 ## System Topology

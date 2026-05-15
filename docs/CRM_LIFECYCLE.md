@@ -18,6 +18,7 @@ Strapi `lead` remains the operational CRM record. The web app builds payloads th
 | `escalationLevel` | Escalation path: owner, principal, or executive. |
 | `governanceSignals` | Structured assessment signals for routing and audit context. |
 | `relatedArtifacts` | Report, evidence, case, or framework references useful for follow-up. |
+| `engagementAuditTrail` | Chronological CRM events: lead creation, stage transition, owner assignment, follow-up, stale detection, escalation. |
 
 ## Routing Rules
 
@@ -30,6 +31,32 @@ Strapi `lead` remains the operational CRM record. The web app builds payloads th
 ## Stale Lead Handling
 
 `buildFollowUpReminder()` calculates `nextFollowUpAt` and `staleAt` from the assigned workflow. `isLeadStale()` evaluates stage SLA without creating a parallel scheduler; external automation can call the same lifecycle fields from Strapi.
+
+## Transition Helpers
+
+`transitionLifecycleStage()` creates the update payload for stage changes without rebuilding CRM logic in route handlers or automations. It returns:
+
+- `lifecycleStage`
+- `lastInteractionAt`
+- `nextFollowUpAt`
+- `staleAt`
+- `owner`
+- `tags`
+- appended `engagementAuditTrail`
+
+`buildEngagementAuditEvent()` is the shared event constructor for lifecycle, ownership, follow-up, stale-lead, escalation, and nurture updates.
+
+## Audit Trail Events
+
+| Event | Meaning |
+| --- | --- |
+| `lead-created` | Lead entered Strapi and received workflow routing. |
+| `stage-transition` | Lifecycle moved from one stage to another. |
+| `owner-assigned` | Operational owner changed. |
+| `follow-up-scheduled` | Next action/SLA was calculated. |
+| `stale-detected` | Lead exceeded stage SLA. |
+| `escalation-triggered` | Owner/principal/executive escalation became active. |
+| `nurture-updated` | Long-cycle follow-up state changed. |
 
 ## Backward Compatibility
 
