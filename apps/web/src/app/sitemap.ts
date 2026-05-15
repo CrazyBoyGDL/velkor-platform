@@ -1,7 +1,8 @@
 import { MetadataRoute } from 'next'
 import { strapi } from '@/lib/strapi'
+import { SITE_URL } from '@/lib/config'
 
-const BASE = 'https://velkor.mx'
+const BASE = SITE_URL
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date()

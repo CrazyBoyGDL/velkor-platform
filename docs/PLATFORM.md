@@ -498,6 +498,33 @@ Separate rate map: 3 requests / IP / hour (3,600,000 ms window). Silent passthro
 | `/framework/evidence` nav link | Low | Currently only reachable via /framework page card |
 | `generateProposal()` → PDF output | Medium | Wire proposal lib into reportHtml pipeline |
 
+## 13. Operational Maturity Addendum
+
+This phase evolves the platform without replacing existing systems:
+
+- Strapi content-types are extended in place: `post`, `caso`, `servicio`, `recurso`, and `lead`.
+- Content authority metadata lives in the existing content engine, not a parallel SEO model.
+- Analytics events are centralized in `analyticsEvents.ts` and dispatched through `Analytics.tsx`.
+- CRM routing, ownership, stale-lead deadlines, escalation, and direct-lead payloads remain in `crm.ts`.
+- Email sequences extend `emailTemplate.ts`; `generateAssessmentEmail()` remains backward compatible.
+- Proposal recommendations extend `generateProposal()` with industry, governance, dependency, compliance, roadmap, and engagement structure outputs.
+
+### Schema Evolution Summary
+
+New optional Strapi fields support:
+
+- Technical categories, technical level, operational tags, maturity level, and engagement type.
+- Related evidence, related cases, related frameworks, architecture diagrams, and downloadable artifacts.
+- Case-study depth: governance matrix, dependency map, deployment dependencies, tradeoffs, rollback considerations, lessons learned, implementation constraints, residual risk, and postmortem notes.
+- Lead operations: owner, lifecycle stage, nurture stage, stale/follow-up timestamps, escalation level, operational priority, governance signals, and related artifacts.
+
+### Cleanup Summary
+
+- Removed dead/unused frontend declarations surfaced by strict type-checking.
+- Fixed existing type drift in tracked links, diagrams, logo, proposal, scoring, and classification helpers.
+- Connected existing mobile CSS classes to case, evidence, and assessment components.
+- Preserved legacy Strapi fields and route behavior for backward compatibility.
+
 ---
 
 *Updated: May 2026 · Velkor System · velkor.mx*

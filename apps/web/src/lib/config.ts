@@ -81,6 +81,25 @@ export const TRUST = {
   ],
 } as const
 
+// ─── Enterprise readiness ───────────────────────────────────────────────────
+
+export const ENTERPRISE_READINESS = {
+  domainStatus: 'prepared-not-finalized',
+  canonicalSource: 'NEXT_PUBLIC_SITE_URL',
+  cloudflare: {
+    recommended: true,
+    plannedControls: ['DNS', 'WAF', 'Turnstile', 'cache-rules', 'security-headers'],
+  },
+  email: {
+    operationalSenders: [CONTACT.emailNoReply, CONTACT.emailReports, CONTACT.emailSupport],
+    requiredRecords: ['SPF', 'DKIM', 'DMARC'],
+  },
+  legal: {
+    requiredPages: [LEGAL.privacyPolicyUrl, LEGAL.termsOfServiceUrl],
+    cookiePolicyPrepared: LEGAL.cookiePolicyUrl,
+  },
+} as const
+
 // ─── Navigation ───────────────────────────────────────────────────────────────
 
 export const NAV_LINKS = {

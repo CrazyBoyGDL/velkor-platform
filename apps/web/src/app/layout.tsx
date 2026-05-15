@@ -7,8 +7,7 @@ import FloatingCTA from '@/components/FloatingCTA'
 import SocialProof from '@/components/SocialProof'
 import ThemeProvider from '@/components/ThemeProvider'
 import { Analytics } from '@/components/Analytics'
-
-const SITE_URL = 'https://velkor.mx'
+import { COMPANY, SITE_URL } from '@/lib/config'
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -23,9 +22,9 @@ export const metadata: Metadata = {
     'Intune', 'Entra ID', 'CCTV IP', 'videovigilancia empresarial',
     'redes empresariales', 'Zero Trust', 'MDM', 'México',
   ],
-  authors: [{ name: 'Velkor System', url: SITE_URL }],
-  creator: 'Velkor System',
-  publisher: 'Velkor System',
+  authors: [{ name: COMPANY.name, url: SITE_URL }],
+  creator: COMPANY.name,
+  publisher: COMPANY.name,
   robots: {
     index: true,
     follow: true,
@@ -35,7 +34,7 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'es_MX',
     url: SITE_URL,
-    siteName: 'Velkor System',
+    siteName: COMPANY.name,
     title: 'Velkor — Consultoría IT Empresarial',
     description:
       'Redes, ciberseguridad y Microsoft 365 para empresas que no pueden permitirse interrupciones.',
@@ -74,7 +73,7 @@ const jsonLd = {
     {
       '@type': 'Organization',
       '@id': `${SITE_URL}/#organization`,
-      name: 'Velkor System',
+      name: COMPANY.name,
       url: SITE_URL,
       logo: {
         '@type': 'ImageObject',
@@ -93,7 +92,7 @@ const jsonLd = {
     {
       '@type': 'ProfessionalService',
       '@id': `${SITE_URL}/#service`,
-      name: 'Velkor System',
+      name: COMPANY.name,
       url: SITE_URL,
       description:
         'Consultoría IT empresarial: redes y ciberseguridad, gestión de identidad Microsoft, videovigilancia IP.',

@@ -118,6 +118,20 @@ DESIRED (target architecture):
 
 ## Strapi Content Model — Current vs. Required
 
+### Operational Maturity Update
+
+The CMS is no longer treated as a blank shell. Existing content-types are extended, not duplicated:
+
+| Content type | Evolution |
+| --- | --- |
+| `post` | Technical category, operational tags, evidence/framework/case references, architecture diagram, downloadable artifact. |
+| `caso` | Engineering-execution fields: decisions, rollout phases, governance matrix, dependencies, tradeoffs, rollback, lessons learned. |
+| `servicio` | Operational tags, maturity, engagement type, evidence and rollout references. |
+| `recurso` | Artifact metadata, evidence/case links, technical level, lead-attribution tags. |
+| `lead` | Workflow owner, lifecycle/nurture stage, SLA timestamps, escalation, operational priority, governance signals. |
+
+No new parallel content engine, CRM engine, proposal engine, or analytics dispatcher is introduced.
+
 ### Current State
 ```
 apps/api/src/

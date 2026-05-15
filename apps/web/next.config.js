@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const isProd = process.env.NODE_ENV === 'production';
+const posthogHost = process.env.NEXT_PUBLIC_POSTHOG_HOST || 'https://app.posthog.com';
 
 const nextConfig = {
   output: 'standalone',
@@ -27,8 +28,8 @@ const nextConfig = {
 
   async headers() {
     const scriptSrc = isProd
-      ? "script-src 'self' 'unsafe-inline' https://plausible.io"
-      : "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://plausible.io";
+      ? `script-src 'self' 'unsafe-inline' https://plausible.io ${posthogHost}`
+      : `script-src 'self' 'unsafe-inline' 'unsafe-eval' https://plausible.io ${posthogHost}`;
 
     return [
       {
@@ -50,7 +51,7 @@ const nextConfig = {
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com",
               "img-src 'self' data: blob:",
-              "connect-src 'self' https://plausible.io",
+              `connect-src 'self' https://plausible.io ${posthogHost}`,
               "frame-ancestors 'self'",
             ].join('; '),
           },
