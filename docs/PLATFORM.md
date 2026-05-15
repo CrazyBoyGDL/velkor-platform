@@ -603,6 +603,19 @@ This phase tightens depth, continuity, visual language, and microinteractions wi
 
 Detailed notes: `docs/PREMIUM_OPERATIONAL_VISUAL_SYSTEM.md`.
 
+## 19. Consultive Intelligence Addendum
+
+This phase turns mature public pages into lightweight operational qualification without changing backend architecture:
+
+- Inline diagnostics extend `apps/web/src/lib/scoring.ts`; no second scoring engine was created.
+- `AdaptiveCTA` uses `apps/web/src/lib/consultiveCta.ts` so CTA copy is contextual and centralized.
+- `InlineDiagnostics` reuses the same scoring outputs for exposure, findings, recommendations, service interest, and CTA intent.
+- `leadIntelligence.ts` stores only session-level behavioral signals in `sessionStorage`; Strapi `lead` remains the CRM source of truth.
+- Home and services now diagnose risk quickly before sending visitors into the full `/assessments` flow.
+- Analytics events for diagnostics, calculators, adaptive CTAs, and lead signals stay centralized in `Analytics.tsx` and `analyticsEvents.ts`.
+
+Detailed notes: `docs/CONSULTIVE_INTELLIGENCE.md`.
+
 ---
 
 *Updated: May 2026 · Velkor Operations · velkor.mx*
