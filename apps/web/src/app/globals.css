@@ -823,6 +823,36 @@ body {
     grid-template-columns: 1fr 1fr;
     gap: 0.75rem;
   }
+  .deployment-state-line,
+  .trust-boundary-map {
+    position: relative;
+    display: grid;
+    align-items: center;
+    grid-template-columns: auto minmax(2rem, 1fr) auto;
+    gap: 0.55rem;
+    min-height: 28px;
+    margin-bottom: 0.8rem;
+    color: #647082;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8.5px;
+    text-transform: uppercase;
+  }
+  .deployment-state-line i,
+  .trust-boundary-map i {
+    height: 1px;
+    background:
+      linear-gradient(90deg, color-mix(in srgb, var(--route-accent, #638fa9) 48%, transparent), transparent),
+      repeating-linear-gradient(90deg, rgba(148,163,184,0.18) 0 4px, transparent 4px 8px);
+  }
+  .trust-boundary-map {
+    grid-template-columns: auto minmax(1.2rem, 1fr) auto minmax(1.2rem, 1fr) auto;
+    padding: 0.45rem 0.5rem;
+    border: 1px solid rgba(148,163,184,0.055);
+    border-radius: 6px;
+    background:
+      linear-gradient(90deg, rgba(255,255,255,0.018), transparent),
+      linear-gradient(180deg, rgba(0,0,0,0.06), transparent);
+  }
   .diff-label {
     display: block;
     margin-bottom: 0.5rem;
@@ -882,20 +912,44 @@ body {
     font-size: 12px;
     line-height: 1.65;
   }
-  .infra-state-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem;
+  .packet-route-strip {
+    --route-accent: #638fa9;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(4.2rem, 1fr));
+    gap: 0.5rem;
+    position: relative;
     padding-top: 0.9rem;
     border-top: 1px solid rgba(255,255,255,0.045);
   }
-  .infra-state-tags span {
-    border: 1px solid rgba(148,163,184,0.10);
-    border-radius: 999px;
-    padding: 0.25rem 0.55rem;
-    color: #738097;
+  .packet-route-line {
+    position: absolute;
+    left: 0.15rem;
+    right: 0.15rem;
+    top: 1.12rem;
+    height: 1px;
+    background: linear-gradient(90deg, color-mix(in srgb, var(--route-accent) 45%, transparent), rgba(148,163,184,0.05));
+    opacity: 0.72;
+  }
+  .packet-route-node {
+    position: relative;
+    min-height: 32px;
+    padding-top: 0.75rem;
+    color: #7f8a9d;
     font-family: 'JetBrains Mono', monospace;
     font-size: 9.5px;
+    line-height: 1.25;
+  }
+  .packet-route-node::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 7px;
+    height: 7px;
+    border-radius: 2px;
+    background: color-mix(in srgb, var(--route-accent) 68%, #dbeafe);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--route-accent) 10%, transparent);
+    transform: rotate(45deg);
   }
   .evidence-proof-strip {
     display: grid;
@@ -1391,10 +1445,17 @@ html.light .visual-evidence-caption {
 }
 html.light .diff-before { color: #80766a; }
 html.light .diff-after  { color: #2e4053; }
-html.light .infra-state-tags span {
-  border-color: rgba(36,52,70,0.12);
-  background: rgba(255,255,255,0.62);
-  color: #506073;
+html.light .deployment-state-line,
+html.light .trust-boundary-map,
+html.light .packet-route-node {
+  color: #667386;
+}
+html.light .trust-boundary-map {
+  border-color: rgba(36,52,70,0.08);
+  background: rgba(255,255,255,0.46);
+}
+html.light .packet-route-strip {
+  border-top-color: rgba(36,52,70,0.08);
 }
 html.light .service-capability,
 html.light .service-index-hero {

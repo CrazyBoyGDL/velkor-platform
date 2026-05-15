@@ -1,5 +1,6 @@
 'use client'
 
+import type { CSSProperties } from 'react'
 import { motion } from 'framer-motion'
 import { systemReveal, useOperationalActivity, useProximitySurface } from '@/lib/motion/operationalMotion'
 
@@ -11,6 +12,49 @@ const TONE: Record<EvidenceTone, string> = {
   video: '#638fa9',
   risk: '#a47135',
   neutral: '#748093',
+}
+
+export function PacketRouteStrip({
+  items,
+  accent = '#587694',
+}: {
+  items: string[]
+  accent?: string
+}) {
+  const proximity = useProximitySurface<HTMLDivElement>()
+
+  return (
+    <div {...proximity.handlers} className="packet-route-strip proximity-surface" style={{ '--route-accent': accent } as CSSProperties}>
+      <div className="packet-route-line" />
+      {items.map((item, index) => (
+        <span key={item} className="packet-route-node" style={{ '--route-index': index } as CSSProperties}>
+          {item}
+        </span>
+      ))}
+    </div>
+  )
+}
+
+function DeploymentStateLine({ accent }: { accent: string }) {
+  return (
+    <div className="deployment-state-line" style={{ '--route-accent': accent } as CSSProperties}>
+      <span>legacy state</span>
+      <i />
+      <span>controlled state</span>
+    </div>
+  )
+}
+
+function TrustBoundaryMap({ accent }: { accent: string }) {
+  return (
+    <div className="trust-boundary-map" style={{ '--route-accent': accent } as CSSProperties} aria-hidden="true">
+      <span>usuario</span>
+      <i />
+      <span>policy</span>
+      <i />
+      <span>producción</span>
+    </div>
+  )
 }
 
 export type ArchitectureNode = {
@@ -61,8 +105,14 @@ export function ArchitectureSnapshot({
             <stop offset="0%" stopColor={accent} stopOpacity="0.05" />
             <stop offset="100%" stopColor={accent} stopOpacity="0.22" />
           </linearGradient>
+          <pattern id={`mesh-${title.replace(/\W+/g, '-')}`} width="18" height="18" patternUnits="userSpaceOnUse">
+            <path d="M 18 0 L 0 0 0 18" fill="none" stroke="rgba(148,163,184,0.055)" strokeWidth="0.5" />
+          </pattern>
         </defs>
         <rect x="1" y="1" width="358" height="188" rx="8" fill="rgba(255,255,255,0.014)" stroke="rgba(255,255,255,0.055)" />
+        <rect x="1" y="1" width="358" height="188" rx="8" fill={`url(#mesh-${title.replace(/\W+/g, '-')})`} opacity="0.42" />
+        <rect x="26" y="24" width="122" height="138" rx="8" fill={accent} fillOpacity="0.018" stroke={accent} strokeOpacity="0.10" strokeDasharray="3 7" />
+        <rect x="176" y="24" width="156" height="138" rx="8" fill={accent} fillOpacity="0.010" stroke={accent} strokeOpacity="0.07" strokeDasharray="3 7" />
         {links.map((link, index) => {
           const from = byId.get(link.from)
           const to = byId.get(link.to)
@@ -155,6 +205,7 @@ export function DeploymentDiff({
         <span>Deployment diff</span>
         <span style={{ color: accent }}>antes / despues</span>
       </div>
+      <DeploymentStateLine accent={accent} />
       <div className="deployment-diff-grid">
         <div>
           <span className="diff-label">Antes</span>
@@ -190,6 +241,7 @@ export function PolicyOverlay({
         <span>Policy overlay</span>
         <span style={{ color: accent }}>{title}</span>
       </div>
+      <TrustBoundaryMap accent={accent} />
       <div className="policy-stack">
         {policies.map((policy, index) => (
           <div key={policy} className="policy-row">
@@ -258,11 +310,7 @@ export function InfrastructureStatePanel({
         <span>Resultado esperado</span>
         <p>{outcome}</p>
       </div>
-      <div className="infra-state-tags">
-        {tags.map(tag => (
-          <span key={tag}>{tag}</span>
-        ))}
-      </div>
+      <PacketRouteStrip items={tags} accent={accent} />
     </motion.aside>
   )
 }

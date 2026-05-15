@@ -41,7 +41,7 @@ const SERVICES: ServiceModule[] = [
     eyebrow: 'Redes & ciberseguridad',
     title: 'Segmentación, perímetro y acceso remoto gobernable.',
     summary:
-      'Diseñamos la red para contener incidentes, reducir reglas heredadas y dejar trazabilidad operativa antes de ampliar conectividad o VPN.',
+      'Contención, reglas heredadas bajo control y trazabilidad antes de ampliar conectividad.',
     layer: 'Network / Perimeter',
     objective: 'Separar usuarios, servidores, invitados, cámaras y gestión sin detener operación.',
     outcome: 'Reglas explícitas, rollback por sede y topología L2/L3 documentada al cierre.',
@@ -69,7 +69,7 @@ const SERVICES: ServiceModule[] = [
     eyebrow: 'Identidad & acceso',
     title: 'Acceso condicional y dispositivos confiables.',
     summary:
-      'Convertimos M365, Entra ID e Intune en un plano de control: identidad, dispositivo, ubicación, riesgo y privilegios temporales.',
+      'M365, Entra ID e Intune como plano de control para identidad, dispositivo y privilegio.',
     layer: 'Identity / Endpoint',
     objective: 'Bloquear accesos sin contexto y retirar privilegios permanentes sin romper el trabajo diario.',
     outcome: 'MFA, Conditional Access, cumplimiento Intune y PIM con evidencia de auditoría.',
@@ -97,7 +97,7 @@ const SERVICES: ServiceModule[] = [
     eyebrow: 'Videovigilancia IP',
     title: 'Visibilidad física integrada a la operación.',
     summary:
-      'Diseñamos CCTV IP como infraestructura: PoE, VLAN de vigilancia, retención, acceso remoto y operación multi-sede con evidencia revisable.',
+      'CCTV IP tratado como infraestructura: PoE, VLAN, retención y operación multi-sede.',
     layer: 'Physical Security / Video Network',
     objective: 'Centralizar cámaras, aislar tráfico de video y mantener grabación local aunque falle internet.',
     outcome: 'Mapa de cobertura, NVR dimensionado, VLAN vigilancia y runbook de revisión de incidentes.',
@@ -125,7 +125,7 @@ function ServiceCapability({ service, index }: { service: ServiceModule; index: 
   const flip = index % 2 === 1
 
   return (
-    <section className="service-capability" style={{ '--service-accent': service.accent } as CSSProperties}>
+    <section className="service-capability depth-0" style={{ '--service-accent': service.accent } as CSSProperties}>
       <div className={`service-capability-grid ${flip ? 'service-capability-grid-flip' : ''}`}>
         <div className="service-capability-copy">
           <span className="label">{service.eyebrow}</span>
@@ -172,7 +172,7 @@ export default function ServiciosPage() {
               Servicios como infraestructura operable, no como catálogo.
             </h1>
             <p className="editorial-lede max-w-xl">
-              Cada capacidad se diseña con objetivo técnico, evidencia de despliegue, capa afectada y resultado esperado.
+              Objetivo técnico, capa afectada y evidencia de despliegue en una sola lectura.
             </p>
           </div>
         </header>
@@ -187,7 +187,7 @@ export default function ServiciosPage() {
           <div>
             <span className="label block mb-4">No empezar por el producto</span>
             <h2 className="text-noc-white text-2xl sm:text-3xl font-semibold leading-tight max-w-2xl">
-              Primero se valida el entorno. Luego se decide qué tocar.
+              Validar entorno. Luego tocar producción.
             </h2>
           </div>
           <Link href="/assessments" className="btn-amber px-8 py-3.5">
