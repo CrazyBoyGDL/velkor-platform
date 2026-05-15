@@ -21,6 +21,20 @@ export type CaseOutcome = {
   detail: string         // "62/62 usuarios · migración en 48 h"
 }
 
+export type GovernanceMatrixRow = {
+  system:     string   // e.g. "Entra ID / Conditional Access"
+  owner:      string   // e.g. "IT Manager"
+  operations: string   // e.g. "Crear/deshabilitar usuarios, revisar CA"
+  reviewCycle:string   // e.g. "Mensual"
+}
+
+export type DependencyItem = {
+  from:   string   // e.g. "Intune MDM"
+  to:     string   // e.g. "Entra ID Conditional Access"
+  type:   'requires' | 'feeds' | 'monitors' | 'syncs'
+  note?:  string
+}
+
 export type CaseStudy = {
   // Header
   client:        string   // anonymized: "Empresa distribuidora · Monterrey"
@@ -45,6 +59,12 @@ export type CaseStudy = {
   // Output
   deliverables: string[]    // what was handed off
   outcomes:     CaseOutcome[]
+
+  // Depth V2 — governance & dependencies
+  governanceMatrix?: GovernanceMatrixRow[]  // operational ownership matrix
+  dependencyMap?:    DependencyItem[]       // inter-system dependency chain
+  riskResidual?:     string[]               // documented residual risks at handoff
+  postmortemNote?:   string                 // engineering postmortem observation
 
   // Display
   hex:  string

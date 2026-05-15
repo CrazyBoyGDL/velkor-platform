@@ -11,6 +11,8 @@ export type BlogPost = {
   date: string
   readTime: string
   hex: string
+  tags?: string[]
+  architectureRef?: string | null
 }
 
 export default function BlogList({ posts }: { posts: BlogPost[] }) {
@@ -38,9 +40,25 @@ export default function BlogList({ posts }: { posts: BlogPost[] }) {
             <h2 className="text-noc-white font-black text-2xl sm:text-3xl mb-4 leading-tight group-hover:text-amber transition-colors">
               {featured.title}
             </h2>
-            <p className="text-zinc-400 text-base leading-relaxed mb-6 max-w-2xl">
+            <p className="text-zinc-400 text-base leading-relaxed mb-4 max-w-2xl">
               {featured.excerpt}
             </p>
+            {featured.tags && featured.tags.length > 0 && (
+              <div className="flex flex-wrap gap-1.5 mb-4">
+                {featured.tags.slice(0, 3).map(tag => (
+                  <span key={tag} className="font-mono text-[10px] text-zinc-600 border border-zinc-800 px-2 py-0.5 rounded">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            )}
+            {featured.architectureRef && (
+              <div className="mb-4">
+                <Link href={featured.architectureRef} className="text-zinc-600 hover:text-zinc-400 text-[11px] font-mono transition-colors" onClick={e => e.stopPropagation()}>
+                  <span style={{ color: featured.hex }}>→</span> Ver diagrama de referencia
+                </Link>
+              </div>
+            )}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3 text-zinc-600 text-xs font-mono">
                 <span>{featured.date}</span>
@@ -56,7 +74,7 @@ export default function BlogList({ posts }: { posts: BlogPost[] }) {
       </Link>
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
-        {rest.map(({ slug, title, excerpt, category, date, readTime, hex }, i) => (
+        {rest.map(({ slug, title, excerpt, category, date, readTime, hex, tags, architectureRef }, i) => (
           <Link key={slug} href={`/blog/${slug}`} className="group">
             <motion.article
               {...fadeUp(i * 0.010)}
@@ -72,9 +90,25 @@ export default function BlogList({ posts }: { posts: BlogPost[] }) {
               <h2 className="text-noc-white font-semibold text-[15px] mb-2 leading-snug group-hover:text-white transition-colors flex-1">
                 {title}
               </h2>
-              <p className="text-zinc-600 text-xs leading-relaxed mb-4">
+              <p className="text-zinc-600 text-xs leading-relaxed mb-3">
                 {excerpt.slice(0, 100)}…
               </p>
+              {tags && tags.length > 0 && (
+                <div className="flex flex-wrap gap-1 mb-3">
+                  {tags.slice(0, 3).map(tag => (
+                    <span key={tag} className="font-mono text-[9px] text-zinc-700 border border-zinc-800 px-1.5 py-0.5 rounded">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
+              {architectureRef && (
+                <div className="mb-2">
+                  <Link href={architectureRef} className="text-zinc-700 hover:text-zinc-500 text-[10px] font-mono transition-colors" onClick={e => e.stopPropagation()}>
+                    <span style={{ color: hex }}>→</span> Ver diagrama de referencia
+                  </Link>
+                </div>
+              )}
               <div className="flex items-center justify-between mt-auto pt-3 border-t border-surface-border">
                 <span className="text-zinc-700 text-[10px] font-mono">{date}</span>
                 <span className="text-[10px] font-mono opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: hex }}>

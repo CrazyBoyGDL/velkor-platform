@@ -1,54 +1,143 @@
 'use client'
 /**
- * Privacy-first analytics via Plausible.
- * Set NEXT_PUBLIC_PLAUSIBLE_DOMAIN to enable (e.g. "velkor.mx").
- * If unset, no tracking script is loaded — zero overhead.
+ * Velkor Analytics — privacy-first behavioral intelligence layer.
+ *
+ * Supports two providers (auto-selected by env vars):
+ *   Plausible  — set NEXT_PUBLIC_PLAUSIBLE_DOMAIN (e.g. "velkor.mx")
+ *   PostHog    — set NEXT_PUBLIC_POSTHOG_KEY + NEXT_PUBLIC_POSTHOG_HOST
+ *
+ * If neither env var is set: no script loaded, no tracking, zero overhead.
+ * Both providers receive identical event names from analyticsEvents.ts.
  *
  * Exports:
- *   Analytics      — Script tag, place in root layout
- *   trackEvent()   — Fire a named Plausible event (safe when Plausible not loaded)
- *   trackCTA()     — Convenience wrapper for CTA-click events
- *   useScrollDepth() — Hook: fires depth events at 25 / 50 / 75 / 90 %
+ *   Analytics             — Script tags, place in root layout
+ *   trackEvent()          — Fire a named event (Plausible or PostHog)
+ *   trackCTA()            — Convenience wrapper for CTA-click events
+ *   useScrollDepth()      — Hook: fires depth events at 25/50/75/90%
+ *   useAssessmentStep()   — Hook: fires step-completed + step-abandoned events
+ *   trackEvidenceClick()  — Fire evidence document click event
+ *   trackDiagramView()    — Fire architecture diagram view event
  */
 import Script from 'next/script'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 
-const DOMAIN = process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN
+const PLAUSIBLE_DOMAIN = process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN
+const POSTHOG_KEY      = process.env.NEXT_PUBLIC_POSTHOG_KEY
+const POSTHOG_HOST     = process.env.NEXT_PUBLIC_POSTHOG_HOST ?? 'https://app.posthog.com'
+
+// ─── Provider types ────────────────────────────────────────────────────────────
+
+type PlausibleFn = (event: string, options?: { props?: Record<string, string | number> }) => void
+type PostHogFn   = { capture: (event: string, props?: Record<string, string | number>) => void }
+
+function getPlausible(): PlausibleFn | undefined {
+  if (typeof window === 'undefined') return undefined
+  return (window as Record<string, unknown>).plausible as PlausibleFn | undefined
+}
+
+function getPostHog(): PostHogFn | undefined {
+  if (typeof window === 'undefined') return undefined
+  return (window as Record<string, unknown>).posthog as PostHogFn | undefined
+}
+
+// ─── Analytics script tags ─────────────────────────────────────────────────────
 
 export function Analytics() {
-  if (!DOMAIN) return null
-
   return (
-    <Script
-      defer
-      data-domain={DOMAIN}
-      src="https://plausible.io/js/script.js"
-      strategy="afterInteractive"
-    />
+    <>
+      {/* Plausible */}
+      {PLAUSIBLE_DOMAIN && (
+        <Script
+          defer
+          data-domain={PLAUSIBLE_DOMAIN}
+          src="https://plausible.io/js/script.js"
+          strategy="afterInteractive"
+        />
+      )}
+
+      {/* PostHog — loaded only when key is set */}
+      {POSTHOG_KEY && (
+        <Script
+          id="posthog-init"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.async=!0,p.src=s.api_host+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+" (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+              posthog.init('${POSTHOG_KEY}', { api_host: '${POSTHOG_HOST}', autocapture: false, capture_pageview: true });
+            `,
+          }}
+        />
+      )}
+    </>
   )
 }
 
-/** Fire a Plausible custom event. Safe to call even if Plausible is not loaded. */
+// ─── Core event dispatcher ─────────────────────────────────────────────────────
+
+/**
+ * Fire a named event to whichever analytics provider is active.
+ * Safe to call when no provider is loaded — noop in that case.
+ */
 export function trackEvent(
   event: string,
   props?: Record<string, string | number>
 ): void {
   if (typeof window === 'undefined') return
-  const p = (window as { plausible?: (e: string, o?: object) => void }).plausible
-  if (typeof p === 'function') p(event, { props })
+
+  // Plausible
+  const plausible = getPlausible()
+  if (typeof plausible === 'function') {
+    plausible(event, props ? { props } : undefined)
+  }
+
+  // PostHog
+  const posthog = getPostHog()
+  if (posthog && typeof posthog.capture === 'function') {
+    posthog.capture(event, props)
+  }
 }
 
 /**
- * Convenience wrapper: track a CTA button / link click.
- * @param label  Human-readable CTA label (e.g. "Hero — Solicitar diagnóstico")
- * @param extra  Optional additional Plausible props
+ * Convenience wrapper: track a CTA button/link click.
+ * @param label    Human-readable CTA label (e.g. "Hero — Solicitar diagnóstico")
+ * @param location Where on the page (e.g. "hero", "blog-inline", "results-screen")
+ * @param extra    Optional additional props
  */
-export function trackCTA(label: string, extra?: Record<string, string>): void {
-  trackEvent('CTA Click', { label, ...extra })
+export function trackCTA(
+  label:    string,
+  location: string = 'unknown',
+  extra?:   Record<string, string>
+): void {
+  trackEvent('CTA Click', { label, location, ...extra })
 }
 
 /**
- * Hook: fires scroll-depth events at 25 %, 50 %, 75 %, 90 %.
+ * Track an evidence document click in the evidence library.
+ * @param docTitle  Title of the document
+ * @param category  Document category
+ * @param status    'sanitized' | 'reference' | 'template'
+ */
+export function trackEvidenceClick(
+  docTitle:  string,
+  category:  string,
+  status:    string
+): void {
+  trackEvent('Evidence Document Clicked', { doc_title: docTitle, category, status })
+}
+
+/**
+ * Track an architecture diagram becoming visible (mobile scroll or page load).
+ * @param diagramId  Identifier for the diagram (e.g. 'vlan-diagram', 'entra-id-flow')
+ * @param context    Page context (e.g. 'evidence-library', 'case-study')
+ */
+export function trackDiagramView(diagramId: string, context: string): void {
+  trackEvent('Evidence Diagram Viewed', { diagram_id: diagramId, context })
+}
+
+// ─── Scroll depth hook ─────────────────────────────────────────────────────────
+
+/**
+ * Hook: fires scroll-depth events at 25%, 50%, 75%, 90%.
  * Each threshold fires at most once per page mount.
  * Privacy-safe — no PII, no fingerprinting.
  *
@@ -60,7 +149,7 @@ export function useScrollDepth(page: string): void {
     const fired = new Set<number>()
 
     const check = () => {
-      const el = document.documentElement
+      const el      = document.documentElement
       const scrolled = el.scrollTop + el.clientHeight
       const total    = el.scrollHeight
       if (total <= el.clientHeight) return
@@ -74,7 +163,61 @@ export function useScrollDepth(page: string): void {
     }
 
     window.addEventListener('scroll', check, { passive: true })
-    check() // run once on mount (catches short pages already scrolled)
+    check()
     return () => window.removeEventListener('scroll', check)
   }, [page])
+}
+
+// ─── Assessment step tracking hook ────────────────────────────────────────────
+
+const STEP_NAMES: Record<number, string> = {
+  1: 'Contexto empresarial',
+  2: 'Infraestructura de red',
+  3: 'Identidad y acceso',
+  4: 'Operaciones y gobernanza',
+  5: 'Objetivos y urgencia',
+}
+
+/**
+ * Hook: tracks assessment step progression.
+ * - Fires 'Assessment Step Completed' when step changes forward
+ * - Fires 'Assessment Step Abandoned' when component unmounts mid-step
+ * - Fires 'Assessment Started' on first step
+ *
+ * @param currentStep   Current wizard step (1–5)
+ * @param status        Assessment status: 'idle' | 'loading' | 'done' | 'error'
+ */
+export function useAssessmentStep(currentStep: number, status: string): void {
+  const prevStep   = useRef<number>(0)
+  const startTime  = useRef<number>(Date.now())
+  const stepStart  = useRef<number>(Date.now())
+
+  useEffect(() => {
+    if (currentStep === 1 && prevStep.current === 0) {
+      trackEvent('Assessment Started', {
+        device: window.innerWidth < 640 ? 'mobile' : 'desktop',
+      })
+      startTime.current = Date.now()
+    }
+
+    if (currentStep > prevStep.current && prevStep.current > 0) {
+      const timeSpent = Math.round((Date.now() - stepStart.current) / 1000)
+      trackEvent('Assessment Step Completed', {
+        step:      String(prevStep.current),
+        step_name: STEP_NAMES[prevStep.current] ?? `Step ${prevStep.current}`,
+        time_spent: String(timeSpent),
+      })
+    }
+
+    stepStart.current  = Date.now()
+    prevStep.current   = currentStep
+  }, [currentStep])
+
+  useEffect(() => {
+    if (status === 'done') {
+      trackEvent('Assessment Results Viewed', {
+        total_time: String(Math.round((Date.now() - startTime.current) / 1000)),
+      })
+    }
+  }, [status])
 }

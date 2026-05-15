@@ -180,6 +180,22 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
           </div>
         </div>
 
+        {/* Architecture references */}
+        <div className="my-10 p-5 rounded-xl" style={{ background: 'rgba(72,120,176,0.04)', border: '1px solid rgba(72,120,176,0.12)' }}>
+          <div className="text-[10px] font-mono text-zinc-600 mb-2">REFERENCIAS TÉCNICAS</div>
+          <div className="flex flex-wrap gap-3">
+            <Link href="/framework/evidence" className="text-zinc-500 hover:text-zinc-300 text-xs font-mono transition-colors flex items-center gap-1">
+              <span style={{ color: '#4878b0' }}>→</span> Biblioteca de evidencia operacional
+            </Link>
+            <Link href="/framework/operational-framework" className="text-zinc-500 hover:text-zinc-300 text-xs font-mono transition-colors flex items-center gap-1">
+              <span style={{ color: '#4878b0' }}>→</span> Framework operacional de 8 etapas
+            </Link>
+            <Link href="/casos" className="text-zinc-500 hover:text-zinc-300 text-xs font-mono transition-colors flex items-center gap-1">
+              <span style={{ color: '#4878b0' }}>→</span> Narrativas de transformación
+            </Link>
+          </div>
+        </div>
+
         {/* Related posts */}
         {related.length > 0 && (
           <div className="mt-12">
