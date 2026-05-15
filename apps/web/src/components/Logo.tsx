@@ -30,7 +30,7 @@ const EDGES = [
 
 export default function Logo({
   className = 'w-10 h-10',
-  color = '#b07828',
+  color = '#6f8aa8',
   animated = true,
 }: LogoProps) {
   return (
@@ -49,30 +49,22 @@ export default function Logo({
             to   { stroke-dashoffset: 0;  opacity: 1; }
           }
 
-          /* ── Signal pulse travelling along an edge ── */
-          @keyframes velkor-signal {
-            0%   { stroke-dashoffset: 80; opacity: 0; }
-            10%  { opacity: 1; }
-            90%  { opacity: 1; }
-            100% { stroke-dashoffset: -80; opacity: 0; }
-          }
-
           /* ── Node core pulse ── */
           @keyframes velkor-node {
-            0%,100% { opacity: 0.9; r: 2.2; }
-            50%     { opacity: 1;   r: 3;   }
+            0%,100% { opacity: 0.78; }
+            50%     { opacity: 0.96; }
           }
 
           /* ── Node outer ring expand ── */
           @keyframes velkor-ring {
-            0%,100% { r: 5; opacity: 0.12; }
-            50%     { r: 7; opacity: 0.22; }
+            0%,100% { opacity: 0.06; }
+            50%     { opacity: 0.10; }
           }
 
           /* ── Whole-logo glow breathe ── */
           @keyframes velkor-glow {
-            0%,100% { filter: drop-shadow(0 0 3px ${color}60); }
-            50%     { filter: drop-shadow(0 0 8px ${color}90); }
+            0%,100% { filter: drop-shadow(0 0 2px ${color}22); }
+            50%     { filter: drop-shadow(0 0 4px ${color}32); }
           }
 
           .vlk-svg { animation: velkor-glow 3s ease-in-out infinite; }
@@ -84,15 +76,8 @@ export default function Logo({
             animation: velkor-draw 0.6s ease forwards;
           }
 
-          /* Signal overlay edges */
-          .vlk-signal {
-            stroke-dasharray: 14 66;
-            stroke-dashoffset: 80;
-            animation: velkor-signal 2.4s ease-in-out infinite;
-          }
-
-          .vlk-node { animation: velkor-node 3s ease-in-out infinite; }
-          .vlk-ring { animation: velkor-ring 3s ease-in-out infinite; }
+          .vlk-node { animation: velkor-node 6s ease-in-out infinite; }
+          .vlk-ring { animation: velkor-ring 6s ease-in-out infinite; }
         `}</style>
       )}
 
@@ -106,16 +91,6 @@ export default function Logo({
             opacity="0.55"
             className={animated ? 'vlk-edge' : ''}
             style={animated ? { animationDelay: `${i * 0.07}s` } : {}}
-          />
-        ))}
-
-        {/* Signal pulses (staggered, continuous) */}
-        {animated && EDGES.map(({ x1, y1, x2, y2 }, i) => (
-          <line key={`s${i}`}
-            x1={x1} y1={y1} x2={x2} y2={y2}
-            stroke={color} strokeWidth="2" strokeLinecap="round"
-            className="vlk-signal"
-            style={{ animationDelay: `${i * 0.28 + 1}s`, animationDuration: `${2.2 + (i % 3) * 0.4}s` }}
           />
         ))}
 

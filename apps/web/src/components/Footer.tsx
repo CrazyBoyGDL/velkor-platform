@@ -1,7 +1,5 @@
 'use client'
 import Link from 'next/link'
-import { useRef } from 'react'
-import { motion, useScroll, useTransform } from 'framer-motion'
 import Logo from './Logo'
 import { COMPANY, CONTACT, ENTERPRISE_READINESS, TRUST, SITE_DOMAIN, LEGAL } from '@/lib/config'
 
@@ -27,13 +25,8 @@ const LINKS = {
 }
 
 export default function Footer() {
-  const ref = useRef<HTMLElement>(null)
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end end'] })
-  const y = useTransform(scrollYProgress, [0, 1], [30, 0])
-
   return (
     <footer
-      ref={ref}
       className="relative overflow-hidden"
       style={{
         background: 'linear-gradient(180deg, #070709 0%, #050507 100%)',
@@ -51,7 +44,7 @@ export default function Footer() {
         }}
       />
 
-      <motion.div style={{ y }} className="relative z-10 max-w-7xl mx-auto px-4 sm:px-8 py-16">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-10">
 
           {/* Brand — 2 cols */}
@@ -59,8 +52,8 @@ export default function Footer() {
             <Link href="/" className="flex items-center gap-2.5 mb-5 group w-fit">
               <Logo className="w-8 h-8" animated={false} />
               <div className="leading-none">
-                <div className="text-noc-white font-semibold text-sm tracking-normal group-hover:text-amber transition-colors">VELKOR</div>
-                <div className="text-zinc-700 text-[9px] font-mono tracking-normal">SYSTEM</div>
+                <div className="text-noc-white font-semibold text-sm tracking-normal group-hover:text-zinc-300 transition-colors">VELKOR</div>
+                <div className="text-zinc-700 text-[9px] font-mono tracking-normal">OPERATIONS</div>
               </div>
             </Link>
 
@@ -203,7 +196,7 @@ export default function Footer() {
             <span>{COMPANY.version}</span>
           </div>
         </div>
-      </motion.div>
+      </div>
     </footer>
   )
 }

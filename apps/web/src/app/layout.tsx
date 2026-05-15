@@ -2,9 +2,6 @@ import type { Metadata } from 'next'
 import './globals.css'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
-import StatusBar from '@/components/StatusBar'
-import FloatingCTA from '@/components/FloatingCTA'
-import SocialProof from '@/components/SocialProof'
 import ThemeProvider from '@/components/ThemeProvider'
 import { Analytics } from '@/components/Analytics'
 import { COMPANY, SITE_URL } from '@/lib/config'
@@ -120,14 +117,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
         <Analytics />
         <ThemeProvider>
-          <StatusBar />
           <Navbar />
-          <main className="flex-1 pt-[100px]">
+          <main className="flex-1 pt-[64px]">
             {children}
           </main>
           <Footer />
-          <FloatingCTA />
-          <SocialProof />
         </ThemeProvider>
       </body>
     </html>

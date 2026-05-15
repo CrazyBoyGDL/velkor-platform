@@ -252,7 +252,7 @@ export default function InfraTopology() {
               <motion.circle
                 cx={nx} cy={ny} r={18}
                 fill={color} fillOpacity={0}
-                animate={{ r: [16, 24, 16], fillOpacity: [0.035, 0.008, 0.035] }}
+                animate={{ fillOpacity: [0.035, 0.008, 0.035] }}
                 transition={{ repeat: Infinity, duration: 5.5 + i * 1.1, ease: 'easeInOut', delay: i * 0.55 }}
               />
               {/* Static ambient halo */}
@@ -351,7 +351,7 @@ export default function InfraTopology() {
           <motion.circle
             cx={CX} cy={CY} r={38}
             fill="rgba(100,116,139,0.05)"
-            animate={{ r: [32, 42, 32], opacity: [0.70, 0.30, 0.70] }}
+            animate={{ opacity: [0.70, 0.30, 0.70] }}
             transition={{ repeat: Infinity, duration: 5.5, ease: 'easeInOut' }}
           />
           {/* Outer orbit ring — dashed hexagonal reference plane */}

@@ -16,18 +16,18 @@ export const EASE: [number, number, number, number] = [0.25, 0, 0, 1]
 // ─── Scroll reveal ────────────────────────────────────────────────────────────
 // Very small activation: opacity plus a trace of blur. No large y-axis lift.
 export const reveal = (delay = 0) => ({
-  initial:     { opacity: 0, filter: 'blur(3px)' },
-  whileInView: { opacity: 1, filter: 'blur(0px)' },
+  initial:     { opacity: 0 },
+  whileInView: { opacity: 1 },
   viewport:    { once: true, amount: 0.01 },
-  transition:  { duration: 0.42, ease: EASE, delay },
+  transition:  { duration: 0.32, ease: EASE, delay },
 })
 
 // ─── Above-fold entrance ──────────────────────────────────────────────────────
 // Hero-level content gets a touch more air so the system can orient on load.
 export const enter = (delay = 0) => ({
-  initial:    { opacity: 0, filter: 'blur(4px)' },
-  animate:    { opacity: 1, filter: 'blur(0px)' },
-  transition: { duration: 0.58, ease: EASE, delay },
+  initial:    { opacity: 0 },
+  animate:    { opacity: 1 },
+  transition: { duration: 0.42, ease: EASE, delay },
 })
 
 // ─── Spring configs ───────────────────────────────────────────────────────────
@@ -54,9 +54,9 @@ export const SPRING_MAGNETIC = {
 // ─── Topology / ambient ───────────────────────────────────────────────────────
 // Entry for architectural diagrams: all elements reveal as a unit.
 export const diagramEnter = (delay = 0) => ({
-  initial:    { opacity: 0, filter: 'blur(4px)' },
-  animate:    { opacity: 1, filter: 'blur(0px)' },
-  transition: { duration: 0.62, ease: EASE, delay },
+  initial:    { opacity: 0 },
+  animate:    { opacity: 1 },
+  transition: { duration: 0.42, ease: EASE, delay },
 })
 
 export const telemetryPulse = {

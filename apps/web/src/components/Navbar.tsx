@@ -35,7 +35,7 @@ export default function Navbar() {
 
   return (
     <header
-      className="fixed top-9 left-0 right-0 z-40 transition-all duration-300"
+      className="fixed top-0 left-0 right-0 z-40 transition-all duration-300"
       style={{
         background: solid || open
           ? 'rgba(6,6,10,0.94)'
@@ -52,8 +52,8 @@ export default function Navbar() {
           <Link href="/" className="flex items-center gap-2.5 group flex-shrink-0">
             <Logo key={pathname} className="w-9 h-9" />
             <div className="leading-none">
-              <div className="text-noc-white font-semibold text-[15px] tracking-normal group-hover:text-amber transition-colors">VELKOR</div>
-              <div className="text-zinc-600 text-[9px] font-mono tracking-normal">SYSTEM</div>
+              <div className="text-noc-white font-semibold text-[15px] tracking-normal group-hover:text-zinc-200 transition-colors">VELKOR</div>
+              <div className="text-zinc-600 text-[9px] font-mono tracking-normal">OPERATIONS</div>
             </div>
           </Link>
 
