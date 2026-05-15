@@ -1,6 +1,7 @@
 'use client'
 import { motion } from 'framer-motion'
 import { EASE } from '@/lib/motion'
+import { nodeActivation, topologyActivation, useOperationalActivity } from '@/lib/motion/operationalMotion'
 
 // ─── Canvas + geometry constants ──────────────────────────────────────────────
 const W = 560, H = 400
@@ -90,8 +91,12 @@ const DASH_R2 = 20
 
 // ─── Component ───────────────────────────────────────────────────────────────
 export default function InfraTopology() {
+  const { ref, active, reducedMotion } = useOperationalActivity<HTMLDivElement>(0.08)
+  const running = active && !reducedMotion
+
   return (
     <div
+      ref={ref}
       className="select-none w-full"
       role="img"
       aria-label="Diagrama de arquitectura de infraestructura IT gestionada por Velkor"
@@ -138,23 +143,42 @@ export default function InfraTopology() {
                 stroke={color} strokeWidth={0.6} strokeOpacity={0.11} />
               {/* Animated data flow */}
               <motion.line
+                {...topologyActivation(i)}
                 x1={CX} y1={CY} x2={nx} y2={ny}
                 stroke={color}
                 strokeWidth={1.1}
                 strokeDasharray="3 11"
-                initial={{ opacity: 0 }}
-                animate={{
-                  opacity: 0.45,
-                  strokeDashoffset: [DASH_R1, 0],
-                }}
+                animate={running
+                  ? { opacity: 0.45, pathLength: 1, strokeDashoffset: [DASH_R1, 0] }
+                  : { opacity: 0.22, pathLength: 1, strokeDashoffset: 0 }}
                 transition={{
                   opacity: { duration: 0.12, ease: EASE as any, delay: 0.08 },
                   strokeDashoffset: {
-                    repeat: Infinity,
+                    repeat: running ? Infinity : 0,
                     duration: 2.1 + i * 0.17,
                     ease: 'linear',
                     delay: i * 0.28,
                   },
+                }}
+              />
+              <motion.circle
+                cx={CX}
+                cy={CY}
+                r={1.9}
+                fill={color}
+                fillOpacity={0.72}
+                animate={running
+                  ? {
+                      cx: [CX, nx],
+                      cy: [CY, ny],
+                      opacity: [0, 0.62, 0],
+                    }
+                  : { opacity: 0 }}
+                transition={{
+                  repeat: running ? Infinity : 0,
+                  duration: 3.8 + i * 0.24,
+                  ease: 'linear',
+                  delay: 0.6 + i * 0.52,
                 }}
               />
             </g>
@@ -172,19 +196,18 @@ export default function InfraTopology() {
               <line x1={CX} y1={CY} x2={nx} y2={ny}
                 stroke={color} strokeWidth={0.5} strokeOpacity={0.07} />
               <motion.line
+                {...topologyActivation(i + INNER_NODES.length)}
                 x1={CX} y1={CY} x2={nx} y2={ny}
                 stroke={color}
                 strokeWidth={0.85}
                 strokeDasharray="2 12"
-                initial={{ opacity: 0 }}
-                animate={{
-                  opacity: 0.28,
-                  strokeDashoffset: [DASH_R2, 0],
-                }}
+                animate={running
+                  ? { opacity: 0.28, pathLength: 1, strokeDashoffset: [DASH_R2, 0] }
+                  : { opacity: 0.14, pathLength: 1, strokeDashoffset: 0 }}
                 transition={{
                   opacity: { duration: 0.12, ease: EASE as any, delay: 0.08 },
                   strokeDashoffset: {
-                    repeat: Infinity,
+                    repeat: running ? Infinity : 0,
                     duration: 3.8 + i * 0.25,
                     ease: 'linear',
                     delay: i * 0.45,
@@ -217,9 +240,12 @@ export default function InfraTopology() {
               animate={{ opacity: 1 }}
               transition={{ duration: 0.15, ease: EASE as any, delay: 0.12 }}
             >
-              <path d={path}
+              <motion.path d={path}
                 stroke={color} strokeWidth={0.75} strokeOpacity={0.22}
-                strokeDasharray="2 5" fill="none" />
+                strokeDasharray="2 5" fill="none"
+                animate={running ? { strokeDashoffset: [0, -14] } : { strokeDashoffset: 0 }}
+                transition={{ repeat: running ? Infinity : 0, duration: 5.2 + i * 0.35, ease: 'linear', delay: i * 0.8 }}
+              />
               <text
                 x={lx} y={ly}
                 textAnchor="middle"
@@ -244,16 +270,14 @@ export default function InfraTopology() {
           return (
             <motion.g
               key={`n1-${deg}`}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.18, ease: EASE as any, delay: 0.08 }}
+              {...nodeActivation(i)}
             >
               {/* Breathing ambient halo — calm living-system pulse */}
               <motion.circle
                 cx={nx} cy={ny} r={18}
                 fill={color} fillOpacity={0}
-                animate={{ fillOpacity: [0.035, 0.008, 0.035] }}
-                transition={{ repeat: Infinity, duration: 5.5 + i * 1.1, ease: 'easeInOut', delay: i * 0.55 }}
+                animate={running ? { fillOpacity: [0.04, 0.01, 0.04] } : { fillOpacity: 0.018 }}
+                transition={{ repeat: running ? Infinity : 0, duration: 5.5 + i * 1.1, ease: 'easeInOut', delay: i * 0.55 }}
               />
               {/* Static ambient halo */}
               <circle cx={nx} cy={ny} r={20} fill={color} fillOpacity={0.04} />
@@ -296,15 +320,13 @@ export default function InfraTopology() {
             OUTER EDGE / CLOUD NODES (R2)
             Peripheral: WAN entry, hardware MFA, audit/SIEM — smaller, dimmer
         ══════════════════════════════════════════════════════════ */}
-        {OUTER_NODES.map(({ deg, color, label, detail, dx, dy, anchor }) => {
+        {OUTER_NODES.map(({ deg, color, label, detail, dx, dy, anchor }, i) => {
           const [nx, ny] = polar(deg, R2)
           const lx = nx + dx, ly = ny + dy
           return (
             <motion.g
               key={`n2-${deg}`}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.18, ease: EASE as any, delay: 0.08 }}
+              {...nodeActivation(i + INNER_NODES.length)}
             >
               <circle cx={nx} cy={ny} r={16} fill={color} fillOpacity={0.03} />
               <polygon
@@ -351,8 +373,8 @@ export default function InfraTopology() {
           <motion.circle
             cx={CX} cy={CY} r={38}
             fill="rgba(100,116,139,0.05)"
-            animate={{ opacity: [0.70, 0.30, 0.70] }}
-            transition={{ repeat: Infinity, duration: 5.5, ease: 'easeInOut' }}
+            animate={running ? { opacity: [0.70, 0.30, 0.70] } : { opacity: 0.36 }}
+            transition={{ repeat: running ? Infinity : 0, duration: 5.5, ease: 'easeInOut' }}
           />
           {/* Outer orbit ring — dashed hexagonal reference plane */}
           <polygon

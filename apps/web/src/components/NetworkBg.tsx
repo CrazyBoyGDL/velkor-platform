@@ -1,9 +1,11 @@
 'use client'
 import { useEffect, useRef } from 'react'
+import { rafThrottle, useOptimizedDpr } from '@/lib/motion/operationalMotion'
 
 // Subtle static-feeling network topology: cool steel palette, minimal motion
 export default function NetworkBg() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const ratio = useOptimizedDpr(1.6)
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -12,17 +14,17 @@ export default function NetworkBg() {
     if (!ctx) return
 
     let raf: number | null = null
+    let active = document.visibilityState === 'visible'
     let W = 0, H = 0
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    const ratio = Math.min(window.devicePixelRatio || 1, 2)
 
-    const resize = () => {
+    const resize = rafThrottle(() => {
       W = canvas.offsetWidth
       H = canvas.offsetHeight
       canvas.width = Math.max(1, Math.floor(W * ratio))
       canvas.height = Math.max(1, Math.floor(H * ratio))
       ctx.setTransform(ratio, 0, 0, ratio, 0, 0)
-    }
+    })
     resize()
     window.addEventListener('resize', resize)
 
@@ -44,6 +46,7 @@ export default function NetworkBg() {
       `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${a})`
 
     const draw = () => {
+      raf = null
       ctx.clearRect(0, 0, W, H)
 
       for (const n of nodes) {
@@ -80,17 +83,30 @@ export default function NetworkBg() {
         ctx.fill()
       }
 
-      if (!reducedMotion) {
+      if (!reducedMotion && active) {
+        raf = requestAnimationFrame(draw)
+      }
+    }
+
+    const onVisibility = () => {
+      active = document.visibilityState === 'visible'
+      if (!active && raf) {
+        cancelAnimationFrame(raf)
+        raf = null
+      }
+      if (active && !raf && !reducedMotion) {
         raf = requestAnimationFrame(draw)
       }
     }
 
     draw()
+    document.addEventListener('visibilitychange', onVisibility)
     return () => {
       if (raf) cancelAnimationFrame(raf)
       window.removeEventListener('resize', resize)
+      document.removeEventListener('visibilitychange', onVisibility)
     }
-  }, [])
+  }, [ratio])
 
   return (
     <canvas

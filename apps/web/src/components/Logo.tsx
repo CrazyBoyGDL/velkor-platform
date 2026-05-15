@@ -38,7 +38,7 @@ export default function Logo({
       viewBox="0 0 48 48"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={className}
+      className={`${className} velkor-logo`}
       aria-label="Velkor logo"
     >
       {animated && (
@@ -47,6 +47,12 @@ export default function Logo({
           @keyframes velkor-draw {
             from { stroke-dashoffset: 80; opacity: 0; }
             to   { stroke-dashoffset: 0;  opacity: 1; }
+          }
+
+          @keyframes velkor-link-pulse {
+            0%   { opacity: 0.50; }
+            45%  { opacity: 0.86; }
+            100% { opacity: 0.58; }
           }
 
           /* ── Node core pulse ── */
@@ -67,17 +73,42 @@ export default function Logo({
             50%     { filter: drop-shadow(0 0 4px ${color}32); }
           }
 
-          .vlk-svg { animation: velkor-glow 3s ease-in-out infinite; }
+          .velkor-logo { overflow: visible; }
+          .vlk-svg {
+            animation: velkor-glow 4.8s ease-in-out infinite;
+            transform-origin: 24px 24px;
+          }
 
           /* Draw-in edges */
           .vlk-edge {
             stroke-dasharray: 80;
             stroke-dashoffset: 80;
-            animation: velkor-draw 0.6s ease forwards;
+            transition: opacity 0.18s ease, stroke 0.18s ease;
+            animation: velkor-draw 0.46s cubic-bezier(0.22,1,0.36,1) forwards;
           }
 
           .vlk-node { animation: velkor-node 6s ease-in-out infinite; }
           .vlk-ring { animation: velkor-ring 6s ease-in-out infinite; }
+
+          .velkor-logo:hover .vlk-edge {
+            animation: velkor-link-pulse 0.84s cubic-bezier(0.22,1,0.36,1) forwards;
+            opacity: 0.82;
+          }
+          .velkor-logo:hover .vlk-node { opacity: 1; }
+          .velkor-logo:hover .vlk-ring { opacity: 0.13; }
+
+          @media (prefers-reduced-motion: reduce) {
+            .vlk-svg,
+            .vlk-edge,
+            .vlk-node,
+            .vlk-ring {
+              animation: none !important;
+            }
+            .vlk-edge {
+              stroke-dashoffset: 0;
+              opacity: 0.58;
+            }
+          }
         `}</style>
       )}
 
@@ -90,7 +121,7 @@ export default function Logo({
             stroke={color} strokeWidth="1.4" strokeLinecap="round"
             opacity="0.55"
             className={animated ? 'vlk-edge' : ''}
-            style={animated ? { animationDelay: `${i * 0.07}s` } : {}}
+            style={animated ? { animationDelay: `${i * 0.055}s` } : {}}
           />
         ))}
 

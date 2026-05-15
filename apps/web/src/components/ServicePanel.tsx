@@ -1,7 +1,7 @@
 'use client'
-import { useRef } from 'react'
-import { motion, useMotionValue, useTransform, useSpring } from 'framer-motion'
+import { motion, useMotionTemplate } from 'framer-motion'
 import Link from 'next/link'
+import { useOperationalHover } from '@/lib/motion/operationalMotion'
 
 export interface ServicePanelData {
   icon: string
@@ -16,30 +16,15 @@ export interface ServicePanelData {
 
 export default function ServicePanel({ data }: { data: ServicePanelData }) {
   const { icon, title, desc, outcome, scope, hex, tags, href = '/servicios' } = data
-  const cardRef = useRef<HTMLDivElement>(null)
-
-  // Subtle 3-D tilt on hover (±2°) — physical inertia spring
-  const mouseX  = useMotionValue(0)
-  const mouseY  = useMotionValue(0)
-  const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [2, -2]), { stiffness: 320, damping: 40 })
-  const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-2, 2]), { stiffness: 320, damping: 40 })
-  const glowX   = useTransform(mouseX, [-0.5, 0.5], ['0%', '100%'])
-  const glowY   = useTransform(mouseY, [-0.5, 0.5], ['0%', '100%'])
-
-  function onMove(e: React.MouseEvent<HTMLDivElement>) {
-    if (!cardRef.current) return
-    const { left, top, width, height } = cardRef.current.getBoundingClientRect()
-    mouseX.set((e.clientX - left) / width - 0.5)
-    mouseY.set((e.clientY - top)  / height - 0.5)
-  }
-  function onLeave() { mouseX.set(0); mouseY.set(0) }
+  const hover = useOperationalHover<HTMLDivElement>(1.1)
+  const { glowX, glowY, ...hoverStyle } = hover.style
+  const sheen = useMotionTemplate`radial-gradient(circle at ${glowX} ${glowY}, rgba(255,255,255,0.022) 0%, transparent 55%)`
 
   return (
     <motion.div
-      ref={cardRef}
-      onMouseMove={onMove}
-      onMouseLeave={onLeave}
-      style={{ rotateX, rotateY, transformPerspective: 1000, transformStyle: 'preserve-3d' }}
+      ref={hover.ref}
+      {...hover.handlers}
+      style={hoverStyle}
       whileHover={{ scale: 1.004 }}
       whileTap={{ scale: 0.98 }}
       transition={{ type: 'spring', stiffness: 360, damping: 32 }}
@@ -57,7 +42,7 @@ export default function ServicePanel({ data }: { data: ServicePanelData }) {
       <motion.div
         className="absolute inset-0 rounded-lg pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-200"
         style={{
-          background: `radial-gradient(circle at ${glowX} ${glowY}, rgba(255,255,255,0.022) 0%, transparent 55%)`,
+          background: sheen,
         }}
       />
 
