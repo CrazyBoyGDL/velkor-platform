@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { authorityAssetRules, contentTemplates, operationalTagGroups, technicalCategories } from '@/lib/contentEngine'
+import { authorityAssetRules, contentTemplates, linkedinAuthorityFormats, operationalTagGroups, technicalCategories } from '@/lib/contentEngine'
 import type { ContentTemplate, ContentField } from '@/lib/contentEngine'
 
 export const metadata: Metadata = {
@@ -238,6 +238,40 @@ export default function ContentEnginePage() {
                 </div>
               )
             })}
+          </div>
+        </div>
+
+        <div
+          className="mb-12 p-5 rounded-xl"
+          style={{ background: 'rgba(58,120,88,0.035)', border: '1px solid rgba(58,120,88,0.12)' }}
+        >
+          <div className="font-mono text-[10px] text-zinc-600 mb-4 uppercase tracking-wider">Sistema LinkedIn de autoridad</div>
+          <div className="grid md:grid-cols-2 gap-4">
+            {linkedinAuthorityFormats.map(format => (
+              <div key={format.id} className="rounded-lg p-4" style={{ background: 'rgba(255,255,255,0.018)', border: '1px solid rgba(255,255,255,0.055)' }}>
+                <div className="font-mono text-[9px] text-[#3a7858] uppercase tracking-wider mb-1">{format.type}</div>
+                <h2 className="text-zinc-200 font-semibold text-sm mb-2">{format.name}</h2>
+                <p className="text-zinc-600 text-[11px] leading-relaxed mb-3">{format.useWhen}</p>
+                <div className="space-y-1.5 mb-3">
+                  {format.structure.slice(0, 5).map((item, i) => (
+                    <div key={item} className="flex items-start gap-2">
+                      <span className="text-[9px] font-mono text-zinc-700 tabular-nums">{String(i + 1).padStart(2, '0')}</span>
+                      <span className="text-[10.5px] font-mono text-zinc-500">{item}</span>
+                    </div>
+                  ))}
+                </div>
+                {format.carouselSlides?.length ? (
+                  <div className="flex flex-wrap gap-1.5 mb-3">
+                    {format.carouselSlides.map(slide => (
+                      <span key={slide} className="text-[9px] font-mono text-zinc-700 px-1.5 py-0.5 rounded" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)' }}>
+                        {slide}
+                      </span>
+                    ))}
+                  </div>
+                ) : null}
+                <p className="text-zinc-600 text-[11px] italic leading-relaxed">{format.prompt}</p>
+              </div>
+            ))}
           </div>
         </div>
 

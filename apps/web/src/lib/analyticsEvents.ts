@@ -85,9 +85,10 @@ export interface AssessmentCompletedProps {
 }
 
 export interface BlogArticleViewedProps {
-  slug:     string
-  category: string
-  read_time: string
+  slug:            string
+  category:        string
+  read_time:       string
+  technical_level?: string
 }
 
 export interface EvidenceDocumentClickedProps {
@@ -104,6 +105,12 @@ export interface ArtifactDownloadedProps {
 }
 
 export interface CaseStudyEngagementProps {
+  case_slug: string
+  sector:    string
+  depth:     string
+}
+
+export interface CaseStudyDepthReachedProps {
   case_slug: string
   sector:    string
   depth:     string

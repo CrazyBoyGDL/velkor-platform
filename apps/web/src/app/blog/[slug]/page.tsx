@@ -5,11 +5,13 @@ import { strapi } from '@/lib/strapi'
 import {
   architectureReferenceHref,
   asAuthorityReferences,
-  asDownloadableArtifact,
+  asDownloadableArtifacts,
   asStringArray,
+  asTechnicalArticleBlocks,
   type AuthorityReference,
 } from '@/lib/contentEngine'
-import ScrollDepthTracker from '@/components/ScrollDepthTracker'
+import ArticleEngagementTracker from '@/components/ArticleEngagementTracker'
+import TechnicalArticleBlocks from '@/components/TechnicalArticleBlocks'
 import TrackedLink from '@/components/TrackedLink'
 
 export const revalidate = 3600
@@ -35,8 +37,12 @@ type StrapiPost = {
     relatedEvidence?: unknown
     relatedCases?: unknown
     relatedFrameworks?: unknown
+    architectureReferences?: unknown
     downloadableArtifact?: unknown
+    downloadableArtifacts?: unknown
+    articleBlocks?: unknown
     architectureDiagram?: unknown
+    industryContext?: string
     governanceNotes?: string
   }
 }
@@ -168,7 +174,9 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
   const relatedEvidence = asAuthorityReferences(post.relatedEvidence, 'evidence')
   const relatedCases = asAuthorityReferences(post.relatedCases, 'case-study')
   const relatedFrameworks = asAuthorityReferences(post.relatedFrameworks, 'framework')
-  const downloadableArtifact = asDownloadableArtifact(post.downloadableArtifact)
+  const architectureReferences = asAuthorityReferences(post.architectureReferences, 'architecture')
+  const downloadableArtifacts = asDownloadableArtifacts(post.downloadableArtifact, post.downloadableArtifacts)
+  const articleBlocks = asTechnicalArticleBlocks(post.articleBlocks)
   const architectureRef = architectureReferenceHref(post.architectureDiagram)
   const metadataItems = [
     post.technicalCategory ? TECHNICAL_CATEGORY_LABEL[post.technicalCategory] ?? post.technicalCategory : null,
@@ -180,12 +188,18 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
     ...relatedEvidence,
     ...relatedCases,
     ...relatedFrameworks,
+    ...architectureReferences,
     ...(architectureRef ? [{ label: 'Diagrama de arquitectura asociado', href: architectureRef, relation: 'architecture' as const }] : []),
   ]
 
   return (
     <div className="min-h-screen py-16 px-4 sm:px-8">
-      <ScrollDepthTracker page={`blog-${params.slug}`} />
+      <ArticleEngagementTracker
+        slug={params.slug}
+        category={post.category}
+        readTime={post.readTime ?? ''}
+        technicalLevel={post.technicalLevel}
+      />
       <div className="max-w-3xl mx-auto">
 
         {/* Back link */}
@@ -223,6 +237,12 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
             </p>
           )}
 
+          {post.industryContext && (
+            <p className="text-zinc-600 text-xs font-mono leading-relaxed mb-5">
+              Contexto de industria: {post.industryContext}
+            </p>
+          )}
+
           <div className="text-zinc-700 text-xs font-mono">{date}</div>
 
           {(metadataItems.length > 0 || operationalTags.length > 0) && (
@@ -251,18 +271,20 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
           <p className="text-zinc-600 text-sm italic">Contenido completo próximamente.</p>
         )}
 
-        {(downloadableArtifact || post.governanceNotes) && (
+        <TechnicalArticleBlocks blocks={articleBlocks} />
+
+        {(downloadableArtifacts.length > 0 || post.governanceNotes) && (
           <div className="my-10 p-5 rounded-xl" style={{ background: 'rgba(58,120,88,0.04)', border: '1px solid rgba(58,120,88,0.12)' }}>
             <div className="text-[10px] font-mono text-zinc-600 mb-2">ACTIVO OPERACIONAL</div>
-            {downloadableArtifact && (
-              <div className="mb-3">
-                <div className="text-zinc-300 text-sm font-semibold">{downloadableArtifact.title}</div>
+            {downloadableArtifacts.map(artifact => (
+              <div className="mb-3" key={artifact.title}>
+                <div className="text-zinc-300 text-sm font-semibold">{artifact.title}</div>
                 <p className="text-zinc-600 text-[11px] font-mono mt-1">
-                  {downloadableArtifact.gated ? 'Disponible bajo NDA o discovery técnico' : 'Artefacto disponible para descarga'}
-                  {downloadableArtifact.format ? ` · ${downloadableArtifact.format.toUpperCase()}` : ''}
+                  {artifact.gated ? 'Disponible bajo NDA o discovery técnico' : 'Artefacto disponible para descarga'}
+                  {artifact.format ? ` · ${artifact.format.toUpperCase()}` : ''}
                 </p>
               </div>
-            )}
+            ))}
             {post.governanceNotes && (
               <p className="text-zinc-500 text-xs leading-relaxed">{post.governanceNotes}</p>
             )}

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { strapi } from '@/lib/strapi'
-import { architectureReferenceHref, asDownloadableArtifact, asStringArray } from '@/lib/contentEngine'
+import { architectureReferenceHref, asDownloadableArtifacts, asStringArray } from '@/lib/contentEngine'
 import BlogList, { type BlogPost } from '@/components/BlogList'
 
 export const revalidate = 3600
@@ -103,6 +103,7 @@ type StrapiPost = {
     relatedCases?: unknown
     relatedFrameworks?: unknown
     downloadableArtifact?: unknown
+    downloadableArtifacts?: unknown
     architectureDiagram?: unknown
     governanceNotes?: string
   }
@@ -136,7 +137,7 @@ async function getPosts(): Promise<BlogPost[]> {
     relatedEvidence: asStringArray(a.relatedEvidence),
     relatedCases: asStringArray(a.relatedCases),
     relatedFrameworks: asStringArray(a.relatedFrameworks),
-    downloadableArtifact: asDownloadableArtifact(a.downloadableArtifact),
+    downloadableArtifact: asDownloadableArtifacts(a.downloadableArtifact, a.downloadableArtifacts)[0] ?? null,
     architectureRef: architectureReferenceHref(a.architectureDiagram),
     governanceNotes: a.governanceNotes ?? null,
   }))

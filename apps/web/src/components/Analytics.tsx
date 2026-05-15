@@ -17,6 +17,8 @@
  *   useAssessmentStep()   — Hook: fires step-completed + step-abandoned events
  *   trackEvidenceClick()  — Fire evidence document click event
  *   trackDiagramView()    — Fire architecture diagram view event
+ *   trackArticleView()    — Fire technical article view event
+ *   useCaseStudyDepth()   — Hook: fires case-study depth thresholds
  */
 import Script from 'next/script'
 import { useEffect, useRef } from 'react'
@@ -154,6 +156,20 @@ export function trackCaseStudyEngagement(caseSlug: string, sector: string, depth
   trackEvent(Events.CaseStudyEngagement, { case_slug: caseSlug, sector, depth })
 }
 
+export function trackArticleView(
+  slug: string,
+  category: string,
+  readTime: string,
+  technicalLevel?: string
+): void {
+  trackEvent(Events.BlogArticleViewed, {
+    slug,
+    category,
+    read_time: readTime || 'unknown',
+    technical_level: technicalLevel ?? 'unspecified',
+  })
+}
+
 export function trackLeadSourceAttribution(source: string, utm: string, conversionPath: string): void {
   trackEvent(Events.LeadSourceAttributed, {
     source: source || 'direct',
@@ -201,6 +217,34 @@ export function useScrollDepth(page: string): void {
     check()
     return () => window.removeEventListener('scroll', check)
   }, [page])
+}
+
+export function useCaseStudyDepth(caseSlug: string, sector: string): void {
+  useEffect(() => {
+    const THRESHOLDS = [50, 90] as const
+    const fired = new Set<number>()
+
+    const check = () => {
+      const el = document.documentElement
+      const scrolled = el.scrollTop + el.clientHeight
+      const total = el.scrollHeight
+      if (total <= el.clientHeight) return
+      const pct = Math.round((scrolled / total) * 100)
+
+      for (const threshold of THRESHOLDS) {
+        if (!fired.has(threshold) && pct >= threshold) {
+          fired.add(threshold)
+          const depth = `${threshold}%`
+          trackEvent(Events.CaseStudyDepthReached, { case_slug: caseSlug, sector, depth })
+          trackCaseStudyEngagement(caseSlug, sector, depth)
+        }
+      }
+    }
+
+    window.addEventListener('scroll', check, { passive: true })
+    check()
+    return () => window.removeEventListener('scroll', check)
+  }, [caseSlug, sector])
 }
 
 // ─── Assessment step tracking hook ────────────────────────────────────────────

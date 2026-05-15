@@ -19,6 +19,19 @@ export type TechnicalCategory =
 export type TechnicalLevel = 'executive' | 'technical' | 'architecture' | 'governance'
 export type MaturityLevel = 'reactive' | 'controlled' | 'governed' | 'optimized'
 export type EngagementType = 'assessment' | 'implementation' | 'managed-services' | 'governance' | 'advisory'
+export type TechnicalArticleBlockType =
+  | 'architecture-callout'
+  | 'operational-warning'
+  | 'governance-insight'
+  | 'evidence-reference'
+  | 'rollout-consideration'
+
+export type LinkedInAuthorityFormatType =
+  | 'architecture-breakdown'
+  | 'governance-snippet'
+  | 'implementation-lesson'
+  | 'rollout-timeline'
+  | 'mini-case'
 
 export interface AuthorityReference {
   label: string
@@ -35,6 +48,27 @@ export interface DownloadableArtifact {
   evidenceId?: string
 }
 
+export interface TechnicalArticleBlock {
+  type: TechnicalArticleBlockType
+  title: string
+  body?: string
+  items?: string[]
+  severity?: 'info' | 'warning' | 'critical'
+  owner?: string
+  evidenceId?: string
+  href?: string
+}
+
+export interface LinkedInAuthorityFormat {
+  id: string
+  type: LinkedInAuthorityFormatType
+  name: string
+  useWhen: string
+  structure: string[]
+  carouselSlides?: string[]
+  prompt: string
+}
+
 export interface OperationalContentMetadata {
   technicalCategory?: TechnicalCategory
   technicalLevel?: TechnicalLevel
@@ -46,6 +80,8 @@ export interface OperationalContentMetadata {
   relatedFrameworks?: AuthorityReference[]
   architectureReferences?: AuthorityReference[]
   downloadableArtifact?: DownloadableArtifact
+  downloadableArtifacts?: DownloadableArtifact[]
+  articleBlocks?: TechnicalArticleBlock[]
   governanceNotes?: string
 }
 
@@ -155,6 +191,48 @@ export function asDownloadableArtifact(value: unknown): DownloadableArtifact | n
   return artifact
 }
 
+export function asDownloadableArtifacts(primary: unknown, plural?: unknown): DownloadableArtifact[] {
+  const artifacts = asJsonArray<unknown>(plural)
+    .map(asDownloadableArtifact)
+    .filter((item): item is DownloadableArtifact => item !== null)
+  const single = asDownloadableArtifact(primary)
+
+  if (single && !artifacts.some(item => item.title === single.title)) {
+    artifacts.unshift(single)
+  }
+
+  return artifacts
+}
+
+export function asTechnicalArticleBlocks(value: unknown): TechnicalArticleBlock[] {
+  return asJsonArray<Record<string, unknown>>(value)
+    .map((item): TechnicalArticleBlock | null => {
+      const type = typeof item.type === 'string' ? item.type : ''
+      const title = typeof item.title === 'string' ? item.title.trim() : ''
+      if (!title || ![
+        'architecture-callout',
+        'operational-warning',
+        'governance-insight',
+        'evidence-reference',
+        'rollout-consideration',
+      ].includes(type)) return null
+
+      const block: TechnicalArticleBlock = {
+        type: type as TechnicalArticleBlockType,
+        title,
+        items: asStringArray(item.items),
+      }
+      if (typeof item.body === 'string') block.body = item.body
+      if (typeof item.severity === 'string') block.severity = item.severity as TechnicalArticleBlock['severity']
+      if (typeof item.owner === 'string') block.owner = item.owner
+      if (typeof item.evidenceId === 'string') block.evidenceId = item.evidenceId
+      if (typeof item.href === 'string') block.href = item.href
+
+      return block
+    })
+    .filter((item): item is TechnicalArticleBlock => item !== null)
+}
+
 export function asAuthorityReferences(value: unknown, relation: AuthorityReference['relation']): AuthorityReference[] {
   if (!Array.isArray(value)) return []
   return value.flatMap(item => {
@@ -186,6 +264,82 @@ export function architectureReferenceHref(value: unknown): string | null {
   if (typeof value.evidenceId === 'string') return `/framework/evidence#${value.evidenceId}`
   return null
 }
+
+export const linkedinAuthorityFormats: LinkedInAuthorityFormat[] = [
+  {
+    id: 'linkedin-architecture-breakdown',
+    type: 'architecture-breakdown',
+    name: 'Breakdown de arquitectura',
+    useWhen: 'Una decision tecnica necesita contexto: restricciones, dependencias, tradeoffs y criterio de salida.',
+    structure: [
+      'Contexto operativo en 1 linea',
+      'Restriccion que cambio el diseno',
+      'Arquitectura elegida',
+      'Tradeoff aceptado',
+      'Resultado medible o criterio de handoff',
+    ],
+    carouselSlides: ['Contexto', 'Restriccion', 'Decisiones', 'Dependencias', 'Rollback', 'Resultado'],
+    prompt: 'Explica una decision de arquitectura como si el lector fuera responsable de operarla despues.',
+  },
+  {
+    id: 'linkedin-governance-snippet',
+    type: 'governance-snippet',
+    name: 'Insight de gobernanza',
+    useWhen: 'Un patron repetido en clientes revela una falla de ownership, auditoria o ciclo de vida.',
+    structure: [
+      'Patron observado',
+      'Por que ocurre en operacion real',
+      'Costo de dejarlo asi',
+      'Control estructural recomendado',
+      'Senal de alerta para auditoria',
+    ],
+    prompt: 'Convierte una friccion operativa en una observacion de gobierno que no suene a marketing.',
+  },
+  {
+    id: 'linkedin-implementation-lesson',
+    type: 'implementation-lesson',
+    name: 'Leccion de implementacion',
+    useWhen: 'El plan tuvo que cambiar en campo y esa correccion ensena mas que el resultado final.',
+    structure: [
+      'Plan original',
+      'Hallazgo de campo',
+      'Ajuste tecnico',
+      'Documento/runbook actualizado',
+      'Cuando aplica esta leccion',
+    ],
+    prompt: 'Muestra el punto donde el diseno encontro la realidad y que se ajusto para no romper operacion.',
+  },
+  {
+    id: 'linkedin-rollout-timeline',
+    type: 'rollout-timeline',
+    name: 'Timeline de rollout',
+    useWhen: 'Un proyecto se entiende mejor por fases, propietarios y criterios de avance.',
+    structure: [
+      'Objetivo operacional',
+      'Dependencias previas',
+      'Fases con criterios de salida',
+      'Condicion de rollback',
+      'Handoff a operacion',
+    ],
+    carouselSlides: ['Objetivo', 'Dependencias', 'Piloto', 'Escala', 'Rollback', 'Handoff'],
+    prompt: 'Presenta el rollout como una secuencia operable, no como una lista de tecnologia instalada.',
+  },
+  {
+    id: 'linkedin-mini-case',
+    type: 'mini-case',
+    name: 'Mini caso operacional',
+    useWhen: 'Un caso sanitizado debe conservar suficiente detalle tecnico para ser creible.',
+    structure: [
+      'Industria y escala sanitizada',
+      'Estado inicial',
+      'Restricciones',
+      'Decision de arquitectura',
+      'Resultado y leccion aprendida',
+    ],
+    carouselSlides: ['Entorno', 'Estado inicial', 'Restricciones', 'Arquitectura', 'Resultado'],
+    prompt: 'Resume un caso sin revelar al cliente, manteniendo las restricciones tecnicas que hicieron valiosa la decision.',
+  },
+]
 
 export const contentTemplates: ContentTemplate[] = [
   {

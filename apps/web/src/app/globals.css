@@ -633,6 +633,14 @@ html.light::-webkit-scrollbar-thumb { background: #d1d1d6; }
 .blog-body hr { border: none; border-top: 1px solid #252525; margin: 2rem 0; }
 .blog-body strong { color: #e4e4e7; font-weight: 600; }
 .blog-body img { border-radius: 10px; max-width: 100%; margin: 1.5rem 0; }
+.technical-article-block {
+  border-left: 3px solid;
+  border-radius: 0 10px 10px 0;
+  background: rgba(255,255,255,0.018);
+  border-top: 1px solid rgba(255,255,255,0.055);
+  border-right: 1px solid rgba(255,255,255,0.055);
+  border-bottom: 1px solid rgba(255,255,255,0.055);
+}
 
 /* ══════════════════════════════════════════════════════════
    PHASE 7 — MOBILE CONSULTIVE EXPERIENCE
@@ -690,6 +698,18 @@ html.light::-webkit-scrollbar-thumb { background: #d1d1d6; }
   .card.p-7 { padding: 1.25rem !important; }
   .card.p-8 { padding: 1.25rem !important; }
   .card.sm\:p-8 { padding: 1.25rem !important; }
+
+  .blog-body {
+    font-size: 0.96rem;
+    line-height: 1.72;
+  }
+  .blog-body h1,.blog-body h2 {
+    margin-top: 1.55rem;
+    line-height: 1.22;
+  }
+  .technical-article-block {
+    padding: 1rem !important;
+  }
 }
 
 /* Persistent mobile CTA — sticky bottom bar for assessment flow */

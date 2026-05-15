@@ -1,5 +1,7 @@
 'use strict';
 
+const { seedAuthorityPosts } = require('./content/authority-posts');
+
 const REQUIRED_ENV = [
   'JWT_SECRET',
   'ADMIN_JWT_SECRET',
@@ -24,6 +26,7 @@ module.exports = {
 
   async bootstrap({ strapi }) {
     await configurePublicPermissions(strapi);
+    await seedAuthorityPosts(strapi);
   },
 };
 

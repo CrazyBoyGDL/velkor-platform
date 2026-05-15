@@ -61,6 +61,10 @@
       "type": "enumeration",
       "enum": ["assessment", "implementation", "managed-services", "governance", "advisory"]
     },
+    "industryContext": {
+      "type": "text",
+      "maxLength": 1000
+    },
     "relatedEvidence": {
       "type": "json",
       "description": "Evidence IDs, document references, or sanitized artifact links related to this post"
@@ -68,6 +72,10 @@
     "architectureDiagram": {
       "type": "json",
       "description": "Diagram metadata or route reference for architecture context"
+    },
+    "architectureReferences": {
+      "type": "json",
+      "description": "Architecture references, diagrams, frameworks, or route links cited by the article"
     },
     "relatedCases": {
       "type": "json",
@@ -80,6 +88,14 @@
     "downloadableArtifact": {
       "type": "json",
       "description": "Optional downloadable artifact metadata: title, url, gated, format"
+    },
+    "downloadableArtifacts": {
+      "type": "json",
+      "description": "Optional list of downloadable artifact metadata: title, url, gated, format"
+    },
+    "articleBlocks": {
+      "type": "json",
+      "description": "Typed operational article blocks: architecture callouts, warnings, governance insights, evidence references"
     },
     "governanceNotes": {
       "type": "text",
