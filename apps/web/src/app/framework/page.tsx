@@ -219,6 +219,34 @@ export default function FrameworkPage() {
           </div>
         </div>
 
+        {/* Operational Framework link */}
+        <div
+          className="mb-8 p-6 sm:p-8"
+          style={{
+            border: '1px solid rgba(176,120,40,0.14)',
+            background: 'rgba(176,120,40,0.03)',
+            borderRadius: '14px',
+          }}
+        >
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5">
+            <div>
+              <div className="label text-[9.5px] mb-2">Metodología técnica detallada</div>
+              <h3 className="text-noc-white font-black text-lg mb-2">
+                Framework Operacional — 8 etapas de ingeniería
+              </h3>
+              <p className="text-zinc-500 text-sm leading-relaxed max-w-lg">
+                Discovery, assessment, priorización, arquitectura, implementación, gobernanza, validación y handoff operacional. Cada etapa produce evidencia técnica y tiene principios de ingeniería documentados.
+              </p>
+            </div>
+            <Link
+              href="/framework/operational-framework"
+              className="btn-ghost px-6 py-3 flex-shrink-0 text-center text-sm"
+            >
+              Ver metodología completa →
+            </Link>
+          </div>
+        </div>
+
         {/* Evidence library link */}
         <div
           className="mb-16 p-6 sm:p-8"

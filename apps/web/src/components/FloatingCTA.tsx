@@ -58,7 +58,7 @@ export default function FloatingCTA() {
             <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 flex-shrink-0">
               <path fillRule="evenodd" d="M10 1a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V1.75A.75.75 0 0110 1zm5.658 1.95a.75.75 0 010 1.06l-1.06 1.062a.75.75 0 01-1.061-1.061l1.06-1.06a.75.75 0 011.06 0zm-10.254 0a.75.75 0 011.06 0l1.061 1.06a.75.75 0 01-1.06 1.062L5.404 4.012a.75.75 0 010-1.061zM10 5a5 5 0 100 10A5 5 0 0010 5zm-8 5a.75.75 0 01.75-.75h1.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10zm13 0a.75.75 0 01.75-.75h1.5a.75.75 0 010 1.5h-1.5A.75.75 0 0115 10z" clipRule="evenodd" />
             </svg>
-            Diagnóstico gratis
+            Diagnóstico técnico
           </Link>
         </div>
       )}

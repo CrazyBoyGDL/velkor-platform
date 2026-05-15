@@ -14,14 +14,32 @@ const ENTRIES = [
 export default function SocialProof() {
   const [index, setIndex]     = useState(0)
   const [visible, setVisible] = useState(false)
+  const [canShow, setCanShow] = useState(false)
 
   useEffect(() => {
-    // First popup after 5s
-    const first = setTimeout(() => setVisible(true), 5000)
-    return () => clearTimeout(first)
+    const updateEligibility = () => {
+      const shouldShow = window.innerWidth >= 768 && window.scrollY > 620
+      setCanShow(shouldShow)
+      if (!shouldShow) setVisible(false)
+    }
+
+    updateEligibility()
+    window.addEventListener('scroll', updateEligibility, { passive: true })
+    window.addEventListener('resize', updateEligibility)
+    return () => {
+      window.removeEventListener('scroll', updateEligibility)
+      window.removeEventListener('resize', updateEligibility)
+    }
   }, [])
 
   useEffect(() => {
+    if (!canShow) return
+    const first = setTimeout(() => setVisible(true), 1200)
+    return () => clearTimeout(first)
+  }, [canShow])
+
+  useEffect(() => {
+    if (!canShow) return
     if (!visible) return
     // Show for 6s, hide for 10s, then cycle
     const hide = setTimeout(() => {
@@ -32,7 +50,7 @@ export default function SocialProof() {
       }, 10000)
     }, 6000)
     return () => clearTimeout(hide)
-  }, [visible, index])
+  }, [canShow, visible, index])
 
   const e = ENTRIES[index]
 
@@ -63,7 +81,7 @@ export default function SocialProof() {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-1.5 mb-0.5">
                   <span className="w-1 h-1 rounded-full flex-shrink-0 bg-zinc-600" />
-                  <span className="text-zinc-600 text-[10px] font-medium">Solicitado recientemente</span>
+                  <span className="text-zinc-600 text-[10px] font-medium">Servicio solicitado con frecuencia</span>
                 </div>
                 <p className="text-zinc-300 text-xs font-semibold leading-snug">{e.sector}</p>
                 <p className="text-zinc-600 text-[11px] mt-0.5">
@@ -74,7 +92,7 @@ export default function SocialProof() {
           </div>
           <div className="px-4 py-2 rounded-b-[13px] border-t"
             style={{ borderColor: 'rgba(255,255,255,0.05)', background: 'rgba(255,255,255,0.02)' }}>
-            <span className="text-[10px] text-zinc-700 font-medium">Velkor System · velkor.mx</span>
+            <span className="text-[10px] text-zinc-700 font-medium">Sectores comunes · datos anonimizados</span>
           </div>
         </motion.div>
       )}

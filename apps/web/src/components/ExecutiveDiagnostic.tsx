@@ -2,31 +2,32 @@
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { reveal as appear } from '@/lib/motion'
+import { AnimeGridReveal } from '@/components/AnimeMotion'
 
 // Four diagnostic questions — the ones a senior engineer asks on a first visit
 const QUESTIONS = [
   {
     color:    '#4878b0',
     question: '¿Sabes cuántos endpoints de tu red no tienen un parche activo?',
-    context:  'La mayoría de los equipos de IT responden "la mayoría" o "no sé exactamente." Eso es un gap operacional, no una preferencia. Un solo endpoint sin parchear con un CVE explotable es vector de entrada suficiente.',
-    implication: 'Diagnóstico de inventario incluido en la evaluación inicial.',
+    context:  'Si la respuesta depende de revisar varias hojas o preguntar por chat, hay una brecha operativa. El inventario debe servir para decidir, no solo para cumplir.',
+    implication: 'Incluimos inventario y priorización en la evaluación inicial.',
   },
   {
     color:    '#3a7858',
     question: '¿Cuánto tiempo tardarías en recuperar operaciones si cifran tus servidores hoy?',
-    context:  'Sin segmentación y sin backups verificados, la respuesta honesta suele ser: días. Con frecuencia, sin fecha. El tiempo promedio de recuperación sin un plan documentado es de 21 días; el costo promedio supera los $200k USD.',
+    context:  'La respuesta útil no es "tenemos backup"; es saber qué se restaura primero, quién autoriza, cuánto tarda y cuándo fue la última prueba.',
     implication: 'Evaluamos el plan de recuperación como parte del diagnóstico.',
   },
   {
     color:    '#3a7858',
     question: '¿Qué pasa si un empleado deja la empresa hoy y no desactivas su cuenta?',
-    context:  'Sin automatización de offboarding en Entra ID, las credenciales permanecen activas indefinidamente. El 58% de los incidentes internos documentados involucran cuentas de ex-empleados no desactivadas a tiempo.',
-    implication: 'La gestión de ciclo de vida de identidades forma parte del alcance.',
+    context:  'Offboarding manual significa depender de que nadie olvide un paso. Identidad, correo, grupos y dispositivos deben salir del mismo flujo.',
+    implication: 'Revisamos ciclo de vida de identidades y permisos.',
   },
   {
     color:    '#3d88a5',
     question: '¿Tienes visibilidad completa de quién accede físicamente a tus instalaciones críticas?',
-    context:  'Servidores, cuartos de cómputo y bodegas sin cobertura CCTV representan el vector físico más ignorado. El 34% de las brechas de datos documentadas en DBIR 2024 involucran acceso físico no autorizado.',
+    context:  'Cuartos de red, bodegas y accesos laterales suelen quedar fuera del mapa. La cobertura sirve cuando ayuda a reconstruir un evento sin adivinar.',
     implication: 'Incluimos evaluación de cobertura física en el mismo diagnóstico.',
   },
 ]
@@ -50,16 +51,15 @@ export default function ExecutiveDiagnostic() {
             <span className="text-zinc-600">todo responsable de IT debe poder responder.</span>
           </motion.h2>
           <motion.p {...appear(0.010)} className="text-zinc-600 text-sm leading-relaxed max-w-sm self-end">
-            Si alguna genera incertidumbre, es una brecha operacional. La evaluamos en el diagnóstico inicial, sin costo.
+            Si alguna te obliga a buscar datos en tres sistemas, hay oportunidad de ordenar antes de que se vuelva urgencia.
           </motion.p>
         </div>
 
         {/* Question rows — editorial, full-width, no boxes */}
-        <div style={{ borderTop: '1px solid rgba(255,255,255,0.04)' }}>
-          {QUESTIONS.map((q, i) => (
-            <motion.div
+        <AnimeGridReveal grid={false} from="first" delay={58} style={{ borderTop: '1px solid rgba(255,255,255,0.04)' }}>
+          {QUESTIONS.map((q) => (
+            <div
               key={q.question}
-              {...appear(i * 0.010)}
               className="grid md:grid-cols-[1fr_1.2fr] gap-8 py-8"
               style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}
             >
@@ -76,9 +76,9 @@ export default function ExecutiveDiagnostic() {
                   {q.implication}
                 </p>
               </div>
-            </motion.div>
+            </div>
           ))}
-        </div>
+        </AnimeGridReveal>
 
         {/* CTA */}
         <motion.div {...appear(0)} className="mt-10 flex flex-col sm:flex-row items-start sm:items-center gap-5">

@@ -1,27 +1,234 @@
 // ─── Velkor CRM Operations Layer ─────────────────────────────────────────────
-// Phase 6: Lead lifecycle operations that extend the classification system.
-// Provides workflow assignment, SLA routing, and Strapi payload construction.
+// Provides workflow assignment, SLA routing, pipeline stage definitions,
+// follow-up cadences, and Strapi payload construction.
 
 import type { AssessmentAnswers, ScoreResult } from './scoring'
 import type { LeadClassification }             from './classification'
 
-// ─── Types ────────────────────────────────────────────────────────────────────
+// ─── Pipeline Stages ──────────────────────────────────────────────────────────
 
+/**
+ * Full sales pipeline lifecycle.
+ * Stage transitions are driven by CRM events — assessment.completed,
+ * discovery.scheduled, proposal.sent, etc.
+ */
+export type CrmPipelineStage =
+  | 'new'                    // Assessment submitted — not yet reviewed
+  | 'qualified'              // Reviewed — matches Velkor engagement criteria
+  | 'assessment_completed'   // Operational assessment reviewed internally
+  | 'discovery_scheduled'    // Technical discovery call booked
+  | 'proposal_sent'          // Implementation proposal delivered
+  | 'negotiation'            // Scope/commercial in discussion
+  | 'closed_won'             // Engagement confirmed, project active
+  | 'closed_lost'            // No engagement — reason documented
+  | 'nurture'                // Long-term evaluation — reactivation pipeline
+
+/** Legacy alias — retained for backward compatibility with Strapi schema */
 export type CrmLifecycleStage =
-  | 'new'
-  | 'contacted'
-  | 'qualified'
-  | 'proposal'
-  | 'negotiation'
-  | 'won'
-  | 'lost'
-  | 'nurture'
+  | 'new' | 'contacted' | 'qualified' | 'proposal'
+  | 'negotiation' | 'won' | 'lost' | 'nurture'
+
+// ─── Stage Definitions ────────────────────────────────────────────────────────
+
+export interface PipelineStageDefinition {
+  stage:         CrmPipelineStage
+  label:         string
+  description:   string
+  /** Max hours in this stage before escalation */
+  slaHours:      number
+  /** What triggers exit from this stage */
+  exitTriggers:  string[]
+  /** What action is required upon entry */
+  entryAction:   string
+  /** Tags automatically applied when entering this stage */
+  autoTags:      string[]
+}
+
+export const PIPELINE_STAGES: PipelineStageDefinition[] = [
+  {
+    stage:        'new',
+    label:        'Nuevo',
+    description:  'Lead recibido vía assessment. Pendiente de revisión interna.',
+    slaHours:     4,
+    exitTriggers: ['Internal review complete', 'Disqualified'],
+    entryAction:  'Alert assigned engineer. Review assessment scores and workflow routing.',
+    autoTags:     ['new-lead', 'assessment-received'],
+  },
+  {
+    stage:        'qualified',
+    label:        'Calificado',
+    description:  'Revisado internamente. Perfil confirma alineación con servicios Velkor.',
+    slaHours:     8,
+    exitTriggers: ['First contact made', 'Discovery call scheduled'],
+    entryAction:  'Send personalized technical follow-up based on assessment findings.',
+    autoTags:     ['qualified'],
+  },
+  {
+    stage:        'assessment_completed',
+    label:        'Assessment Completado',
+    description:  'Assessment operacional revisado. Hallazgos comunicados al prospecto.',
+    slaHours:     24,
+    exitTriggers: ['Discovery call booked', 'Proposal requested'],
+    entryAction:  'Schedule assessment debrief call. Share findings summary.',
+    autoTags:     ['assessment-reviewed'],
+  },
+  {
+    stage:        'discovery_scheduled',
+    label:        'Discovery Agendado',
+    description:  'Llamada de discovery técnico programada. Preparar agenda y contexto.',
+    slaHours:     48,
+    exitTriggers: ['Discovery completed', 'Proposal initiated'],
+    entryAction:  'Prepare discovery agenda from assessment data. Confirm meeting.',
+    autoTags:     ['discovery-scheduled'],
+  },
+  {
+    stage:        'proposal_sent',
+    label:        'Propuesta Enviada',
+    description:  'Propuesta de implementación entregada al prospecto.',
+    slaHours:     72,
+    exitTriggers: ['Proposal accepted', 'Revision requested', 'Declined'],
+    entryAction:  'Send proposal. Schedule follow-up call within 48h.',
+    autoTags:     ['proposal-sent'],
+  },
+  {
+    stage:        'negotiation',
+    label:        'Negociación',
+    description:  'Alcance y condiciones comerciales en discusión activa.',
+    slaHours:     120,
+    exitTriggers: ['Agreement reached', 'Negotiations stalled'],
+    entryAction:  'Assign account executive. Document open commercial points.',
+    autoTags:     ['in-negotiation'],
+  },
+  {
+    stage:        'closed_won',
+    label:        'Cerrado Ganado',
+    description:  'Proyecto confirmado. SOW firmado. Kickoff programado.',
+    slaHours:     0,  // no SLA — active project
+    exitTriggers: ['Project delivered', 'Upsell opportunity identified'],
+    entryAction:  'Create project record. Schedule kickoff. Assign engineering team.',
+    autoTags:     ['active-project', 'closed-won'],
+  },
+  {
+    stage:        'closed_lost',
+    label:        'Cerrado Perdido',
+    description:  'No se cerró el proyecto. Motivo documentado.',
+    slaHours:     0,
+    exitTriggers: ['Re-engaged', 'Moved to nurture'],
+    entryAction:  'Document loss reason. Evaluate for nurture pipeline.',
+    autoTags:     ['closed-lost'],
+  },
+  {
+    stage:        'nurture',
+    label:        'Nurture',
+    description:  'Prospecto en evaluación de largo plazo. Reactivación periódica.',
+    slaHours:     720,  // 30 days before re-check
+    exitTriggers: ['Reactivated', 'Disqualified permanently'],
+    entryAction:  'Enroll in nurture sequence. Set 30-day reactivation reminder.',
+    autoTags:     ['nurture-sequence', 'long-term-evaluation'],
+  },
+]
+
+// ─── Follow-up Cadences ───────────────────────────────────────────────────────
+
+export interface FollowUpCadence {
+  name:        string
+  trigger:     CrmPipelineStage
+  touchpoints: FollowUpTouchpoint[]
+}
+
+export interface FollowUpTouchpoint {
+  day:     number
+  channel: 'email' | 'phone' | 'whatsapp' | 'async'
+  action:  string
+  owner:   'engineer' | 'account-executive' | 'automated'
+}
+
+export const FOLLOW_UP_CADENCES: FollowUpCadence[] = [
+  {
+    name:    'Critical Lead Cadence',
+    trigger: 'new',
+    touchpoints: [
+      { day: 0,  channel: 'phone',     action: 'Llamada técnica urgente — revisar flags críticos', owner: 'engineer' },
+      { day: 1,  channel: 'email',     action: 'Enviar resumen de hallazgos con propuesta de discovery', owner: 'engineer' },
+      { day: 2,  channel: 'whatsapp',  action: 'Confirmar recepción y agendar discovery', owner: 'engineer' },
+      { day: 4,  channel: 'phone',     action: 'Follow-up si no hay respuesta', owner: 'account-executive' },
+    ],
+  },
+  {
+    name:    'Standard Assessment Cadence',
+    trigger: 'assessment_completed',
+    touchpoints: [
+      { day: 0,  channel: 'email',     action: 'Enviar resumen técnico personalizado con hallazgos', owner: 'engineer' },
+      { day: 2,  channel: 'email',     action: 'Proponer fecha de llamada de discovery', owner: 'account-executive' },
+      { day: 5,  channel: 'phone',     action: 'Llamada de seguimiento si no hubo respuesta', owner: 'engineer' },
+      { day: 10, channel: 'async',     action: 'Enviar artículo técnico relevante al perfil del lead', owner: 'automated' },
+    ],
+  },
+  {
+    name:    'Proposal Follow-up Cadence',
+    trigger: 'proposal_sent',
+    touchpoints: [
+      { day: 1,  channel: 'email',     action: 'Confirmar recepción de propuesta. Ofrecer sesión de Q&A', owner: 'account-executive' },
+      { day: 3,  channel: 'phone',     action: 'Llamada para resolver dudas técnicas o comerciales', owner: 'engineer' },
+      { day: 7,  channel: 'email',     action: 'Enviar caso de estudio relevante como referencia', owner: 'account-executive' },
+      { day: 14, channel: 'phone',     action: 'Llamada de decisión — confirmar timeline del prospecto', owner: 'account-executive' },
+    ],
+  },
+  {
+    name:    'Nurture Reactivation Cadence',
+    trigger: 'nurture',
+    touchpoints: [
+      { day: 0,   channel: 'email',    action: 'Enviar contenido técnico relevante al segmento', owner: 'automated' },
+      { day: 30,  channel: 'email',    action: 'Artículo de blog técnico + resumen de framework', owner: 'automated' },
+      { day: 60,  channel: 'email',    action: 'Invitación a re-evaluación si el entorno cambió', owner: 'account-executive' },
+      { day: 90,  channel: 'phone',    action: 'Llamada de reactivación — preguntar por cambios', owner: 'account-executive' },
+    ],
+  },
+]
+
+// ─── Escalation Rules ─────────────────────────────────────────────────────────
+
+export interface EscalationRule {
+  condition:   string
+  fromStage:   CrmPipelineStage
+  action:      string
+  alertLevel:  'critical' | 'high' | 'normal'
+}
+
+export const ESCALATION_RULES: EscalationRule[] = [
+  {
+    condition:  'No response after 4h in new stage with critical priority',
+    fromStage:  'new',
+    action:     'Escalate to senior engineer. Alert on Slack/Teams channel.',
+    alertLevel: 'critical',
+  },
+  {
+    condition:  'No response after 24h in qualified stage',
+    fromStage:  'qualified',
+    action:     'Reassign to account executive. Add to manual follow-up queue.',
+    alertLevel: 'high',
+  },
+  {
+    condition:  'Proposal open > 14 days without response',
+    fromStage:  'proposal_sent',
+    action:     'Schedule decision call. Prepare revised scope if needed.',
+    alertLevel: 'high',
+  },
+  {
+    condition:  'Enterprise lead stalled in any stage > SLA',
+    fromStage:  'negotiation',
+    action:     'Escalate to principal. Review commercial terms.',
+    alertLevel: 'high',
+  },
+]
+
+// ─── Workflow type (unchanged) ────────────────────────────────────────────────
 
 export interface CrmWorkflow {
   workflow:           'immediate-review' | 'governance-workflow' | 'roadmap-workflow' | 'nurture-sequence'
   slaHours:           number
-  assignmentHint:     string   // e.g. "Assign to senior engineer"
-  firstAction:        string   // e.g. "Schedule technical call within 4h"
+  assignmentHint:     string
+  firstAction:        string
   tags:               string[]
   internalAlertLevel: 'critical' | 'high' | 'normal' | 'low'
 }
