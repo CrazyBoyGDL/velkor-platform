@@ -53,6 +53,37 @@ export type OperationalPriority =
 
 export type EscalationLevel = 'none' | 'owner' | 'principal' | 'executive'
 
+export type EngagementAuditEventType =
+  | 'lead-created'
+  | 'stage-transition'
+  | 'owner-assigned'
+  | 'follow-up-scheduled'
+  | 'stale-detected'
+  | 'escalation-triggered'
+  | 'nurture-updated'
+
+export interface EngagementAuditEvent {
+  type: EngagementAuditEventType
+  at: string
+  fromStage?: CrmPipelineStage
+  toStage?: CrmPipelineStage
+  owner?: WorkflowOwner
+  actor?: string
+  reason?: string
+  note?: string
+  tags?: string[]
+}
+
+export interface WorkflowTransitionInput {
+  currentStage: CrmPipelineStage
+  nextStage: CrmPipelineStage
+  existingAuditTrail?: unknown
+  owner?: WorkflowOwner
+  actor?: string
+  reason?: string
+  now?: Date
+}
+
 // ─── Stage Definitions ────────────────────────────────────────────────────────
 
 export interface PipelineStageDefinition {
@@ -274,6 +305,59 @@ const SIZE_ENUM: Record<string, string> = {
 
 function addHours(date: Date, hours: number): string {
   return new Date(date.getTime() + hours * 60 * 60 * 1000).toISOString()
+}
+
+function normalizeAuditTrail(value: unknown): EngagementAuditEvent[] {
+  if (!Array.isArray(value)) return []
+  return value.filter((item): item is EngagementAuditEvent => {
+    if (typeof item !== 'object' || item === null) return false
+    const event = item as Partial<EngagementAuditEvent>
+    return typeof event.type === 'string' && typeof event.at === 'string'
+  })
+}
+
+export function buildEngagementAuditEvent(event: Omit<EngagementAuditEvent, 'at'> & { at?: string | Date }): EngagementAuditEvent {
+  const at = event.at instanceof Date
+    ? event.at.toISOString()
+    : event.at ?? new Date().toISOString()
+
+  return {
+    type: event.type,
+    at,
+    fromStage: event.fromStage,
+    toStage: event.toStage,
+    owner: event.owner,
+    actor: event.actor,
+    reason: event.reason,
+    note: event.note,
+    tags: event.tags,
+  }
+}
+
+export function transitionLifecycleStage(input: WorkflowTransitionInput): Record<string, unknown> {
+  const now = input.now ?? new Date()
+  const nextDefinition = PIPELINE_STAGES.find(stage => stage.stage === input.nextStage)
+  const auditTrail = normalizeAuditTrail(input.existingAuditTrail)
+  const transition = buildEngagementAuditEvent({
+    type: 'stage-transition',
+    at: now,
+    fromStage: input.currentStage,
+    toStage: input.nextStage,
+    owner: input.owner,
+    actor: input.actor,
+    reason: input.reason ?? nextDefinition?.entryAction,
+    tags: nextDefinition?.autoTags,
+  })
+
+  return {
+    lifecycleStage: input.nextStage,
+    lastInteractionAt: now.toISOString(),
+    nextFollowUpAt: nextDefinition?.slaHours ? addHours(now, nextDefinition.slaHours) : undefined,
+    staleAt: nextDefinition?.slaHours ? addHours(now, nextDefinition.slaHours * 2) : undefined,
+    owner: input.owner,
+    tags: nextDefinition?.autoTags,
+    engagementAuditTrail: [...auditTrail, transition],
+  }
 }
 
 function determineWorkflowOwner(classification: LeadClassification, scores: ScoreResult): WorkflowOwner {
@@ -525,6 +609,24 @@ export function buildStrapiLeadPayload(
   const notes = buildAssessmentNotesBlock(answers, scores, classification, reportRef)
   const now = new Date()
   const reminder = buildFollowUpReminder(workflow, now)
+  const engagementAuditTrail = [
+    buildEngagementAuditEvent({
+      type: 'lead-created',
+      at: now,
+      toStage: 'new',
+      owner: workflow.ownerRole,
+      reason: 'Assessment submitted and routed through CRM workflow assignment.',
+      tags: workflow.tags,
+    }),
+    buildEngagementAuditEvent({
+      type: 'follow-up-scheduled',
+      at: now,
+      toStage: 'new',
+      owner: workflow.ownerRole,
+      reason: `${workflow.firstAction} SLA ${workflow.slaHours}h.`,
+      tags: [workflow.workflow, workflow.operationalPriority],
+    }),
+  ]
 
   return {
     // Contact
@@ -559,6 +661,7 @@ export function buildStrapiLeadPayload(
     lastInteractionAt: now.toISOString(),
     governanceSignals: buildGovernanceSignals(answers, scores, classification),
     relatedArtifacts: buildRelatedArtifacts(answers, classification),
+    engagementAuditTrail,
     tags:         [...(classification.crmTags ?? []), ...workflow.tags],
 
     // Source tracking
@@ -610,6 +713,26 @@ export function buildDirectLeadPayload(input: DirectLeadPayloadInput): Record<st
   const owner = input.owner ?? (workflow === 'nurture-sequence' ? 'account-development' : 'account-executive')
   const slaHours = workflow === 'nurture-sequence' ? 72 : 24
   const escalationAfterHours = workflow === 'nurture-sequence' ? 720 : 48
+  const nurtureStage = input.nurtureStage ?? (workflow === 'nurture-sequence' ? 'evidence-share' : 'assessment-follow-up')
+  const operationalPriority = input.operationalPriority ?? (workflow === 'nurture-sequence' ? 'nurture' : 'managed-roadmap')
+  const engagementAuditTrail = [
+    buildEngagementAuditEvent({
+      type: 'lead-created',
+      at: now,
+      toStage: 'new',
+      owner,
+      reason: `Direct lead created from ${input.source}.`,
+      tags: [input.source, workflow],
+    }),
+    buildEngagementAuditEvent({
+      type: 'follow-up-scheduled',
+      at: now,
+      toStage: 'new',
+      owner,
+      reason: `Initial follow-up scheduled in ${slaHours}h.`,
+      tags: [workflow, operationalPriority],
+    }),
+  ]
 
   return {
     name: input.name,
@@ -626,8 +749,8 @@ export function buildDirectLeadPayload(input: DirectLeadPayloadInput): Record<st
     alertLevel: 'normal',
     owner,
     lifecycleStage: 'new',
-    nurtureStage: input.nurtureStage ?? (workflow === 'nurture-sequence' ? 'evidence-share' : 'assessment-follow-up'),
-    operationalPriority: input.operationalPriority ?? (workflow === 'nurture-sequence' ? 'nurture' : 'managed-roadmap'),
+    nurtureStage,
+    operationalPriority,
     escalationLevel: workflow === 'nurture-sequence' ? 'none' : 'owner',
     nextFollowUpAt: addHours(now, slaHours),
     staleAt: addHours(now, escalationAfterHours),
@@ -640,5 +763,6 @@ export function buildDirectLeadPayload(input: DirectLeadPayloadInput): Record<st
     relatedArtifacts: input.source.startsWith('recurso-')
       ? [{ type: 'resource', label: input.source.replace('recurso-', '') }]
       : [],
+    engagementAuditTrail,
   }
 }

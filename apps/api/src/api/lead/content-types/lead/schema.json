@@ -163,6 +163,10 @@
     },
     "relatedArtifacts": {
       "type": "json"
+    },
+    "engagementAuditTrail": {
+      "type": "json",
+      "description": "Chronological lifecycle, ownership, follow-up, and escalation events for CRM operations"
     }
   }
 }

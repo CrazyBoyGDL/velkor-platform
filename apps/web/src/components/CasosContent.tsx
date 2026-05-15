@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { reveal as fadeUp } from '@/lib/motion'
-import { trackCaseStudyEngagement } from '@/components/Analytics'
+import { trackCaseStudyEngagement, trackDeviceBehavior, useCaseStudyDepth } from '@/components/Analytics'
 
 // ─── Data model ───────────────────────────────────────────────────────────────
 
@@ -526,9 +526,14 @@ function CaseCard({ c, i }: { c: CaseStudy; i: number }) {
 // ─── Main export ──────────────────────────────────────────────────────────────
 
 export default function CasosContent({ cases }: { cases: CaseStudy[] }) {
+  const sectors = cases.map(c => c.sector).join(',')
+
+  useCaseStudyDepth('case-index', sectors)
+
   useEffect(() => {
-    trackCaseStudyEngagement('case-index', cases.map(c => c.sector).join(','), 'view')
-  }, [cases])
+    trackCaseStudyEngagement('case-index', sectors, 'view')
+    trackDeviceBehavior('casos', 'case-study-index-view')
+  }, [sectors])
 
   return (
     <>
