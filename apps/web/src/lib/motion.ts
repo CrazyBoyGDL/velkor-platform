@@ -1,36 +1,33 @@
 /**
- * Motion system — quiet, physical, engineered.
+ * Motion system: quiet, physical, engineered.
  *
  * Design principles:
- *   • Nearly invisible reveal transitions (0.12s, opacity only)
- *   • No y-axis displacement on scroll reveals
- *   • No visible stagger between siblings
- *   • Ambient/hover motion is the primary motion language
- *   • Physical spring configs for interactive feedback
+ *   - Reveals should feel like systems activating, not generic fade-ups.
+ *   - Stagger is used only for topology, evidence and sequence logic.
+ *   - Ambient motion stays subtle and functional.
+ *   - Hover feedback reads as mass and precision, never spectacle.
  *
  * References: Linear, Raycast, Arc, Apple Pro apps
  */
 
-// Physical easing — sharp deceleration, reads as mass not spring
+// Physical easing: sharp deceleration, reads as mass not spring
 export const EASE: [number, number, number, number] = [0.25, 0, 0, 1]
 
 // ─── Scroll reveal ────────────────────────────────────────────────────────────
-// Opacity only — no y displacement. Fires immediately on viewport entry.
-// At 0.12s this is genuinely imperceptible; elements simply exist.
+// Very small activation: opacity plus a trace of blur. No large y-axis lift.
 export const reveal = (delay = 0) => ({
-  initial:     { opacity: 0 },
-  whileInView: { opacity: 1 },
+  initial:     { opacity: 0, filter: 'blur(3px)' },
+  whileInView: { opacity: 1, filter: 'blur(0px)' },
   viewport:    { once: true, amount: 0.01 },
-  transition:  { duration: 0.12, ease: EASE, delay },
+  transition:  { duration: 0.42, ease: EASE, delay },
 })
 
 // ─── Above-fold entrance ──────────────────────────────────────────────────────
-// For hero-level content only. Slightly longer to let the eye orient on load.
-// Use stagger sparingly: max 0.05s spread across all hero children.
+// Hero-level content gets a touch more air so the system can orient on load.
 export const enter = (delay = 0) => ({
-  initial:    { opacity: 0 },
-  animate:    { opacity: 1 },
-  transition: { duration: 0.14, ease: EASE, delay },
+  initial:    { opacity: 0, filter: 'blur(4px)' },
+  animate:    { opacity: 1, filter: 'blur(0px)' },
+  transition: { duration: 0.58, ease: EASE, delay },
 })
 
 // ─── Spring configs ───────────────────────────────────────────────────────────
@@ -47,10 +44,29 @@ export const SPRING_SOFT = {
   damping:   36,
 } as const
 
+export const SPRING_MAGNETIC = {
+  type:      'spring' as const,
+  stiffness: 360,
+  damping:   32,
+  mass:      0.7,
+} as const
+
 // ─── Topology / ambient ───────────────────────────────────────────────────────
-// Entry for architectural diagrams — all elements reveal as a unit, not staggered
+// Entry for architectural diagrams: all elements reveal as a unit.
 export const diagramEnter = (delay = 0) => ({
-  initial:    { opacity: 0 },
-  animate:    { opacity: 1 },
-  transition: { duration: 0.18, ease: EASE, delay },
+  initial:    { opacity: 0, filter: 'blur(4px)' },
+  animate:    { opacity: 1, filter: 'blur(0px)' },
+  transition: { duration: 0.62, ease: EASE, delay },
 })
+
+export const telemetryPulse = {
+  animate: {
+    opacity: [0.36, 0.82, 0.42],
+    scale: [1, 1.035, 1],
+  },
+  transition: {
+    duration: 3.8,
+    repeat: Infinity,
+    ease: EASE,
+  },
+} as const

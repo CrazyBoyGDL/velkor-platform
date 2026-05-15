@@ -43,13 +43,17 @@ export function AnimeGridReveal({
       targets.forEach((target) => {
         target.style.opacity = '1'
         target.style.transform = 'none'
+        target.style.filter = 'none'
+        target.style.clipPath = 'none'
       })
       return
     }
 
     targets.forEach((target) => {
       target.style.opacity = '0'
-      target.style.transform = 'translateY(18px) scale(0.985)'
+      target.style.transform = 'translateY(6px)'
+      target.style.filter = 'blur(4px)'
+      target.style.clipPath = 'inset(0 0 12% 0)'
     })
 
     const scope = createScope({ root: element }).add(() => {
@@ -59,9 +63,10 @@ export function AnimeGridReveal({
 
         animation = animate(targets, {
           opacity: [0, 1],
-          y: [18, 0],
-          scale: [0.985, 1],
-          duration: 760,
+          y: [6, 0],
+          filter: ['blur(4px)', 'blur(0px)'],
+          clipPath: ['inset(0 0 12% 0)', 'inset(0 0 0% 0)'],
+          duration: 680,
           ease: 'out(4)',
           delay: stagger(delay, {
             grid,

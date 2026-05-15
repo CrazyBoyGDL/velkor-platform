@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useRef } from 'react'
 
-// Subtle static-feeling network topology — cool steel palette, minimal motion
+// Subtle static-feeling network topology: cool steel palette, minimal motion
 export default function NetworkBg() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
@@ -11,29 +11,34 @@ export default function NetworkBg() {
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
-    let raf: number
+    let raf: number | null = null
     let W = 0, H = 0
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const ratio = Math.min(window.devicePixelRatio || 1, 2)
 
     const resize = () => {
-      W = canvas.width  = canvas.offsetWidth
-      H = canvas.height = canvas.offsetHeight
+      W = canvas.offsetWidth
+      H = canvas.offsetHeight
+      canvas.width = Math.max(1, Math.floor(W * ratio))
+      canvas.height = Math.max(1, Math.floor(H * ratio))
+      ctx.setTransform(ratio, 0, 0, ratio, 0, 0)
     }
     resize()
     window.addEventListener('resize', resize)
 
-    // Fewer nodes, slower movement — reads as structural, not animated
-    const COUNT = 16
+    // Fewer nodes, slower movement: structural telemetry, not decoration.
+    const COUNT = Math.min(18, Math.max(9, Math.round(W / 95)))
     const nodes = Array.from({ length: COUNT }, () => ({
       x: Math.random() * W,
       y: Math.random() * H,
-      vx: (Math.random() - 0.5) * 0.08,   // very slow drift
-      vy: (Math.random() - 0.5) * 0.08,
+      vx: reducedMotion ? 0 : (Math.random() - 0.5) * 0.055,
+      vy: reducedMotion ? 0 : (Math.random() - 0.5) * 0.055,
       r: Math.random() * 0.8 + 0.4,
       pulse: Math.random() * Math.PI * 2,
     }))
 
-    const LINK_DIST = 110
-    // Cool steel/slate — enterprise, not startup amber
+    const LINK_DIST = W < 640 ? 82 : 118
+    // Cool steel/slate: enterprise, not startup amber.
     const STEEL = [100, 116, 139]   // slate-500
     const col = (rgb: number[], a: number) =>
       `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${a})`
@@ -44,12 +49,12 @@ export default function NetworkBg() {
       for (const n of nodes) {
         n.x     += n.vx
         n.y     += n.vy
-        n.pulse += 0.006   // slower pulse
+        n.pulse += reducedMotion ? 0 : 0.004
         if (n.x < 0 || n.x > W) n.vx *= -1
         if (n.y < 0 || n.y > H) n.vy *= -1
       }
 
-      // Edges — very faint, structural
+      // Edges: very faint, structural.
       for (let i = 0; i < nodes.length; i++) {
         for (let j = i + 1; j < nodes.length; j++) {
           const dx = nodes[i].x - nodes[j].x
@@ -66,7 +71,7 @@ export default function NetworkBg() {
         }
       }
 
-      // Nodes — calm, minimal
+      // Nodes: calm, minimal.
       for (const n of nodes) {
         const a = 0.08 + 0.04 * Math.sin(n.pulse)
         ctx.beginPath()
@@ -75,12 +80,14 @@ export default function NetworkBg() {
         ctx.fill()
       }
 
-      raf = requestAnimationFrame(draw)
+      if (!reducedMotion) {
+        raf = requestAnimationFrame(draw)
+      }
     }
 
-    raf = requestAnimationFrame(draw)
+    draw()
     return () => {
-      cancelAnimationFrame(raf)
+      if (raf) cancelAnimationFrame(raf)
       window.removeEventListener('resize', resize)
     }
   }, [])
