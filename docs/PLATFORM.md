@@ -574,6 +574,21 @@ This phase reduces visual density and improves enterprise clarity without adding
 
 Detailed notes: `docs/VISUAL_REDUCTION_BRAND_COHERENCE.md`.
 
+## 17. Premium Operational Visual System Addendum
+
+This phase adds living infrastructure motion and richer consultive visual evidence without rebuilding backend systems:
+
+- Operational motion is centralized in `apps/web/src/lib/motion/operationalMotion.ts`.
+- Existing `motion.ts` now maps generic reveal helpers to directional system activation.
+- Hero topology, canvas background, logo, hover behavior, and navbar state use a shared restrained motion language.
+- `/servicios` is rebuilt as operational capability modules instead of repeated service cards.
+- `OperationalEvidence.tsx` provides reusable architecture snapshots, deployment diffs, policy overlays, audit fragments, and infrastructure state panels.
+- `/framework/evidence` reuses audit fragments to surface sanitized real-world evidence without changing CMS architecture.
+- Mobile receives a minimal scroll-intent consultive CTA and horizontal evidence rails.
+- Light mode extends into a technical paper / blueprint-gray surface system for the new visual modules.
+
+Detailed notes: `docs/PREMIUM_OPERATIONAL_VISUAL_SYSTEM.md`.
+
 ---
 
 *Updated: May 2026 · Velkor Operations · velkor.mx*
