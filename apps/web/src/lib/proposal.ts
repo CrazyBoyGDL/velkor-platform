@@ -29,6 +29,13 @@ export interface GeneratedProposal {
   executiveSummary: string
   proposedPhases:   ProposalPhase[]
   scopeStatement:   string
+  industryAwareRecommendations: string[]
+  governanceRecommendations:    string[]
+  dependencySequencing:         string[]
+  operationalPriorities:        string[]
+  complianceObservations:       string[]
+  roadmapSuggestions:           string[]
+  engagementStructure:          string[]
   outOfScope:       string[]
   successCriteria:  string[]
   riskFactors:      string[]
@@ -43,7 +50,7 @@ function buildExecutiveSummary(
   scores: ScoreResult,
   classification: LeadClassification
 ): string {
-  const { step1: s1, step5: s5 } = answers
+  const { step1: s1 } = answers
   const { exposureLabel, maturityLabel, criticalCount, highCount } = scores
 
   const companyContext = `${answers.company} opera en el sector ${s1.industry} con ${s1.companySize} colaboradores`
@@ -203,7 +210,7 @@ function buildPhases(answers: AssessmentAnswers, scores: ScoreResult): ProposalP
 
 // ─── Remediation deliverables (used when criticalCount > 0) ──────────────────
 
-function buildRemediationDeliverables(answers: AssessmentAnswers, scores: ScoreResult): string[] {
+function buildRemediationDeliverables(_answers: AssessmentAnswers, scores: ScoreResult): string[] {
   const deliverables: string[] = []
   const criticalFlags = scores.flags.filter(f => f.severity === 'critical')
 
@@ -244,6 +251,121 @@ function buildScopeStatement(answers: AssessmentAnswers, _classification: LeadCl
     `abarcando ${sizeContext} con una base de ${s1.companySize} colaboradores. ` +
     `El alcance incluye los dominios de identidad y acceso, infraestructura de red, continuidad operacional ` +
     `y madurez de procesos, según las brechas identificadas en la evaluación diagnóstica inicial.`
+}
+
+// ─── Operational maturity recommendations ───────────────────────────────────
+
+function buildIndustryAwareRecommendations(answers: AssessmentAnswers, scores: ScoreResult): string[] {
+  const recommendations: string[] = []
+  const industry = answers.step1.industry
+
+  if (industry === 'healthcare') {
+    recommendations.push('Priorizar gobierno de identidad, retencion de evidencia y trazabilidad de acceso a datos clinicos.')
+  } else if (industry === 'retail') {
+    recommendations.push('Separar POS, CCTV, invitados e IoT antes de ampliar monitoreo o analitica.')
+  } else if (industry === 'manufacturing' || industry === 'logistics') {
+    recommendations.push('Secuenciar red OT/IoT y continuidad antes de cambios agresivos de identidad.')
+  } else if (industry === 'finance' || industry === 'legal') {
+    recommendations.push('Elevar controles de acceso privilegiado, DLP y auditoria documental desde la primera fase.')
+  } else {
+    recommendations.push('Usar el assessment como baseline operativo y ajustar el roadmap con discovery tecnico.')
+  }
+
+  if (scores.exposureLevel === 'critical') {
+    recommendations.push('Congelar iniciativas cosmeticas hasta cerrar hallazgos criticos y confirmar rollback operativo.')
+  }
+
+  return recommendations
+}
+
+function buildGovernanceRecommendations(answers: AssessmentAnswers, classification: LeadClassification): string[] {
+  const recommendations: string[] = []
+  const { step3: s3, step4: s4 } = answers
+
+  if (s3.privilegedAccess === 'shared' || s3.privilegedAccess === 'none') {
+    recommendations.push('Definir propietario de acceso privilegiado y migrar a cuentas nominales con elevacion temporal.')
+  }
+  if (s4.changeManagement !== 'formal') {
+    recommendations.push('Formalizar aprobacion de cambios, criterios de rollback y bitacora de excepciones.')
+  }
+  if (s4.documentation !== 'current') {
+    recommendations.push('Versionar runbooks, diagramas y decisiones de arquitectura como entregables de handoff.')
+  }
+  if (classification.engagementType === 'Compliance-Driven') {
+    recommendations.push('Mapear controles a evidencia verificable antes de producir promesas comerciales o certificaciones.')
+  }
+
+  return recommendations.length ? recommendations : ['Mantener cadencia trimestral de revision de accesos, cambios y excepciones operativas.']
+}
+
+function buildDependencySequencing(answers: AssessmentAnswers, scores: ScoreResult): string[] {
+  const sequence: string[] = []
+  const { step2: s2, step3: s3, step4: s4 } = answers
+
+  if (s3.mfa !== 'all') sequence.push('Completar enrolamiento MFA antes de endurecer Acceso Condicional.')
+  if (s3.intune !== 'full' && s3.conditionalAccess !== 'configured') sequence.push('Validar inventario e Intune compliance antes de bloquear acceso por dispositivo.')
+  if (s2.vlanSegmentation !== 'yes') sequence.push('Mapear flujos reales antes de aplicar politicas inter-VLAN restrictivas.')
+  if (s2.backup !== 'cloud-verified') sequence.push('Verificar restauracion antes de cambios de alto impacto en core, identidad o servidores.')
+  if (s4.monitoring === 'none') sequence.push('Activar logging minimo antes de iniciar remediacion para poder medir regresiones.')
+  if (scores.criticalCount > 0) sequence.unshift('Atender hallazgos criticos antes de ejecutar modernizacion o optimizacion de costos.')
+
+  return sequence
+}
+
+function buildOperationalPriorities(answers: AssessmentAnswers, scores: ScoreResult): string[] {
+  const priorities = scores.immediatePriorities.length
+    ? [...scores.immediatePriorities]
+    : ['Definir baseline operativo y criterios de exito por dominio.']
+
+  if (answers.step5.urgency === 'critical') {
+    priorities.unshift('Contencion y alcance de incidente activo con owner tecnico asignado.')
+  }
+  if (answers.step1.locations !== '1') {
+    priorities.push('Planificar despliegue por sede con ventana, owner local y criterio de rollback.')
+  }
+
+  return priorities.slice(0, 6)
+}
+
+function buildComplianceObservations(answers: AssessmentAnswers): string[] {
+  const frameworks = [
+    ...(answers.step4.compliance ?? []),
+    ...(answers.step5.complianceNeeds ?? []),
+  ].filter(item => item && item !== 'none')
+
+  if (!frameworks.length) {
+    return ['No se declaro marco regulatorio activo; mantener evidencia operacional aun cuando no exista auditoria externa inmediata.']
+  }
+
+  return [
+    `Marcos declarados: ${[...new Set(frameworks)].join(', ')}.`,
+    'Separar evidencia tecnica de narrativa comercial: politicas, logs, matriz de ownership y pruebas de control.',
+    'Definir responsable de revision y calendario de recertificacion antes del cierre del proyecto.',
+  ]
+}
+
+function buildRoadmapSuggestions(phases: ProposalPhase[], classification: LeadClassification): string[] {
+  const suggestions = phases.map(phase => `Fase ${phase.phase}: ${phase.title} (${phase.estimatedWeeks} semanas, prioridad ${phase.priority}).`)
+  if (classification.followUpChannel === 'async-proposal') {
+    suggestions.push('Mantener roadmap modular con decision gates; evitar comprometer fechas sin discovery tecnico.')
+  }
+  return suggestions
+}
+
+function buildEngagementStructure(classification: LeadClassification, scores: ScoreResult): string[] {
+  const structure = [
+    `Tipo de engagement: ${classification.engagementLabel}.`,
+    `SLA inicial recomendado: ${classification.followUpHours} horas por prioridad ${classification.priority}.`,
+  ]
+
+  if (scores.criticalCount > 0) {
+    structure.push('Iniciar con bloque de remediacion prioritaria antes del SOW completo.')
+  }
+  if (classification.segment === 'Enterprise') {
+    structure.push('Asignar principal owner y cadencia ejecutiva semanal durante discovery y propuesta.')
+  }
+
+  return structure
 }
 
 // ─── Out of scope ─────────────────────────────────────────────────────────────
@@ -370,10 +492,19 @@ export function generateProposal(
   scores: ScoreResult,
   classification: LeadClassification
 ): GeneratedProposal {
+  const proposedPhases = buildPhases(answers, scores)
+
   return {
     executiveSummary: buildExecutiveSummary(answers, scores, classification),
-    proposedPhases:   buildPhases(answers, scores),
+    proposedPhases,
     scopeStatement:   buildScopeStatement(answers, classification),
+    industryAwareRecommendations: buildIndustryAwareRecommendations(answers, scores),
+    governanceRecommendations:    buildGovernanceRecommendations(answers, classification),
+    dependencySequencing:         buildDependencySequencing(answers, scores),
+    operationalPriorities:        buildOperationalPriorities(answers, scores),
+    complianceObservations:       buildComplianceObservations(answers),
+    roadmapSuggestions:           buildRoadmapSuggestions(proposedPhases, classification),
+    engagementStructure:          buildEngagementStructure(classification, scores),
     outOfScope:       buildOutOfScope(answers),
     successCriteria:  buildSuccessCriteria(answers, scores),
     riskFactors:      buildRiskFactors(answers, scores),

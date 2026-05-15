@@ -7,7 +7,7 @@
 // Fail-open: if RESEND_API_KEY is absent, logs and returns ok (dev-friendly).
 
 import { NextRequest, NextResponse } from 'next/server'
-import { generateAssessmentEmail } from '@/lib/emailTemplate'
+import { EMAIL_SEQUENCES, generateAssessmentEmail } from '@/lib/emailTemplate'
 import type { EmailData }           from '@/lib/emailTemplate'
 import { logAuditEvent }            from '@/lib/security'
 
@@ -161,7 +161,8 @@ export async function POST(req: NextRequest) {
   }
 
   // ── Build email ──
-  const subject = `Evaluación operacional completada · ${reportRef} · Velkor System`
+  const sequence = EMAIL_SEQUENCES['assessment-follow-up']
+  const subject = `${sequence.label} · ${reportRef} · Velkor System`
   const html    = generateAssessmentEmail(emailData)
 
   // ── Send ──

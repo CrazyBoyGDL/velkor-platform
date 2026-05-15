@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { strapi } from '@/lib/strapi';
+import { buildDirectLeadPayload } from '@/lib/crm';
 
 // ── Rate limiter (same pattern as /api/assessment) ────────────────────────────
 const rateMap = new Map<string, { count: number; resetAt: number }>();
@@ -62,15 +63,17 @@ export async function POST(req: NextRequest) {
   if (!company)                        return NextResponse.json({ error: 'empresa requerida' }, { status: 400 });
   if (!resourceSlug)                   return NextResponse.json({ error: 'recurso inválido' },  { status: 400 });
 
-  const result = await strapi.post('/leads', {
+  const result = await strapi.post('/leads', buildDirectLeadPayload({
     name,
     email,
     company,
-    services:  [resourceSlug],
-    urgency:   'normal',
-    status:    'new',
-    source:    `recurso-${resourceSlug}`,
-  });
+    services: [resourceSlug],
+    source: `recurso-${resourceSlug}`,
+    workflow: 'nurture-sequence',
+    owner: 'account-development',
+    nurtureStage: 'evidence-share',
+    operationalPriority: 'nurture',
+  }));
 
   if (!result) {
     return NextResponse.json(

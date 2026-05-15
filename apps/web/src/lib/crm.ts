@@ -28,6 +28,31 @@ export type CrmLifecycleStage =
   | 'new' | 'contacted' | 'qualified' | 'proposal'
   | 'negotiation' | 'won' | 'lost' | 'nurture'
 
+export type WorkflowOwner =
+  | 'senior-engineer'
+  | 'solutions-architect'
+  | 'compliance-specialist'
+  | 'account-executive'
+  | 'account-development'
+  | 'principal'
+
+export type NurtureStage =
+  | 'none'
+  | 'assessment-follow-up'
+  | 'evidence-share'
+  | 'proposal-follow-up'
+  | 'reactivation'
+
+export type OperationalPriority =
+  | 'incident-response'
+  | 'enterprise-risk'
+  | 'governance-deadline'
+  | 'modernization'
+  | 'managed-roadmap'
+  | 'nurture'
+
+export type EscalationLevel = 'none' | 'owner' | 'principal' | 'executive'
+
 // ─── Stage Definitions ────────────────────────────────────────────────────────
 
 export interface PipelineStageDefinition {
@@ -228,9 +253,14 @@ export interface CrmWorkflow {
   workflow:           'immediate-review' | 'governance-workflow' | 'roadmap-workflow' | 'nurture-sequence'
   slaHours:           number
   assignmentHint:     string
+  ownerRole:          WorkflowOwner
   firstAction:        string
   tags:               string[]
   internalAlertLevel: 'critical' | 'high' | 'normal' | 'low'
+  operationalPriority: OperationalPriority
+  nurtureStage:       NurtureStage
+  escalationLevel:    EscalationLevel
+  escalationAfterHours:number
 }
 
 // ─── Size enum mapping ────────────────────────────────────────────────────────
@@ -242,6 +272,99 @@ const SIZE_ENUM: Record<string, string> = {
   '500+':   'size_200_plus',
 }
 
+function addHours(date: Date, hours: number): string {
+  return new Date(date.getTime() + hours * 60 * 60 * 1000).toISOString()
+}
+
+function determineWorkflowOwner(classification: LeadClassification, scores: ScoreResult): WorkflowOwner {
+  if (scores.criticalCount > 0 || classification.priority === 'critical') return 'senior-engineer'
+  if (classification.segment === 'Enterprise') return 'principal'
+  if (classification.engagementType === 'Compliance-Driven') return 'compliance-specialist'
+  if (classification.engagementType === 'Modernization' || classification.engagementType === 'Managed Services') return 'solutions-architect'
+  if (classification.priority === 'low') return 'account-development'
+  return 'account-executive'
+}
+
+function determineOperationalPriority(classification: LeadClassification, scores: ScoreResult): OperationalPriority {
+  if (scores.criticalCount > 0 || classification.priority === 'critical') return 'incident-response'
+  if (classification.segment === 'Enterprise' || classification.priority === 'high') return 'enterprise-risk'
+  if (classification.engagementType === 'Compliance-Driven') return 'governance-deadline'
+  if (classification.engagementType === 'Modernization') return 'modernization'
+  if (classification.engagementType === 'Managed Services') return 'managed-roadmap'
+  return 'nurture'
+}
+
+function determineNurtureStage(classification: LeadClassification): NurtureStage {
+  if (classification.priority === 'low' || classification.followUpChannel === 'async-proposal') return 'reactivation'
+  if (classification.engagementType === 'Compliance-Driven') return 'evidence-share'
+  return 'assessment-follow-up'
+}
+
+function determineEscalationLevel(classification: LeadClassification, scores: ScoreResult): EscalationLevel {
+  if (scores.criticalCount > 0 || classification.priority === 'critical') return 'executive'
+  if (classification.segment === 'Enterprise' || classification.priority === 'high') return 'principal'
+  if (classification.engagementType === 'Compliance-Driven') return 'owner'
+  return 'none'
+}
+
+export function buildFollowUpReminder(workflow: CrmWorkflow, now = new Date()) {
+  return {
+    nextFollowUpAt: addHours(now, Math.max(1, workflow.slaHours)),
+    staleAt:        addHours(now, Math.max(2, workflow.escalationAfterHours)),
+    owner:          workflow.ownerRole,
+    escalationLevel: workflow.escalationLevel,
+  }
+}
+
+export function isLeadStale(
+  lifecycleStage: CrmPipelineStage,
+  lastInteractionAt: string | Date,
+  now = new Date()
+): boolean {
+  const stage = PIPELINE_STAGES.find(s => s.stage === lifecycleStage)
+  if (!stage?.slaHours) return false
+  const lastInteraction = typeof lastInteractionAt === 'string'
+    ? new Date(lastInteractionAt)
+    : lastInteractionAt
+  return now.getTime() - lastInteraction.getTime() > stage.slaHours * 60 * 60 * 1000
+}
+
+function buildGovernanceSignals(answers: AssessmentAnswers, scores: ScoreResult, classification: LeadClassification) {
+  const compliance = [
+    ...(answers.step4.compliance ?? []),
+    ...(answers.step5.complianceNeeds ?? []),
+  ].filter(item => item && item !== 'none')
+
+  return {
+    compliance,
+    changeManagement: answers.step4.changeManagement,
+    documentation: answers.step4.documentation,
+    monitoring: answers.step4.monitoring,
+    privilegedAccess: answers.step3.privilegedAccess,
+    identityScore: scores.identity,
+    operationsScore: scores.operations,
+    engagementType: classification.engagementType,
+  }
+}
+
+function buildRelatedArtifacts(answers: AssessmentAnswers, classification: LeadClassification) {
+  const artifacts = [
+    { type: 'assessment-report', label: 'Operational assessment report' },
+  ]
+
+  if (classification.engagementType === 'Compliance-Driven' || answers.step4.compliance?.some(item => item !== 'none')) {
+    artifacts.push({ type: 'evidence', label: 'Governance evidence brief' })
+  }
+  if (answers.step3.intune !== 'full' || answers.step3.conditionalAccess !== 'configured') {
+    artifacts.push({ type: 'framework', label: 'Identity governance rollout framework' })
+  }
+  if (answers.step2.vlanSegmentation !== 'yes' || answers.step2.firewall !== 'ngfw') {
+    artifacts.push({ type: 'case-study', label: 'Network segmentation case study' })
+  }
+
+  return artifacts
+}
+
 // ─── Workflow assignment ──────────────────────────────────────────────────────
 
 export function assignWorkflow(
@@ -249,6 +372,10 @@ export function assignWorkflow(
   scores: ScoreResult
 ): CrmWorkflow {
   const { priority, segment, engagementType } = classification
+  const ownerRole = determineWorkflowOwner(classification, scores)
+  const operationalPriority = determineOperationalPriority(classification, scores)
+  const nurtureStage = determineNurtureStage(classification)
+  const escalationLevel = determineEscalationLevel(classification, scores)
 
   // Critical priority — immediate response, 4h SLA
   if (priority === 'critical') {
@@ -256,9 +383,14 @@ export function assignWorkflow(
       workflow:           'immediate-review',
       slaHours:           4,
       assignmentHint:     'Assign to senior engineer',
+      ownerRole,
       firstAction:        'Schedule technical call within 4h',
       tags:               ['critical-priority', 'immediate-review', `flags-${scores.criticalCount}-critical`],
       internalAlertLevel: 'critical',
+      operationalPriority,
+      nurtureStage:       'none',
+      escalationLevel,
+      escalationAfterHours: 4,
     }
   }
 
@@ -268,9 +400,14 @@ export function assignWorkflow(
       workflow:           'immediate-review',
       slaHours:           8,
       assignmentHint:     'Assign to senior engineer',
+      ownerRole,
       firstAction:        'Schedule technical call within 8h',
       tags:               ['high-priority', 'immediate-review', segment.toLowerCase()],
       internalAlertLevel: 'high',
+      operationalPriority,
+      nurtureStage,
+      escalationLevel,
+      escalationAfterHours: 12,
     }
   }
 
@@ -280,9 +417,14 @@ export function assignWorkflow(
       workflow:           'governance-workflow',
       slaHours:           24,
       assignmentHint:     'Assign to compliance specialist',
+      ownerRole,
       firstAction:        'Send compliance requirements questionnaire within 24h',
       tags:               ['compliance-driven', 'governance-workflow', 'regulatory'],
       internalAlertLevel: 'normal',
+      operationalPriority,
+      nurtureStage,
+      escalationLevel,
+      escalationAfterHours: 36,
     }
   }
 
@@ -292,9 +434,14 @@ export function assignWorkflow(
       workflow:           'roadmap-workflow',
       slaHours:           48,
       assignmentHint:     'Assign to solutions architect',
+      ownerRole,
       firstAction:        'Prepare modernization roadmap proposal within 48h',
       tags:               ['roadmap-workflow', engagementType.toLowerCase().replace(/ /g, '-')],
       internalAlertLevel: 'normal',
+      operationalPriority,
+      nurtureStage,
+      escalationLevel,
+      escalationAfterHours: 72,
     }
   }
 
@@ -304,9 +451,14 @@ export function assignWorkflow(
       workflow:           'nurture-sequence',
       slaHours:           72,
       assignmentHint:     'Assign to account development',
+      ownerRole,
       firstAction:        'Enroll in nurture email sequence within 72h',
       tags:               ['nurture-sequence', 'low-urgency', 'evaluating'],
       internalAlertLevel: 'low',
+      operationalPriority,
+      nurtureStage:       'reactivation',
+      escalationLevel:    'none',
+      escalationAfterHours: 720,
     }
   }
 
@@ -315,9 +467,14 @@ export function assignWorkflow(
     workflow:           'immediate-review',
     slaHours:           24,
     assignmentHint:     'Assign to account executive',
+    ownerRole,
     firstAction:        'Send technical assessment summary and next-steps within 24h',
     tags:               ['standard', 'immediate-review'],
     internalAlertLevel: 'normal',
+    operationalPriority,
+    nurtureStage,
+    escalationLevel,
+    escalationAfterHours: 48,
   }
 }
 
@@ -344,6 +501,7 @@ export function buildAssessmentNotesBlock(
     `Hallazgos: ${scores.criticalCount} críticos · ${scores.highCount} altos (${scores.flags.length} total)`,
     `Segmento: ${classification.segment} · ${classification.engagementLabel}`,
     `Workflow: ${workflow.workflow} · SLA: ${workflow.slaHours}h · Prioridad: ${classification.priorityLabel}`,
+    `Owner: ${workflow.ownerRole} · Escalacion: ${workflow.escalationLevel} · Prioridad operativa: ${workflow.operationalPriority}`,
     '',
     topFindings,
   ]
@@ -365,6 +523,8 @@ export function buildStrapiLeadPayload(
   reportRef:      string
 ): Record<string, unknown> {
   const notes = buildAssessmentNotesBlock(answers, scores, classification, reportRef)
+  const now = new Date()
+  const reminder = buildFollowUpReminder(workflow, now)
 
   return {
     // Contact
@@ -389,6 +549,16 @@ export function buildStrapiLeadPayload(
     workflow:     workflow.workflow,
     slaHours:     workflow.slaHours,
     alertLevel:   workflow.internalAlertLevel,
+    owner:        workflow.ownerRole,
+    lifecycleStage: 'new',
+    nurtureStage: workflow.nurtureStage,
+    operationalPriority: workflow.operationalPriority,
+    escalationLevel: workflow.escalationLevel,
+    nextFollowUpAt: reminder.nextFollowUpAt,
+    staleAt: reminder.staleAt,
+    lastInteractionAt: now.toISOString(),
+    governanceSignals: buildGovernanceSignals(answers, scores, classification),
+    relatedArtifacts: buildRelatedArtifacts(answers, classification),
     tags:         [...(classification.crmTags ?? []), ...workflow.tags],
 
     // Source tracking
@@ -417,5 +587,58 @@ export function buildStrapiLeadPayload(
     internalNote:    classification.internalNote,
     followUpChannel: classification.followUpChannel,
     followUpHours:   classification.followUpHours,
+  }
+}
+
+export interface DirectLeadPayloadInput {
+  name: string
+  email: string
+  company: string
+  phone?: string
+  services?: string[]
+  notes?: string
+  source: string
+  workflow?: CrmWorkflow['workflow']
+  owner?: WorkflowOwner
+  nurtureStage?: NurtureStage
+  operationalPriority?: OperationalPriority
+}
+
+export function buildDirectLeadPayload(input: DirectLeadPayloadInput): Record<string, unknown> {
+  const now = new Date()
+  const workflow = input.workflow ?? (input.source.startsWith('recurso-') ? 'nurture-sequence' : 'roadmap-workflow')
+  const owner = input.owner ?? (workflow === 'nurture-sequence' ? 'account-development' : 'account-executive')
+  const slaHours = workflow === 'nurture-sequence' ? 72 : 24
+  const escalationAfterHours = workflow === 'nurture-sequence' ? 720 : 48
+
+  return {
+    name: input.name,
+    email: input.email,
+    company: input.company,
+    phone: input.phone || undefined,
+    services: input.services ?? [],
+    notes: input.notes || undefined,
+    urgency: 'normal',
+    status: 'new',
+    source: input.source,
+    workflow,
+    slaHours,
+    alertLevel: 'normal',
+    owner,
+    lifecycleStage: 'new',
+    nurtureStage: input.nurtureStage ?? (workflow === 'nurture-sequence' ? 'evidence-share' : 'assessment-follow-up'),
+    operationalPriority: input.operationalPriority ?? (workflow === 'nurture-sequence' ? 'nurture' : 'managed-roadmap'),
+    escalationLevel: workflow === 'nurture-sequence' ? 'none' : 'owner',
+    nextFollowUpAt: addHours(now, slaHours),
+    staleAt: addHours(now, escalationAfterHours),
+    lastInteractionAt: now.toISOString(),
+    tags: [
+      input.source,
+      workflow,
+      ...(input.services ?? []).map(service => `service-${service.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`),
+    ],
+    relatedArtifacts: input.source.startsWith('recurso-')
+      ? [{ type: 'resource', label: input.source.replace('recurso-', '') }]
+      : [],
   }
 }

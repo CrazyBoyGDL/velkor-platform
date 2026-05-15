@@ -22,6 +22,77 @@ export interface EmailData {
   pdfUrl?:          string
 }
 
+export type OperationalEmailType =
+  | 'assessment-follow-up'
+  | 'proposal-follow-up'
+  | 'evidence-sharing'
+  | 'scheduling-reminder'
+  | 'nurture'
+
+export interface OperationalEmailSequence {
+  type: OperationalEmailType
+  label: string
+  trigger: string
+  cadenceDays: number[]
+  owner: 'engineer' | 'account-executive' | 'automated'
+  tone: 'technical' | 'consultive' | 'governance'
+}
+
+export interface OperationalEmailData {
+  type: OperationalEmailType
+  recipientName: string
+  company: string
+  reportRef?: string
+  primaryFinding?: string
+  recommendedNextStep: string
+  evidenceTitle?: string
+  schedulingUrl?: string
+  artifactUrl?: string
+}
+
+export const EMAIL_SEQUENCES: Record<OperationalEmailType, OperationalEmailSequence> = {
+  'assessment-follow-up': {
+    type: 'assessment-follow-up',
+    label: 'Assessment follow-up',
+    trigger: 'assessment.completed',
+    cadenceDays: [0, 2, 5],
+    owner: 'engineer',
+    tone: 'technical',
+  },
+  'proposal-follow-up': {
+    type: 'proposal-follow-up',
+    label: 'Proposal follow-up',
+    trigger: 'proposal.sent',
+    cadenceDays: [1, 3, 7, 14],
+    owner: 'account-executive',
+    tone: 'consultive',
+  },
+  'evidence-sharing': {
+    type: 'evidence-sharing',
+    label: 'Evidence sharing',
+    trigger: 'lead.requires-evidence',
+    cadenceDays: [0, 10],
+    owner: 'engineer',
+    tone: 'governance',
+  },
+  'scheduling-reminder': {
+    type: 'scheduling-reminder',
+    label: 'Scheduling reminder',
+    trigger: 'discovery.pending',
+    cadenceDays: [1, 4],
+    owner: 'account-executive',
+    tone: 'consultive',
+  },
+  nurture: {
+    type: 'nurture',
+    label: 'Operational nurture',
+    trigger: 'lead.nurture',
+    cadenceDays: [0, 30, 60, 90],
+    owner: 'automated',
+    tone: 'technical',
+  },
+}
+
 // ─── Color helpers ────────────────────────────────────────────────────────────
 
 const EXPOSURE_PALETTE: Record<string, { bg: string; border: string; text: string }> = {
@@ -269,6 +340,76 @@ function buildFooter(reportRef: string): string {
         </p>
       </td>
     </tr>`
+}
+
+function operationalSubject(data: OperationalEmailData): string {
+  const map: Record<OperationalEmailType, string> = {
+    'assessment-follow-up': `Siguientes pasos de evaluación operacional · ${data.company}`,
+    'proposal-follow-up': `Seguimiento de propuesta técnica · ${data.company}`,
+    'evidence-sharing': `Evidencia técnica relacionada · ${data.company}`,
+    'scheduling-reminder': `Agenda de revisión técnica · ${data.company}`,
+    nurture: `Referencia operacional para su roadmap IT · ${data.company}`,
+  }
+  return map[data.type]
+}
+
+export function buildOperationalEmailSubject(data: OperationalEmailData): string {
+  const ref = data.reportRef ? ` · ${data.reportRef}` : ''
+  return `${operationalSubject(data)}${ref}`
+}
+
+export function generateOperationalEmail(data: OperationalEmailData): string {
+  const sequence = EMAIL_SEQUENCES[data.type]
+  const evidence = data.evidenceTitle
+    ? `<p style="margin:0 0 12px;font-family:Arial,sans-serif;font-size:13px;color:#404050;">Referencia sugerida: <strong>${data.evidenceTitle}</strong>.</p>`
+    : ''
+  const artifact = data.artifactUrl
+    ? `<p style="margin:0 0 12px;font-family:Courier New,monospace;font-size:11px;"><a href="${data.artifactUrl}" style="color:#3060a0;">Abrir artefacto operativo</a></p>`
+    : ''
+  const schedule = data.schedulingUrl
+    ? `<p style="margin:18px 0 0;"><a href="${data.schedulingUrl}" style="display:inline-block;background:#0a0a14;color:#e8e8f0;text-decoration:none;padding:12px 22px;border-radius:5px;font-family:Arial,sans-serif;font-size:13px;font-weight:700;">Agendar revisión técnica</a></p>`
+    : ''
+
+  return `<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>${buildOperationalEmailSubject(data)}</title>
+</head>
+<body style="margin:0;padding:0;background:#f0f0f4;font-family:Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f0f0f4;padding:32px 0;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;background:#ffffff;border:1px solid #d8d8e0;border-radius:6px;overflow:hidden;">
+          <tr>
+            <td style="padding:24px 32px;background:#0a0a14;border-bottom:2px solid #0a0a14;">
+              <span style="font-family:Georgia,serif;font-size:18px;font-weight:700;color:#e8e8f0;">Velkor System</span><br />
+              <span style="font-family:Courier New,monospace;font-size:10px;color:#505070;letter-spacing:0.15em;text-transform:uppercase;">${sequence.label} · ${sequence.owner}</span>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:28px 32px;background:#ffffff;">
+              <p style="margin:0 0 12px;font-family:Arial,sans-serif;font-size:13px;color:#404050;">${data.recipientName},</p>
+              <p style="margin:0 0 14px;font-family:Arial,sans-serif;font-size:13px;color:#404050;line-height:1.6;">
+                Damos seguimiento a ${data.company} con una recomendación concreta y operativa, no una automatización comercial genérica.
+              </p>
+              ${data.primaryFinding ? `<p style="margin:0 0 14px;font-family:Courier New,monospace;font-size:12px;color:#505070;line-height:1.6;border-left:3px solid #b07828;padding-left:12px;">${data.primaryFinding}</p>` : ''}
+              ${evidence}
+              ${artifact}
+              <p style="margin:0;font-family:Arial,sans-serif;font-size:13px;color:#404050;line-height:1.6;">
+                Próximo paso recomendado: <strong>${data.recommendedNextStep}</strong>
+              </p>
+              ${schedule}
+            </td>
+          </tr>
+          ${buildFooter(data.reportRef ?? 'operational-email')}
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`
 }
 
 // ─── Main export ──────────────────────────────────────────────────────────────
