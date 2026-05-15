@@ -1,16 +1,15 @@
 'use client'
 import { motion } from 'framer-motion'
 import { reveal as appear } from '@/lib/motion'
-import { AnimeGridReveal } from '@/components/AnimeMotion'
 
 // Three structural failure patterns observed in SMB/mid-market engagements
 const RISKS = [
   {
     domain:  'Red',
     color:   '#4878b0',
-    title:   'Movimiento lateral sin restricción',
-    body:    'En una red plana, un equipo comprometido puede tocar servidores, controladores de dominio y respaldos. La segmentación no es lujo: es contención.',
-    control: 'Separar segmentos, limitar administración remota y revisar reglas entre zonas.',
+    title:   'Red plana con demasiada confianza interna',
+    body:    'Un equipo comprometido no debería alcanzar servidores, respaldos y administración. El primer control es contención.',
+    control: 'Segmentos claros, administración restringida y reglas entre zonas revisables.',
     signals: [
       'Todo el tráfico interno en la misma subred',
       'Reglas "any-any" activas en el firewall',
@@ -20,9 +19,9 @@ const RISKS = [
   {
     domain:  'Identidad',
     color:   '#3a7858',
-    title:   'Credenciales sin segundo factor',
-    body:    'Una contraseña filtrada no debería abrir correo, archivos y sistemas críticos. MFA y acceso condicional ponen contexto antes de permitir la entrada.',
-    control: 'MFA obligatorio, acceso condicional y roles administrativos con caducidad.',
+    title:   'Identidad sin contexto suficiente',
+    body:    'Una contraseña filtrada no puede ser el único filtro para correo, archivos y sistemas críticos.',
+    control: 'MFA, acceso condicional y roles administrativos temporales.',
     signals: [
       'Cuentas de administrador sin MFA obligatorio',
       'Política de contraseñas sin complejidad mínima',
@@ -32,9 +31,9 @@ const RISKS = [
   {
     domain:  'Endpoints',
     color:   '#3a7858',
-    title:   'Dispositivos sin gestión centralizada',
-    body:    'Sin MDM, parches e inventario viven dispersos. Cuando aparece una vulnerabilidad, nadie quiere empezar preguntando cuántos equipos existen.',
-    control: 'Inventario activo, políticas MDM y ventanas de parcheo con responsables claros.',
+    title:   'Endpoints fuera de inventario operativo',
+    body:    'Cuando aparece una vulnerabilidad, el equipo no debería empezar preguntando cuántas laptops existen.',
+    control: 'Inventario activo, políticas MDM y ventanas de parcheo con responsable.',
     signals: [
       'Endpoints con parches pendientes de más de 90 días',
       'Sin inventario automatizado de software instalado',
@@ -57,7 +56,6 @@ function RiskItem({ risk }: { risk: typeof RISKS[number] }) {
         </span>
       </div>
 
-      {/* Title */}
       <h3 className="text-zinc-200 text-[14px] font-semibold leading-snug mb-2.5">{title}</h3>
 
       <div className="grid md:grid-cols-[1.05fr_0.95fr] gap-5">
@@ -67,9 +65,9 @@ function RiskItem({ risk }: { risk: typeof RISKS[number] }) {
             <div className="text-[10px] font-mono text-zinc-600 mb-1">control minimo</div>
             <p className="text-zinc-400 text-[12.5px] leading-relaxed">{control}</p>
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="grid gap-1.5">
             {signals.slice(0, 2).map((s) => (
-              <span key={s} className="rounded-md border border-white/[0.06] px-2 py-1 text-[10px] font-mono leading-snug text-zinc-600">
+              <span key={s} className="text-[10px] font-mono leading-snug text-zinc-700">
                 {s}
               </span>
             ))}
@@ -83,7 +81,7 @@ function RiskItem({ risk }: { risk: typeof RISKS[number] }) {
 // ── Section ───────────────────────────────────────────────────────────────
 export default function RiskExposure() {
   return (
-    <section className="py-20 px-4 sm:px-8 relative section-deep">
+    <section className="home-section px-4 sm:px-8 relative section-deep">
       <div className="max-w-7xl mx-auto">
 
         {/* Section label */}
@@ -96,22 +94,19 @@ export default function RiskExposure() {
 
           {/* Left: editorial statement */}
           <div className="lg:sticky lg:top-28">
-            <motion.h2 {...appear(0)}
-              className="section-heading mb-4">
-              Las brechas que ya<br />
-              <span className="text-zinc-600">existen en tu red.</span>
+            <motion.h2 {...appear(0)} className="section-heading mb-4">
+              Problemas reales que frenan la operación.
             </motion.h2>
             <motion.p {...appear(0.010)} className="text-zinc-600 text-sm leading-relaxed max-w-xs">
-              Son patrones que vemos una y otra vez cuando una infraestructura crece sin pausas para ordenar.
+              Pocos controles, bien priorizados, suelen bajar más riesgo que otro proyecto grande sin dueño.
             </motion.p>
           </div>
 
-          {/* Right: three risk items as editorial text blocks */}
-          <AnimeGridReveal grid={false} from="first" delay={64}>
+          <div className="grid gap-0">
             {RISKS.map((risk) => (
               <RiskItem key={risk.title} risk={risk} />
             ))}
-          </AnimeGridReveal>
+          </div>
 
         </div>
       </div>
