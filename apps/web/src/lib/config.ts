@@ -25,10 +25,11 @@ export const COMPANY = {
   name:          'Velkor System',
   legalName:     'Velkor System',
   tagline:       'Consultoría tecnológica empresarial',
-  description:   'Redes, ciberseguridad e identidad digital para empresas que no pueden permitirse interrupciones operacionales.',
+  description:   'Redes, ciberseguridad e identidad digital para empresas que necesitan operar sin improvisar cambios críticos.',
   country:       'México',
   region:        'Monterrey, Nuevo León',
   founded:       '2022',
+  fieldExperienceSince: '2016',
   version:       'v2.2',
 } as const
 
@@ -63,9 +64,9 @@ export const LEGAL = {
 
 export const TRUST = {
   certifications: [
-    'Microsoft Solutions Partner',
-    'Fortinet NSE Partner',
-    'Axis Communications Partner',
+    'Implementación Microsoft 365 / Entra ID',
+    'Operación FortiGate / redes multi-sede',
+    'Diseño CCTV IP Axis / Hikvision',
   ],
   technologies: [
     { label: 'Fortinet FortiGate', color: '#4878b0' },
@@ -79,6 +80,25 @@ export const TRUST = {
     'Guadalajara',
     'Nacional con ingenieros remotos',
   ],
+  engagementModels: [
+    'Diagnóstico técnico puntual',
+    'Implementación por fases',
+    'Acompañamiento mensual operativo',
+  ],
+  serviceBoundaries: [
+    'No forzamos compra de hardware cuando el riesgo se corrige con configuración',
+    'No tocamos producción sin ventana, rollback y responsable aprobado',
+    'No prometemos SLA enterprise sin alcance operativo firmado',
+  ],
+  secureCommunications: [
+    'NDA disponible para evidencia completa',
+    'Intercambio de credenciales por canal seguro acordado',
+    'Responsable técnico asignado durante implementación',
+  ],
+  responsibleDisclosure: {
+    href: '/contacto',
+    label: 'Canal responsable para reportar hallazgos de seguridad',
+  },
 } as const
 
 // ─── Enterprise readiness ───────────────────────────────────────────────────
@@ -116,10 +136,10 @@ export const NAV_LINKS = {
     { label: 'Motor de contenido',     href: '/framework/content-engine' },
   ],
   empresa: [
-    { label: 'Casos de éxito',         href: '/casos' },
+    { label: 'Casos técnicos',         href: '/casos' },
     { label: 'Nosotros',               href: '/nosotros' },
     { label: 'Blog técnico',           href: '/blog' },
-    { label: 'Diagnóstico gratuito',   href: '/assessments' },
+    { label: 'Evaluación técnica',     href: '/assessments' },
   ],
   legal: [
     { label: 'Aviso de privacidad',    href: '/legal/privacidad' },

@@ -10,6 +10,7 @@ import ServiceEcosystem from '@/components/ServiceEcosystem'
 import OperationalStoryboard from '@/components/OperationalStoryboard'
 import RiskExposure from '@/components/RiskExposure'
 import ExecutiveDiagnostic from '@/components/ExecutiveDiagnostic'
+import TrustValidationLayer from '@/components/TrustValidationLayer'
 import { AnimeGridReveal, ScrambleText } from '@/components/AnimeMotion'
 import { trackCTA } from '@/components/Analytics'
 import { EASE, reveal as fadeUp, enter as heroUp } from '@/lib/motion'
@@ -18,33 +19,33 @@ const NetworkBg = dynamic(() => import('@/components/NetworkBg'), { ssr: false }
 
 // ─── DATA ────────────────────────────────────────────────────────────────────
 const STATS = [
-  { val: 50,  suf: '+',  label: 'Equipos atendidos',      sub: 'Pymes y corporativos que operan todos los días', color: '#4878b0' },
+  { val: 50,  suf: '+',  label: 'Entornos revisados',     sub: 'Pymes y corporativos con operación diaria',       color: '#4878b0' },
   { val: 8,   suf: 'yr', label: 'Años en campo',          sub: 'Redes, Microsoft 365, seguridad y soporte',       color: '#64748b' },
   { val: 24,  suf: 'h',  label: 'Ruta inicial',           sub: 'Diagnóstico, prioridades y siguiente paso',       color: '#3a7858', prefix: '<' },
   { val: 100, suf: '%',  label: 'Entregas documentadas',  sub: 'Cambios, evidencias y pendientes visibles',       color: '#4878b0' },
 ]
 
 const HERO_SIGNALS = [
-  { label: 'Diagnóstico sin humo', detail: 'Te decimos qué conviene corregir primero y por qué.' },
-  { label: 'Implementación visible', detail: 'Cada cambio queda documentado para tu equipo.' },
-  { label: 'Operación acompañada', detail: 'Soporte técnico que entiende el contexto completo.' },
-  { label: 'Sin venta forzada', detail: 'Si no hace falta comprar algo, también lo decimos.' },
+  { label: 'Primero entendemos operación', detail: 'Qué no se puede apagar, quién aprueba y qué duele hoy.' },
+  { label: 'Hallazgos con responsable', detail: 'Cada riesgo queda ligado a una decisión, no a una lámina bonita.' },
+  { label: 'Cambios con reversa', detail: 'Ventana, validación y rollback antes de tocar producción.' },
+  { label: 'Sin compra forzada', detail: 'Si basta corregir configuración, lo decimos desde el inicio.' },
 ]
 
 const SERVICES: ServicePanelData[] = [
   {
     icon: '⬡', title: 'Redes & Ciberseguridad',
-    desc: 'Separamos lo crítico, cerramos accesos innecesarios y dejamos políticas que tu equipo puede auditar sin depender de memoria tribal.',
-    outcome: 'Referencia anonimizada: red industrial · 85 hosts · 3 sedes · FortiGate 80F · 4 semanas',
+    desc: 'Mapeamos rutas reales, cerramos accesos heredados y dejamos reglas que tu equipo puede revisar sin depender de memoria tribal.',
+    outcome: 'Referencia anonimizada: red industrial · 85 hosts · 3 sedes · FortiGate 80F · 31 días',
     scope: 'Red plana → 4 VLANs segmentadas · política de acceso por segmento · IPS/IDS activo',
     hex: '#4878b0',
-    tags: ['FortiGate NGFW', 'VLAN', 'Zero Trust', 'VPN', 'IPS/IDS'],
+    tags: ['FortiGate NGFW', 'VLAN', 'Acceso gobernado', 'VPN', 'IPS/IDS'],
     href: '/servicios/ciberseguridad',
   },
   {
     icon: '◉', title: 'CCTV & Videovigilancia',
-    desc: 'Diseñamos cobertura para que seguridad y operaciones vean lo que importa: accesos, perímetros, puntos ciegos y eventos que sí requieren atención.',
-    outcome: 'Referencia anonimizada: retail · 8 sucursales · 96 cámaras · menos incidentes repetidos',
+    desc: 'Diseñamos cobertura con personal de seguridad y operaciones: accesos, perímetros, puntos ciegos y eventos que sí requieren revisión.',
+    outcome: 'Referencia anonimizada: retail · 8 sucursales · 96 cámaras · revisión de eventos por turno',
     scope: 'Axis P-series · Milestone NVR · PoE+ switching · analítica de intrusión perimetral',
     hex: '#3d88a5',
     tags: ['Axis', 'NVR 4K', 'IA Analytics', 'PoE+', 'ONVIF'],
@@ -52,7 +53,7 @@ const SERVICES: ServicePanelData[] = [
   },
   {
     icon: '⬢', title: 'Microsoft 365 & Cloud',
-    desc: 'Migramos correo, colaboración y archivos con una ruta clara para usuarios, permisos y continuidad. Menos caos, más adopción real.',
+    desc: 'Migramos correo, colaboración y archivos sin perder usuarios en el camino: permisos claros, comunicación previa y soporte en días críticos.',
     scope: 'Tenant M365 · Exchange Online · Teams · SharePoint · Defender for Office 365',
     hex: '#4878b0',
     tags: ['Exchange', 'Teams', 'SharePoint', 'Entra ID', 'OneDrive'],
@@ -61,7 +62,7 @@ const SERVICES: ServicePanelData[] = [
   {
     icon: '⬟', title: 'Intune & Entra ID',
     desc: 'Ordenamos identidades, MFA, dispositivos y acceso condicional para que entrar a sistemas críticos dependa de reglas, no de favores.',
-    outcome: 'Referencia anonimizada: salud · 62 usuarios · gobierno de identidad · 6 semanas',
+    outcome: 'Referencia anonimizada: salud · 62 usuarios · gobierno de identidad · excepciones con fecha de retiro',
     scope: 'Entra ID · Acceso Condicional · Intune MDM · Autopilot · PIM just-in-time',
     hex: '#3a7858',
     tags: ['MDM', 'MFA', 'Autopilot', 'PIM', 'Conditional Access'],
@@ -77,10 +78,10 @@ const SERVICES: ServicePanelData[] = [
   },
   {
     icon: '◇', title: 'Consultoría & Diagnóstico',
-    desc: 'Nos sentamos con tu equipo, revisamos el entorno y salimos con prioridades claras, costos aterrizados y una ruta que se puede ejecutar.',
+    desc: 'Nos sentamos con tu equipo, revisamos el entorno y salimos con prioridades claras, costos aterrizados y una ruta que se puede ejecutar sin drama.',
     scope: 'Auditoría LAN/WAN · inventario de endpoints · análisis de políticas IAM · informe técnico',
     hex: '#3d88a5',
-    tags: ['Auditoría', 'Propuesta 24h', 'Sin costo', 'Ingenieros Fortinet'],
+    tags: ['Auditoría', 'Alcance escrito', 'Sin compra forzada', 'Ingeniería en campo'],
     href: '/assessments',
   },
 ]
@@ -304,14 +305,14 @@ export default function HomePage() {
             <motion.p {...heroUp(0.05)}
               className="editorial-lede mb-9 max-w-[28rem]"
             >
-              Diagnosticamos red, identidad y endpoints para convertir incertidumbre operativa en una ruta clara, documentada y ejecutable.
+              Revisamos contigo cómo entra la gente, qué equipos sostienen la operación y dónde una falla se vuelve paro. Después convertimos eso en una ruta clara, documentada y ejecutable.
             </motion.p>
 
             {/* CTAs */}
             <motion.div {...heroUp(0.07)} className="flex flex-col sm:flex-row gap-2.5 mb-8">
               <Link href="/assessments" className="btn-amber text-[13.5px] px-6 py-3"
                 onClick={() => trackCTA('Hero — Solicitar diagnóstico')}>
-                Agendar diagnóstico →
+                Agendar evaluación técnica →
               </Link>
               <Link href="/servicios" className="btn-ghost text-[13.5px] px-6 py-3"
                 onClick={() => trackCTA('Hero — Ver servicios')}>
@@ -401,7 +402,7 @@ export default function HomePage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-8 mb-12">
           <CtaStrip
           text="Cada proyecto deja una ruta clara: qué se detectó, qué se corrigió, qué sigue y qué evidencia lo respalda."
-          cta="Ver casos de éxito"
+          cta="Ver casos técnicos"
           href="/casos"
         />
       </div>
@@ -446,7 +447,7 @@ export default function HomePage() {
 
           <CtaStrip
             text="¿No sabes por dónde empezar? En 15 minutos podemos separar urgencias, riesgos reales y mejoras que sí convienen."
-            cta="Diagnóstico gratuito"
+            cta="Evaluación técnica"
             href="/assessments"
           />
         </div>
@@ -507,6 +508,7 @@ export default function HomePage() {
       ════════════════════════════════════════════════════════════════ */}
       <ServiceEcosystem />
       <OperationalStoryboard />
+      <TrustValidationLayer />
 
       {/* ════════════════════════════════════════════════════════════════
           PROCESS
@@ -611,8 +613,8 @@ export default function HomePage() {
 
           <motion.div {...fadeUp(0)}>
             <CtaStrip
-              text="Podemos mostrar resultados similares en tu infraestructura. El diagnóstico no tiene costo."
-              cta="Agendar diagnóstico"
+              text="Podemos revisar un entorno similar sin prometer magia: primero contexto, luego prioridades y alcance."
+              cta="Agendar evaluación técnica"
               href="/assessments"
             />
           </motion.div>
@@ -644,17 +646,17 @@ export default function HomePage() {
           <div className="flex flex-col sm:flex-row gap-3 justify-center mb-10">
             <Link href="/assessments" className="btn-amber text-[15px] px-10 py-4"
               onClick={() => trackCTA('Final CTA — Solicitar diagnóstico')}>
-              Agendar diagnóstico →
+              Agendar evaluación técnica →
             </Link>
             <Link href="/casos" className="btn-ghost text-[15px] px-10 py-4"
               onClick={() => trackCTA('Final CTA — Ver casos')}>
-              Ver casos de éxito
+              Ver casos técnicos
             </Link>
           </div>
 
           {/* Trust items — plain monospace */}
           <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
-            {['Sin contrato mínimo', 'Respuesta < 24 h', 'Ingenieros especializados', 'Propuesta sin costo'].map(text => (
+            {['Sin contrato mínimo', 'Respuesta < 24 h', 'Ingeniero responsable', 'Alcance explícito'].map(text => (
               <span key={text} className="text-zinc-600 text-[11px] font-mono">{text}</span>
             ))}
           </div>

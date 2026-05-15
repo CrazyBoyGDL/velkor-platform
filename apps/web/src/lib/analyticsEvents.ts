@@ -32,12 +32,15 @@ export const Events = {
   EvidenceDocumentClicked:   'Evidence Document Clicked',
   EvidenceInteraction:       'Evidence Interaction',
   EvidenceDiagramViewed:     'Evidence Diagram Viewed',
+  EvidenceDepthReached:      'Evidence Depth Reached',
   CaseStudyViewed:           'Case Study Viewed',
   CaseStudyDepthReached:     'Case Study Depth Reached',  // 50% / 100% scroll
   CaseStudyEngagement:       'Case Study Engagement',
   OperationalFrameworkViewed:'Operational Framework Viewed',
   FrameworkStageExpanded:    'Framework Stage Expanded',
   ArtifactDownloaded:        'Artifact Downloaded',
+  TrustSignalInteraction:    'Trust Signal Interaction',
+  EngagementExpectationViewed:'Engagement Expectation Viewed',
 
   // CTA engagement
   CtaClicked:                'CTA Click',                 // shared with existing
@@ -57,8 +60,10 @@ export const Events = {
 
   // Device behavior
   MobileAssessmentStarted:   'Mobile Assessment Started',
+  MobileTrustEngagement:     'Mobile Trust Engagement',
   DiagramScrolled:           'Diagram Scrolled',           // arch diagram mobile scroll
   DeviceBehaviorDetected:    'Device Behavior Detected',
+  SessionReplayReady:        'Session Replay Ready',
 
   // Source tracking
   UtmSourceDetected:         'UTM Source Detected',
@@ -97,6 +102,12 @@ export interface EvidenceDocumentClickedProps {
   status:     string   // 'sanitized' | 'reference' | 'template'
 }
 
+export interface EvidenceDepthReachedProps {
+  source:   string
+  depth:    string
+  category?: string
+}
+
 export interface ArtifactDownloadedProps {
   artifact_title: string
   artifact_type:  string
@@ -120,6 +131,24 @@ export interface CtaClickedProps {
   label:    string
   location: string   // 'hero' | 'blog-inline' | 'case-study' | 'assessment-results' | etc.
   source?:  string
+}
+
+export interface TrustSignalInteractionProps {
+  signal:      string
+  location:    string
+  interaction: string   // 'view' | 'click' | 'expand' | 'request'
+}
+
+export interface MobileTrustEngagementProps {
+  page:    string
+  signal:  string
+  quality: string
+}
+
+export interface SessionReplayReadyProps {
+  page:     string
+  provider: string
+  enabled:  string
 }
 
 export interface AssessmentStepAbandonedProps {

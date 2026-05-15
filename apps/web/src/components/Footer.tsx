@@ -19,10 +19,10 @@ const LINKS = {
     ['Motor de contenido',    '/framework/content-engine'],
   ],
   Empresa: [
-    ['Casos de éxito',        '/casos'],
+    ['Casos técnicos',        '/casos'],
     ['Nosotros',              '/nosotros'],
     ['Blog técnico',          '/blog'],
-    ['Diagnóstico gratuito',  '/assessments'],
+    ['Evaluación técnica',    '/assessments'],
   ],
 }
 
@@ -85,6 +85,16 @@ export default function Footer() {
               <span className="text-zinc-600 text-[10px] font-mono tracking-normal">SOPORTE TÉCNICO ACTIVO</span>
             </div>
 
+            <div className="mb-5">
+              <div className="text-zinc-700 text-[10px] font-mono tracking-normal mb-2">OPERACIÓN</div>
+              {TRUST.engagementModels.map(model => (
+                <div key={model} className="flex items-start gap-1.5 mb-1">
+                  <span className="w-1 h-1 rounded-full bg-zinc-700 flex-shrink-0 mt-1.5" />
+                  <span className="text-zinc-700 text-[11px] font-mono leading-relaxed">{model}</span>
+                </div>
+              ))}
+            </div>
+
             {/* Technology stack chips */}
             <div className="flex flex-wrap gap-2">
               {TRUST.technologies.map(({ label, color }) => (
@@ -100,7 +110,11 @@ export default function Footer() {
             </div>
 
             <div className="mt-5 text-[10px] font-mono text-zinc-700 leading-relaxed max-w-sm">
-              Enterprise readiness: canonical por {ENTERPRISE_READINESS.canonicalSource} · Cloudflare preparado · SPF/DKIM/DMARC listos para activación.
+              Preparado para dominio productivo: canonical por {ENTERPRISE_READINESS.canonicalSource} · Cloudflare planificado · SPF/DKIM/DMARC listos para activación.
+            </div>
+
+            <div className="mt-3 text-[10px] font-mono text-zinc-700 leading-relaxed max-w-sm">
+              {TRUST.secureCommunications.join(' · ')}
             </div>
           </div>
 
@@ -149,6 +163,13 @@ export default function Footer() {
                 LinkedIn
               </a>
             )}
+            <Link
+              href={TRUST.responsibleDisclosure.href}
+              className="text-zinc-600 hover:text-zinc-400 text-xs font-mono transition-colors flex items-center gap-1.5"
+            >
+              <span className="w-1 h-1 rounded-full bg-zinc-700" />
+              Reporte responsable
+            </Link>
           </div>
 
           {/* Legal links */}

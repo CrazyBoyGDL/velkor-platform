@@ -24,22 +24,31 @@ function DocHeader({ tag, title, meta }: { tag: string; title: string; meta: str
   )
 }
 
+function FieldNote({ label, text }: { label: string; text: string }) {
+  return (
+    <div className="mt-3 pt-3" style={{ borderTop: '1px solid rgba(255,255,255,0.045)' }}>
+      <div className="text-[8px] font-mono text-zinc-700 mb-1">{label}</div>
+      <p className="text-zinc-500 text-[9.5px] leading-relaxed">{text}</p>
+    </div>
+  )
+}
+
 // ── Assessment card ───────────────────────────────────────────────────────────
 // Shows a sanitized network audit excerpt with discovered findings and risk level
 function AssessmentCard() {
   const rows: { label: string; value: string; risk?: boolean }[] = [
-    { label: 'Redes detectadas',          value: '8 subnets'            },
-    { label: 'Segmentación VLAN',         value: '✗ No implementada',   risk: true  },
-    { label: 'Firewall en producción',    value: '✓ FortiGate 80F'      },
-    { label: 'Reglas permisivas (any)',   value: '47 — crítico',         risk: true  },
-    { label: 'Endpoints sin parche',      value: '23 de 85  (27%)',      risk: true  },
+    { label: 'Sedes revisadas',           value: '3 + bodega externa'   },
+    { label: 'Core switch',               value: 'sin mapa LLDP',       risk: true  },
+    { label: 'Firewall en producción',    value: 'FortiGate 80F activo' },
+    { label: 'Reglas any/any',            value: '47 heredadas',         risk: true  },
+    { label: 'Endpoints fuera de parche', value: '23 de 85',             risk: true  },
   ]
   return (
     <div className="artifact-sheet p-5 h-full font-mono text-[10.5px] leading-relaxed">
       <DocHeader
-        tag="ASSESSMENT · LAN/WAN"
-        title="Muestra industrial · 85 hosts · 3 sedes"
-        meta={'EJEMPLO\nLAN/WAN'}
+        tag="EXTRACTO · LAN/WAN"
+        title="Industrial · 85 hosts · 3 sedes"
+        meta={'SANITIZADO\nREV-24'}
       />
       <DocLine />
       <div className="space-y-1.5">
@@ -61,9 +70,13 @@ function AssessmentCard() {
         <span className="font-semibold tracking-normal" style={{ color: 'rgba(239,68,68,0.75)' }}>ALTO</span>
       </div>
       <div className="flex items-center justify-between mt-1.5">
-        <span className="text-zinc-600">Propuesta entregada</span>
-        <span style={{ color: 'rgba(161,161,170,0.6)' }}>en 24 horas</span>
+        <span className="text-zinc-600">Prioridad acordada</span>
+        <span style={{ color: 'rgba(161,161,170,0.6)' }}>MFA antes de VPN</span>
       </div>
+      <FieldNote
+        label="NOTA DE CAMPO"
+        text="Se detectaron cuentas compartidas en turnos nocturnos. Primero se separaron identidades y MFA antes de abrir acceso remoto."
+      />
     </div>
   )
 }
@@ -72,31 +85,30 @@ function AssessmentCard() {
 // Shows a real project's week-by-week delivery phases with completion bars
 function TimelineCard() {
   const phases = [
-    { week: 'SEM 1', label: 'Tenant + Exchange Online',       done: true },
-    { week: 'SEM 2', label: 'Entra ID + Acceso Condicional',  done: true },
-    { week: 'SEM 3', label: 'Intune MDM + Autopilot',         done: true },
-    { week: 'SEM 4', label: 'Testing + Documentación',        done: true },
+    { week: 'SEM 1', label: 'Inventario y cuentas compartidas', progress: '100%', color: 'rgba(58,120,88,0.45)' },
+    { week: 'SEM 2', label: 'Piloto MFA con administración',   progress: '100%', color: 'rgba(58,120,88,0.45)' },
+    { week: 'SEM 3', label: 'Pausa: excepción ERP legacy',     progress: '62%',  color: 'rgba(176,120,40,0.55)' },
+    { week: 'SEM 4', label: 'Expansión por departamento',      progress: '100%', color: 'rgba(58,120,88,0.45)' },
   ]
   return (
     <div className="artifact-sheet p-5 h-full font-mono text-[10.5px] leading-relaxed">
       <DocHeader
         tag="PROYECTO · M365 + INTUNE"
         title="62 usuarios · Entorno regulado"
-        meta={'EJEMPLO\n4 SEM'}
+        meta={'RUNBOOK\n4 SEM'}
       />
       <DocLine />
       <div className="space-y-2.5">
-        {phases.map(({ week, label }) => (
+        {phases.map(({ week, label, progress, color }) => (
           <div key={week} className="space-y-1">
             <div className="flex items-center justify-between">
               <span className="text-[8.5px] text-zinc-700">{week}</span>
               <span className="text-[9px] text-zinc-500 text-right">{label}</span>
             </div>
-            {/* Completion bar — all phases complete */}
             <div className="h-0.5 rounded-full" style={{ background: 'rgba(255,255,255,0.06)' }}>
               <div
                 className="h-full rounded-full"
-                style={{ width: '100%', background: 'rgba(58,120,88,0.45)' }}
+                style={{ width: progress, background: color }}
               />
             </div>
           </div>
@@ -104,9 +116,13 @@ function TimelineCard() {
       </div>
       <DocLine />
       <div className="flex items-center justify-between">
-        <span style={{ color: 'rgba(58,120,88,0.65)', fontSize: '9px' }}>✓ Cerrado · 28 días</span>
-        <span className="text-zinc-700 text-[8.5px]">políticas revisadas</span>
+        <span style={{ color: 'rgba(58,120,88,0.65)', fontSize: '9px' }}>Cerrado · 31 días</span>
+        <span className="text-zinc-700 text-[8.5px]">excepción documentada</span>
       </div>
+      <FieldNote
+        label="BLOQUEO REAL"
+        text="El ERP no soportaba MFA moderno. Se dejó excepción temporal con IP restringida, dueño nombrado y fecha de retiro."
+      />
     </div>
   )
 }
@@ -115,18 +131,18 @@ function TimelineCard() {
 // Shows a sanitized governance policy document — Entra ID conditional access
 function PolicyCard() {
   const policies = [
-    { id: 'P-001', text: 'MFA obligatorio — todos los usuarios' },
-    { id: 'P-002', text: 'Bloquear dispositivos no conformes (Intune)' },
-    { id: 'P-003', text: 'Acceso permitido: MX, US — resto bloqueado' },
+    { id: 'P-001', text: 'MFA obligatorio por grupo, no por excepción informal' },
+    { id: 'P-002', text: 'Bloqueo gradual de dispositivos no conformes' },
+    { id: 'P-003', text: 'Acceso permitido: MX + IPs operativas aprobadas' },
     { id: 'P-004', text: 'Límite de sesión: 8 h · Persistente: No' },
-    { id: 'P-005', text: 'Admin roles: PIM — acceso just-in-time' },
+    { id: 'P-005', text: 'Break-glass auditado con alerta al responsable' },
   ]
   return (
     <div className="artifact-sheet p-5 h-full font-mono text-[10.5px] leading-relaxed">
       <DocHeader
         tag="POLÍTICA · ACCESO CONDICIONAL"
         title="Entra ID · Acceso corporativo"
-        meta={'CAP-001\nMUESTRA'}
+        meta={'CAP-001\nSAN'}
       />
       <DocLine />
       <div className="space-y-2">
@@ -142,8 +158,12 @@ function PolicyCard() {
       <DocLine />
       <div className="flex items-center justify-between">
         <span className="text-zinc-600 text-[8.5px]">Revisado: 2025-02-28</span>
-        <span className="text-[8.5px]" style={{ color: 'rgba(58,120,88,0.65)' }}>✓ Activo</span>
+        <span className="text-[8.5px]" style={{ color: 'rgba(58,120,88,0.65)' }}>Activo con excepción</span>
       </div>
+      <FieldNote
+        label="DECISIÓN DE GOBIERNO"
+        text="Dirección aceptó bloquear acceso externo primero para administración y finanzas; operaciones entró una semana después."
+      />
     </div>
   )
 }
@@ -163,11 +183,11 @@ export default function OperationalArtifacts() {
         <motion.h2 {...fadeUp(0.04)}
           className="section-heading mb-3">
           Evidencia que se puede revisar,<br />
-          <span className="text-zinc-600">no promesas que se evaporan</span>
+          <span className="text-zinc-600">con marcas de operación real</span>
         </motion.h2>
         <motion.p {...fadeUp(0.08)}
           className="text-zinc-600 text-sm mb-10 max-w-lg leading-relaxed">
-          Muestras anonimizadas del tipo de entregables que usamos para explicar hallazgos, decisiones y cierre de proyecto.
+          Fragmentos anonimizados del tipo de entregables que usamos cuando hay que explicar hallazgos, decisiones incómodas y pendientes que no deben perderse.
         </motion.p>
 
         {/* Three-column artifact grid */}
@@ -187,7 +207,7 @@ export default function OperationalArtifacts() {
         <motion.p {...fadeUp(0)}
           className="text-center text-[10px] font-mono mt-5"
           style={{ color: 'rgba(255,255,255,0.14)' }}>
-          Muestras representativas · Referencias completas solo cuando el cliente autoriza compartirlas
+          Fragmentos representativos · Evidencia completa solo con autorización del cliente o bajo NDA
         </motion.p>
 
       </div>

@@ -19,6 +19,7 @@
  *   trackDiagramView()    — Fire architecture diagram view event
  *   trackArticleView()    — Fire technical article view event
  *   useCaseStudyDepth()   — Hook: fires case-study depth thresholds
+ *   trackTrustSignal()    — Fire human trust layer interactions
  */
 import Script from 'next/script'
 import { useEffect, useRef } from 'react'
@@ -129,6 +130,10 @@ export function trackEvidenceClick(
   trackEvent(Events.EvidenceDocumentClicked, { doc_title: docTitle, category, status })
 }
 
+export function trackEvidenceDepth(source: string, depth: string, category?: string): void {
+  trackEvent(Events.EvidenceDepthReached, { source, depth, category: category ?? 'all' })
+}
+
 /**
  * Track an architecture diagram becoming visible (mobile scroll or page load).
  * @param diagramId  Identifier for the diagram (e.g. 'vlan-diagram', 'entra-id-flow')
@@ -183,6 +188,27 @@ export function trackDeviceBehavior(page: string, behavior: string): void {
   const width = window.innerWidth
   const device = width < 640 ? 'mobile' : width < 1024 ? 'tablet' : 'desktop'
   trackEvent(Events.DeviceBehaviorDetected, { page, behavior, device })
+}
+
+export function trackTrustSignal(
+  signal: string,
+  location: string,
+  interaction: 'view' | 'click' | 'expand' | 'request' = 'view'
+): void {
+  trackEvent(Events.TrustSignalInteraction, { signal, location, interaction })
+}
+
+export function trackMobileTrustEngagement(page: string, signal: string, quality = 'viewed'): void {
+  if (typeof window === 'undefined' || window.innerWidth >= 640) return
+  trackEvent(Events.MobileTrustEngagement, { page, signal, quality })
+}
+
+export function trackSessionReplayReadiness(page: string, provider = 'posthog', enabled = false): void {
+  trackEvent(Events.SessionReplayReady, {
+    page,
+    provider,
+    enabled: String(enabled),
+  })
 }
 
 // ─── Scroll depth hook ─────────────────────────────────────────────────────────

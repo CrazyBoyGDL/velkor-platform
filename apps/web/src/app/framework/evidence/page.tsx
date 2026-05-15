@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { VlanDiagram, EntraIdGovernanceFlow, IntuneDiagram, HybridInfraMap } from '@/components/ArchDiagrams'
-import { DiagramTracker, EvidenceRequestLink } from '@/components/EvidenceInteraction'
+import { DiagramTracker, EvidenceLibraryTracker, EvidenceRequestLink } from '@/components/EvidenceInteraction'
 
 export const metadata: Metadata = {
   title: 'Evidencia Operacional | Fragmentos de Arquitectura y Documentación — Velkor System',
@@ -33,6 +33,10 @@ type EvidenceItem = {
   summary:  string
   elements: string[]       // key elements this document includes
   status:   'sanitized' | 'reference' | 'template'
+  environment?: string
+  fieldNote?:   string
+  decision?:    string
+  redaction?:   string
 }
 
 const EVIDENCE: EvidenceItem[] = [
@@ -43,7 +47,7 @@ const EVIDENCE: EvidenceItem[] = [
     type:     'policy',
     category: 'Identidad & Acceso',
     title:    'Baseline de Acceso Condicional · Entra ID P1',
-    summary:  'Conjunto mínimo de 6 políticas de CA recomendadas para cualquier organización con M365. Bloqueo de acceso legacy, MFA obligatorio y restricción de dispositivos no gestionados.',
+    summary:  'Conjunto mínimo de 6 políticas aplicado cuando el tenant ya opera M365, pero todavía existen accesos heredados, apps viejas y excepciones informales.',
     elements: [
       'CA001 — Bloquear autenticación legacy (Exchange, SMTP, POP3)',
       'CA002 — Requerir MFA para todos los usuarios (excepto emergency access)',
@@ -53,6 +57,10 @@ const EVIDENCE: EvidenceItem[] = [
       'CA006 — Sesión limitada (8h) en dispositivos no registrados',
     ],
     status: 'sanitized',
+    environment: 'Tenant M365 con usuarios administrativos, ventas externas y equipo operativo compartido.',
+    fieldNote: 'Antes de exigir MFA a todos, se identificaron cuentas que seguían entrando por protocolos legacy.',
+    decision: 'Se inició en modo reporte, luego se bloqueó legacy y se dejó break-glass con alerta de uso.',
+    redaction: 'Tenant, dominios, usuarios y rangos IP omitidos.',
   },
   {
     id:       'ca-advanced',
@@ -93,7 +101,7 @@ const EVIDENCE: EvidenceItem[] = [
     type:     'diagram',
     category: 'Infraestructura de red',
     title:    'Arquitectura de Segmentación VLAN · Entorno Corporativo Típico',
-    summary:  'Modelo de segmentación VLAN para empresa de 50–500 empleados con sede central y sucursales. Separación de segmentos por función de negocio y nivel de riesgo.',
+    summary:  'Modelo de segmentación para empresas donde administración, cámaras, invitados y operación han compartido red durante años. Se prioriza aislar lo que puede detener operación.',
     elements: [
       'VLAN 10 — Corporativo (workstations, laptops)',
       'VLAN 20 — Servidores (AD, File, ERP)',
@@ -104,13 +112,16 @@ const EVIDENCE: EvidenceItem[] = [
       'Inter-VLAN routing controlado por FortiGate con ACLs explícitas',
     ],
     status: 'reference',
+    environment: 'Sede central con sucursales, cámaras IP, impresoras, ERP local y Wi-Fi de visitantes.',
+    fieldNote: 'El primer levantamiento normalmente descubre uplinks sin etiqueta y equipos que nadie quiere apagar.',
+    decision: 'Se documenta topología antes de mover VLANs; cambios por ventana y con reversa preparada.',
   },
   {
     id:       'fortinet-baseline',
     type:     'checklist',
     category: 'Infraestructura de red',
     title:    'Hardening Baseline FortiGate · Post-implementación',
-    summary:  'Lista de verificación de 28 controles aplicada al cierre de cada proyecto de firewall. Validación de configuración, políticas de acceso y gestión de contraseñas.',
+    summary:  'Lista de verificación aplicada al cierre de firewall para evitar que el proyecto termine con reglas abiertas, accesos de gestión expuestos o respaldos sin dueño.',
     elements: [
       'Contraseña admin por defecto cambiada · cuenta "admin" renombrada',
       'Acceso HTTPS management solo desde VLAN 30 (Mgmt)',
@@ -122,6 +133,10 @@ const EVIDENCE: EvidenceItem[] = [
       'Backup de configuración automatizado a FortiManager',
     ],
     status: 'sanitized',
+    environment: 'FortiGate en producción con VPN, reglas heredadas y administración local.',
+    fieldNote: 'Se encontraron reglas any/any creadas para emergencias antiguas que nunca se retiraron.',
+    decision: 'Cada regla heredada se marcó como conservar, restringir o retirar con responsable interno.',
+    redaction: 'IPs públicas, nombres de políticas y objetos internos anonimizados.',
   },
 
   // ── Intune & Device Management ─────────────────────────────────────────────
@@ -130,7 +145,7 @@ const EVIDENCE: EvidenceItem[] = [
     type:     'workflow',
     category: 'Gestión de dispositivos',
     title:    'Flujo de Onboarding Intune · Autopilot + Acceso Condicional',
-    summary:  'Proceso completo de incorporación de nuevo empleado: desde unboxing del equipo hasta acceso a recursos corporativos con dispositivo conforme, en menos de 1 hora.',
+    summary:  'Proceso de incorporación para que un usuario nuevo reciba equipo, apps y acceso sin depender de favores, hojas de cálculo o configuraciones manuales repetidas.',
     elements: [
       'Paso 1 — Dispositivo registrado en Autopilot (hash pre-importado por proveedor)',
       'Paso 2 — Equipo enciende, detecta configuración de empresa automáticamente',
@@ -141,6 +156,9 @@ const EVIDENCE: EvidenceItem[] = [
       'Tiempo total de espera activa del usuario: < 20 minutos',
     ],
     status: 'template',
+    environment: 'Alta de usuario con laptop nueva, M365, VPN y aplicaciones base por departamento.',
+    fieldNote: 'El cuello de botella no era Autopilot: era saber quién autorizaba permisos de archivos.',
+    decision: 'Se agregó aprobación de responsable antes de entregar acceso a SharePoint y VPN.',
   },
   {
     id:       'intune-compliance',
@@ -166,7 +184,7 @@ const EVIDENCE: EvidenceItem[] = [
     type:     'template',
     category: 'Planes de implementación',
     title:    'Plan de Adopción MFA · Organización 50–200 usuarios',
-    summary:  'Cronograma de implementación de MFA sin impacto en productividad. Fase de comunicación, piloto con grupo reducido, y despliegue progresivo con soporte de primer nivel.',
+    summary:  'Cronograma para activar MFA sin romper operación diaria. Incluye comunicación, piloto, soporte en días de cambio y manejo explícito de excepciones.',
     elements: [
       'Semana 1 — Comunicación a usuarios: qué cambia y por qué (correo + sesión 15 min)',
       'Semana 2 — Piloto: 10% usuarios (área IT + dirección)',
@@ -177,6 +195,9 @@ const EVIDENCE: EvidenceItem[] = [
       'Material incluido: guía de instalación Authenticator (ES/EN) + FAQ imprimible',
     ],
     status: 'template',
+    environment: 'Usuarios administrativos, operación móvil y dirección con viajes frecuentes.',
+    fieldNote: 'El mayor riesgo fue resistencia de usuarios con teléfono personal y turnos sin soporte local.',
+    decision: 'Se preparó material impreso, soporte por Teams y ventana extendida durante los primeros dos días.',
   },
   {
     id:       'identity-migration',
@@ -202,7 +223,7 @@ const EVIDENCE: EvidenceItem[] = [
     type:     'excerpt',
     category: 'Auditoría y gobernanza',
     title:    'Extracto de Auditoría de Seguridad · Hallazgos Tipo para SMB',
-    summary:  'Fragmento sanitizado de informe de auditoría de seguridad. Representa los hallazgos más frecuentes en organizaciones de 50–200 empleados evaluadas entre 2023 y 2025.',
+    summary:  'Fragmento sanitizado de hallazgos frecuentes en organizaciones de 50–200 empleados. El objetivo es priorizar lo que realmente baja riesgo operativo.',
     elements: [
       'CRÍTICO — 100% de usuarios sin MFA en tenant M365 activo',
       'CRÍTICO — Cuentas administrativas con acceso permanente (no PIM)',
@@ -213,6 +234,10 @@ const EVIDENCE: EvidenceItem[] = [
       'INFORMATIVO — 8 service accounts con contraseñas sin fecha de expiración',
     ],
     status: 'sanitized',
+    environment: 'Empresa multi-sede con AD local, M365, firewall perimetral y respaldos mixtos.',
+    fieldNote: 'La restauración de respaldo nunca se había probado con usuarios reales conectados.',
+    decision: 'Se puso prueba de restauración antes de ampliar cambios de identidad.',
+    redaction: 'Nombres de cliente, hosts, rutas de backup y cuentas omitidos.',
   },
   {
     id:       'governance-structure',
@@ -281,6 +306,31 @@ function EvidenceCard({ item }: { item: EvidenceItem }) {
         </div>
         <h3 className="text-zinc-200 text-[13px] font-semibold leading-snug mb-2">{item.title}</h3>
         <p className="text-zinc-500 text-[11px] leading-relaxed">{item.summary}</p>
+        {(item.environment || item.fieldNote || item.decision) && (
+          <div
+            className="mt-4 pt-4 grid gap-2"
+            style={{ borderTop: '1px solid rgba(255,255,255,0.045)' }}
+          >
+            {item.environment && (
+              <div className="grid grid-cols-[5.5rem_1fr] gap-3">
+                <span className="text-[8.5px] font-mono text-zinc-700">Contexto</span>
+                <span className="text-[10px] font-mono text-zinc-500 leading-snug">{item.environment}</span>
+              </div>
+            )}
+            {item.fieldNote && (
+              <div className="grid grid-cols-[5.5rem_1fr] gap-3">
+                <span className="text-[8.5px] font-mono text-zinc-700">Nota</span>
+                <span className="text-[10px] font-mono text-zinc-500 leading-snug">{item.fieldNote}</span>
+              </div>
+            )}
+            {item.decision && (
+              <div className="grid grid-cols-[5.5rem_1fr] gap-3">
+                <span className="text-[8.5px] font-mono text-zinc-700">Decisión</span>
+                <span className="text-[10px] font-mono text-zinc-400 leading-snug">{item.decision}</span>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Elements list */}
@@ -303,13 +353,14 @@ function EvidenceCard({ item }: { item: EvidenceItem }) {
 
       {/* Footer */}
       <div
-        className="px-5 py-2.5 flex items-center justify-between"
+        className="px-5 py-2.5 flex items-center justify-between gap-3"
         style={{ borderTop: '1px solid rgba(255,255,255,0.04)' }}
       >
-        <span className="text-[9px] font-mono text-zinc-700">
-          {item.status === 'sanitized' ? 'Datos de proyecto anonimizados' :
+        <span className="text-[9px] font-mono text-zinc-700 leading-snug flex-1 min-w-0">
+          {item.redaction ??
+           (item.status === 'sanitized' ? 'Datos de proyecto anonimizados' :
            item.status === 'template'  ? 'Disponible bajo NDA' :
-                                         'Arquitectura de referencia'}
+                                         'Arquitectura de referencia')}
         </span>
         <EvidenceRequestLink
           href="/contacto"
@@ -329,6 +380,7 @@ function EvidenceCard({ item }: { item: EvidenceItem }) {
 export default function EvidencePage() {
   return (
     <div className="min-h-screen py-16 px-4 sm:px-8">
+      <EvidenceLibraryTracker itemCount={EVIDENCE.length} categoryCount={CATEGORIES.length} />
       <div className="max-w-5xl mx-auto">
 
         {/* Breadcrumb */}
@@ -345,13 +397,13 @@ export default function EvidencePage() {
         {/* Header */}
         <div className="mb-14">
           <span className="label">Repositorio de evidencia técnica</span>
-          <h1 className="text-4xl sm:text-5xl font-black text-noc-white mt-3 mb-4 leading-tight tracking-heading">
-            Documentación operacional<br />
-            <span className="text-zinc-500">de referencia</span>
+          <h1 className="text-4xl sm:text-5xl font-semibold text-noc-white mt-3 mb-4 leading-tight tracking-heading">
+            Fragmentos de operación real,<br />
+            <span className="text-zinc-500">sanitizados para revisión</span>
           </h1>
           <p className="text-zinc-500 max-w-2xl text-sm leading-relaxed">
-            Fragmentos sanitizados de políticas, flujos, checklists y arquitecturas derivadas de proyectos reales.
-            Documentación de ingeniería — no marketing. Disponible bajo NDA cuando se requiere el documento completo.
+            Políticas, flujos, checklists y arquitecturas derivadas de trabajo en campo. La información sensible se retira,
+            pero se conserva el contexto operativo: restricciones, decisiones, excepciones y pendientes.
           </p>
 
           {/* Meta strip */}
@@ -363,7 +415,7 @@ export default function EvidencePage() {
               { k: 'Documentos',   v: String(EVIDENCE.length) },
               { k: 'Categorías',   v: String(CATEGORIES.length) },
               { k: 'Formato',      v: 'Sanitizado · Anónimo' },
-              { k: 'Acceso full',  v: 'Bajo NDA' },
+              { k: 'Acceso full',  v: 'NDA / proyecto activo' },
             ].map(({ k, v }) => (
               <div key={k} className="flex items-center gap-1.5">
                 <span className="text-[9px] font-mono text-zinc-700 uppercase tracking-widest">{k}</span>

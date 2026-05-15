@@ -7,27 +7,33 @@ import { reveal as fadeUp } from '@/lib/motion'
 
 const ARCHITECTURE_LAYERS = [
   {
-    before: 'Red plana',
-    after: 'Segmentación por función',
-    signal: 'Servicios críticos aislados de invitados, cámaras y operación administrativa.',
+    before: 'Switch core sin mapa',
+    after: 'Segmentos con dueño',
+    signal: 'Cámaras, administración, servidores y visitantes dejan de compartir el mismo plano de riesgo.',
   },
   {
     before: 'Acceso por costumbre',
     after: 'Identidad con contexto',
-    signal: 'MFA, dispositivos administrados y excepciones documentadas.',
+    signal: 'MFA, dispositivos administrados y excepciones con fecha de retiro, no permisos heredados.',
   },
   {
-    before: 'Cambios sin rastro',
-    after: 'Evidencia operativa',
-    signal: 'Bitácora de decisiones, rollback y pendientes verificables.',
+    before: 'Cambios sin bitácora',
+    after: 'Runbook operativo',
+    signal: 'Ventanas, reversa, validaciones y pendientes quedan visibles para quien opera después.',
   },
 ]
 
 const ROLLOUT_SEQUENCE = [
-  ['01', 'Mapeo', 'Inventario, dependencias y rutas de riesgo reales.'],
-  ['02', 'Control', 'Políticas mínimas antes de mover producción.'],
-  ['03', 'Prueba', 'Ventanas acotadas, reversa lista y evidencia.'],
-  ['04', 'Operación', 'Cadencia, ownership y siguientes mejoras.'],
+  ['01', 'Levantamiento', 'Se revisan rutas reales: cableado, usuarios compartidos, apps viejas y accesos externos.'],
+  ['02', 'Contención', 'Se corrige lo urgente antes de mover producción: MFA, reglas abiertas, cuentas sin dueño.'],
+  ['03', 'Despliegue', 'Cambios por ventana, piloto controlado, reversa lista y evidencia para el cliente.'],
+  ['04', 'Entrega', 'Runbook, pendientes aceptados, ownership y siguiente ciclo de mejora.'],
+]
+
+const FIELD_FRAGMENTS = [
+  ['Sucursal norte', 'ISP secundario sin etiqueta en rack', 'Se documentó antes de tocar failover'],
+  ['Caja / POS', 'Cuenta compartida usada por dos turnos', 'Se separó identidad antes de condicionar acceso'],
+  ['CCTV', 'NVR con firmware atrasado y contraseña heredada', 'Se rotó acceso y se aisló gestión'],
 ]
 
 export default function OperationalStoryboard() {
@@ -38,13 +44,13 @@ export default function OperationalStoryboard() {
         <div className="storyboard-grid">
           <div className="lg:sticky lg:top-28 self-start">
             <motion.span {...fadeUp(0)} className="label block mb-5">
-              Storytelling operativo
+              Fragmentos de campo
             </motion.span>
             <motion.h2 {...fadeUp(0.01)} className="section-heading mb-6 max-w-xl">
-              De entorno incierto a arquitectura gobernable.
+              La arquitectura mejora cuando primero se entiende como trabaja el entorno.
             </motion.h2>
             <motion.p {...fadeUp(0.02)} className="editorial-lede max-w-md mb-8">
-              El valor no está en sumar herramientas. Está en entender dependencias, mover lo mínimo necesario y dejar controles que el equipo pueda operar.
+              En campo rara vez aparece un entorno perfecto. Hay excepciones, proveedores, cableado sin etiqueta y decisiones viejas que siguen afectando la operación.
             </motion.p>
             <motion.div {...fadeUp(0.03)} className="flex flex-wrap gap-3">
               <Link href="/framework/evidence" className="btn-ghost text-sm">
@@ -103,6 +109,29 @@ export default function OperationalStoryboard() {
                   </div>
                 ))}
               </AnimeGridReveal>
+            </motion.div>
+
+            <motion.div {...fadeUp(0.03)} className="storyboard-panel p-5 sm:p-6">
+              <div className="flex items-start justify-between gap-4 mb-5">
+                <div>
+                  <div className="label mb-2">Ambiente real sanitizado</div>
+                  <h3 className="text-zinc-100 font-semibold text-lg">Notas que normalmente no aparecen en una propuesta</h3>
+                </div>
+                <span className="hidden sm:inline text-[10px] font-mono text-zinc-700">sin datos sensibles</span>
+              </div>
+              <div className="grid gap-0">
+                {FIELD_FRAGMENTS.map(([area, observation, decision]) => (
+                  <div
+                    key={area}
+                    className="grid sm:grid-cols-[0.45fr_1fr_1fr] gap-2 sm:gap-5 py-4"
+                    style={{ borderTop: '1px solid rgba(255,255,255,0.045)' }}
+                  >
+                    <div className="text-zinc-600 text-[11px] font-mono">{area}</div>
+                    <div className="text-zinc-400 text-sm leading-relaxed">{observation}</div>
+                    <div className="text-zinc-600 text-xs leading-relaxed">{decision}</div>
+                  </div>
+                ))}
+              </div>
             </motion.div>
           </div>
         </div>

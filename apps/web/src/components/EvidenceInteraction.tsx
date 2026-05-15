@@ -1,7 +1,12 @@
 'use client'
 import Link from 'next/link'
 import { useEffect } from 'react'
-import { trackDiagramView, trackEvidenceClick } from '@/components/Analytics'
+import {
+  trackDiagramView,
+  trackEvidenceClick,
+  trackEvidenceDepth,
+  trackTrustSignal,
+} from '@/components/Analytics'
 
 export function EvidenceRequestLink({
   href,
@@ -31,6 +36,21 @@ export function DiagramTracker({ diagramId, context }: { diagramId: string; cont
   useEffect(() => {
     trackDiagramView(diagramId, context)
   }, [context, diagramId])
+
+  return null
+}
+
+export function EvidenceLibraryTracker({
+  itemCount,
+  categoryCount,
+}: {
+  itemCount: number
+  categoryCount: number
+}) {
+  useEffect(() => {
+    trackTrustSignal('evidence-library-viewed', 'framework-evidence', 'view')
+    trackEvidenceDepth('evidence-library', 'view', `${categoryCount}-categories-${itemCount}-items`)
+  }, [categoryCount, itemCount])
 
   return null
 }

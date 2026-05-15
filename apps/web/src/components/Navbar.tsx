@@ -90,7 +90,7 @@ export default function Navbar() {
           <div className="hidden lg:flex items-center gap-3">
             <ThemeToggle />
             <Link href="/assessments" className="btn-amber text-sm px-5 py-2">
-              Diagnóstico gratis →
+              Evaluación técnica →
             </Link>
           </div>
 
@@ -142,7 +142,7 @@ export default function Navbar() {
               ))}
               <div className="pt-3 border-t border-white/[0.05]">
                 <Link href="/assessments" className="block btn-amber text-center py-3">
-                  Diagnóstico gratis →
+                  Evaluación técnica →
                 </Link>
               </div>
             </div>
