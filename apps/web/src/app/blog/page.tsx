@@ -6,12 +6,12 @@ import BlogList, { type BlogPost } from '@/components/BlogList'
 export const revalidate = 3600
 
 export const metadata: Metadata = {
-  title: 'Inteligencia Operacional | Blog Técnico — Velkor System',
-  description: 'Análisis técnico de implementaciones reales: Acceso Condicional, Intune, segmentación de red, gobernanza de identidad y transformación M365 en entornos empresariales mexicanos.',
+  title: 'Inteligencia Operacional | Briefs Técnicos — Velkor System',
+  description: 'Briefs técnicos sobre decisiones de arquitectura, errores de implementación y gobernanza operacional en infraestructura empresarial.',
   alternates: { canonical: 'https://velkor.mx/blog' },
   openGraph: {
     title: 'Inteligencia Operacional | Velkor System',
-    description: 'Análisis técnico de implementaciones reales: Acceso Condicional, Intune, segmentación de red, gobernanza de identidad y transformación M365.',
+    description: 'Briefs técnicos sobre arquitectura, implementación y gobernanza operacional.',
   },
 }
 
@@ -156,7 +156,7 @@ export default async function BlogPage() {
             Inteligencia operacional
           </h1>
           <p className="text-zinc-500 max-w-xl leading-relaxed">
-            Análisis técnico de campo: decisiones de arquitectura, errores de implementación y lecciones de gobernanza documentadas por ingenieros en proyectos reales.
+            Briefs de campo: decisión, riesgo y señal operacional. Lectura rápida; profundidad cuando hace falta.
           </p>
         </div>
 
@@ -166,7 +166,7 @@ export default async function BlogPage() {
           <div className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full border border-surface-border bg-surface-card">
             <span className="w-1.5 h-1.5 rounded-full bg-amber animate-pulse-slow" />
             <span className="text-zinc-600 text-xs font-mono">
-              Más artículos en camino · Publicado por el equipo Velkor
+              Briefs seleccionados · profundidad bajo contexto
             </span>
           </div>
         </div>

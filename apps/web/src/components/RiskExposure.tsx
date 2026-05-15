@@ -8,8 +8,8 @@ const RISKS = [
     domain:  'Red',
     color:   '#4878b0',
     title:   'Red plana con demasiada confianza interna',
-    body:    'Un equipo comprometido no debería alcanzar servidores y respaldos.',
-    control: 'Segmentos claros y reglas entre zonas revisables.',
+    body:    'Un equipo comprometido no debe alcanzar servidores y respaldos.',
+    control: 'Reglas entre zonas revisables.',
     signals: [
       'Todo el tráfico interno en la misma subred',
       'Reglas "any-any" activas en el firewall',
@@ -20,8 +20,8 @@ const RISKS = [
     domain:  'Identidad',
     color:   '#3a7858',
     title:   'Identidad sin contexto suficiente',
-    body:    'Una contraseña filtrada no puede abrir correo, archivos y sistemas críticos.',
-    control: 'MFA, acceso condicional y roles temporales.',
+    body:    'Una contraseña filtrada no puede abrir sistemas críticos.',
+    control: 'MFA, contexto y roles temporales.',
     signals: [
       'Cuentas de administrador sin MFA obligatorio',
       'Política de contraseñas sin complejidad mínima',
@@ -32,8 +32,8 @@ const RISKS = [
     domain:  'Endpoints',
     color:   '#3a7858',
     title:   'Endpoints fuera de inventario operativo',
-    body:    'Ante una vulnerabilidad, el conteo de laptops no debería empezar desde cero.',
-    control: 'Inventario activo, MDM y parcheo con responsable.',
+    body:    'Ante una vulnerabilidad, el inventario no debe empezar desde cero.',
+    control: 'Inventario, MDM y parcheo con dueño.',
     signals: [
       'Endpoints con parches pendientes de más de 90 días',
       'Sin inventario automatizado de software instalado',

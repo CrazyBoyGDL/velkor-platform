@@ -14,7 +14,7 @@ import CasosContent, {
 export const revalidate = 3600
 
 export const metadata: Metadata = {
-  title: 'Transformaciones Operacionales | Narrativas de Ingeniería — Velkor System',
+  title: 'Casos Operacionales Flagship | Narrativas de Ingeniería — Velkor System',
   description:
     'Proyectos IT documentados como narrativas de ingeniería: contexto operacional, decisiones de arquitectura, restricciones reales, cronograma de implementación y resultados verificados.',
   alternates: { canonical: 'https://velkor.mx/casos' },
@@ -380,10 +380,10 @@ async function getCasos(): Promise<CaseStudy[]> {
     3600
   )
 
-  if (!data?.data?.length) return FALLBACK_CASES
+  if (!data?.data?.length) return FALLBACK_CASES.slice(0, 2)
 
   // Map Strapi v4 → CaseStudy (new fields will be undefined until schema is extended)
-  return data.data.map(({ attributes: a }) => ({
+  return data.data.slice(0, 2).map(({ attributes: a }) => ({
     client:        a.client    ?? '',
     sector:        a.sector    ?? '',
     year:          a.year      ?? '',
@@ -442,11 +442,11 @@ export default async function CasosPage() {
         <div className="mb-14">
           <span className="label">Narrativas de ingeniería</span>
           <h1 className="text-4xl sm:text-5xl font-black text-noc-white mt-3 mb-4 leading-tight tracking-heading">
-            Transformaciones operacionales<br />
-            <span className="text-zinc-500">documentadas</span>
+            Dos casos fuertes.<br />
+            <span className="text-zinc-500">Profundidad antes que catálogo</span>
           </h1>
           <p className="text-zinc-500 max-w-2xl text-sm leading-relaxed">
-            Cada proyecto documentado con su contexto operacional, restricciones reales, decisiones de arquitectura, cronograma semanal y resultados verificados. Datos anonimizados.
+            Casos anonimizados con restricciones, decisiones de arquitectura, rollback y resultados verificables.
           </p>
         </div>
 

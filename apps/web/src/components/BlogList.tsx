@@ -76,6 +76,7 @@ function MetadataStrip({ post, compact = false }: { post: BlogPost; compact?: bo
 
 export default function BlogList({ posts }: { posts: BlogPost[] }) {
   const [featured, ...rest] = posts
+  const briefs = rest.slice(0, 5)
 
   if (!featured) return (
     <p className="text-zinc-600 text-sm text-center py-12">No hay artículos publicados aún.</p>
@@ -86,7 +87,7 @@ export default function BlogList({ posts }: { posts: BlogPost[] }) {
       <Link href={`/blog/${featured.slug}`} className="block group mb-6">
         <motion.article
           {...fadeUp(0.08)}
-          className="card p-0 overflow-hidden hover:border-zinc-700 transition-all duration-300 cursor-pointer"
+          className="intelligence-brief-featured card p-0 overflow-hidden hover:border-zinc-700 transition-all duration-300 cursor-pointer"
           style={{ borderLeftColor: featured.hex, borderLeftWidth: 3 }}
         >
           <div className="p-8">
@@ -99,18 +100,9 @@ export default function BlogList({ posts }: { posts: BlogPost[] }) {
             <h2 className="text-noc-white font-black text-2xl sm:text-3xl mb-4 leading-tight group-hover:text-amber transition-colors">
               {featured.title}
             </h2>
-            <p className="text-zinc-400 text-base leading-relaxed mb-4 max-w-2xl">
-              {featured.excerpt}
+            <p className="text-zinc-400 text-sm leading-relaxed mb-5 max-w-2xl">
+              {featured.excerpt.slice(0, 160)}…
             </p>
-            {displayTags(featured).length > 0 && (
-              <div className="flex flex-wrap gap-1.5 mb-4">
-                {displayTags(featured).slice(0, 4).map(tag => (
-                  <span key={tag} className="font-mono text-[10px] text-zinc-600 border border-zinc-800 px-2 py-0.5 rounded">
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            )}
             <MetadataStrip post={featured} />
             {featured.architectureRef && (
               <div className="mb-4">
@@ -133,52 +125,26 @@ export default function BlogList({ posts }: { posts: BlogPost[] }) {
         </motion.article>
       </Link>
 
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
-        {rest.map((post, i) => {
-          const { slug, title, excerpt, category, date, readTime, hex, architectureRef } = post
+      <div className="grid gap-3 mb-10">
+        {briefs.map((post, i) => {
+          const { slug, title, category, date, readTime, hex, architectureRef } = post
           const tags = displayTags(post)
 
           return (
           <Link key={slug} href={`/blog/${slug}`} className="group">
             <motion.article
               {...fadeUp(i * 0.010)}
-              className="card p-5 hover:border-zinc-700 transition-all duration-300 cursor-pointer flex flex-col h-full"
-              style={{ borderTopColor: hex, borderTopWidth: 2 }}
+              className="intelligence-brief-row hover:border-zinc-700 transition-all duration-300 cursor-pointer"
+              style={{ borderLeftColor: hex }}
             >
-              <div className="flex items-center justify-between mb-4">
-                <span className="badge text-[10px]" style={{ color: hex, backgroundColor: hex + '20' }}>
-                  {category}
-                </span>
-                <span className="text-zinc-700 text-[10px] font-mono">{readTime}</span>
+              <div>
+                <span className="label text-[9px]">{category} · {readTime}</span>
+                <h2>{title}</h2>
               </div>
-              <h2 className="text-noc-white font-semibold text-[15px] mb-2 leading-snug group-hover:text-white transition-colors flex-1">
-                {title}
-              </h2>
-              <p className="text-zinc-600 text-xs leading-relaxed mb-3">
-                {excerpt.slice(0, 100)}…
-              </p>
-              <MetadataStrip post={post} compact />
-              {tags.length > 0 && (
-                <div className="flex flex-wrap gap-1 mb-3">
-                  {tags.slice(0, 3).map(tag => (
-                    <span key={tag} className="font-mono text-[9px] text-zinc-700 border border-zinc-800 px-1.5 py-0.5 rounded">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              )}
-              {architectureRef && (
-                <div className="mb-2">
-                  <span className="text-zinc-700 text-[10px] font-mono">
-                    <span style={{ color: hex }}>→</span> Referencia técnica vinculada
-                  </span>
-                </div>
-              )}
-              <div className="flex items-center justify-between mt-auto pt-3 border-t border-surface-border">
-                <span className="text-zinc-700 text-[10px] font-mono">{date}</span>
-                <span className="text-[10px] font-mono opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: hex }}>
-                  LEER →
-                </span>
+              <div className="intelligence-brief-meta">
+                {architectureRef && <span style={{ color: hex }}>arquitectura vinculada</span>}
+                {tags.slice(0, 2).map(tag => <span key={tag}>{tag}</span>)}
+                <span>{date}</span>
               </div>
             </motion.article>
           </Link>

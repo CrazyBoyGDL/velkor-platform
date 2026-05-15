@@ -5,7 +5,6 @@ import dynamic from 'next/dynamic'
 import { motion } from 'framer-motion'
 import AdaptiveCTA from '@/components/AdaptiveCTA'
 import InfraTopology from '@/components/InfraTopology'
-import InlineDiagnostics from '@/components/InlineDiagnostics'
 import RiskExposure from '@/components/RiskExposure'
 import TrustValidationLayer from '@/components/TrustValidationLayer'
 import { trackCTA } from '@/components/Analytics'
@@ -31,24 +30,24 @@ const WORKFLOW = [
   {
     step: '01',
     title: 'Diagnóstico',
-    detail: 'Entendemos sedes, usuarios, proveedores, sistemas críticos y riesgos que ya afectan operación.',
+    detail: 'Riesgos reales, dependencias y restricciones antes de proponer.',
   },
   {
     step: '02',
     title: 'Ruta técnica',
-    detail: 'Priorizamos controles, definimos exclusiones y dejamos una ruta que dirección e IT pueden revisar juntos.',
+    detail: 'Controles priorizados, exclusiones claras y responsables visibles.',
   },
   {
     step: '03',
     title: 'Implementación',
-    detail: 'Ejecutamos por ventanas, con rollback, evidencia y transferencia para el equipo que queda operando.',
+    detail: 'Ventanas, rollback, evidencia y handoff para operar sin dependencia.',
   },
 ]
 
 const PROCESS_PROOF = [
-  'Validacion de dependencias antes de ventana',
-  'Rollback aprobado antes de cambio',
-  'Evidencia tecnica al cierre',
+  'Dependencias validadas',
+  'Rollback aprobado',
+  'Evidencia al cierre',
 ]
 
 const AVOIDED_PATTERNS = [
@@ -132,7 +131,7 @@ function WorkflowSection() {
             <span className="label block mb-5">Cómo trabaja Velkor</span>
             <h2 className="section-heading max-w-xl mb-5">Menos ruido. Más decisión técnica.</h2>
             <p className="text-zinc-500 text-base leading-relaxed max-w-md">
-              La primera conversación no busca vender hardware. Busca separar lo crítico de lo conveniente y dejar claro qué puede ejecutarse sin improvisar.
+              La primera conversación separa lo crítico de lo conveniente.
             </p>
           </motion.div>
 
@@ -210,11 +209,6 @@ export default function HomeLanding({ featuredCase }: { featuredCase: FeaturedCa
       <Hero />
       <div className="section-divider" />
       <RiskExposure />
-      <div className="home-diagnostic-wrap px-4 sm:px-8">
-        <div className="max-w-7xl mx-auto">
-          <InlineDiagnostics setId="exposure-estimator" location="home-risk" maxQuestions={5} />
-        </div>
-      </div>
       <WorkflowSection />
       <FeaturedCaseSection featuredCase={featuredCase} />
       <TrustValidationLayer />

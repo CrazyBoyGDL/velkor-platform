@@ -2,15 +2,14 @@ import type { Metadata } from 'next'
 import type { CSSProperties } from 'react'
 import Link from 'next/link'
 import AdaptiveCTA from '@/components/AdaptiveCTA'
-import InlineDiagnostics from '@/components/InlineDiagnostics'
 import {
   ArchitectureSnapshot,
   DeploymentDiff,
-  InfrastructureStatePanel,
   PolicyOverlay,
   type ArchitectureLink,
   type ArchitectureNode,
 } from '@/components/OperationalEvidence'
+import type { DiagnosticCtaIntent } from '@/lib/scoring'
 
 export const metadata: Metadata = {
   title: 'Servicios IT Empresariales',
@@ -28,7 +27,7 @@ type ServiceModule = {
   layer: string
   objective: string
   outcome: string
-  diagnosticId: string
+  ctaIntent: DiagnosticCtaIntent
   tags: string[]
   nodes: ArchitectureNode[]
   links: ArchitectureLink[]
@@ -48,7 +47,7 @@ const SERVICES: ServiceModule[] = [
     layer: 'Network / Perimeter',
     objective: 'Separar usuarios, servidores, invitados, cámaras y gestión sin detener operación.',
     outcome: 'Reglas explícitas, rollback por sede y topología L2/L3 documentada al cierre.',
-    diagnosticId: 'segmentation-maturity',
+    ctaIntent: 'segmentation-validation',
     tags: ['FortiGate', 'VLAN', 'IPsec', 'IPS', 'Runbook'],
     nodes: [
       { id: 'wan', label: 'WAN', x: 48, y: 46, tone: 'neutral' },
@@ -77,7 +76,7 @@ const SERVICES: ServiceModule[] = [
     layer: 'Identity / Endpoint',
     objective: 'Bloquear accesos sin contexto y retirar privilegios permanentes sin romper el trabajo diario.',
     outcome: 'MFA, Conditional Access, cumplimiento Intune y PIM con evidencia de auditoría.',
-    diagnosticId: 'identity-risk-scan',
+    ctaIntent: 'identity-exposure-review',
     tags: ['Entra ID', 'Intune', 'CA', 'PIM', 'FIDO2'],
     nodes: [
       { id: 'user', label: 'USER', x: 52, y: 98, tone: 'identity' },
@@ -106,7 +105,7 @@ const SERVICES: ServiceModule[] = [
     layer: 'Physical Security / Video Network',
     objective: 'Centralizar cámaras, aislar tráfico de video y mantener grabación local aunque falle internet.',
     outcome: 'Mapa de cobertura, NVR dimensionado, VLAN vigilancia y runbook de revisión de incidentes.',
-    diagnosticId: 'exposure-estimator',
+    ctaIntent: 'remote-access-review',
     tags: ['Axis', 'NVR', 'PoE+', 'ONVIF', 'VLAN CCTV'],
     nodes: [
       { id: 'cam', label: 'CAM', x: 52, y: 60, tone: 'video' },
@@ -137,21 +136,19 @@ function ServiceCapability({ service, index }: { service: ServiceModule; index: 
           <span className="label">{service.eyebrow}</span>
           <h2 className="section-heading mt-4 mb-5 max-w-2xl">{service.title}</h2>
           <p className="text-zinc-500 text-base leading-relaxed max-w-xl">{service.summary}</p>
-          <InfrastructureStatePanel
-            layer={service.layer}
-            objective={service.objective}
-            outcome={service.outcome}
-            tags={service.tags}
-            accent={service.accent}
-          />
-          <InlineDiagnostics
-            setId={service.diagnosticId}
-            location={`service-${service.href.split('/').join('-')}`}
-            maxQuestions={3}
-            compact
-          />
+          <div className="service-operational-brief">
+            <div>
+              <span>Problema</span>
+              <p>{service.objective}</p>
+            </div>
+            <div>
+              <span>Cambio</span>
+              <p>{service.outcome}</p>
+            </div>
+          </div>
+          <AdaptiveCTA intent={service.ctaIntent} service={service.layer} location={`service-${service.href.split('/').join('-')}`} compact />
           <Link href={service.href} className="service-capability-link">
-            Ver capacidad operacional →
+            Ver detalle técnico →
           </Link>
         </div>
 
@@ -181,10 +178,10 @@ export default function ServiciosPage() {
           <span className="label">Capacidades operacionales</span>
           <div className="service-index-heading">
             <h1 className="display-heading max-w-4xl">
-              Servicios como infraestructura operable, no como catálogo.
+              Tres frentes para ordenar operación crítica.
             </h1>
             <p className="editorial-lede max-w-xl">
-              Objetivo técnico, capa afectada y evidencia de despliegue en una sola lectura.
+              Qué problema se corrige, cómo se ejecuta y qué evidencia queda al cierre.
             </p>
           </div>
         </header>
