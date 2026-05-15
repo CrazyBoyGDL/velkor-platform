@@ -43,16 +43,10 @@ export default function ServicePanel({ data }: { data: ServicePanelData }) {
       whileHover={{ scale: 1.004 }}
       whileTap={{ scale: 0.98 }}
       transition={{ type: 'spring', stiffness: 360, damping: 32 }}
-      className="relative rounded-xl overflow-hidden cursor-default group h-full"
+      className="relative rounded-lg overflow-hidden cursor-default group h-full"
     >
       {/* Card base — midnight navy */}
-      <div className="absolute inset-0 rounded-xl"
-        style={{
-          background: 'linear-gradient(150deg, #0a1020, #060d18)',
-          border: '1px solid rgba(56,100,160,0.07)',
-          boxShadow: '0 2px 16px rgba(0,0,0,0.35)',
-        }}
-      />
+      <div className="absolute inset-0 rounded-lg service-panel-surface" />
 
       {/* Domain accent line — top edge, very subtle */}
       <div className="absolute top-0 left-5 right-5 h-px rounded-full"
@@ -61,7 +55,7 @@ export default function ServicePanel({ data }: { data: ServicePanelData }) {
 
       {/* Mouse-tracking specular */}
       <motion.div
-        className="absolute inset-0 rounded-xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+        className="absolute inset-0 rounded-lg pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-200"
         style={{
           background: `radial-gradient(circle at ${glowX} ${glowY}, rgba(255,255,255,0.022) 0%, transparent 55%)`,
         }}

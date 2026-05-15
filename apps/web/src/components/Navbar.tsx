@@ -52,8 +52,8 @@ export default function Navbar() {
           <Link href="/" className="flex items-center gap-2.5 group flex-shrink-0">
             <Logo key={pathname} className="w-9 h-9" />
             <div className="leading-none">
-              <div className="text-noc-white font-bold text-[15px] tracking-tight group-hover:text-amber transition-colors">VELKOR</div>
-              <div className="text-zinc-600 text-[9px] font-mono tracking-[0.2em]">SYSTEM</div>
+              <div className="text-noc-white font-semibold text-[15px] tracking-normal group-hover:text-amber transition-colors">VELKOR</div>
+              <div className="text-zinc-600 text-[9px] font-mono tracking-normal">SYSTEM</div>
             </div>
           </Link>
 
@@ -125,7 +125,7 @@ export default function Navbar() {
                 <Link
                   key={href}
                   href={href}
-                  className={`flex items-center gap-2 px-4 py-3 rounded-xl text-sm transition-colors ${
+                  className={`flex items-center gap-2 px-4 py-3 rounded-lg text-sm transition-colors ${
                     isActive(href)
                       ? 'text-white bg-white/[0.06] font-medium'
                       : 'text-zinc-400 hover:text-white hover:bg-white/[0.04]'

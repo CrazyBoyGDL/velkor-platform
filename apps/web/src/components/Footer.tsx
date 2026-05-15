@@ -59,8 +59,8 @@ export default function Footer() {
             <Link href="/" className="flex items-center gap-2.5 mb-5 group w-fit">
               <Logo className="w-8 h-8" animated={false} />
               <div className="leading-none">
-                <div className="text-noc-white font-bold text-sm tracking-tight group-hover:text-amber transition-colors">VELKOR</div>
-                <div className="text-zinc-700 text-[9px] font-mono tracking-[0.2em]">SYSTEM</div>
+                <div className="text-noc-white font-semibold text-sm tracking-normal group-hover:text-amber transition-colors">VELKOR</div>
+                <div className="text-zinc-700 text-[9px] font-mono tracking-normal">SYSTEM</div>
               </div>
             </Link>
 
@@ -70,7 +70,7 @@ export default function Footer() {
 
             {/* Service regions */}
             <div className="mb-4">
-              <div className="text-zinc-700 text-[10px] font-mono tracking-widest mb-2">COBERTURA</div>
+              <div className="text-zinc-700 text-[10px] font-mono tracking-normal mb-2">COBERTURA</div>
               {TRUST.serviceRegions.slice(0, 2).map(r => (
                 <div key={r} className="flex items-center gap-1.5 mb-1">
                   <span className="w-1 h-1 rounded-full bg-zinc-700 flex-shrink-0" />
@@ -82,7 +82,7 @@ export default function Footer() {
             {/* Operational status */}
             <div className="flex items-center gap-2 mb-5">
               <span className="w-1.5 h-1.5 rounded-full bg-noc-green animate-pulse-slow" />
-              <span className="text-zinc-600 text-[10px] font-mono tracking-widest">SOPORTE TÉCNICO ACTIVO</span>
+              <span className="text-zinc-600 text-[10px] font-mono tracking-normal">SOPORTE TÉCNICO ACTIVO</span>
             </div>
 
             {/* Technology stack chips */}
