@@ -27,6 +27,46 @@
     "hex": {
       "type": "string",
       "maxLength": 20
+    },
+    "industry": {
+      "type": "string",
+      "maxLength": 120
+    },
+    "technicalLevel": {
+      "type": "enumeration",
+      "enum": ["executive", "technical", "architecture", "governance"]
+    },
+    "technicalCategory": {
+      "type": "enumeration",
+      "enum": ["identity-governance", "network-infrastructure", "endpoint-management", "security-operations", "continuity-resilience", "cloud-modernization", "video-operations"]
+    },
+    "operationalTags": {
+      "type": "json",
+      "description": "Operational tags used to connect services with authority content and CRM routing"
+    },
+    "maturityLevel": {
+      "type": "enumeration",
+      "enum": ["reactive", "controlled", "governed", "optimized"]
+    },
+    "engagementType": {
+      "type": "enumeration",
+      "enum": ["assessment", "implementation", "managed-services", "governance", "advisory"]
+    },
+    "relatedEvidence": {
+      "type": "json"
+    },
+    "architectureDiagram": {
+      "type": "json"
+    },
+    "rolloutPhases": {
+      "type": "json"
+    },
+    "downloadableArtifact": {
+      "type": "json"
+    },
+    "governanceNotes": {
+      "type": "text",
+      "maxLength": 1500
     }
   }
 }

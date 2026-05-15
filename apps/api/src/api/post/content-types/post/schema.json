@@ -40,6 +40,50 @@
     "hex": {
       "type": "string",
       "maxLength": 20
+    },
+    "technicalLevel": {
+      "type": "enumeration",
+      "enum": ["executive", "technical", "architecture", "governance"]
+    },
+    "technicalCategory": {
+      "type": "enumeration",
+      "enum": ["identity-governance", "network-infrastructure", "endpoint-management", "security-operations", "continuity-resilience", "cloud-modernization", "video-operations"]
+    },
+    "operationalTags": {
+      "type": "json",
+      "description": "Operational tags used for authority content reuse and analytics grouping"
+    },
+    "maturityLevel": {
+      "type": "enumeration",
+      "enum": ["reactive", "controlled", "governed", "optimized"]
+    },
+    "engagementType": {
+      "type": "enumeration",
+      "enum": ["assessment", "implementation", "managed-services", "governance", "advisory"]
+    },
+    "relatedEvidence": {
+      "type": "json",
+      "description": "Evidence IDs, document references, or sanitized artifact links related to this post"
+    },
+    "architectureDiagram": {
+      "type": "json",
+      "description": "Diagram metadata or route reference for architecture context"
+    },
+    "relatedCases": {
+      "type": "json",
+      "description": "Related case-study slugs or Strapi identifiers"
+    },
+    "relatedFrameworks": {
+      "type": "json",
+      "description": "Related framework stages, references, or reusable consulting models"
+    },
+    "downloadableArtifact": {
+      "type": "json",
+      "description": "Optional downloadable artifact metadata: title, url, gated, format"
+    },
+    "governanceNotes": {
+      "type": "text",
+      "maxLength": 1500
     }
   }
 }

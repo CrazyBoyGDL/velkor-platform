@@ -25,6 +25,43 @@
     "fileUrl": {
       "type": "string",
       "description": "URL opcional al PDF (CDN o Storage)"
+    },
+    "technicalLevel": {
+      "type": "enumeration",
+      "enum": ["executive", "technical", "architecture", "governance"]
+    },
+    "technicalCategory": {
+      "type": "enumeration",
+      "enum": ["identity-governance", "network-infrastructure", "endpoint-management", "security-operations", "continuity-resilience", "cloud-modernization", "video-operations"]
+    },
+    "operationalTags": {
+      "type": "json",
+      "description": "Operational tags used for lead attribution and content reuse"
+    },
+    "maturityLevel": {
+      "type": "enumeration",
+      "enum": ["reactive", "controlled", "governed", "optimized"]
+    },
+    "engagementType": {
+      "type": "enumeration",
+      "enum": ["assessment", "implementation", "managed-services", "governance", "advisory"]
+    },
+    "relatedEvidence": {
+      "type": "json"
+    },
+    "relatedCases": {
+      "type": "json"
+    },
+    "architectureDiagram": {
+      "type": "json"
+    },
+    "downloadableArtifact": {
+      "type": "json",
+      "description": "Structured artifact metadata: title, url, gated, format, evidenceId"
+    },
+    "governanceNotes": {
+      "type": "text",
+      "maxLength": 1500
     }
   }
 }

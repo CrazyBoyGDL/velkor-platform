@@ -11,6 +11,10 @@
     "draftAndPublish": true
   },
   "attributes": {
+    "client": {
+      "type": "string",
+      "maxLength": 200
+    },
     "sector": {
       "type": "string",
       "required": true,
@@ -23,8 +27,23 @@
     "challenge": {
       "type": "text"
     },
+    "context": {
+      "type": "text",
+      "maxLength": 1000
+    },
+    "durationWeeks": {
+      "type": "integer"
+    },
+    "beforeState": {
+      "type": "json",
+      "description": "Initial-state bullets before the intervention"
+    },
     "solution": {
       "type": "text"
+    },
+    "phases": {
+      "type": "json",
+      "description": "Legacy phase timeline consumed by the web case renderer"
     },
     "result": {
       "type": "string",
@@ -40,6 +59,106 @@
     "hex": {
       "type": "string",
       "maxLength": 20
+    },
+    "industry": {
+      "type": "string",
+      "maxLength": 120
+    },
+    "envSize": {
+      "type": "string",
+      "maxLength": 180
+    },
+    "envEndpoints": {
+      "type": "string",
+      "maxLength": 220
+    },
+    "envPlatform": {
+      "type": "string",
+      "maxLength": 220
+    },
+    "technicalLevel": {
+      "type": "enumeration",
+      "enum": ["executive", "technical", "architecture", "governance"]
+    },
+    "technicalCategory": {
+      "type": "enumeration",
+      "enum": ["identity-governance", "network-infrastructure", "endpoint-management", "security-operations", "continuity-resilience", "cloud-modernization", "video-operations"]
+    },
+    "operationalTags": {
+      "type": "json",
+      "description": "Operational tags used for CRM matching and content reuse"
+    },
+    "maturityLevel": {
+      "type": "enumeration",
+      "enum": ["reactive", "controlled", "governed", "optimized"]
+    },
+    "engagementType": {
+      "type": "enumeration",
+      "enum": ["assessment", "implementation", "managed-services", "governance", "advisory"]
+    },
+    "relatedEvidence": {
+      "type": "json",
+      "description": "Evidence items or artifact references connected to this case"
+    },
+    "architectureDiagram": {
+      "type": "json",
+      "description": "Architecture overlay metadata, diagram IDs, or route references"
+    },
+    "architectureDecisions": {
+      "type": "json",
+      "description": "Key architecture choices and rationales"
+    },
+    "rolloutPhases": {
+      "type": "json",
+      "description": "Implementation phases with dependencies, acceptance criteria, and owner notes"
+    },
+    "deliverables": {
+      "type": "json",
+      "description": "Operational deliverables handed off to the client"
+    },
+    "outcomes": {
+      "type": "json",
+      "description": "Verified operational outcomes and metrics"
+    },
+    "governanceMatrix": {
+      "type": "json",
+      "description": "Ownership and review cadence matrix"
+    },
+    "dependencyMap": {
+      "type": "json",
+      "description": "System dependency map consumed by the case renderer"
+    },
+    "governanceNotes": {
+      "type": "text",
+      "maxLength": 2000
+    },
+    "deploymentDependencies": {
+      "type": "json",
+      "description": "Dependency chain discovered during deployment"
+    },
+    "operationalTradeoffs": {
+      "type": "json",
+      "description": "Documented tradeoffs and accepted constraints"
+    },
+    "rollbackConsiderations": {
+      "type": "json",
+      "description": "Rollback constraints, fallback paths, and validation checkpoints"
+    },
+    "lessonsLearned": {
+      "type": "json",
+      "description": "Post-implementation lessons for future projects"
+    },
+    "implementationConstraints": {
+      "type": "json",
+      "description": "Budget, timing, regulatory, legacy, or change-management constraints"
+    },
+    "riskResidual": {
+      "type": "json",
+      "description": "Residual risks documented at handoff"
+    },
+    "postmortemNote": {
+      "type": "text",
+      "maxLength": 1500
     }
   }
 }

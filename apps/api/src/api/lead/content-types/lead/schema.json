@@ -53,6 +53,116 @@
     "source": {
       "type": "string",
       "maxLength": 100
+    },
+    "workflow": {
+      "type": "enumeration",
+      "enum": ["immediate-review", "governance-workflow", "roadmap-workflow", "nurture-sequence"]
+    },
+    "slaHours": {
+      "type": "integer"
+    },
+    "alertLevel": {
+      "type": "enumeration",
+      "enum": ["critical", "high", "normal", "low"]
+    },
+    "tags": {
+      "type": "json"
+    },
+    "utm": {
+      "type": "string",
+      "maxLength": 300
+    },
+    "reportRef": {
+      "type": "string",
+      "maxLength": 60
+    },
+    "scoreOverall": {
+      "type": "integer"
+    },
+    "scoreInfrastructure": {
+      "type": "integer"
+    },
+    "scoreIdentity": {
+      "type": "integer"
+    },
+    "scoreOperations": {
+      "type": "integer"
+    },
+    "maturityLevel": {
+      "type": "string",
+      "maxLength": 80
+    },
+    "exposureLevel": {
+      "type": "string",
+      "maxLength": 80
+    },
+    "criticalFlagsCount": {
+      "type": "integer"
+    },
+    "highFlagsCount": {
+      "type": "integer"
+    },
+    "segment": {
+      "type": "string",
+      "maxLength": 80
+    },
+    "engagementType": {
+      "type": "string",
+      "maxLength": 100
+    },
+    "priority": {
+      "type": "enumeration",
+      "enum": ["critical", "high", "normal", "medium", "low"]
+    },
+    "estimatedScope": {
+      "type": "string",
+      "maxLength": 120
+    },
+    "internalNote": {
+      "type": "text",
+      "maxLength": 1500
+    },
+    "followUpChannel": {
+      "type": "string",
+      "maxLength": 80
+    },
+    "followUpHours": {
+      "type": "integer"
+    },
+    "owner": {
+      "type": "string",
+      "maxLength": 120
+    },
+    "lifecycleStage": {
+      "type": "enumeration",
+      "enum": ["new", "qualified", "assessment_completed", "discovery_scheduled", "proposal_sent", "negotiation", "closed_won", "closed_lost", "nurture"]
+    },
+    "nurtureStage": {
+      "type": "enumeration",
+      "enum": ["none", "assessment-follow-up", "evidence-share", "proposal-follow-up", "reactivation"]
+    },
+    "staleAt": {
+      "type": "datetime"
+    },
+    "nextFollowUpAt": {
+      "type": "datetime"
+    },
+    "lastInteractionAt": {
+      "type": "datetime"
+    },
+    "escalationLevel": {
+      "type": "enumeration",
+      "enum": ["none", "owner", "principal", "executive"]
+    },
+    "operationalPriority": {
+      "type": "enumeration",
+      "enum": ["incident-response", "enterprise-risk", "governance-deadline", "modernization", "managed-roadmap", "nurture"]
+    },
+    "governanceSignals": {
+      "type": "json"
+    },
+    "relatedArtifacts": {
+      "type": "json"
     }
   }
 }
