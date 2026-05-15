@@ -561,6 +561,19 @@ This phase increases authenticity without replacing platform systems:
 - Do not create a parallel evidence CMS. When ready, extend existing Strapi `recurso`, `caso`, or `post` schemas.
 - Keep mobile trust content short, contextual, and readable without compressing desktop-only layouts.
 
+## 16. Visual Reduction & Brand Coherence Addendum
+
+This phase reduces visual density and improves enterprise clarity without adding backend complexity:
+
+- Homepage narrative is reduced to hero, real operational problems, work method, one featured case, and trust CTA.
+- Global status/floating/social proof patterns were removed because they competed with the consultive path.
+- Brand treatment now favors graphite navy, steel blue, muted cyan, and amber only for primary CTA.
+- Hero and footer no longer depend on scroll-driven motion; topology animation remains slow and contextual.
+- Mobile hides the desktop hero signal rail so the primary action and next section appear sooner.
+- Light mode was tightened into a technical editorial/whitepaper surface.
+
+Detailed notes: `docs/VISUAL_REDUCTION_BRAND_COHERENCE.md`.
+
 ---
 
-*Updated: May 2026 · Velkor System · velkor.mx*
+*Updated: May 2026 · Velkor Operations · velkor.mx*
