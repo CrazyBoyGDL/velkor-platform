@@ -7,6 +7,7 @@ import InfraTopology from '@/components/InfraTopology'
 import ServicePanel, { type ServicePanelData } from '@/components/ServicePanel'
 import OperationalArtifacts from '@/components/OperationalArtifacts'
 import ServiceEcosystem from '@/components/ServiceEcosystem'
+import OperationalStoryboard from '@/components/OperationalStoryboard'
 import RiskExposure from '@/components/RiskExposure'
 import ExecutiveDiagnostic from '@/components/ExecutiveDiagnostic'
 import { AnimeGridReveal, ScrambleText } from '@/components/AnimeMotion'
@@ -133,7 +134,7 @@ function Counter({ val, suf, prefix = '' }: { val: number; suf: string; prefix?:
     return () => obs.disconnect()
   }, [val])
 
-  return <div ref={ref} className="font-mono font-extrabold tabular-nums">{prefix}{count}{suf}</div>
+  return <div ref={ref} className="font-mono font-semibold tabular-nums">{prefix}{count}{suf}</div>
 }
 
 // ─── Section header ───────────────────────────────────────────────────────────
@@ -145,7 +146,7 @@ function SectionHeader({ eyebrow, title, sub, align = 'center' }: {
   return (
     <div className={cls}>
       <motion.span {...fadeUp(0)}     className="label block mb-4">{eyebrow}</motion.span>
-      <motion.h2  {...fadeUp(0.010)} className="text-2xl sm:text-[2.4rem] font-bold text-noc-white leading-tight tracking-heading">{title}</motion.h2>
+      <motion.h2  {...fadeUp(0.010)} className="section-heading">{title}</motion.h2>
       {sub && <motion.p {...fadeUp(0.020)} className={subCls}>{sub}</motion.p>}
     </div>
   )
@@ -161,6 +162,34 @@ function CtaStrip({ text, cta, href }: { text: string; cta: string; href: string
       <p className="text-zinc-500 text-sm leading-relaxed">{text}</p>
       <Link href={href} className="btn-ghost text-sm whitespace-nowrap flex-shrink-0">{cta} →</Link>
     </motion.div>
+  )
+}
+
+function StatementBand() {
+  return (
+    <section className="statement-band px-4 sm:px-8 py-14">
+      <div className="max-w-7xl mx-auto grid lg:grid-cols-[0.95fr_1.25fr] gap-10 lg:gap-16 items-center">
+        <motion.div {...fadeUp(0)}>
+          <span className="label block mb-5">Criterio operativo</span>
+          <h2 className="section-heading max-w-3xl">
+            La infraestructura madura no se vende por volumen.
+            <span className="block text-gradient-steel">Se prueba con decisiones visibles.</span>
+          </h2>
+        </motion.div>
+        <AnimeGridReveal className="grid sm:grid-cols-3 gap-0" delay={54} from="first">
+          {[
+            ['Evidencia', 'Cambios documentados y verificables por el equipo.'],
+            ['Gobierno', 'Responsables, reglas y excepciones explícitas.'],
+            ['Continuidad', 'Rutas de reversa antes de tocar servicios críticos.'],
+          ].map(([label, detail]) => (
+            <div key={label} className="px-0 sm:px-6 py-5 sm:border-l border-white/[0.07]">
+              <div className="text-zinc-200 font-semibold text-sm mb-2">{label}</div>
+              <p className="text-zinc-500 text-sm leading-relaxed">{detail}</p>
+            </div>
+          ))}
+        </AnimeGridReveal>
+      </div>
+    </section>
   )
 }
 
@@ -210,7 +239,7 @@ export default function HomePage() {
           Layout: text left ~44%, topology absolute-right ~62%,
           overlap zone creates compositional tension without a grid border.
       ════════════════════════════════════════════════════════════════ */}
-      <section ref={heroRef} className="relative min-h-screen flex items-center overflow-hidden">
+      <section ref={heroRef} className="relative min-h-[78vh] md:min-h-[88vh] flex items-start overflow-hidden">
 
         {/* ── Atmospheric depth — slow parallax ── */}
         <motion.div style={{ y: bgY }} className="absolute inset-0 pointer-events-none">
@@ -219,7 +248,7 @@ export default function HomePage() {
           }} />
           <div className="absolute inset-0 bg-topology opacity-45" />
           <NetworkBg />
-          <div className="absolute bottom-0 left-0 right-0 h-64 bg-gradient-to-t from-surface-dark to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 h-64 hero-bottom-fade" />
         </motion.div>
 
         {/* ── Architecture topology — atmospheric, right side ── */}
@@ -236,10 +265,7 @@ export default function HomePage() {
             background: 'radial-gradient(ellipse 75% 65% at 58% 50%, rgba(37,99,235,0.030) 0%, transparent 60%)',
           }} />
           {/* Left-edge dissolve — topology fades into the text field */}
-          <div className="absolute inset-y-0 left-0 z-10" style={{
-            width: '42%',
-            background: 'linear-gradient(90deg, #080c14 10%, rgba(8,12,20,0.75) 50%, transparent 100%)',
-          }} />
+          <div className="absolute inset-y-0 left-0 z-10 hero-topology-dissolve" style={{ width: '42%' }} />
           {/* Slow ambient drift — living system feel, not looping visibly */}
           <motion.div
             className="w-full"
@@ -255,7 +281,7 @@ export default function HomePage() {
           style={{ y: textY, opacity }}
           className="relative z-10 max-w-7xl mx-auto px-4 sm:px-8 w-full"
         >
-          <div className="lg:max-w-[44%] py-24 sm:py-28 lg:py-32">
+          <div className="lg:max-w-[46%] pt-16 sm:pt-20 lg:pt-20 pb-10">
 
             {/* Eyebrow — precise, technical, no corporate bluster */}
             <motion.div {...heroUp(0)} className="flex items-center gap-3 mb-7">
@@ -267,20 +293,18 @@ export default function HomePage() {
 
             {/* Headline */}
             <motion.h1 {...heroUp(0.03)}
-              className="font-extrabold leading-[0.95] tracking-display mb-5"
-              style={{ fontSize: 'clamp(2.1rem, 4.2vw, 3.4rem)' }}
+              className="display-heading mb-6"
             >
-              Infraestructura<br />
-              clara para operar<br />
-              <span className="text-gradient-steel">sin sorpresas.</span>
+              <span className="block">Infraestructura</span>
+              <span className="block font-light text-zinc-400">que opera</span>
+              <span className="block text-gradient-steel">con evidencia.</span>
             </motion.h1>
 
             {/* Subtext */}
             <motion.p {...heroUp(0.05)}
-              className="text-zinc-500 leading-[1.72] mb-9"
-              style={{ fontSize: '0.9375rem', maxWidth: '24rem' }}
+              className="editorial-lede mb-9 max-w-[28rem]"
             >
-              Entramos con diagnóstico, ordenamos red, identidad y endpoints, y dejamos evidencia para que tu equipo sepa qué cambió y por qué.
+              Diagnosticamos red, identidad y endpoints para convertir incertidumbre operativa en una ruta clara, documentada y ejecutable.
             </motion.p>
 
             {/* CTAs */}
@@ -298,23 +322,25 @@ export default function HomePage() {
             {/* Operational context */}
             <motion.p {...heroUp(0.09)}
               className="font-mono text-zinc-600 mb-6"
-              style={{ fontSize: '10.5px', letterSpacing: '0.02em' }}
+              style={{ fontSize: '10.5px', letterSpacing: 0 }}
             >
               <ScrambleText text="red / identidad / endpoints / evidencia" delay={260} seed={32} />
             </motion.p>
 
             <AnimeGridReveal
-              className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-w-[28rem]"
-              delay={58}
+              className="hero-signal-rail max-w-[30rem]"
+              delay={64}
               threshold={0.2}
+              grid={false}
+              from="first"
             >
               {HERO_SIGNALS.map(({ label, detail }) => (
                 <div
                   key={label}
-                  className="rounded-lg border border-white/[0.055] bg-white/[0.018] px-3.5 py-3"
+                  className="hero-signal-item"
                 >
-                  <div className="text-zinc-300 text-[12px] font-semibold leading-snug mb-1">{label}</div>
-                  <div className="text-zinc-600 text-[11px] leading-relaxed">{detail}</div>
+                  <div className="text-zinc-300 text-[12px] font-semibold leading-snug">{label}</div>
+                  <div className="text-zinc-600 text-[11.5px] leading-relaxed">{detail}</div>
                 </div>
               ))}
             </AnimeGridReveal>
@@ -342,6 +368,7 @@ export default function HomePage() {
       ════════════════════════════════════════════════════════════════ */}
       <div className="section-divider" />
       <RiskExposure />
+      <StatementBand />
 
       {/* ════════════════════════════════════════════════════════════════
           BENTO STATS — editorial large-number hierarchy
@@ -354,12 +381,12 @@ export default function HomePage() {
             <div className="flex-1 h-px" style={{ background: 'linear-gradient(90deg, rgba(255,255,255,0.05), transparent)' }} />
           </motion.div>
           {/* Editorial stat strip — numbers breathe in open space, no card boxes */}
-          <AnimeGridReveal className="grid grid-cols-2 md:grid-cols-4 gap-0" delay={70} from="center">
+          <AnimeGridReveal className="metric-rail grid grid-cols-2 md:grid-cols-4 gap-0" delay={70} from="center">
             {STATS.map(({ val, suf, label, sub, color, prefix }) => (
               <div key={label}
-                className="px-6 sm:px-10 py-12"
+                className="metric-rail-item px-5 sm:px-8 py-9 sm:py-10"
               >
-                <div className="text-[3rem] sm:text-[3.5rem] font-black mb-2 leading-none tabular-nums tracking-[-0.03em]" style={{ color }}>
+                <div className="text-4xl sm:text-5xl font-semibold mb-3 leading-none tabular-nums tracking-normal" style={{ color }}>
                   <Counter val={val} suf={suf} prefix={prefix ?? ''} />
                 </div>
                 <div className="text-zinc-200 text-[13px] font-semibold mb-1.5">{label}</div>
@@ -390,7 +417,7 @@ export default function HomePage() {
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-12">
             <div>
               <motion.span {...fadeUp(0)} className="label block mb-4">Lo que hacemos</motion.span>
-              <motion.h2 {...fadeUp(0.010)} className="text-2xl sm:text-[2.3rem] font-bold text-noc-white leading-tight tracking-heading">
+              <motion.h2 {...fadeUp(0.010)} className="section-heading">
                 Infraestructura IT<br />
                 <span className="text-gradient-white">que se puede operar</span>
               </motion.h2>
@@ -436,7 +463,7 @@ export default function HomePage() {
             <div className="lg:sticky lg:top-32">
               <motion.span {...fadeUp(0)} className="label block mb-5">Por qué elegirnos</motion.span>
               <motion.h2 {...fadeUp(0.010)}
-                className="text-2xl sm:text-[2.3rem] font-bold text-noc-white leading-tight tracking-heading mb-6">
+                className="section-heading mb-6">
                 Menos promesas.<br />
                 Más claridad.<br />
                 <span className="text-gradient-green">Mejor operación.</span>
@@ -479,6 +506,7 @@ export default function HomePage() {
           Positioned between differentiators and process for logical flow.
       ════════════════════════════════════════════════════════════════ */}
       <ServiceEcosystem />
+      <OperationalStoryboard />
 
       {/* ════════════════════════════════════════════════════════════════
           PROCESS
@@ -499,17 +527,17 @@ export default function HomePage() {
               >
                 {/* Step index + gradient rule */}
                 <div className="flex items-center gap-3 mb-8">
-                  <span className="text-[10px] font-mono font-bold tabular-nums" style={{ color }}>{n}</span>
+                  <span className="text-[10px] font-mono font-semibold tabular-nums" style={{ color }}>{n}</span>
                   <div className="h-px flex-1" style={{ background: `linear-gradient(90deg, ${color}22, transparent)` }} />
                 </div>
 
                 {/* Ghost number — atmospheric depth */}
-                <div className="absolute right-3 bottom-6 font-mono font-black select-none pointer-events-none leading-none tabular-nums"
+                <div className="absolute right-3 bottom-6 font-mono font-semibold select-none pointer-events-none leading-none tabular-nums"
                   style={{ fontSize: '6.5rem', color, opacity: 0.025 }}>
                   {n}
                 </div>
 
-                <h3 className="text-zinc-100 font-bold text-[17px] mb-3 tracking-title">{title}</h3>
+                <h3 className="text-zinc-100 font-semibold text-[17px] mb-3 tracking-title">{title}</h3>
                 <p className="text-zinc-500 text-sm leading-relaxed">{desc}</p>
               </div>
             ))}
@@ -545,10 +573,10 @@ export default function HomePage() {
 
             {/* Featured testimonial — editorial open layout, no card box */}
             <motion.div {...fadeUp(0)} className="md:col-span-3 flex flex-col py-8 pr-0 md:pr-12 border-b md:border-b-0 md:border-r border-surface-border">
-              <div className="text-[2.5rem] font-black leading-none text-zinc-700 mb-5 select-none">&ldquo;</div>
+              <div className="text-[2.5rem] font-semibold leading-none text-zinc-700 mb-5 select-none">&ldquo;</div>
               <p className="text-zinc-300 text-[15px] leading-[1.80] flex-1 mb-8">{TESTIMONIALS[0].quote}</p>
               <div className="flex items-center gap-3 pt-6" style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center text-sm font-bold flex-shrink-0"
+                <div className="w-10 h-10 rounded-lg flex items-center justify-center text-sm font-semibold flex-shrink-0"
                   style={{ background: 'rgba(100,116,139,0.09)', color: '#94a3b8', border: '1px solid rgba(100,116,139,0.18)' }}>
                   {TESTIMONIALS[0].initials}
                 </div>
@@ -563,10 +591,10 @@ export default function HomePage() {
             <div className="md:col-span-2 flex flex-col gap-0">
               {TESTIMONIALS.slice(1).map(({ quote, author, role, initials }) => (
                 <motion.div key={author} {...fadeUp(0)} className="flex flex-col flex-1 py-6 pl-0 md:pl-8 border-b border-surface-border last:border-b-0">
-                  <div className="text-xl font-black leading-none text-zinc-700 mb-3 select-none">&ldquo;</div>
+                  <div className="text-xl font-semibold leading-none text-zinc-700 mb-3 select-none">&ldquo;</div>
                   <p className="text-zinc-400 text-sm leading-relaxed flex-1 mb-5">{quote}</p>
                   <div className="flex items-center gap-2.5 pt-4" style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-                    <div className="w-8 h-8 rounded-lg flex items-center justify-center text-[11px] font-bold flex-shrink-0"
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center text-[11px] font-semibold flex-shrink-0"
                       style={{ background: 'rgba(100,116,139,0.07)', color: '#94a3b8', border: '1px solid rgba(100,116,139,0.12)' }}>
                       {initials}
                     </div>
@@ -604,7 +632,7 @@ export default function HomePage() {
         <motion.div {...fadeUp(0)} className="relative max-w-xl mx-auto text-center">
           <span className="label block mb-5">¿Listo para empezar?</span>
 
-          <h2 className="text-3xl sm:text-4xl font-bold text-noc-white mb-6 leading-[1.05] tracking-heading">
+          <h2 className="text-3xl sm:text-4xl font-semibold text-noc-white mb-6 leading-[1.05] tracking-heading">
             Diagnóstico claro<br />
             <span className="text-gradient-steel">en 24 horas.</span>
           </h2>

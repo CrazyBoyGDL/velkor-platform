@@ -12,7 +12,7 @@ function DocHeader({ tag, title, meta }: { tag: string; title: string; meta: str
   return (
     <div className="flex items-start justify-between mb-1">
       <div>
-        <div className="text-[8.5px] font-bold font-mono tracking-widest mb-1.5" style={{ color: 'rgba(176,120,40,0.7)' }}>
+        <div className="text-[8.5px] font-semibold font-mono tracking-normal mb-1.5" style={{ color: 'rgba(176,120,40,0.7)' }}>
           {tag}
         </div>
         <div className="text-zinc-300 text-[10.5px] font-mono">{title}</div>
@@ -35,7 +35,7 @@ function AssessmentCard() {
     { label: 'Endpoints sin parche',      value: '23 de 85  (27%)',      risk: true  },
   ]
   return (
-    <div className="card p-5 h-full font-mono text-[10.5px] leading-relaxed">
+    <div className="artifact-sheet p-5 h-full font-mono text-[10.5px] leading-relaxed">
       <DocHeader
         tag="ASSESSMENT · LAN/WAN"
         title="Muestra industrial · 85 hosts · 3 sedes"
@@ -58,7 +58,7 @@ function AssessmentCard() {
       <DocLine />
       <div className="flex items-center justify-between">
         <span className="text-zinc-600">Riesgo general</span>
-        <span className="font-bold tracking-wider" style={{ color: 'rgba(239,68,68,0.75)' }}>ALTO</span>
+        <span className="font-semibold tracking-normal" style={{ color: 'rgba(239,68,68,0.75)' }}>ALTO</span>
       </div>
       <div className="flex items-center justify-between mt-1.5">
         <span className="text-zinc-600">Propuesta entregada</span>
@@ -78,7 +78,7 @@ function TimelineCard() {
     { week: 'SEM 4', label: 'Testing + Documentación',        done: true },
   ]
   return (
-    <div className="card p-5 h-full font-mono text-[10.5px] leading-relaxed">
+    <div className="artifact-sheet p-5 h-full font-mono text-[10.5px] leading-relaxed">
       <DocHeader
         tag="PROYECTO · M365 + INTUNE"
         title="62 usuarios · Entorno regulado"
@@ -122,7 +122,7 @@ function PolicyCard() {
     { id: 'P-005', text: 'Admin roles: PIM — acceso just-in-time' },
   ]
   return (
-    <div className="card p-5 h-full font-mono text-[10.5px] leading-relaxed">
+    <div className="artifact-sheet p-5 h-full font-mono text-[10.5px] leading-relaxed">
       <DocHeader
         tag="POLÍTICA · ACCESO CONDICIONAL"
         title="Entra ID · Acceso corporativo"
@@ -161,7 +161,7 @@ export default function OperationalArtifacts() {
         </div>
 
         <motion.h2 {...fadeUp(0.04)}
-          className="text-2xl sm:text-[2.1rem] font-bold text-noc-white leading-tight tracking-heading mb-3">
+          className="section-heading mb-3">
           Evidencia que se puede revisar,<br />
           <span className="text-zinc-600">no promesas que se evaporan</span>
         </motion.h2>

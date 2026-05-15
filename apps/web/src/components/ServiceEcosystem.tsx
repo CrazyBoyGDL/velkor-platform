@@ -70,7 +70,7 @@ function Layer({
       {/* Tier number — vertical axis */}
       <div className="flex flex-col items-center flex-shrink-0 w-10">
         <div
-          className="w-10 h-10 rounded-xl flex items-center justify-center text-[10px] font-mono font-bold flex-shrink-0"
+          className="w-10 h-10 rounded-lg flex items-center justify-center text-[10px] font-mono font-semibold flex-shrink-0"
           style={{ background: color + '14', color: color + 'cc', border: `1px solid ${color}28` }}
         >
           {tier}
@@ -82,7 +82,7 @@ function Layer({
       <div className="flex-1 pb-8">
         {/* Layer header */}
         <div className="flex items-center gap-3 mb-3 h-10">
-          <h3 className="text-zinc-200 font-semibold text-[14px] tracking-tight">{label}</h3>
+          <h3 className="text-zinc-200 font-semibold text-[14px] tracking-normal">{label}</h3>
         </div>
 
         {/* Description */}
@@ -123,7 +123,7 @@ export default function ServiceEcosystem() {
           {/* Left: editorial statement */}
           <div>
             <motion.h2 {...fadeUp(0.04)}
-              className="text-2xl sm:text-[2.1rem] font-bold text-noc-white leading-tight tracking-heading mb-4">
+              className="section-heading mb-4">
               Servicios aislados<br />
               <span className="text-zinc-600">no crean seguridad.</span>
             </motion.h2>

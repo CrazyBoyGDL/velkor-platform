@@ -46,7 +46,7 @@ export default function ExecutiveDiagnostic() {
 
         <div className="grid lg:grid-cols-[1fr_1fr] gap-16 items-end mb-12">
           <motion.h2 {...appear(0)}
-            className="text-2xl sm:text-[2rem] font-bold text-noc-white leading-tight tracking-heading">
+            className="section-heading">
             Cuatro preguntas que<br />
             <span className="text-zinc-600">todo responsable de IT debe poder responder.</span>
           </motion.h2>
@@ -60,7 +60,7 @@ export default function ExecutiveDiagnostic() {
           {QUESTIONS.map((q) => (
             <div
               key={q.question}
-              className="grid md:grid-cols-[1fr_1.2fr] gap-8 py-8"
+              className="grid md:grid-cols-[0.95fr_1fr_0.72fr] gap-6 md:gap-8 py-8"
               style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}
             >
               {/* Left: question */}
@@ -69,10 +69,11 @@ export default function ExecutiveDiagnostic() {
                 <p className="text-zinc-200 text-[15px] font-semibold leading-snug">{q.question}</p>
               </div>
 
-              {/* Right: context + implication */}
-              <div>
-                <p className="text-zinc-500 text-[13px] leading-relaxed mb-3">{q.context}</p>
-                <p className="text-[11px] font-mono" style={{ color: 'rgba(100,116,139,0.45)' }}>
+              <p className="text-zinc-500 text-[13px] leading-relaxed">{q.context}</p>
+
+              <div className="md:pl-5" style={{ borderLeft: `1px solid ${q.color}33` }}>
+                <div className="text-[10px] font-mono text-zinc-600 mb-2">siguiente dato</div>
+                <p className="text-[11.5px] font-mono leading-relaxed" style={{ color: 'rgba(100,116,139,0.55)' }}>
                   {q.implication}
                 </p>
               </div>
