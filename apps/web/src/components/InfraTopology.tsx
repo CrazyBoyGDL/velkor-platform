@@ -168,6 +168,7 @@ export default function InfraTopology() {
                 r={1.9}
                 fill={color}
                 fillOpacity={0.72}
+                initial={{ cx: CX, cy: CY, opacity: 0 }}
                 opacity={0}
                 animate={running
                   ? {
@@ -175,7 +176,7 @@ export default function InfraTopology() {
                       cy: [CY, ny],
                       opacity: [0, 0.62, 0],
                     }
-                  : { opacity: 0 }}
+                  : { cx: CX, cy: CY, opacity: 0 }}
                 transition={{
                   repeat: running ? Infinity : 0,
                   duration: 3.8 + i * 0.24,
