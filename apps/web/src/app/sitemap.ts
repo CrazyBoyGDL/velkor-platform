@@ -23,6 +23,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE}/recursos/intune-checklist`,           lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${BASE}/recursos/fortinet-hardening`,         lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${BASE}/recursos/cctv-evaluacion`,            lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${BASE}/legal/privacidad`,                    lastModified: now, changeFrequency: 'yearly',  priority: 0.2 },
+    { url: `${BASE}/legal/terminos`,                      lastModified: now, changeFrequency: 'yearly',  priority: 0.2 },
+    { url: `${BASE}/legal/cookies`,                       lastModified: now, changeFrequency: 'yearly',  priority: 0.2 },
   ]
 
   // Dynamic blog posts from Strapi

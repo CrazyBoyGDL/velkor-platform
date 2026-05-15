@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { useRef } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import Logo from './Logo'
-import { COMPANY, CONTACT, TRUST, SITE_DOMAIN, LEGAL } from '@/lib/config'
+import { COMPANY, CONTACT, ENTERPRISE_READINESS, TRUST, SITE_DOMAIN, LEGAL } from '@/lib/config'
 
 const LINKS = {
   Servicios: [
@@ -98,6 +98,10 @@ export default function Footer() {
                 </span>
               ))}
             </div>
+
+            <div className="mt-5 text-[10px] font-mono text-zinc-700 leading-relaxed max-w-sm">
+              Enterprise readiness: canonical por {ENTERPRISE_READINESS.canonicalSource} · Cloudflare preparado · SPF/DKIM/DMARC listos para activación.
+            </div>
           </div>
 
           {/* Nav link groups — 3 cols */}
@@ -155,6 +159,10 @@ export default function Footer() {
             <span className="text-zinc-800">·</span>
             <Link href={LEGAL.termsOfServiceUrl} className="hover:text-zinc-500 transition-colors">
               Términos
+            </Link>
+            <span className="text-zinc-800">·</span>
+            <Link href={LEGAL.cookiePolicyUrl} className="hover:text-zinc-500 transition-colors">
+              Cookies
             </Link>
             <span className="text-zinc-800">·</span>
             <Link href="/contacto" className="hover:text-zinc-500 transition-colors">

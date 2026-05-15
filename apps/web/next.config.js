@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const isProd = process.env.NODE_ENV === 'production';
 const posthogHost = process.env.NEXT_PUBLIC_POSTHOG_HOST || 'https://app.posthog.com';
+const turnstileHost = 'https://challenges.cloudflare.com';
 
 const nextConfig = {
   output: 'standalone',
@@ -28,8 +29,8 @@ const nextConfig = {
 
   async headers() {
     const scriptSrc = isProd
-      ? `script-src 'self' 'unsafe-inline' https://plausible.io ${posthogHost}`
-      : `script-src 'self' 'unsafe-inline' 'unsafe-eval' https://plausible.io ${posthogHost}`;
+      ? `script-src 'self' 'unsafe-inline' https://plausible.io ${posthogHost} ${turnstileHost}`
+      : `script-src 'self' 'unsafe-inline' 'unsafe-eval' https://plausible.io ${posthogHost} ${turnstileHost}`;
 
     return [
       {
@@ -38,6 +39,7 @@ const nextConfig = {
           { key: 'X-Frame-Options',       value: 'SAMEORIGIN' },
           { key: 'X-Content-Type-Options', value: 'nosniff' },
           { key: 'Referrer-Policy',        value: 'strict-origin-when-cross-origin' },
+          { key: 'X-DNS-Prefetch-Control', value: 'on' },
           { key: 'Permissions-Policy',     value: 'camera=(), microphone=(), geolocation=()' },
           {
             key: 'Strict-Transport-Security',
@@ -51,7 +53,8 @@ const nextConfig = {
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com",
               "img-src 'self' data: blob:",
-              `connect-src 'self' https://plausible.io ${posthogHost}`,
+              `connect-src 'self' https://plausible.io ${posthogHost} ${turnstileHost}`,
+              `frame-src 'self' ${turnstileHost}`,
               "frame-ancestors 'self'",
             ].join('; '),
           },
