@@ -23,6 +23,12 @@ const nextConfig = {
   async redirects() {
     return [
       {
+        source: '/:path*',
+        has: [{ type: 'host', value: 'www.velkor.com.mx' }],
+        destination: 'https://velkor.com.mx/:path*',
+        permanent: true,
+      },
+      {
         source: '/services',
         destination: '/servicios',
         permanent: true,
