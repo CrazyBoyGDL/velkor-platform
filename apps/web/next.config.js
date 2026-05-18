@@ -29,6 +29,12 @@ const nextConfig = {
         permanent: true,
       },
       {
+        source: '/:path*',
+        has: [{ type: 'host', value: 'velkor-web-production.up.railway.app' }],
+        destination: 'https://velkor.com.mx/:path*',
+        permanent: true,
+      },
+      {
         source: '/services',
         destination: '/servicios',
         permanent: true,

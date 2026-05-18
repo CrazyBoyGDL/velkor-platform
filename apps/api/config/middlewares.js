@@ -1,6 +1,7 @@
 module.exports = [
   'strapi::logger',
   'strapi::errors',
+  'global::block-public-host',
   'strapi::security',
   {
     name: 'strapi::cors',
