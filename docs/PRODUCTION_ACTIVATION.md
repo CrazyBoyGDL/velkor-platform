@@ -11,8 +11,8 @@ Last field check: `2026-05-18`.
 | Area | Required state | Status |
 | --- | --- | --- |
 | Canonical domain | `https://velkor.com.mx` | Code ready; Railway env set |
-| Web healthcheck | `/api/health` returns `200` | Live on Railway public domain |
-| Strapi healthcheck | `/api/health` returns `200` | Live on Railway public domain |
+| Web healthcheck | `/api/health` returns `200` | Live on Railway public domain; deployment `84c88772-35d0-47c2-b17c-78038ba70d71` |
+| Strapi healthcheck | `/api/health` returns `200` | Live on Railway public domain; deployment `dec8d8a6-941f-43d9-b8d2-0fff9e9e6431` |
 | Turnstile backend | `TURNSTILE_SECRET_KEY` validated server-side | Code ready; key still required |
 | Turnstile frontend | Widget posts `_ts` token to assessment API | Code ready; site key still required |
 | Security headers | CSP, HSTS, frame, referrer, permissions headers | Code ready and hardened for Cloudflare visitor IPs |
@@ -146,6 +146,7 @@ Current Railway drift notes:
 - Set on `velkor-web`: `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_APP_URL`, `NEXT_PUBLIC_SITE_DOMAIN`, private `STRAPI_URL`, `NEXT_PUBLIC_PLAUSIBLE_DOMAIN`, `NEXT_PUBLIC_POSTHOG_HOST`, `ASSESSMENT_WEBHOOK_SECRET`.
 - Set on `velkor-api`: `HOST`, `DATABASE_SSL`, `FRONTEND_URL`.
 - Still required from providers: `NEXT_PUBLIC_TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY`, `ASSESSMENT_WEBHOOK_URL`, `RESEND_API_KEY`.
+- Manual Railway deploys must be run from the repository root with `railway up --service <service>`, not with `--path-as-root`, because the Railway service metadata already expects `apps/web` and `apps/api` inside the uploaded snapshot.
 
 Healthcheck paths:
 
@@ -198,4 +199,4 @@ Manual checks:
 - DMARC should remain monitor mode until Resend/domain sending authentication is confirmed, then move from `p=none` to `p=quarantine` and eventually `p=reject`.
 - Bot Fight Mode can interfere with forms; enable only after assessment smoke test.
 - Full (strict) conflicts with Railway's current proxied-domain guidance unless Railway has a custom certificate issued for the hostname; verify before enforcing.
-- Root `railway.json` still appears older than app-level service configs; deploy from `apps/web` and `apps/api` service roots or fix Railway root-directory metadata.
+- Root `railway.json` still appears older than app-level service configs; keep service root-directory metadata aligned with `apps/web` and `apps/api`, and avoid `railway up --path-as-root`.
