@@ -90,7 +90,7 @@ export default function Navbar() {
           <div className="hidden lg:flex items-center gap-3">
             <div className="operational-state-indicator" aria-label="Estado operacional activo">
               <span className="operational-state-dot" />
-              <span>Operación activa</span>
+              <span>Continuidad activa</span>
             </div>
             <ThemeToggle />
             <Link href="/assessments" className="btn-amber text-sm px-5 py-2">
