@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import './globals.css'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
@@ -6,7 +6,8 @@ import MobileConsultiveCTA from '@/components/MobileConsultiveCTA'
 import OperationalAtmosphere from '@/components/OperationalAtmosphere'
 import ThemeProvider from '@/components/ThemeProvider'
 import { Analytics } from '@/components/Analytics'
-import { COMPANY, SITE_URL } from '@/lib/config'
+import { VisualIntelligenceTracker } from '@/components/VisualIntelligence'
+import { COMPANY, OG_IMAGES, SITE_URL } from '@/lib/config'
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -39,7 +40,7 @@ export const metadata: Metadata = {
       'Gobierno tecnológico, observabilidad y continuidad para empresas que operan infraestructura crítica.',
     images: [
       {
-        url: '/og-image.png',
+        url: OG_IMAGES.home,
         width: 1200,
         height: 630,
         alt: 'Velkor Systems — Infrastructure Control Plane',
@@ -51,7 +52,7 @@ export const metadata: Metadata = {
     title: 'Velkor Systems — Infraestructura Operacional',
     description:
       'Gobierno tecnológico, observabilidad y continuidad para infraestructura crítica.',
-    images: ['/og-image.png'],
+    images: [OG_IMAGES.home],
   },
   alternates: {
     canonical: SITE_URL,
@@ -66,7 +67,19 @@ export const metadata: Metadata = {
     apple: '/favicons/apple-touch-icon.png',
     other: [{ rel: 'mask-icon', url: '/favicons/pinned-tab.svg', color: '#284257' }],
   },
+  appleWebApp: {
+    title: 'Velkor Systems',
+    statusBarStyle: 'black-translucent',
+    capable: true,
+  },
   manifest: '/site.webmanifest',
+}
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: '(prefers-color-scheme: dark)', color: '#07101a' },
+    { media: '(prefers-color-scheme: light)', color: '#f4f7fb' },
+  ],
 }
 
 const jsonLd = {
@@ -123,6 +136,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Analytics />
         <ThemeProvider>
           <OperationalAtmosphere />
+          <VisualIntelligenceTracker />
           <Navbar />
           <main className="flex-1 pt-[64px]">
             {children}

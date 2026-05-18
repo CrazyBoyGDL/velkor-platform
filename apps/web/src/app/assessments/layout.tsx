@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { OG_IMAGES } from '@/lib/config'
 
 export const metadata: Metadata = {
   title: 'Diagnóstico de Infraestructura IT | Velkor Systems',
@@ -7,6 +8,11 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Diagnóstico IT Gratuito | Velkor Systems',
     description: 'Evaluación de infraestructura y propuesta técnica personalizada en menos de 48 horas.',
+    images: [{ url: OG_IMAGES.assessments, width: 1200, height: 630, alt: 'Velkor Systems — Assessment operacional' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    images: [OG_IMAGES.assessments],
   },
 }
 

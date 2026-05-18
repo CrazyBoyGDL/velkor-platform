@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" fill="none">
+  <rect width="1200" height="630" fill="#07101a"/>
+  <path d="M0 520H1200M0 110H1200" stroke="#152235"/>
+  <path d="M120 0V630M1080 0V630M360 0V630M840 0V630" stroke="#101b2a"/>
+  <path d="M650 126H1002L1072 196V330" stroke="#587694" stroke-width="1.2" opacity=".34"/>
+  <path d="M650 474H930L994 420H1100" stroke="#587694" stroke-width="1.2" opacity=".24"/>
+  <path d="M702 184H946M702 218H1020M702 252H904" stroke="#17283a" stroke-width="1" opacity=".65"/>
+  <rect x="684" y="326" width="384" height="96" rx="12" fill="#0b1522" stroke="#213246" opacity=".8"/>
+  <path d="M716 356H838M716 382H930M716 408H884" stroke="#587694" stroke-width="1.2" opacity=".30"/>
+  <g transform="translate(116 122) scale(3.45)">
+
+  <g class="velkor-symbol" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 16H52" stroke="#445f75" stroke-width="2.35" opacity=".58"/>
+    <path d="M12 16 23 35 32 52" stroke="#7f9eb4" stroke-width="3.55"/>
+    <path d="M52 16 41 35 32 52" stroke="#7f9eb4" stroke-width="3.55"/>
+    <path d="M23 35H41" stroke="#445f75" stroke-width="2.35" opacity=".72"/>
+    <path d="M32 24V52" stroke="#445f75" stroke-width="2.15" opacity=".62"/>
+    <path d="M23 35 32 24 41 35" stroke="#7f9eb4" stroke-width="2.35" opacity=".84"/>
+    <path d="M18 45C23.8 49 40.2 49 46 45" stroke="#445f75" stroke-width="1.55" opacity=".42"/>
+
+    <path d="M19.6 28.8 23 35 29.2 32.3" stroke="#b88748" stroke-width="1.55" opacity=".78"/>
+    <path d="M44.4 28.8 41 35 34.8 32.3" stroke="#b88748" stroke-width="1.55" opacity=".78"/>
+    <path d="M28.7 44.2 32 52 35.3 44.2" stroke="#b88748" stroke-width="1.55" opacity=".72"/>
+    <path d="M26.2 24H19.8M44.2 24H37.8" stroke="#b88748" stroke-width="1.35" opacity=".62"/>
+
+    <rect x="8.8" y="12.8" width="7.2" height="7.2" rx="2.1" fill="#7f9eb4" stroke="none"/>
+    <rect x="48" y="12.8" width="7.2" height="7.2" rx="2.1" fill="#7f9eb4" stroke="none"/>
+    <rect x="19.8" y="31.8" width="6.4" height="6.4" rx="1.7" fill="#7f9eb4" stroke="none"/>
+    <rect x="37.8" y="31.8" width="6.4" height="6.4" rx="1.7" fill="#7f9eb4" stroke="none"/>
+    <rect x="28.8" y="48.8" width="6.4" height="6.4" rx="1.9" fill="#7f9eb4" stroke="none"/>
+
+    <circle cx="32" cy="24" r="8.1" stroke="#9fc3d4" stroke-width="2.05" opacity=".74"/>
+    <circle cx="32" cy="24" r="3.25" fill="#9fc3d4" stroke="none"/>
+    <path d="M27.8 17.6C29.2 16.4 30.6 15.8 32 15.8C33.4 15.8 34.8 16.4 36.2 17.6" stroke="#9fc3d4" stroke-width="1.25" opacity=".55"/>
+  </g>
+  </g>
+  <text x="404" y="238" fill="#eef5f9" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="60" font-weight="760" letter-spacing=".4">CAPACIDADES OPERACIONALES</text>
+  <text x="408" y="294" fill="#8298aa" font-family="JetBrains Mono, Consolas, monospace" font-size="17" font-weight="500" letter-spacing="2.6">NETWORK / IDENTITY / VIDEO</text>
+  <text fill="#a8b7c4" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="25" font-weight="520">
+  <tspan x="408" y="358">Arquitectura, despliegue y</tspan>
+  <tspan x="408" y="392">evidencia para entornos en</tspan>
+  </text>
+  <path d="M408 438H856" stroke="#23364a" stroke-width="1"/>
+  <text x="408" y="482" fill="#b88748" font-family="JetBrains Mono, Consolas, monospace" font-size="17" font-weight="600" letter-spacing="2">VELKOR.COM.MX</text>
+</svg>

@@ -3,12 +3,23 @@ import Link from 'next/link'
 import { VlanDiagram, EntraIdGovernanceFlow, IntuneDiagram, HybridInfraMap } from '@/components/ArchDiagrams'
 import { DiagramTracker, EvidenceLibraryTracker, EvidenceRequestLink } from '@/components/EvidenceInteraction'
 import { AuditFragment } from '@/components/OperationalEvidence'
+import { ContinuityTrace, GovernanceCallout, TopologyFragment } from '@/components/VisualIntelligence'
+import { OG_IMAGES } from '@/lib/config'
 
 export const metadata: Metadata = {
   title: 'Evidencia Operacional | Fragmentos de Arquitectura y Documentación — Velkor Systems',
   description:
     'Repositorio de evidencia técnica: fragmentos de política de Acceso Condicional, planes de implementación, estructuras de gobierno, checklists de Intune y arquitecturas de referencia.',
   alternates: { canonical: 'https://velkor.com.mx/framework/evidence' },
+  openGraph: {
+    title: 'Evidencia Operacional | Velkor Systems',
+    description: 'Fragmentos sanitizados de políticas, despliegues, rutas y gobierno operacional.',
+    images: [{ url: OG_IMAGES.evidence, width: 1200, height: 630, alt: 'Velkor Systems — Evidencia operacional' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    images: [OG_IMAGES.evidence],
+  },
 }
 
 // ─── Document types ───────────────────────────────────────────────────────────
@@ -296,6 +307,18 @@ const ASSESSMENT_DEMO = [
   { metric: 'Owner', value: 'Solutions architect', note: 'Lead requiere revisión técnica, no secuencia comercial genérica.' },
 ]
 
+const EVIDENCE_POLICY_EXCERPTS = [
+  'CA-002 requiere MFA global, excepto break-glass con alerta inmediata.',
+  'VLAN20 solo acepta flujo ERP desde usuarios nominados y jump host.',
+  'Regla temporal expira al cierre de ventana; owner operativo obligatorio.',
+]
+
+const EVIDENCE_TRACE_STEPS = [
+  { label: 'T-00', detail: 'Baseline exportado antes del cambio.' },
+  { label: 'T+30', detail: 'Prueba de acceso por grupo piloto y rollback listo.' },
+  { label: 'T+90', detail: 'Evidencia, excepciones y handoff firmados.' },
+]
+
 // ─── Components ───────────────────────────────────────────────────────────────
 
 function StatusBadge({ status }: { status: EvidenceItem['status'] }) {
@@ -323,6 +346,9 @@ function EvidenceCard({ item }: { item: EvidenceItem }) {
       id={item.id}
       className="card p-0 overflow-hidden hover:border-zinc-700 transition-colors"
       style={{ borderLeftColor: typeColor + '40', borderLeftWidth: 2 }}
+      data-visual-intelligence
+      data-visual-kind="evidence-card"
+      data-visual-id={item.id}
     >
       {/* Header */}
       <div
@@ -342,6 +368,11 @@ function EvidenceCard({ item }: { item: EvidenceItem }) {
         </div>
         <h3 className="text-zinc-200 text-[13px] font-semibold leading-snug mb-2">{item.title}</h3>
         <p className="text-zinc-500 text-[11px] leading-relaxed">{item.summary}</p>
+        <div className="evidence-card-state">
+          <span>{item.category}</span>
+          <i />
+          <span>{item.status === 'sanitized' ? 'redaccion aplicada' : item.status === 'template' ? 'plantilla operable' : 'referencia base'}</span>
+        </div>
         {(item.environment || item.fieldNote || item.decision) && (
           <div
             className="mt-4 pt-4 grid gap-2"
@@ -408,6 +439,20 @@ function EvidenceCard({ item }: { item: EvidenceItem }) {
         </EvidenceRequestLink>
       </div>
     </div>
+  )
+}
+
+function EvidenceIntelligenceBoard() {
+  return (
+    <section className="evidence-intelligence-board mb-14">
+      <TopologyFragment
+        title="Ruta de cambio sanitizada"
+        caption="La ruta mantiene decision, rollback y observabilidad juntos: no es diagrama decorativo, es contexto de operacion."
+        accent="#587694"
+      />
+      <GovernanceCallout title="Policy excerpts" notes={EVIDENCE_POLICY_EXCERPTS} accent="#3f775c" />
+      <ContinuityTrace title="Deployment handoff" steps={EVIDENCE_TRACE_STEPS} accent="#b88748" />
+    </section>
   )
 }
 
@@ -545,6 +590,8 @@ export default function EvidencePage() {
         </div>
 
         <OperationalWalkthrough />
+
+        <EvidenceIntelligenceBoard />
 
         {/* Evidence by category */}
         {CATEGORIES.map(cat => {

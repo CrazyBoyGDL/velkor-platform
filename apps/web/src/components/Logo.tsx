@@ -38,60 +38,67 @@ export default function Logo({
       {animated && <style>{brandMotionCss}</style>}
       <g className="velkor-brand-rig" fill="none" strokeLinecap="round" strokeLinejoin="round">
         <path
-          d="M14 12H50"
+          d="M12 16H52"
           stroke="var(--brand-route-muted, #445f75)"
-          strokeWidth="2.4"
-          opacity=".62"
-          className="velkor-brand-route"
+          strokeWidth="2.35"
+          opacity=".58"
+          className="velkor-brand-route velkor-brand-control-plane"
           style={animated ? { animationDelay: '0s' } : undefined}
         />
         <path
-          d="M14 12 23 34 32 52"
+          d="M12 16 23 35 32 52"
           stroke="var(--brand-route, #7f9eb4)"
-          strokeWidth="3.3"
-          className="velkor-brand-route"
+          strokeWidth="3.55"
+          className="velkor-brand-route velkor-brand-primary-route"
           style={animated ? { animationDelay: '0.06s' } : undefined}
         />
         <path
-          d="M50 12 41 34 32 52"
+          d="M52 16 41 35 32 52"
           stroke="var(--brand-route, #7f9eb4)"
-          strokeWidth="3.3"
-          className="velkor-brand-route"
+          strokeWidth="3.55"
+          className="velkor-brand-route velkor-brand-primary-route"
           style={animated ? { animationDelay: '0.12s' } : undefined}
         />
         <path
-          d="M23 34H41"
+          d="M23 35H41"
           stroke="var(--brand-route-muted, #445f75)"
-          strokeWidth="2.3"
-          opacity=".68"
+          strokeWidth="2.35"
+          opacity=".72"
           className="velkor-brand-route"
           style={animated ? { animationDelay: '0.18s' } : undefined}
         />
         <path
-          d="M32 20V52"
+          d="M32 24V52"
           stroke="var(--brand-route-muted, #445f75)"
-          strokeWidth="2.2"
+          strokeWidth="2.15"
           opacity=".62"
           className="velkor-brand-route"
           style={animated ? { animationDelay: '0.24s' } : undefined}
         />
         <path
-          d="M32 20 23 34M32 20 41 34"
+          d="M23 35 32 24 41 35"
           stroke="var(--brand-route, #7f9eb4)"
-          strokeWidth="2.4"
-          opacity=".82"
-          className="velkor-brand-route"
+          strokeWidth="2.35"
+          opacity=".84"
+          className="velkor-brand-route velkor-brand-sync"
           style={animated ? { animationDelay: '0.30s' } : undefined}
+        />
+        <path
+          d="M18 45C23.8 49 40.2 49 46 45"
+          stroke="var(--brand-route-muted, #445f75)"
+          strokeWidth="1.55"
+          opacity=".42"
+          className="velkor-brand-observe"
         />
 
         <path
-          d="M14 12 23 34 32 52"
+          d="M12 16 23 35 32 52"
           stroke="var(--brand-route-flow, #9fc3d4)"
           strokeWidth="1.25"
           className="velkor-brand-flow"
         />
         <path
-          d="M50 12 41 34 32 52"
+          d="M52 16 41 35 32 52"
           stroke="var(--brand-route-flow, #9fc3d4)"
           strokeWidth="1.25"
           className="velkor-brand-flow"
@@ -99,33 +106,40 @@ export default function Logo({
         />
 
         <path
-          d="M20.5 27.5 23 34 28.5 31.5"
+          d="M19.6 28.8 23 35 29.2 32.3"
           stroke="var(--brand-critical, #b88748)"
           strokeWidth="1.55"
-          opacity=".76"
+          opacity=".78"
           className="velkor-brand-arrow"
         />
         <path
-          d="M43.5 27.5 41 34 35.5 31.5"
+          d="M44.4 28.8 41 35 34.8 32.3"
           stroke="var(--brand-critical, #b88748)"
           strokeWidth="1.55"
-          opacity=".76"
+          opacity=".78"
           className="velkor-brand-arrow"
         />
         <path
-          d="M28.8 43.8 32 52 35.2 43.8"
+          d="M28.7 44.2 32 52 35.3 44.2"
           stroke="var(--brand-critical, #b88748)"
           strokeWidth="1.55"
           opacity=".72"
           className="velkor-brand-arrow"
         />
+        <path
+          d="M26.2 24H19.8M44.2 24H37.8"
+          stroke="var(--brand-critical, #b88748)"
+          strokeWidth="1.35"
+          opacity=".62"
+          className="velkor-brand-direction"
+        />
 
         {[
-          [10.5, 8.5, 7, 7, 0],
-          [46.5, 8.5, 7, 7, 0.25],
-          [20, 31, 6, 6, 0.5],
-          [38, 31, 6, 6, 0.75],
-          [29, 49, 6, 6, 1],
+          [8.8, 12.8, 7.2, 7.2, 0],
+          [48, 12.8, 7.2, 7.2, 0.25],
+          [19.8, 31.8, 6.4, 6.4, 0.5],
+          [37.8, 31.8, 6.4, 6.4, 0.75],
+          [28.8, 48.8, 6.4, 6.4, 1],
         ].map(([x, y, w, h, delay]) => (
           <rect
             key={`${x}-${y}`}
@@ -142,34 +156,29 @@ export default function Logo({
 
         <circle
           cx="32"
-          cy="20"
-          r="7.4"
+          cy="24"
+          r="8.1"
           stroke="var(--brand-core, #9fc3d4)"
           strokeWidth="2"
-          opacity=".72"
+          opacity=".74"
           className="velkor-brand-core-ring"
         />
         <circle
           cx="32"
-          cy="20"
-          r="3.1"
+          cy="24"
+          r="3.25"
           fill="var(--brand-core, #9fc3d4)"
           className="velkor-brand-core"
         />
         <path
-          d="M25.5 20h-4.8M43.3 20h-4.8"
-          stroke="var(--brand-critical, #b88748)"
-          strokeWidth="1.5"
-          opacity=".72"
+          d="M27.8 17.6C29.2 16.4 30.6 15.8 32 15.8C33.4 15.8 34.8 16.4 36.2 17.6"
+          stroke="var(--brand-core, #9fc3d4)"
+          strokeWidth="1.25"
+          opacity=".55"
+          className="velkor-brand-core-ring"
         />
         <path
-          d="M18 45h28"
-          stroke="var(--brand-route-muted, #445f75)"
-          strokeWidth="1.4"
-          opacity=".34"
-        />
-        <path
-          d="M13 38H51"
+          d="M13 41H51"
           stroke="var(--brand-route-flow, #9fc3d4)"
           strokeWidth="1.1"
           opacity=".18"

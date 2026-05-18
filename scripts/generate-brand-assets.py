@@ -1,4 +1,5 @@
 from pathlib import Path
+import textwrap
 from PIL import Image, ImageDraw, ImageFont
 
 
@@ -6,9 +7,11 @@ ROOT = Path(__file__).resolve().parents[1]
 PUBLIC = ROOT / "apps" / "web" / "public"
 BRAND = PUBLIC / "brand"
 FAVICONS = PUBLIC / "favicons"
+OG = PUBLIC / "og"
 
 BRAND.mkdir(parents=True, exist_ok=True)
 FAVICONS.mkdir(parents=True, exist_ok=True)
+OG.mkdir(parents=True, exist_ok=True)
 
 
 COLORS = {
@@ -32,27 +35,28 @@ def symbol_paths(route: str, muted: str, core: str, amber: str, mono: bool = Fal
     accent = core if mono else amber
     return f"""
   <g class="velkor-symbol" fill="none" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M14 12H50" stroke="{muted}" stroke-width="2.4" opacity=".62"/>
-    <path d="M14 12 23 34 32 52" stroke="{route}" stroke-width="3.3"/>
-    <path d="M50 12 41 34 32 52" stroke="{route}" stroke-width="3.3"/>
-    <path d="M23 34H41" stroke="{muted}" stroke-width="2.3" opacity=".68"/>
-    <path d="M32 20V52" stroke="{muted}" stroke-width="2.2" opacity=".62"/>
-    <path d="M32 20 23 34M32 20 41 34" stroke="{route}" stroke-width="2.4" opacity=".82"/>
+    <path d="M12 16H52" stroke="{muted}" stroke-width="2.35" opacity=".58"/>
+    <path d="M12 16 23 35 32 52" stroke="{route}" stroke-width="3.55"/>
+    <path d="M52 16 41 35 32 52" stroke="{route}" stroke-width="3.55"/>
+    <path d="M23 35H41" stroke="{muted}" stroke-width="2.35" opacity=".72"/>
+    <path d="M32 24V52" stroke="{muted}" stroke-width="2.15" opacity=".62"/>
+    <path d="M23 35 32 24 41 35" stroke="{route}" stroke-width="2.35" opacity=".84"/>
+    <path d="M18 45C23.8 49 40.2 49 46 45" stroke="{muted}" stroke-width="1.55" opacity=".42"/>
 
-    <path d="M20.5 27.5 23 34 28.5 31.5" stroke="{accent}" stroke-width="1.55" opacity=".76"/>
-    <path d="M43.5 27.5 41 34 35.5 31.5" stroke="{accent}" stroke-width="1.55" opacity=".76"/>
-    <path d="M28.8 43.8 32 52 35.2 43.8" stroke="{accent}" stroke-width="1.55" opacity=".72"/>
+    <path d="M19.6 28.8 23 35 29.2 32.3" stroke="{accent}" stroke-width="1.55" opacity=".78"/>
+    <path d="M44.4 28.8 41 35 34.8 32.3" stroke="{accent}" stroke-width="1.55" opacity=".78"/>
+    <path d="M28.7 44.2 32 52 35.3 44.2" stroke="{accent}" stroke-width="1.55" opacity=".72"/>
+    <path d="M26.2 24H19.8M44.2 24H37.8" stroke="{accent}" stroke-width="1.35" opacity=".62"/>
 
-    <rect x="10.5" y="8.5" width="7" height="7" rx="2" fill="{route}" stroke="none"/>
-    <rect x="46.5" y="8.5" width="7" height="7" rx="2" fill="{route}" stroke="none"/>
-    <rect x="20" y="31" width="6" height="6" rx="1.6" fill="{route}" stroke="none"/>
-    <rect x="38" y="31" width="6" height="6" rx="1.6" fill="{route}" stroke="none"/>
-    <rect x="29" y="49" width="6" height="6" rx="1.8" fill="{route}" stroke="none"/>
+    <rect x="8.8" y="12.8" width="7.2" height="7.2" rx="2.1" fill="{route}" stroke="none"/>
+    <rect x="48" y="12.8" width="7.2" height="7.2" rx="2.1" fill="{route}" stroke="none"/>
+    <rect x="19.8" y="31.8" width="6.4" height="6.4" rx="1.7" fill="{route}" stroke="none"/>
+    <rect x="37.8" y="31.8" width="6.4" height="6.4" rx="1.7" fill="{route}" stroke="none"/>
+    <rect x="28.8" y="48.8" width="6.4" height="6.4" rx="1.9" fill="{route}" stroke="none"/>
 
-    <circle cx="32" cy="20" r="7.4" stroke="{core}" stroke-width="2" opacity=".72"/>
-    <circle cx="32" cy="20" r="3.1" fill="{core}" stroke="none"/>
-    <path d="M25.5 20h-4.8M43.3 20h-4.8" stroke="{accent}" stroke-width="1.5" opacity=".72"/>
-    <path d="M18 45h28" stroke="{muted}" stroke-width="1.4" opacity=".34"/>
+    <circle cx="32" cy="24" r="8.1" stroke="{core}" stroke-width="2.05" opacity=".74"/>
+    <circle cx="32" cy="24" r="3.25" fill="{core}" stroke="none"/>
+    <path d="M27.8 17.6C29.2 16.4 30.6 15.8 32 15.8C33.4 15.8 34.8 16.4 36.2 17.6" stroke="{core}" stroke-width="1.25" opacity=".55"/>
   </g>"""
 
 
@@ -149,6 +153,31 @@ def load_font(name: str, size: int) -> ImageFont.FreeTypeFont:
     return ImageFont.load_default()
 
 
+def wrap_for_svg(text: str, width: int = 34) -> list[str]:
+    return textwrap.wrap(text, width=width)[:2] or [text]
+
+
+def draw_wrapped_text(draw: ImageDraw.ImageDraw, xy: tuple[int, int], text: str, font: ImageFont.FreeTypeFont, fill: str, max_width: int, line_height: int) -> int:
+    x, y = xy
+    words = text.split()
+    lines: list[str] = []
+    current = ""
+    for word in words:
+        candidate = f"{current} {word}".strip()
+        bbox = draw.textbbox((0, 0), candidate, font=font)
+        if bbox[2] - bbox[0] <= max_width or not current:
+            current = candidate
+        else:
+            lines.append(current)
+            current = word
+    if current:
+        lines.append(current)
+    for line in lines[:2]:
+        draw.text((x, y), line, font=font, fill=fill)
+        y += line_height
+    return y
+
+
 def draw_symbol(draw: ImageDraw.ImageDraw, scale: float, offset=(0, 0), dark=True) -> None:
     ox, oy = offset
     route = COLORS["route_dark"] if dark else COLORS["route_light"]
@@ -163,28 +192,29 @@ def draw_symbol(draw: ImageDraw.ImageDraw, scale: float, offset=(0, 0), dark=Tru
         rgba = color + f"{alpha:02x}"
         draw.line([p(x, y) for x, y in points], fill=rgba, width=max(1, int(width * scale)), joint="curve")
 
-    line([(14, 12), (50, 12)], muted, 2.4, 170)
-    line([(14, 12), (23, 34), (32, 52)], route, 3.5)
-    line([(50, 12), (41, 34), (32, 52)], route, 3.5)
-    line([(23, 34), (41, 34)], muted, 2.3, 180)
-    line([(32, 20), (32, 52)], muted, 2.2, 160)
-    line([(32, 20), (23, 34)], route, 2.4, 210)
-    line([(32, 20), (41, 34)], route, 2.4, 210)
-    line([(20.5, 27.5), (23, 34), (28.5, 31.5)], amber, 1.55, 190)
-    line([(43.5, 27.5), (41, 34), (35.5, 31.5)], amber, 1.55, 190)
-    line([(28.8, 43.8), (32, 52), (35.2, 43.8)], amber, 1.55, 185)
-    line([(18, 45), (46, 45)], muted, 1.4, 90)
+    line([(12, 16), (52, 16)], muted, 2.35, 150)
+    line([(12, 16), (23, 35), (32, 52)], route, 3.55)
+    line([(52, 16), (41, 35), (32, 52)], route, 3.55)
+    line([(23, 35), (41, 35)], muted, 2.35, 185)
+    line([(32, 24), (32, 52)], muted, 2.15, 160)
+    line([(23, 35), (32, 24), (41, 35)], route, 2.35, 215)
+    line([(18, 45), (25, 49), (39, 49), (46, 45)], muted, 1.55, 105)
 
-    for x, y, w, h in [(10.5, 8.5, 7, 7), (46.5, 8.5, 7, 7), (20, 31, 6, 6), (38, 31, 6, 6), (29, 49, 6, 6)]:
+    line([(19.6, 28.8), (23, 35), (29.2, 32.3)], amber, 1.55, 200)
+    line([(44.4, 28.8), (41, 35), (34.8, 32.3)], amber, 1.55, 200)
+    line([(28.7, 44.2), (32, 52), (35.3, 44.2)], amber, 1.55, 185)
+    line([(19.8, 24), (26.2, 24)], amber, 1.35, 160)
+    line([(37.8, 24), (44.2, 24)], amber, 1.35, 160)
+
+    for x, y, w, h in [(8.8, 12.8, 7.2, 7.2), (48, 12.8, 7.2, 7.2), (19.8, 31.8, 6.4, 6.4), (37.8, 31.8, 6.4, 6.4), (28.8, 48.8, 6.4, 6.4)]:
         draw.rounded_rectangle([p(x, y), p(x + w, y + h)], radius=max(2, int(1.8 * scale)), fill=route)
 
-    cx, cy = p(32, 20)
-    r = 7.4 * scale
+    cx, cy = p(32, 24)
+    r = 8.1 * scale
     draw.ellipse([cx - r, cy - r, cx + r, cy + r], outline=core, width=max(1, int(2 * scale)))
-    r2 = 3.1 * scale
+    r2 = 3.25 * scale
     draw.ellipse([cx - r2, cy - r2, cx + r2, cy + r2], fill=core)
-    line([(20.7, 20), (25.5, 20)], amber, 1.5, 185)
-    line([(38.5, 20), (43.3, 20)], amber, 1.5, 185)
+    line([(27.8, 17.6), (30, 15.8), (32, 15.8), (34, 15.8), (36.2, 17.6)], core, 1.25, 140)
 
 
 def make_icon(size: int, path: Path, dark=True) -> Image.Image:
@@ -215,50 +245,101 @@ def make_png_assets() -> None:
     icon_32.save(PUBLIC / "favicon.ico", sizes=[(16, 16), (32, 32), (48, 48)], append_images=[icon_16, icon_48])
 
 
-def og_svg() -> str:
+def og_svg(title="VELKOR SYSTEMS", kicker="INFRASTRUCTURE CONTROL PLANE", body="Gobierno y continuidad para infraestructura critica.", accent=None) -> str:
+    accent = accent or COLORS["route_dark"]
+    body_lines = wrap_for_svg(body)
+    body_markup = "\n".join(
+        f'  <tspan x="408" y="{358 + index * 34}">{line}</tspan>'
+        for index, line in enumerate(body_lines)
+    )
     return f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" fill="none">
   <rect width="1200" height="630" fill="{COLORS['dark_bg']}"/>
   <path d="M0 520H1200M0 110H1200" stroke="#152235"/>
-  <path d="M120 0V630M1080 0V630" stroke="#101b2a"/>
-  <path d="M656 154H1008L1076 222V318" stroke="#203448" stroke-width="1.2" opacity=".44"/>
-  <path d="M640 492H930L988 434H1092" stroke="#203448" stroke-width="1.2" opacity=".34"/>
-  <path d="M706 184H940M706 214H1012M706 244H902" stroke="#17283a" stroke-width="1" opacity=".55"/>
+  <path d="M120 0V630M1080 0V630M360 0V630M840 0V630" stroke="#101b2a"/>
+  <path d="M650 126H1002L1072 196V330" stroke="{accent}" stroke-width="1.2" opacity=".34"/>
+  <path d="M650 474H930L994 420H1100" stroke="{accent}" stroke-width="1.2" opacity=".24"/>
+  <path d="M702 184H946M702 218H1020M702 252H904" stroke="#17283a" stroke-width="1" opacity=".65"/>
+  <rect x="684" y="326" width="384" height="96" rx="12" fill="#0b1522" stroke="#213246" opacity=".8"/>
+  <path d="M716 356H838M716 382H930M716 408H884" stroke="{accent}" stroke-width="1.2" opacity=".30"/>
   <g transform="translate(116 122) scale(3.45)">
 {symbol_paths(COLORS['route_dark'], COLORS['muted_dark'], COLORS['core_dark'], COLORS['amber'])}
   </g>
-  <text x="404" y="246" fill="{COLORS['white']}" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="64" font-weight="760" letter-spacing=".6">VELKOR SYSTEMS</text>
-  <text x="408" y="300" fill="#8298aa" font-family="JetBrains Mono, Consolas, monospace" font-size="18" font-weight="500" letter-spacing="3">INFRASTRUCTURE CONTROL PLANE</text>
-  <text x="408" y="376" fill="#a8b7c4" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="26" font-weight="520">Gobierno y continuidad para infraestructura critica.</text>
-  <path d="M408 424H856" stroke="#23364a" stroke-width="1"/>
-  <text x="408" y="468" fill="#b88748" font-family="JetBrains Mono, Consolas, monospace" font-size="17" font-weight="600" letter-spacing="2">VELKOR.COM.MX</text>
+  <text x="404" y="238" fill="{COLORS['white']}" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="60" font-weight="760" letter-spacing=".4">{title}</text>
+  <text x="408" y="294" fill="#8298aa" font-family="JetBrains Mono, Consolas, monospace" font-size="17" font-weight="500" letter-spacing="2.6">{kicker}</text>
+  <text fill="#a8b7c4" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="25" font-weight="520">
+{body_markup}
+  </text>
+  <path d="M408 438H856" stroke="#23364a" stroke-width="1"/>
+  <text x="408" y="482" fill="#b88748" font-family="JetBrains Mono, Consolas, monospace" font-size="17" font-weight="600" letter-spacing="2">VELKOR.COM.MX</text>
 </svg>
 """
 
 
-def make_og_png() -> None:
+OG_PROFILES = [
+    ("home", "VELKOR SYSTEMS", "INFRASTRUCTURE CONTROL PLANE", "Gobierno y continuidad para infraestructura critica.", COLORS["route_dark"]),
+    ("servicios", "CAPACIDADES OPERACIONALES", "NETWORK / IDENTITY / VIDEO", "Arquitectura, despliegue y evidencia para entornos en produccion.", "#587694"),
+    ("articles", "INTELIGENCIA OPERACIONAL", "FIELD NOTES / GOVERNANCE", "Briefs tecnicos sobre decisiones reales de infraestructura.", "#3f775c"),
+    ("evidence", "EVIDENCIA OPERACIONAL", "SANITIZED DEPLOYMENT RECORDS", "Politicas, diffs, rutas y notas de gobierno listas para revision.", "#b88748"),
+    ("assessments", "ASSESSMENT OPERACIONAL", "RISK SIGNALS / NEXT ACTIONS", "Lectura ejecutiva de madurez, exposicion y ruta tecnica inicial.", "#638fa9"),
+]
+
+
+def draw_topology_overlay(draw: ImageDraw.ImageDraw, accent: str) -> None:
+    for x in range(120, 1200, 120):
+        draw.line([(x, 0), (x, 630)], fill="#101b2a55", width=1)
+    for y in range(70, 630, 70):
+        draw.line([(0, y), (1200, y)], fill="#101b2a55", width=1)
+
+    route_lines = [
+        [(650, 126), (1002, 126), (1072, 196), (1072, 330)],
+        [(650, 474), (930, 474), (994, 420), (1100, 420)],
+        [(690, 190), (760, 190), (828, 248), (950, 248)],
+        [(716, 382), (872, 382), (936, 344), (1054, 344)],
+    ]
+    for points in route_lines:
+        draw.line(points, fill=accent + "55", width=2, joint="curve")
+        for x, y in points[1:-1]:
+            draw.rounded_rectangle([x - 5, y - 5, x + 5, y + 5], radius=3, fill=accent + "88")
+
+    draw.rounded_rectangle([684, 326, 1068, 422], radius=12, fill="#0b1522d6", outline="#213246aa", width=1)
+    for y, x2 in [(356, 838), (382, 930), (408, 884)]:
+        draw.line([(716, y), (x2, y)], fill=accent + "4d", width=2)
+        draw.text((946, y - 9), "policy", font=load_font("consola.ttf", 13), fill="#8298aa88")
+
+    for x, y, label in [(690, 190, "CORE"), (828, 248, "ACL"), (950, 248, "APP"), (936, 344, "ID"), (1072, 330, "OPS")]:
+        draw.rounded_rectangle([x - 28, y - 13, x + 28, y + 13], radius=6, fill="#07101aea", outline=accent + "66", width=1)
+        draw.text((x - 16, y - 7), label, font=load_font("consolab.ttf", 12), fill="#d7e4eecc")
+
+
+def make_one_og_png(key: str, title_text: str, kicker: str, body_text: str, accent: str) -> Image.Image:
     w, h = 1200, 630
     img = Image.new("RGB", (w, h), COLORS["dark_bg"])
     draw = ImageDraw.Draw(img, "RGBA")
-    for x in range(120, w, 120):
-        draw.line([(x, 0), (x, h)], fill="#101b2a55", width=1)
-    for y in range(70, h, 70):
-        draw.line([(0, y), (w, y)], fill="#101b2a55", width=1)
-    draw.line([(656, 154), (1008, 154), (1076, 222), (1076, 318)], fill="#20344870", width=2)
-    draw.line([(640, 492), (930, 492), (988, 434), (1092, 434)], fill="#20344855", width=2)
-    for y, x2 in [(184, 940), (214, 1012), (244, 902)]:
-        draw.line([(706, y), (x2, y)], fill="#17283a80", width=1)
+    draw.rectangle([0, 0, w, h], fill=COLORS["dark_bg"])
+    draw_topology_overlay(draw, accent)
     draw_symbol(draw, scale=3.45, offset=(116, 122), dark=True)
 
-    title = load_font("segoeuib.ttf", 64)
+    title = load_font("segoeuib.ttf", 58)
     subtitle = load_font("consolab.ttf", 18)
-    body = load_font("segoeui.ttf", 28)
+    body = load_font("segoeui.ttf", 26)
     mono = load_font("consolab.ttf", 17)
-    draw.text((404, 182), "VELKOR SYSTEMS", font=title, fill=COLORS["white"])
-    draw.text((408, 282), "INFRASTRUCTURE CONTROL PLANE", font=subtitle, fill="#8298aa")
-    draw.text((408, 352), "Gobierno y continuidad para infraestructura critica.", font=body, fill="#a8b7c4")
-    draw.line([(408, 424), (856, 424)], fill="#23364a", width=1)
-    draw.text((408, 448), "VELKOR.COM.MX", font=mono, fill=COLORS["amber"])
-    img.save(PUBLIC / "og-image.png", optimize=True)
+    draw.text((404, 174), title_text, font=title, fill=COLORS["white"])
+    draw.text((408, 278), kicker, font=subtitle, fill="#8298aa")
+    body_end = draw_wrapped_text(draw, (408, 350), body_text, body, "#a8b7c4", 460, 34)
+    rule_y = max(438, body_end + 14)
+    draw.line([(408, rule_y), (856, rule_y)], fill="#23364a", width=1)
+    draw.text((408, rule_y + 24), "VELKOR.COM.MX", font=mono, fill=COLORS["amber"])
+    draw.text((1012, 560), key.upper(), font=mono, fill=accent + "aa")
+    return img
+
+
+def make_og_png() -> None:
+    for key, title_text, kicker, body_text, accent in OG_PROFILES:
+        img = make_one_og_png(key, title_text, kicker, body_text, accent)
+        img.save(OG / f"og-{key}.png", optimize=True)
+        (BRAND / f"og-{key}.svg").write_text(og_svg(title_text, kicker, body_text, accent), encoding="utf-8")
+        if key == "home":
+            img.save(PUBLIC / "og-image.png", optimize=True)
 
 
 def write_manifest() -> None:
@@ -266,11 +347,16 @@ def write_manifest() -> None:
   "name": "Velkor Systems",
   "short_name": "Velkor",
   "description": "Infraestructura operacional, gobierno tecnologico y continuidad empresarial.",
+  "id": "/",
+  "lang": "es-MX",
+  "dir": "ltr",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
+  "display_override": ["standalone", "browser"],
   "background_color": "#07101a",
   "theme_color": "#07101a",
+  "categories": ["business", "productivity", "security"],
   "icons": [
     {
       "src": "/favicons/favicon.svg",

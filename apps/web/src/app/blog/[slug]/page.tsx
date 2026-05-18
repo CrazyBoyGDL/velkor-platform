@@ -18,6 +18,7 @@ import {
   getFallbackAuthorityPost,
   getFallbackRelatedPosts,
 } from '@/lib/authorityContent'
+import { OG_IMAGES } from '@/lib/config'
 
 export const revalidate = 3600
 export const dynamicParams = true
@@ -188,6 +189,11 @@ export async function generateMetadata(
       description: post.excerpt || undefined,
       url: `https://velkor.com.mx/blog/${params.slug}`,
       type: 'article',
+      images: [{ url: OG_IMAGES.articles, width: 1200, height: 630, alt: `${post.title} — Velkor Systems` }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      images: [OG_IMAGES.articles],
     },
   }
 }

@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import TrackedLink from '@/components/TrackedLink'
 import ScrollDepthTracker from '@/components/ScrollDepthTracker'
+import { OG_IMAGES } from '@/lib/config'
 
 export const metadata: Metadata = {
   title: 'Ciberseguridad Empresarial | Fortinet · Segmentación · Redes',
@@ -12,6 +13,11 @@ export const metadata: Metadata = {
     title: 'Ciberseguridad Empresarial | Velkor',
     description:
       'Fortinet FortiGate, segmentación VLAN y arquitectura de acceso gobernado para empresas.',
+    images: [{ url: OG_IMAGES.servicios, width: 1200, height: 630, alt: 'Velkor Systems — Servicios operacionales' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    images: [OG_IMAGES.servicios],
   },
 }
 

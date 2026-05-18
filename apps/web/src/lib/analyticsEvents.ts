@@ -40,6 +40,10 @@ export const Events = {
   EvidenceInteraction:       'Evidence Interaction',
   EvidenceDiagramViewed:     'Evidence Diagram Viewed',
   EvidenceDepthReached:      'Evidence Depth Reached',
+  VisualEngagement:          'Visual Intelligence Engagement',
+  ScrollPacing:              'Scroll Pacing',
+  RouteEntered:              'Route Entered',
+  RouteCompletion:           'Route Completion',
   CaseStudyViewed:           'Case Study Viewed',
   CaseStudyDepthReached:     'Case Study Depth Reached',  // 50% / 100% scroll
   CaseStudyEngagement:       'Case Study Engagement',
@@ -77,6 +81,7 @@ export const Events = {
   // Device behavior
   MobileAssessmentStarted:   'Mobile Assessment Started',
   MobileTrustEngagement:     'Mobile Trust Engagement',
+  MobileFriction:            'Mobile Friction',
   DiagramScrolled:           'Diagram Scrolled',           // arch diagram mobile scroll
   DeviceBehaviorDetected:    'Device Behavior Detected',
   SessionReplayReady:        'Session Replay Ready',
@@ -122,6 +127,33 @@ export interface EvidenceDepthReachedProps {
   source:   string
   depth:    string
   category?: string
+}
+
+export interface VisualEngagementProps {
+  page:        string
+  visual_id:   string
+  visual_kind: string
+  device:      string
+}
+
+export interface ScrollPacingProps {
+  page:    string
+  depth:   string
+  seconds: string | number
+  pace:    string
+}
+
+export interface RouteCompletionProps {
+  page:      string
+  max_depth: string
+  seconds:   string | number
+  device:    string
+}
+
+export interface MobileFrictionProps {
+  page:        string
+  reason:      string
+  overflow_px?: string | number
 }
 
 export interface ArtifactDownloadedProps {

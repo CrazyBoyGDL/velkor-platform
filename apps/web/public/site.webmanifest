@@ -2,11 +2,16 @@
   "name": "Velkor Systems",
   "short_name": "Velkor",
   "description": "Infraestructura operacional, gobierno tecnologico y continuidad empresarial.",
+  "id": "/",
+  "lang": "es-MX",
+  "dir": "ltr",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
+  "display_override": ["standalone", "browser"],
   "background_color": "#07101a",
   "theme_color": "#07101a",
+  "categories": ["business", "productivity", "security"],
   "icons": [
     {
       "src": "/favicons/favicon.svg",

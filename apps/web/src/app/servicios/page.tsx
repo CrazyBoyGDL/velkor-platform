@@ -10,12 +10,22 @@ import {
   type ArchitectureNode,
 } from '@/components/OperationalEvidence'
 import type { DiagnosticCtaIntent } from '@/lib/scoring'
+import { OG_IMAGES } from '@/lib/config'
 
 export const metadata: Metadata = {
   title: 'Servicios IT Empresariales',
   description:
     'Redes y ciberseguridad Fortinet, gestión de identidad Microsoft 365 e Intune, y videovigilancia IP para empresas en México.',
   alternates: { canonical: 'https://velkor.com.mx/servicios' },
+  openGraph: {
+    title: 'Capacidades Operacionales | Velkor Systems',
+    description: 'Redes, identidad y videovigilancia tratadas como infraestructura gobernable.',
+    images: [{ url: OG_IMAGES.servicios, width: 1200, height: 630, alt: 'Velkor Systems — Capacidades operacionales' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    images: [OG_IMAGES.servicios],
+  },
 }
 
 type ServiceModule = {

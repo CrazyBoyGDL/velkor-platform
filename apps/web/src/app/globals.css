@@ -708,6 +708,226 @@ body {
     animation: operationalPulse 4.8s ease-in-out infinite;
   }
 
+  .hero-intelligence-layer {
+    display: grid;
+    grid-template-columns: minmax(0, 0.92fr) minmax(17rem, 1.08fr);
+    gap: 0.85rem;
+    max-width: 46rem;
+    align-items: stretch;
+  }
+
+  .visual-state-rail,
+  .topology-fragment,
+  .governance-callout,
+  .continuity-trace {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    border: 1px solid rgba(148,163,184,0.085);
+    background:
+      linear-gradient(180deg, rgba(255,255,255,0.030), rgba(255,255,255,0.008)),
+      linear-gradient(145deg, rgba(8,14,23,0.78), rgba(5,9,16,0.92));
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.045) inset,
+      0 16px 38px rgba(0,0,0,0.22);
+  }
+
+  .visual-state-rail::before,
+  .topology-fragment::before,
+  .governance-callout::before,
+  .continuity-trace::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      linear-gradient(90deg, color-mix(in srgb, var(--visual-accent, #638fa9) 18%, transparent), transparent 36%),
+      linear-gradient(rgba(148,163,184,0.024) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(148,163,184,0.020) 1px, transparent 1px);
+    background-size: auto, 34px 34px, 34px 34px;
+    opacity: 0.52;
+  }
+
+  .visual-state-rail {
+    display: grid;
+    align-content: center;
+    gap: 0.45rem;
+    padding: 0.85rem;
+  }
+
+  .visual-state-item {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 6px minmax(4.4rem, auto) minmax(0, 1fr);
+    align-items: center;
+    gap: 0.75rem;
+    min-height: 2rem;
+    padding: 0.45rem 0.55rem;
+    border: 1px solid rgba(148,163,184,0.065);
+    border-radius: 6px;
+    background: rgba(255,255,255,0.016);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .visual-state-item::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: #638fa9;
+    box-shadow: 0 0 0 4px rgba(99,143,169,0.08);
+    grid-column: 1;
+  }
+
+  .visual-state-item span {
+    grid-column: 2;
+    color: #687386;
+    font-size: 9px;
+    text-transform: uppercase;
+  }
+
+  .visual-state-item strong {
+    grid-column: 3;
+    color: #b7c6d3;
+    font-size: 10px;
+    font-weight: 600;
+    text-align: right;
+  }
+
+  .visual-state-active::before {
+    background: #638fa9;
+    animation: operationalPulse 4.8s ease-in-out infinite;
+  }
+
+  .visual-state-watch::before {
+    background: #b88748;
+    box-shadow: 0 0 0 4px rgba(184,135,72,0.08);
+  }
+
+  .topology-fragment,
+  .governance-callout,
+  .continuity-trace {
+    --visual-accent: #638fa9;
+    padding: 0.85rem;
+  }
+
+  .visual-fragment-header {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.7rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+  }
+
+  .visual-fragment-header span {
+    color: #667386;
+  }
+
+  .visual-fragment-header strong {
+    color: color-mix(in srgb, var(--visual-accent) 68%, #dce8f2);
+    font-weight: 600;
+    text-align: right;
+  }
+
+  .topology-fragment-map {
+    position: relative;
+    z-index: 1;
+    color: var(--visual-accent);
+  }
+
+  .topology-fragment-map rect {
+    fill: rgba(5,9,16,0.72);
+    stroke: color-mix(in srgb, var(--visual-accent) 38%, transparent);
+  }
+
+  .topology-fragment-map text {
+    fill: rgba(226,232,240,0.72);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    font-weight: 700;
+    text-anchor: middle;
+  }
+
+  .topology-fragment-route {
+    fill: none;
+    stroke: var(--visual-accent);
+    stroke-width: 1.35;
+    stroke-dasharray: 5 8;
+    stroke-opacity: 0.32;
+    animation: visualRouteTrace 12s linear infinite;
+  }
+
+  .topology-fragment-route-secondary {
+    stroke-opacity: 0.20;
+    animation-duration: 16s;
+  }
+
+  .topology-fragment p,
+  .continuity-trace-step p,
+  .governance-policy-row p {
+    position: relative;
+    z-index: 1;
+    color: #748093;
+    font-size: 11px;
+    line-height: 1.65;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .governance-policy-stack,
+  .continuity-trace-steps {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    gap: 0.55rem;
+  }
+
+  .governance-policy-row,
+  .continuity-trace-step {
+    display: grid;
+    grid-template-columns: 2.4rem minmax(0, 1fr);
+    gap: 0.65rem;
+    padding: 0.55rem 0;
+    border-top: 1px solid rgba(255,255,255,0.045);
+  }
+
+  .governance-policy-row span,
+  .continuity-trace-step span {
+    color: color-mix(in srgb, var(--visual-accent) 74%, #b7c6d3);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+  }
+
+  .evidence-intelligence-board {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(14rem, 0.9fr) minmax(14rem, 0.85fr);
+    gap: 1rem;
+  }
+
+  .evidence-card-state {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.9rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(255,255,255,0.04);
+    color: #687386;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+  }
+
+  .evidence-card-state i {
+    width: 4px;
+    height: 4px;
+    border-radius: 999px;
+    background: rgba(127,158,180,0.48);
+  }
+
   .brand-lockup-title {
     font-weight: 720;
     letter-spacing: 0.01em;
@@ -1002,6 +1222,10 @@ body {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 0.8rem;
+  }
+  .evidence-proof-strip .audit-fragment {
+    opacity: 1 !important;
+    clip-path: inset(0 0 0 0) !important;
   }
   .evidence-operation-panel {
     border: 1px solid rgba(127,158,180,0.12);
@@ -1452,6 +1676,11 @@ body {
   45%      { opacity: 1; transform: scale(1.18); }
 }
 
+@keyframes visualRouteTrace {
+  0%   { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: -52; }
+}
+
 /* ── Animated gradient border (pulse) ── */
 @keyframes borderPulse {
   0%, 100% { opacity: 0.5; }
@@ -1527,6 +1756,10 @@ body {
     transform: none !important;
   }
   .brand-loading-state img {
+    animation: none !important;
+  }
+  .topology-fragment-route,
+  .visual-state-active::before {
     animation: none !important;
   }
   [style*="clip-path: inset"] {
@@ -1782,6 +2015,10 @@ html.light .home-case-panel {
   box-shadow: 0 18px 44px rgba(41,54,74,0.09), 0 1px 0 rgba(255,255,255,0.95) inset;
 }
 html.light .operational-state-indicator,
+html.light .visual-state-rail,
+html.light .topology-fragment,
+html.light .governance-callout,
+html.light .continuity-trace,
 html.light .architecture-snapshot,
 html.light .deployment-diff,
 html.light .policy-overlay,
@@ -1798,6 +2035,7 @@ html.light .evidence-assessment-demo {
   box-shadow: 0 10px 24px rgba(41,54,74,0.055);
 }
 html.light .visual-evidence-heading,
+html.light .visual-fragment-header span,
 html.light .diff-label,
 html.light .audit-row > span,
 html.light .infra-state-copy > span {
@@ -1807,9 +2045,28 @@ html.light .diff-row,
 html.light .policy-row,
 html.light .audit-row,
 html.light .infra-state-copy p,
-html.light .visual-evidence-caption {
+html.light .visual-evidence-caption,
+html.light .topology-fragment p,
+html.light .continuity-trace-step p,
+html.light .governance-policy-row p {
   border-color: rgba(36,52,70,0.08);
   color: #465568;
+}
+html.light .visual-state-item {
+  border-color: rgba(36,52,70,0.08);
+  background: rgba(255,255,255,0.48);
+}
+html.light .visual-state-item span {
+  color: #7f8c9b;
+}
+html.light .visual-state-item strong,
+html.light .topology-fragment-map text {
+  color: #2e4053;
+  fill: #2e4053;
+}
+html.light .evidence-card-state {
+  border-color: rgba(36,52,70,0.08);
+  color: #7f8c9b;
 }
 html.light .diff-before { color: #80766a; }
 html.light .diff-after  { color: #2e4053; }
@@ -2004,6 +2261,29 @@ html.light::-webkit-scrollbar-thumb { background: #d1d1d6; }
     min-height: 44px;
   }
 
+  .hero-intelligence-layer {
+    grid-template-columns: 1fr;
+    gap: 0.65rem;
+    margin-bottom: 1.35rem;
+  }
+
+  .visual-state-rail {
+    grid-template-columns: 1fr;
+    padding: 0.7rem;
+  }
+
+  .visual-state-item {
+    min-height: 36px;
+  }
+
+  .topology-fragment {
+    padding: 0.72rem;
+  }
+
+  .topology-fragment-map {
+    max-height: 150px;
+  }
+
   .home-final-cta {
     grid-template-columns: 1fr;
     gap: 2rem;
@@ -2057,7 +2337,10 @@ html.light::-webkit-scrollbar-thumb { background: #d1d1d6; }
   .deployment-diff,
   .policy-overlay,
   .audit-fragment,
-  .infra-state-panel {
+  .infra-state-panel,
+  .topology-fragment,
+  .governance-callout,
+  .continuity-trace {
     border-radius: 7px;
   }
   .architecture-snapshot {
@@ -2088,6 +2371,16 @@ html.light::-webkit-scrollbar-thumb { background: #d1d1d6; }
     min-height: 44px;
     display: inline-flex;
     align-items: center;
+  }
+
+  .evidence-intelligence-board {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .governance-policy-row,
+  .continuity-trace-step {
+    grid-template-columns: 2rem minmax(0, 1fr);
   }
 
   .hero-signal-rail {
@@ -2166,6 +2459,12 @@ html.light::-webkit-scrollbar-thumb { background: #d1d1d6; }
   .service-consultive-close {
     align-items: flex-start;
     flex-direction: column;
+  }
+  .evidence-intelligence-board {
+    grid-template-columns: 1fr;
+  }
+  .hero-intelligence-layer {
+    grid-template-columns: 1fr;
   }
 }
 

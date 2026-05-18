@@ -7,6 +7,7 @@ import AdaptiveCTA from '@/components/AdaptiveCTA'
 import InfraTopology from '@/components/InfraTopology'
 import RiskExposure from '@/components/RiskExposure'
 import TrustValidationLayer from '@/components/TrustValidationLayer'
+import { SystemStateRail, TopologyFragment } from '@/components/VisualIntelligence'
 import { trackCTA } from '@/components/Analytics'
 import { EASE, reveal as fadeUp, enter as heroUp } from '@/lib/motion'
 
@@ -109,7 +110,22 @@ function Hero() {
             </Link>
           </motion.div>
 
-          <motion.div {...heroUp(0.08)} className="hidden sm:grid sm:grid-cols-3 gap-3 max-w-3xl hero-operational-rail">
+          <motion.div {...heroUp(0.08)} className="hero-intelligence-layer mb-8">
+            <SystemStateRail
+              items={[
+                { label: 'Estado', value: 'monitoring', tone: 'active' },
+                { label: 'Cambio', value: 'gobernado', tone: 'stable' },
+                { label: 'Riesgo', value: 'trazable', tone: 'watch' },
+              ]}
+            />
+            <TopologyFragment
+              title="Control-plane operativo"
+              caption="Mapa compacto de señales: identidad, red, aplicacion y operaciones bajo la misma ruta de decision."
+              accent="#638fa9"
+            />
+          </motion.div>
+
+          <motion.div {...heroUp(0.1)} className="hidden lg:grid sm:grid-cols-3 gap-3 max-w-3xl hero-operational-rail">
             {HERO_SIGNALS.map((signal) => (
               <div key={signal} className="home-signal">
                 {signal}

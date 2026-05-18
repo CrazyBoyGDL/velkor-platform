@@ -14,6 +14,14 @@ export const SITE_URL    = process.env.NEXT_PUBLIC_SITE_URL ?? process.env.NEXT_
 export const APP_URL     = process.env.NEXT_PUBLIC_APP_URL  ?? SITE_URL
 export const SITE_DOMAIN = process.env.NEXT_PUBLIC_SITE_DOMAIN ?? 'velkor.com.mx'
 
+export const OG_IMAGES = {
+  home:        '/og/og-home.png',
+  servicios:  '/og/og-servicios.png',
+  articles:   '/og/og-articles.png',
+  evidence:   '/og/og-evidence.png',
+  assessments:'/og/og-assessments.png',
+} as const
+
 /** Canonical URL helper — always produces an absolute URL */
 export function canonical(path: string): string {
   const clean = path.startsWith('/') ? path : `/${path}`

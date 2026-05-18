@@ -3,6 +3,7 @@ import { strapi } from '@/lib/strapi'
 import { architectureReferenceHref, asDownloadableArtifacts, asStringArray } from '@/lib/contentEngine'
 import BlogList, { type BlogPost } from '@/components/BlogList'
 import { FALLBACK_AUTHORITY_POSTS, toBlogPostSummary } from '@/lib/authorityContent'
+import { OG_IMAGES } from '@/lib/config'
 
 export const revalidate = 3600
 
@@ -13,6 +14,11 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Inteligencia Operacional | Velkor Systems',
     description: 'Briefs técnicos sobre arquitectura, implementación y gobernanza operacional.',
+    images: [{ url: OG_IMAGES.articles, width: 1200, height: 630, alt: 'Velkor Systems — Inteligencia operacional' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    images: [OG_IMAGES.articles],
   },
 }
 

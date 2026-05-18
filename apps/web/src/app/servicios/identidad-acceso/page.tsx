@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import TrackedLink from '@/components/TrackedLink'
 import ScrollDepthTracker from '@/components/ScrollDepthTracker'
+import { OG_IMAGES } from '@/lib/config'
 
 export const metadata: Metadata = {
   title: 'Gestión de Identidad y Acceso | Entra ID · Intune · MFA',
@@ -12,6 +13,11 @@ export const metadata: Metadata = {
     title: 'Gestión de Identidad y Acceso | Velkor',
     description:
       'Microsoft Entra ID, Intune y MFA para que cada acceso sea auditado y condicional.',
+    images: [{ url: OG_IMAGES.servicios, width: 1200, height: 630, alt: 'Velkor Systems — Servicios operacionales' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    images: [OG_IMAGES.servicios],
   },
 }
 

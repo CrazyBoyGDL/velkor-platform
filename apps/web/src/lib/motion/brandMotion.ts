@@ -28,9 +28,14 @@ export const brandMotionCss = `
     46% { stroke-dashoffset: 0; opacity: 0.62; }
   }
 
+  @keyframes velkor-control-plane {
+    0%, 100% { opacity: 0.50; }
+    48% { opacity: 0.72; }
+  }
+
   @keyframes velkor-core-breath {
-    0%, 100% { opacity: 0.78; transform: scale(1); }
-    50% { opacity: 1; transform: scale(1.05); }
+    0%, 100% { opacity: 0.76; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.045); }
   }
 
   @keyframes velkor-node-sync {
@@ -38,16 +43,26 @@ export const brandMotionCss = `
     45% { opacity: 1; }
   }
 
+  @keyframes velkor-topology-sync {
+    0%, 100% { opacity: 0.68; stroke-dashoffset: 34; }
+    44% { opacity: 0.95; stroke-dashoffset: 0; }
+  }
+
   @keyframes velkor-scan-sweep {
-    0% { transform: translateY(-18px); opacity: 0; }
-    18% { opacity: 0.18; }
-    64% { opacity: 0.12; }
-    100% { transform: translateY(58px); opacity: 0; }
+    0% { transform: translateY(-16px); opacity: 0; }
+    18% { opacity: 0.16; }
+    64% { opacity: 0.11; }
+    100% { transform: translateY(54px); opacity: 0; }
   }
 
   @keyframes velkor-alert-core {
     0%, 100% { opacity: 0.72; }
     48% { opacity: 1; }
+  }
+
+  @keyframes velkor-directional-glow {
+    0%, 100% { opacity: 0.42; }
+    52% { opacity: 0.82; }
   }
 
   .velkor-brand-symbol {
@@ -67,6 +82,19 @@ export const brandMotionCss = `
   .velkor-brand-flow {
     stroke-dasharray: 12 28;
     opacity: 0;
+  }
+
+  .velkor-brand-control-plane {
+    animation: velkor-control-plane 8.4s ease-in-out infinite;
+  }
+
+  .velkor-brand-sync {
+    stroke-dasharray: 10 24;
+  }
+
+  .velkor-brand-observe {
+    stroke-dasharray: 14 18;
+    opacity: 0.36;
   }
 
   .velkor-brand-core,
@@ -96,17 +124,31 @@ export const brandMotionCss = `
     animation: velkor-route-flow 6.8s ease-in-out infinite;
   }
 
+  .velkor-brand--monitoring .velkor-brand-observe {
+    animation: velkor-route-flow 8.8s ease-in-out infinite;
+  }
+
   .velkor-brand--active .velkor-brand-flow {
     animation: velkor-route-flow 4.8s ease-in-out infinite;
   }
 
+  .velkor-brand--active .velkor-brand-sync {
+    animation: velkor-topology-sync 5.8s ease-in-out infinite;
+  }
+
   .velkor-brand--alert .velkor-brand-core,
-  .velkor-brand--alert .velkor-brand-arrow {
+  .velkor-brand--alert .velkor-brand-arrow,
+  .velkor-brand--alert .velkor-brand-direction {
     animation: velkor-alert-core 2.6s ease-in-out infinite;
   }
 
   .velkor-brand--synchronized .velkor-brand-node {
     animation-duration: 4.8s;
+  }
+
+  .velkor-brand--synchronized .velkor-brand-sync,
+  .velkor-brand--synchronized .velkor-brand-direction {
+    animation: velkor-directional-glow 6.4s ease-in-out infinite;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -116,7 +158,11 @@ export const brandMotionCss = `
     .velkor-brand-core,
     .velkor-brand-core-ring,
     .velkor-brand-scan,
-    .velkor-brand-arrow {
+    .velkor-brand-arrow,
+    .velkor-brand-control-plane,
+    .velkor-brand-sync,
+    .velkor-brand-observe,
+    .velkor-brand-direction {
       animation: none !important;
       transition: none !important;
     }
