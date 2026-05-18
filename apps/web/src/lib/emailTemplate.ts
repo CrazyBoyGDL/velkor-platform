@@ -130,7 +130,7 @@ function buildHeader(data: EmailData): string {
             <td>
               <span style="font-family:Georgia,serif;font-size:18px;font-weight:700;color:#e8e8f0;letter-spacing:-0.02em;">Velkor System</span>
               <br />
-              <span style="font-family:Courier New,monospace;font-size:10px;color:#505070;letter-spacing:0.15em;text-transform:uppercase;">Consultoría IT Empresarial · velkor.mx</span>
+              <span style="font-family:Courier New,monospace;font-size:10px;color:#505070;letter-spacing:0.15em;text-transform:uppercase;">Consultoría IT Empresarial · velkor.com.mx</span>
             </td>
             <td align="right" valign="middle">
               <span style="font-family:Courier New,monospace;font-size:10px;color:#505070;">Ref: ${data.reportRef}</span>
@@ -260,7 +260,7 @@ function buildQuickWins(wins: string[]): string {
 }
 
 function buildPhaseAndCTA(data: EmailData): string {
-  const ctaUrl = 'https://velkor.mx/contacto'
+  const ctaUrl = 'https://velkor.com.mx/contacto'
   const pdfRow = data.pdfUrl ? `
         <tr><td style="height:12px;"></td></tr>
         <tr>
@@ -309,7 +309,7 @@ function buildPhaseAndCTA(data: EmailData): string {
             <td align="center">
               <a href="${ctaUrl}"
                  style="font-family:Courier New,monospace;font-size:10px;color:#909098;text-decoration:none;">
-                velkor.mx/contacto
+                velkor.com.mx/contacto
               </a>
             </td>
           </tr>
@@ -326,7 +326,7 @@ function buildFooter(reportRef: string): string {
           <tr>
             <td>
               <p style="margin:0 0 3px;font-family:Arial,sans-serif;font-size:12px;font-weight:700;color:#e0e0f0;">Velkor System</p>
-              <p style="margin:0;font-family:Courier New,monospace;font-size:10px;color:#404060;">velkor.mx · contacto@velkor.mx</p>
+              <p style="margin:0;font-family:Courier New,monospace;font-size:10px;color:#404060;">velkor.com.mx · contacto@velkor.com.mx</p>
             </td>
             <td align="right" valign="middle">
               <p style="margin:0;font-family:Courier New,monospace;font-size:10px;color:#404060;">Ref: ${reportRef}</p>
@@ -443,7 +443,7 @@ export function generateAssessmentEmail(data: EmailData): string {
           <tr>
             <td style="padding:16px 0;text-align:center;">
               <p style="margin:0;font-family:Courier New,monospace;font-size:9px;color:#a0a0a8;">
-                Este mensaje fue enviado porque completó una evaluación en velkor.mx
+                Este mensaje fue enviado porque completó una evaluación en velkor.com.mx
               </p>
             </td>
           </tr>

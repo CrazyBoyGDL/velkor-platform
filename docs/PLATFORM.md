@@ -286,7 +286,7 @@ ResultsScreen (client) → generateReportHtml(data) → HTML string
 7. Operational observations
 8. Recommended phase + estimated scope
 9. Context summary (6-field grid)
-10. Footer (Velkor System, velkor.mx, report date, ref)
+10. Footer (Velkor System, velkor.com.mx, report date, ref)
 
 ### Print CSS strategy
 
@@ -450,7 +450,7 @@ Phases are skipped if their prerequisite flag category has no active flags and t
 |-------|----------------|
 | Template engine | `generateAssessmentEmail()` — table-based HTML, inline CSS only |
 | Sending provider | Resend API (`https://api.resend.com/emails`) |
-| From address | `Velkor System <noreply@velkor.mx>` |
+| From address | `Velkor System <noreply@velkor.com.mx>` |
 | Subject line | `Tu evaluación operacional — VLK-{ref} — {company}` |
 | Dev mode | Fail-open: if `RESEND_API_KEY` absent → log + `{ ok: true, sent: false }` |
 
@@ -467,8 +467,8 @@ Phases are skipped if their prerequisite flag category has no active flags and t
 3. Top 3 risk findings (severity-colored left border, description)
 4. Quick wins — 30–90 day actions
 5. Recommended phase — highlighted engagement label + estimated scope
-6. CTA button → `velkor.mx/contacto`
-7. Footer (report reference, velkor.mx, disclaimer)
+6. CTA button → `velkor.com.mx/contacto`
+7. Footer (report reference, velkor.com.mx, disclaimer)
 
 ### Trigger (client-side, non-blocking)
 
@@ -618,4 +618,4 @@ Detailed notes: `docs/CONSULTIVE_INTELLIGENCE.md`.
 
 ---
 
-*Updated: May 2026 · Velkor Operations · velkor.mx*
+*Updated: May 2026 · Velkor Operations · velkor.com.mx*

@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   title: 'Gestión de Identidad y Acceso | Entra ID · Intune · MFA',
   description:
     'Implementación de Microsoft Entra ID, Intune y MFA para empresas en México. Acceso Condicional, gobierno de identidades y operación documentada.',
-  alternates: { canonical: 'https://velkor.mx/servicios/identidad-acceso' },
+  alternates: { canonical: 'https://velkor.com.mx/servicios/identidad-acceso' },
   openGraph: {
     title: 'Gestión de Identidad y Acceso | Velkor',
     description:
@@ -136,7 +136,7 @@ const jsonLd = {
   name: 'Gestión de Identidad y Acceso Empresarial',
   description:
     'Implementación de Microsoft Entra ID, Intune y MFA. Acceso Condicional, gobierno de identidades y operación documentada.',
-  provider: { '@type': 'Organization', name: 'Velkor System', url: 'https://velkor.mx' },
+  provider: { '@type': 'Organization', name: 'Velkor System', url: 'https://velkor.com.mx' },
   areaServed: { '@type': 'Country', name: 'México' },
   serviceType: 'Identity and Access Management',
   offers: {

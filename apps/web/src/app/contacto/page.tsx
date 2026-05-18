@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   title: 'Contacto',
   description:
     'Contáctanos por formulario, WhatsApp o agenda una llamada directamente. Nuestro equipo responde en menos de 24 horas hábiles.',
-  alternates: { canonical: 'https://velkor.mx/contacto' },
+  alternates: { canonical: 'https://velkor.com.mx/contacto' },
   openGraph: {
     title: 'Contacto | Velkor',
     description: 'Escríbenos o agenda una llamada. Respuesta en menos de 24 horas.',

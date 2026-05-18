@@ -2,7 +2,9 @@
 import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { trackDownload, trackEvent, trackLeadSourceAttribution, useAssessmentStep } from '@/components/Analytics'
+import TurnstileWidget, { isTurnstileEnabled } from '@/components/TurnstileWidget'
 import { Events } from '@/lib/analyticsEvents'
+import { SITE_DOMAIN } from '@/lib/config'
 import { generateReportHtml } from '@/lib/reportHtml'
 import type { ScoreResult, AssessmentAnswers } from '@/lib/scoring'
 import type { LeadClassification } from '@/lib/classification'
@@ -922,12 +924,22 @@ export default function AssessmentsPage() {
   const [scores,         setScores]         = useState<ScoreResult | null>(null)
   const [classification, setClassification] = useState<LeadClassification | null>(null)
   const [reportRef,      setReportRef]      = useState('')
+  const [turnstileToken, setTurnstileToken] = useState('')
+  const [turnstileResetSignal, setTurnstileResetSignal] = useState(0)
 
   // Meta
   const [source, setSource] = useState('')
   const [utm,    setUtm]    = useState('')
+  const turnstileRequired = isTurnstileEnabled()
 
   useAssessmentStep(step, status)
+
+  useEffect(() => {
+    if (turnstileToken && status === 'error' && errorMsg === 'Confirma la verificación anti-abuso antes de enviar.') {
+      setStatus('idle')
+      setErrorMsg('')
+    }
+  }, [errorMsg, status, turnstileToken])
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
@@ -941,7 +953,7 @@ export default function AssessmentsPage() {
     }
     try {
       const ref = document.referrer ? new URL(document.referrer).hostname : ''
-      if (ref && ref !== 'velkor.mx') {
+      if (ref && ref !== SITE_DOMAIN) {
         setSource(ref)
         trackLeadSourceAttribution(ref, 'none', 'assessment-referrer')
       }
@@ -1013,6 +1025,13 @@ export default function AssessmentsPage() {
 
   const submit = async () => {
     if (!canProceed()) return
+    if (turnstileRequired && !turnstileToken) {
+      setStatus('error')
+      setErrorMsg('Confirma la verificación anti-abuso antes de enviar.')
+      trackEvent(Events.AssessmentError, { reason: 'turnstile-missing' })
+      return
+    }
+
     setStatus('submitting')
     trackEvent(Events.AssessmentSubmitted, {
       source: source || 'direct',
@@ -1023,6 +1042,7 @@ export default function AssessmentsPage() {
       name, email, company, phone, source, utm,
       step1: s1, step2: s2, step3: s3, step4: s4, step5: s5,
       _hp: '', // honeypot always empty from legitimate submission
+      _ts: turnstileToken,
     }
 
     try {
@@ -1037,6 +1057,7 @@ export default function AssessmentsPage() {
       if (!res.ok) {
         setStatus('error')
         setErrorMsg(data.error || 'Error al procesar la evaluación. Intenta de nuevo.')
+        setTurnstileResetSignal(signal => signal + 1)
         trackEvent(Events.AssessmentError, { reason: data.error || 'request-error' })
         return
       }
@@ -1083,6 +1104,7 @@ export default function AssessmentsPage() {
     } catch {
       setStatus('error')
       setErrorMsg('Error de conexión. Verifica tu internet e intenta de nuevo.')
+      setTurnstileResetSignal(signal => signal + 1)
       trackEvent(Events.AssessmentError, { reason: 'network-error' })
     }
   }
@@ -1093,6 +1115,7 @@ export default function AssessmentsPage() {
     setS1({ ...EMPTY_S1 }); setS2({ ...EMPTY_S2 })
     setS3({ ...EMPTY_S3 }); setS4({ ...EMPTY_S4 }); setS5({ ...EMPTY_S5 })
     setScores(null); setClassification(null); setReportRef('')
+    setTurnstileToken(''); setTurnstileResetSignal(signal => signal + 1)
   }
 
   // ── Results screen ──
@@ -1185,6 +1208,15 @@ export default function AssessmentsPage() {
           )}
         </div>
 
+        {step === 5 && (
+          <div className="mb-5">
+            <TurnstileWidget
+              onTokenChange={setTurnstileToken}
+              resetSignal={turnstileResetSignal}
+            />
+          </div>
+        )}
+
         {/* Error state */}
         {status === 'error' && (
           <div className="mb-4 px-4 py-3 rounded-xl border border-red-900/40 bg-red-950/20">
@@ -1216,7 +1248,7 @@ export default function AssessmentsPage() {
             <button
               type="button"
               onClick={submit}
-              disabled={status === 'submitting' || !canProceed()}
+              disabled={status === 'submitting' || !canProceed() || (turnstileRequired && !turnstileToken)}
               className="btn-amber w-full sm:w-auto px-8 py-3 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {status === 'submitting' ? 'Procesando evaluación...' : 'Generar evaluación →'}

@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   title: 'Ciberseguridad Empresarial | Fortinet · Segmentación · Redes',
   description:
     'Firewall Fortinet FortiGate, segmentación VLAN, VPN y arquitectura de acceso gobernable para empresas en México. Evaluación técnica con ingenieros especializados.',
-  alternates: { canonical: 'https://velkor.mx/servicios/ciberseguridad' },
+  alternates: { canonical: 'https://velkor.com.mx/servicios/ciberseguridad' },
   openGraph: {
     title: 'Ciberseguridad Empresarial | Velkor',
     description:
@@ -136,7 +136,7 @@ const jsonLd = {
   name: 'Ciberseguridad Empresarial',
   description:
     'Diseño e implementación de arquitecturas de red seguras: Fortinet FortiGate, segmentación VLAN, VPN y acceso gobernado.',
-  provider: { '@type': 'Organization', name: 'Velkor System', url: 'https://velkor.mx' },
+  provider: { '@type': 'Organization', name: 'Velkor System', url: 'https://velkor.com.mx' },
   areaServed: { '@type': 'Country', name: 'México' },
   serviceType: 'Ciberseguridad Empresarial',
   offers: {

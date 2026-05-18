@@ -2,6 +2,7 @@
 const isProd = process.env.NODE_ENV === 'production';
 const posthogHost = process.env.NEXT_PUBLIC_POSTHOG_HOST || 'https://app.posthog.com';
 const turnstileHost = 'https://challenges.cloudflare.com';
+const railwayConnectSrc = 'https://*.railway.app https://*.up.railway.app';
 
 const nextConfig = {
   output: 'standalone',
@@ -14,7 +15,9 @@ const nextConfig = {
   },
   images: {
     remotePatterns: [
+      { protocol: 'https', hostname: 'velkor.com.mx' },
       { protocol: 'https', hostname: 'velkor-api-production.up.railway.app' },
+      { protocol: 'https', hostname: '*.up.railway.app' },
     ],
   },
   async redirects() {
@@ -49,13 +52,17 @@ const nextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
+              "base-uri 'self'",
               scriptSrc,
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com",
-              "img-src 'self' data: blob:",
-              `connect-src 'self' https://plausible.io ${posthogHost} ${turnstileHost}`,
+              "img-src 'self' data: blob: https://*.railway.app https://*.up.railway.app",
+              `connect-src 'self' https://plausible.io ${posthogHost} ${turnstileHost} ${railwayConnectSrc}`,
               `frame-src 'self' ${turnstileHost}`,
+              "form-action 'self'",
+              "object-src 'none'",
               "frame-ancestors 'self'",
+              ...(isProd ? ["upgrade-insecure-requests"] : []),
             ].join('; '),
           },
         ],

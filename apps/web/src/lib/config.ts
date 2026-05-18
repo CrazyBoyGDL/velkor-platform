@@ -4,14 +4,15 @@
 // sourced from here — never hardcoded across pages.
 //
 // To migrate to a new domain:
-//   1. Set NEXT_PUBLIC_SITE_URL (e.g. "https://velkor.mx")
-//   2. Set NEXT_PUBLIC_SITE_DOMAIN (e.g. "velkor.mx")
+//   1. Set NEXT_PUBLIC_SITE_URL (e.g. "https://velkor.com.mx")
+//   2. Set NEXT_PUBLIC_SITE_DOMAIN (e.g. "velkor.com.mx")
 //   3. Redeploy — all canonicals, og:url, and mailto links update automatically.
 
 // ─── Domain ───────────────────────────────────────────────────────────────────
 
-export const SITE_URL    = process.env.NEXT_PUBLIC_SITE_URL    ?? 'https://velkor.mx'
-export const SITE_DOMAIN = process.env.NEXT_PUBLIC_SITE_DOMAIN ?? 'velkor.mx'
+export const SITE_URL    = process.env.NEXT_PUBLIC_SITE_URL ?? process.env.NEXT_PUBLIC_APP_URL ?? 'https://velkor.com.mx'
+export const APP_URL     = process.env.NEXT_PUBLIC_APP_URL  ?? SITE_URL
+export const SITE_DOMAIN = process.env.NEXT_PUBLIC_SITE_DOMAIN ?? 'velkor.com.mx'
 
 /** Canonical URL helper — always produces an absolute URL */
 export function canonical(path: string): string {
@@ -38,8 +39,12 @@ export const COMPANY = {
 export const CONTACT = {
   /** General / sales inquiries */
   email:         `contacto@${SITE_DOMAIN}`,
+  /** Friendly public alias */
+  emailHello:    `hola@${SITE_DOMAIN}`,
   /** Technical / support */
   emailSupport:  `soporte@${SITE_DOMAIN}`,
+  /** Responsible security contact */
+  emailSecurity: `seguridad@${SITE_DOMAIN}`,
   /** Automated (email notifications, no-reply) */
   emailNoReply:  `noreply@${SITE_DOMAIN}`,
   /** Assessment report sender */
@@ -157,7 +162,7 @@ export function buildOrganizationSchema() {
     '@type':    'Organization',
     name:       COMPANY.name,
     url:        SITE_URL,
-    logo:       `${SITE_URL}/logo.png`,
+    logo:       `${SITE_URL}/favicon.svg`,
     description: COMPANY.description,
     contactPoint: {
       '@type':       'ContactPoint',

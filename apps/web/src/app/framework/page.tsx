@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   title: 'Metodología Velkor | Proceso Operacional',
   description:
     'Proceso consultivo para diagnosticar, diseñar, implementar y validar infraestructura empresarial sin improvisar cambios críticos.',
-  alternates: { canonical: 'https://velkor.mx/framework' },
+  alternates: { canonical: 'https://velkor.com.mx/framework' },
 }
 
 const PROCESS = [

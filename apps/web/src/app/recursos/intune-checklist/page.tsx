@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   title: 'Checklist Implementación Microsoft Intune | Recurso Gratuito',
   description:
     'Lista de verificación de 30+ puntos para implementar Microsoft Intune: licencias, políticas de cumplimiento, Autopilot, MFA y Acceso Condicional. Descarga gratuita.',
-  alternates: { canonical: 'https://velkor.mx/recursos/intune-checklist' },
+  alternates: { canonical: 'https://velkor.com.mx/recursos/intune-checklist' },
   openGraph: {
     title: 'Checklist Intune: 30+ puntos de verificación | Velkor',
     description: 'Implementa Microsoft Intune correctamente con este checklist técnico. Gratis.',

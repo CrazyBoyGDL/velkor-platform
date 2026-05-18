@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   title: 'Recursos Técnicos Gratuitos | Guías y Checklists IT',
   description:
     'Checklists y guías técnicas gratuitas: hardening Fortinet, implementación de Intune y evaluación de sistemas CCTV. Acceso inmediato sin costo.',
-  alternates: { canonical: 'https://velkor.mx/recursos' },
+  alternates: { canonical: 'https://velkor.com.mx/recursos' },
   openGraph: {
     title: 'Recursos Técnicos Gratuitos | Velkor',
     description: 'Guías y checklists para equipos IT: Fortinet, Intune, CCTV.',

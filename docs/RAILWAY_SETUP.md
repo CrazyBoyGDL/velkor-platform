@@ -180,7 +180,7 @@ Next.js service (protocol + domain, no trailing slash).
 
 For multiple origins (e.g., preview + production) use a comma-separated list:
 ```
-FRONTEND_URL=https://velkor.mx,https://velkor-web-production.up.railway.app
+FRONTEND_URL=https://velkor.com.mx,https://velkor-web-production.up.railway.app
 ```
 
 ### Rotating secrets

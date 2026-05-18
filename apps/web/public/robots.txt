@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /api/
 
-Sitemap: https://velkor.mx/sitemap.xml
+Sitemap: https://velkor.com.mx/sitemap.xml

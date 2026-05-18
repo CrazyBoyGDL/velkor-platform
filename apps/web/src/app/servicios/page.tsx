@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   title: 'Servicios IT Empresariales',
   description:
     'Redes y ciberseguridad Fortinet, gestión de identidad Microsoft 365 e Intune, y videovigilancia IP para empresas en México.',
-  alternates: { canonical: 'https://velkor.mx/servicios' },
+  alternates: { canonical: 'https://velkor.com.mx/servicios' },
 }
 
 type ServiceModule = {

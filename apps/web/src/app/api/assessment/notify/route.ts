@@ -9,6 +9,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { EMAIL_SEQUENCES, generateAssessmentEmail } from '@/lib/emailTemplate'
 import type { EmailData }           from '@/lib/emailTemplate'
+import { COMPANY, CONTACT }         from '@/lib/config'
 import { logAuditEvent }            from '@/lib/security'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -70,7 +71,7 @@ function isValidEmailData(d: unknown): d is EmailData {
 // ─── Resend integration ───────────────────────────────────────────────────────
 
 const RESEND_API = 'https://api.resend.com/emails'
-const FROM_ADDR  = 'Velkor System <noreply@velkor.mx>'
+const FROM_ADDR  = `${COMPANY.name} <${CONTACT.emailNoReply}>`
 
 interface ResendPayload {
   from:    string

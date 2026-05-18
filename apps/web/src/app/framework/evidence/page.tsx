@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   title: 'Evidencia Operacional | Fragmentos de Arquitectura y Documentación — Velkor System',
   description:
     'Repositorio de evidencia técnica: fragmentos de política de Acceso Condicional, planes de implementación, estructuras de gobierno, checklists de Intune y arquitecturas de referencia.',
-  alternates: { canonical: 'https://velkor.mx/framework/evidence' },
+  alternates: { canonical: 'https://velkor.com.mx/framework/evidence' },
 }
 
 // ─── Document types ───────────────────────────────────────────────────────────

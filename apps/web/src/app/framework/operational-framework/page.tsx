@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   title: 'Framework Operacional | Metodología de Ingeniería — Velkor System',
   description:
     'Metodología de implementación operacional de 8 etapas: desde discovery de entorno hasta gobernanza continua. Diseñada para entornos empresariales donde el riesgo de interrupción es real.',
-  alternates: { canonical: 'https://velkor.mx/framework/operational-framework' },
+  alternates: { canonical: 'https://velkor.com.mx/framework/operational-framework' },
   openGraph: {
     title: 'Framework Operacional Velkor — 8 Etapas de Ingeniería',
     description:

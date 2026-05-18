@@ -30,9 +30,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // Dynamic blog posts from Strapi
   type StrapiPost = { attributes: { slug: string; publishedAt: string } }
-  const data = await strapi.get<{ data: StrapiPost[] }>(
-    '/posts?fields=slug,publishedAt&pagination[limit]=100&publicationState=live'
-  )
+  const data = await strapi
+    .get<{ data: StrapiPost[] }>('/posts?fields=slug,publishedAt&pagination[limit]=100&publicationState=live')
+    .catch(() => ({ data: [] }))
 
   const blogRoutes: MetadataRoute.Sitemap = (data?.data ?? []).map(({ attributes }) => ({
     url: `${BASE}/blog/${attributes.slug}`,

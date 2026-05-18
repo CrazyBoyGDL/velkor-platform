@@ -1,0 +1,6 @@
+Velkor System
+Site: https://velkor.com.mx
+Contact: contacto@velkor.com.mx
+Security: seguridad@velkor.com.mx
+Stack: Next.js, Strapi, Railway, Cloudflare
+Production activation: May 2026

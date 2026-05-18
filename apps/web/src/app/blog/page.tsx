@@ -8,7 +8,7 @@ export const revalidate = 3600
 export const metadata: Metadata = {
   title: 'Inteligencia Operacional | Briefs Técnicos — Velkor System',
   description: 'Briefs técnicos sobre decisiones de arquitectura, errores de implementación y gobernanza operacional en infraestructura empresarial.',
-  alternates: { canonical: 'https://velkor.mx/blog' },
+  alternates: { canonical: 'https://velkor.com.mx/blog' },
   openGraph: {
     title: 'Inteligencia Operacional | Velkor System',
     description: 'Briefs técnicos sobre arquitectura, implementación y gobernanza operacional.',

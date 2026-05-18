@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   title: 'Guía Evaluación Sistema CCTV IP Empresarial | Recurso Gratuito',
   description:
     'Criterios técnicos para evaluar, dimensionar e instalar sistemas de videovigilancia IP: cámaras Axis/Hikvision, NVR, PoE+ y analítica con IA. Guía gratuita para empresas.',
-  alternates: { canonical: 'https://velkor.mx/recursos/cctv-evaluacion' },
+  alternates: { canonical: 'https://velkor.com.mx/recursos/cctv-evaluacion' },
   openGraph: {
     title: 'Guía CCTV IP Empresarial | Evaluación y Dimensionamiento | Velkor',
     description: 'Evalúa y dimensiona tu sistema CCTV IP con esta guía técnica gratuita.',

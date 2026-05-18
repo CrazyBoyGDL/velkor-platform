@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   title: 'Guía Hardening Fortinet FortiGate | Recurso Gratuito',
   description:
     'Configuraciones esenciales para asegurar tu FortiGate: acceso administrativo, IPS, logging, VLAN y SSL inspection. Guía técnica para ingenieros de red. Descarga gratuita.',
-  alternates: { canonical: 'https://velkor.mx/recursos/fortinet-hardening' },
+  alternates: { canonical: 'https://velkor.com.mx/recursos/fortinet-hardening' },
   openGraph: {
     title: 'Guía de Hardening Fortinet FortiGate | Velkor',
     description: 'Securiza tu FortiGate con esta guía técnica. Acceso administrativo, IPS, VLAN y más.',

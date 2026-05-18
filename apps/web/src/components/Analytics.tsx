@@ -3,7 +3,7 @@
  * Velkor Analytics — privacy-first behavioral intelligence layer.
  *
  * Supports two providers (auto-selected by env vars):
- *   Plausible  — set NEXT_PUBLIC_PLAUSIBLE_DOMAIN (e.g. "velkor.mx")
+ *   Plausible  — set NEXT_PUBLIC_PLAUSIBLE_DOMAIN (e.g. "velkor.com.mx")
  *   PostHog    — set NEXT_PUBLIC_POSTHOG_KEY + NEXT_PUBLIC_POSTHOG_HOST
  *
  * If neither env var is set: no script loaded, no tracking, zero overhead.
