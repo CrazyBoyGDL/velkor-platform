@@ -13,6 +13,11 @@ import {
 import ArticleEngagementTracker from '@/components/ArticleEngagementTracker'
 import TechnicalArticleBlocks from '@/components/TechnicalArticleBlocks'
 import TrackedLink from '@/components/TrackedLink'
+import {
+  FALLBACK_AUTHORITY_POSTS,
+  getFallbackAuthorityPost,
+  getFallbackRelatedPosts,
+} from '@/lib/authorityContent'
 
 export const revalidate = 3600
 export const dynamicParams = true
@@ -60,6 +65,9 @@ type RelatedPost = {
 
 // ── Data fetching ─────────────────────────────────────────────────────────────
 async function getPost(slug: string): Promise<StrapiPost['attributes'] | null> {
+  const fallback = getFallbackAuthorityPost(slug)
+  if (fallback) return fallback
+
   const data = await strapi.get<StrapiListResponse>(
     `/posts?filters[slug][$eq]=${encodeURIComponent(slug)}&publicationState=live`,
     3600
@@ -69,13 +77,15 @@ async function getPost(slug: string): Promise<StrapiPost['attributes'] | null> {
 }
 
 async function getRelatedPosts(excludeSlug: string): Promise<RelatedPost[]> {
+  if (getFallbackAuthorityPost(excludeSlug)) return getFallbackRelatedPosts(excludeSlug)
+
   const data = await strapi.get<StrapiListResponse>(
     `/posts?sort=publishedAt:desc&pagination[limit]=4&publicationState=live` +
     `&filters[slug][$ne]=${encodeURIComponent(excludeSlug)}` +
     `&fields[0]=slug&fields[1]=title&fields[2]=excerpt&fields[3]=category&fields[4]=readTime&fields[5]=hex`,
     3600
   )
-  return (data?.data ?? []).slice(0, 3).map(({ attributes: a }) => ({
+  const cmsRelated = (data?.data ?? []).map(({ attributes: a }) => ({
     slug: a.slug,
     title: a.title,
     excerpt: a.excerpt ?? '',
@@ -83,6 +93,14 @@ async function getRelatedPosts(excludeSlug: string): Promise<RelatedPost[]> {
     readTime: a.readTime ?? '',
     hex: a.hex ?? '#b07828',
   }))
+  const seen = new Set<string>()
+  return [...getFallbackRelatedPosts(excludeSlug), ...cmsRelated]
+    .filter(post => {
+      if (post.slug === excludeSlug || seen.has(post.slug)) return false
+      seen.add(post.slug)
+      return true
+    })
+    .slice(0, 3)
 }
 
 function formatDate(iso: string): string {
@@ -145,7 +163,14 @@ export async function generateStaticParams() {
     '/posts?fields=slug&pagination[limit]=100&publicationState=live',
     3600
   )
-  return (data?.data ?? []).map(({ attributes }) => ({ slug: attributes.slug }))
+  const cmsParams = (data?.data ?? []).map(({ attributes }) => ({ slug: attributes.slug }))
+  const fallbackParams = FALLBACK_AUTHORITY_POSTS.map(post => ({ slug: post.slug }))
+  const slugs = new Set<string>()
+  return [...cmsParams, ...fallbackParams].filter(({ slug }) => {
+    if (slugs.has(slug)) return false
+    slugs.add(slug)
+    return true
+  })
 }
 
 // ── Metadata ──────────────────────────────────────────────────────────────────
@@ -153,10 +178,17 @@ export async function generateMetadata(
   { params }: { params: { slug: string } }
 ): Promise<Metadata> {
   const post = await getPost(params.slug)
-  if (!post) return { title: 'Artículo no encontrado | Velkor' }
+  if (!post) return { title: 'Artículo no encontrado | Velkor Systems' }
   return {
-    title: `${post.title} | Velkor Blog Técnico`,
+    title: `${post.title} | Velkor Systems`,
     description: post.excerpt || undefined,
+    alternates: { canonical: `https://velkor.com.mx/blog/${params.slug}` },
+    openGraph: {
+      title: post.title,
+      description: post.excerpt || undefined,
+      url: `https://velkor.com.mx/blog/${params.slug}`,
+      type: 'article',
+    },
   }
 }
 

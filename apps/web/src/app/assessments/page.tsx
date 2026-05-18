@@ -197,9 +197,21 @@ function ResultsScreen({
       win.document.write(html)
       win.document.close()
       trackEvent(Events.AssessmentPdfOpened, { reportRef })
+      trackEvent(Events.AssessmentPdfGenerated, { reportRef, company })
       trackDownload('Informe de evaluación operacional', 'pdf', 'assessment-results', true)
+      fetch('/api/assessment/event', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          event: 'assessment.pdf_generated',
+          reportRef,
+          company,
+          source: 'results-screen',
+          page: 'assessment-results',
+        }),
+      }).catch(() => {})
     }
-  }, [answers, scores, classification, reportRef])
+  }, [answers, scores, classification, reportRef, company])
 
   return (
     <div className="min-h-screen py-12 px-4 sm:px-8">
@@ -1071,6 +1083,20 @@ export default function AssessmentsPage() {
         score:    data.scores?.overall,
         maturity: data.scores?.maturity,
         segment:  data.classification?.segment,
+      })
+      trackEvent(Events.AssessmentLeadScored, {
+        score: data.scores?.overall,
+        critical: data.scores?.criticalCount,
+        high: data.scores?.highCount,
+      })
+      trackEvent(Events.AssessmentLeadClassified, {
+        segment: data.classification?.segment,
+        priority: data.classification?.priority,
+        engagement: data.classification?.engagementType,
+      })
+      trackEvent(Events.AssessmentFollowUpQueued, {
+        follow_up_hours: data.classification?.followUpHours,
+        follow_up_label: data.classification?.followUpLabel,
       })
 
       // ── Email notification (non-blocking, fail-silent) ──

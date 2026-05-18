@@ -50,27 +50,81 @@ export function getRequestIp(req: { headers: Headers }): string {
 
 // ─── Cloudflare Turnstile verification ───────────────────────────────────────
 // Only active if TURNSTILE_SECRET_KEY is set in the environment.
-// Falls through (returns true) if not configured, so Turnstile is opt-in.
+// Falls through if not configured, so Turnstile is opt-in for local/dev.
 
 const TURNSTILE_SECRET = process.env.TURNSTILE_SECRET_KEY
 const TURNSTILE_VERIFY = 'https://challenges.cloudflare.com/turnstile/v0/siteverify'
+const TURNSTILE_EXPECTED_ACTION = process.env.TURNSTILE_EXPECTED_ACTION ?? 'assessment'
+const TURNSTILE_ALLOWED_HOSTNAMES = (process.env.TURNSTILE_ALLOWED_HOSTNAMES ?? 'velkor.com.mx,www.velkor.com.mx')
+  .split(',')
+  .map(host => host.trim().toLowerCase())
+  .filter(Boolean)
 
-export async function verifyTurnstile(token: string | undefined, remoteIp: string): Promise<boolean> {
-  if (!TURNSTILE_SECRET) return true   // not configured — allow through
-  if (!token)            return false
+export interface TurnstileVerificationResult {
+  success: boolean
+  configured: boolean
+  bypassed?: 'not-configured' | 'network-fail-open'
+  errorCodes?: string[]
+  action?: string
+  hostname?: string
+}
+
+export async function verifyTurnstile(token: string | undefined, remoteIp: string): Promise<TurnstileVerificationResult> {
+  if (!TURNSTILE_SECRET) {
+    return { success: true, configured: false, bypassed: 'not-configured' }
+  }
+
+  if (!token) {
+    return {
+      success: false,
+      configured: true,
+      errorCodes: ['missing-input-response'],
+    }
+  }
 
   try {
     const res = await fetch(TURNSTILE_VERIFY, {
       method:  'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body:    new URLSearchParams({ secret: TURNSTILE_SECRET, response: token, remoteip: remoteIp }).toString(),
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({
+        secret: TURNSTILE_SECRET,
+        response: token,
+        remoteip: remoteIp === 'unknown' ? undefined : remoteIp,
+        idempotency_key: crypto.randomUUID(),
+      }),
       signal:  AbortSignal.timeout(5000),
     })
-    const data = await res.json() as { success: boolean }
-    return data.success === true
+    const data = await res.json() as {
+      success: boolean
+      'error-codes'?: string[]
+      action?: string
+      hostname?: string
+    }
+
+    const actionOk = !TURNSTILE_EXPECTED_ACTION || data.action === TURNSTILE_EXPECTED_ACTION
+    const hostname = data.hostname?.toLowerCase()
+    const hostnameOk = !TURNSTILE_ALLOWED_HOSTNAMES.length || (hostname ? TURNSTILE_ALLOWED_HOSTNAMES.includes(hostname) : false)
+    const success = data.success === true && actionOk && hostnameOk
+
+    return {
+      success,
+      configured: true,
+      errorCodes: success ? undefined : [
+        ...(data['error-codes'] ?? []),
+        ...(!actionOk ? ['action-mismatch'] : []),
+        ...(!hostnameOk ? ['hostname-mismatch'] : []),
+      ],
+      action: data.action,
+      hostname: data.hostname,
+    }
   } catch {
-    // If Turnstile is unreachable, fail open (don't block legitimate users)
-    return true
+    // If Siteverify is unreachable, fail open and audit the bypass.
+    return {
+      success: true,
+      configured: true,
+      bypassed: 'network-fail-open',
+      errorCodes: ['siteverify-unreachable'],
+    }
   }
 }
 
@@ -78,7 +132,7 @@ export async function verifyTurnstile(token: string | undefined, remoteIp: strin
 // Structured log for security events. In production, send to Logtail/Datadog.
 
 export interface AuditEntry {
-  type:      'submission' | 'rejection' | 'rate-limited' | 'honeypot' | 'disposable-email'
+  type:      'submission' | 'rejection' | 'rate-limited' | 'honeypot' | 'disposable-email' | 'turnstile-failed' | 'turnstile-bypass'
   ip:        string
   email?:    string
   company?:  string

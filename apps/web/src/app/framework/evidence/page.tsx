@@ -262,6 +262,40 @@ const EVIDENCE: EvidenceItem[] = [
 
 const CATEGORIES = [...new Set(EVIDENCE.map(e => e.category))]
 
+const WALKTHROUGH_STEPS = [
+  {
+    phase: '01',
+    title: 'Señal inicial',
+    note: 'Usuarios reportan intermitencia en ERP y cámaras con pérdida de frames. No se asume causa; se separa percepción de evidencia.',
+    artifact: 'Registro de incidente · timestamps · servicios afectados',
+  },
+  {
+    phase: '02',
+    title: 'Trazado de dependencia',
+    note: 'Se correlacionan switchports, VLAN actual, NVR, DNS, firewall y horarios de respaldo. El problema aparece como congestión lateral, no como falla de ISP.',
+    artifact: 'Mapa rápido L2/L3 · tabla de flujos críticos',
+  },
+  {
+    phase: '03',
+    title: 'Cambio controlado',
+    note: 'Se mueve CCTV a segmento dedicado en una sede piloto. Se mantiene rollback de puertos y snapshot de FortiGate.',
+    artifact: 'Deployment diff · reglas nuevas · validación por rol',
+  },
+  {
+    phase: '04',
+    title: 'Handoff',
+    note: 'El cierre deja dueño por segmento, regla y excepción. El cliente recibe qué monitorear y cuándo revisar.',
+    artifact: 'Runbook · matriz VLAN · notas de excepción',
+  },
+]
+
+const ASSESSMENT_DEMO = [
+  { metric: 'Madurez', value: '61/100', note: 'Infraestructura controlada parcialmente, identidad reactiva y operación sin cadencia de revisión.' },
+  { metric: 'Flags', value: '2 críticos · 4 altos', note: 'MFA incompleto, red plana en sedes y backup sin prueba de restauración documentada.' },
+  { metric: 'Ruta', value: '30 días', note: 'Bloquear legacy auth, aislar invitados/CCTV y ejecutar restore test antes de rediseños mayores.' },
+  { metric: 'Owner', value: 'Solutions architect', note: 'Lead requiere revisión técnica, no secuencia comercial genérica.' },
+]
+
 // ─── Components ───────────────────────────────────────────────────────────────
 
 function StatusBadge({ status }: { status: EvidenceItem['status'] }) {
@@ -286,6 +320,7 @@ function EvidenceCard({ item }: { item: EvidenceItem }) {
 
   return (
     <div
+      id={item.id}
       className="card p-0 overflow-hidden hover:border-zinc-700 transition-colors"
       style={{ borderLeftColor: typeColor + '40', borderLeftWidth: 2 }}
     >
@@ -376,6 +411,62 @@ function EvidenceCard({ item }: { item: EvidenceItem }) {
   )
 }
 
+function OperationalWalkthrough() {
+  return (
+    <section className="mb-14">
+      <div
+        className="flex items-center gap-3 mb-6"
+        style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '14px' }}
+      >
+        <span className="text-zinc-300 font-semibold text-sm">Walkthrough operacional</span>
+        <span className="text-zinc-700 text-[10px] font-mono">Incidente sanitizado · red + video + continuidad</span>
+      </div>
+
+      <div className="evidence-operation-panel p-5 sm:p-6">
+        <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-6">
+          <div>
+            <div className="text-[9px] font-mono text-zinc-700 uppercase tracking-[0.16em] mb-3">
+              Rastro de decisión
+            </div>
+            <div className="space-y-3">
+              {WALKTHROUGH_STEPS.map(step => (
+                <div key={step.phase} className="evidence-trace-row">
+                  <span className="text-[10px] font-mono text-[#7f9eb4]">{step.phase}</span>
+                  <div>
+                    <h3 className="text-zinc-300 text-sm font-semibold">{step.title}</h3>
+                    <p className="text-zinc-500 text-[12px] leading-relaxed mt-1">{step.note}</p>
+                    <p className="text-zinc-700 text-[10px] font-mono mt-2">{step.artifact}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <aside className="evidence-assessment-demo">
+            <div className="text-[9px] font-mono text-zinc-700 uppercase tracking-[0.16em] mb-3">
+              Assessment interpretado
+            </div>
+            <div className="space-y-3">
+              {ASSESSMENT_DEMO.map(row => (
+                <div key={row.metric} className="grid grid-cols-[5.5rem_1fr] gap-3">
+                  <span className="text-[10px] font-mono text-zinc-700">{row.metric}</span>
+                  <div>
+                    <div className="text-zinc-300 text-sm font-semibold">{row.value}</div>
+                    <p className="text-zinc-500 text-[11px] leading-relaxed mt-0.5">{row.note}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <Link href="/assessments" className="btn-ghost mt-5 w-full py-2.5 text-sm">
+              Ejecutar assessment real →
+            </Link>
+          </aside>
+        </div>
+      </div>
+    </section>
+  )
+}
+
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function EvidencePage() {
@@ -453,6 +544,8 @@ export default function EvidencePage() {
           />
         </div>
 
+        <OperationalWalkthrough />
+
         {/* Evidence by category */}
         {CATEGORIES.map(cat => {
           const items = EVIDENCE.filter(e => e.category === cat)
@@ -486,7 +579,7 @@ export default function EvidencePage() {
 
           <div className="space-y-8">
             {/* VLAN */}
-            <div className="card p-0 overflow-hidden">
+            <div id="vlan-diagram" className="card p-0 overflow-hidden">
               <div
                 className="px-5 py-3 flex items-center justify-between"
                 style={{ borderBottom: '1px solid rgba(255,255,255,0.046)' }}
@@ -512,7 +605,7 @@ export default function EvidencePage() {
             </div>
 
             {/* Entra ID */}
-            <div className="card p-0 overflow-hidden">
+            <div id="entra-id-governance-flow" className="card p-0 overflow-hidden">
               <div
                 className="px-5 py-3 flex items-center justify-between"
                 style={{ borderBottom: '1px solid rgba(255,255,255,0.046)' }}
@@ -535,7 +628,7 @@ export default function EvidencePage() {
             </div>
 
             {/* Intune lifecycle */}
-            <div className="card p-0 overflow-hidden">
+            <div id="intune-lifecycle" className="card p-0 overflow-hidden">
               <div
                 className="px-5 py-3 flex items-center justify-between"
                 style={{ borderBottom: '1px solid rgba(255,255,255,0.046)' }}
@@ -558,7 +651,7 @@ export default function EvidencePage() {
             </div>
 
             {/* Hybrid infra */}
-            <div className="card p-0 overflow-hidden">
+            <div id="hybrid-infra-map" className="card p-0 overflow-hidden">
               <div
                 className="px-5 py-3 flex items-center justify-between"
                 style={{ borderBottom: '1px solid rgba(255,255,255,0.046)' }}

@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     'Proyectos IT documentados como narrativas de ingeniería: contexto operacional, decisiones de arquitectura, restricciones reales, cronograma de implementación y resultados verificados.',
   alternates: { canonical: 'https://velkor.com.mx/casos' },
   openGraph: {
-    title: 'Transformaciones Operacionales | Velkor',
+    title: 'Transformaciones Operacionales | Velkor Systems',
     description: 'Narrativas de ingeniería con decisiones de arquitectura, restricciones reales y resultados operacionales verificados.',
   },
 }

@@ -94,6 +94,19 @@ def lockup_svg(theme: str, compact: bool = False, mono: bool = False) -> str:
 """
 
 
+def wordmark_svg(theme: str = "dark", mono: bool = False) -> str:
+    light = theme == "light"
+    text = COLORS["graphite"] if light else COLORS["white"]
+    sub = COLORS["muted_light"] if light else "#6f8497"
+    if mono:
+        sub = text
+    return f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 270 42" fill="none">
+  <text x="0" y="22" fill="{text}" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="23" font-weight="740" letter-spacing=".35">VELKOR SYSTEMS</text>
+  <text x="2" y="38" fill="{sub}" font-family="JetBrains Mono, Consolas, monospace" font-size="8.5" font-weight="500" letter-spacing="1.5">INFRASTRUCTURE CONTROL PLANE</text>
+</svg>
+"""
+
+
 def pinned_tab_svg() -> str:
     return """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
   <path fill="#000" d="M14 9h36v7H14zM14 9l9 25 9 21 9-21 9-25h-7l-7 20-4 10-4-10-7-20z"/>
@@ -112,6 +125,9 @@ def write_svg_assets() -> None:
         BRAND / "logo-compact-dark.svg": lockup_svg("dark", compact=True),
         BRAND / "logo-compact-light.svg": lockup_svg("light", compact=True),
         BRAND / "logo-mono.svg": lockup_svg("dark", mono=True),
+        BRAND / "wordmark.svg": wordmark_svg("dark"),
+        BRAND / "wordmark-light.svg": wordmark_svg("light"),
+        BRAND / "wordmark-mono.svg": wordmark_svg("dark", mono=True),
         FAVICONS / "favicon.svg": symbol_svg("dark", background=True),
         FAVICONS / "pinned-tab.svg": pinned_tab_svg(),
         PUBLIC / "favicon.svg": symbol_svg("dark", background=True),

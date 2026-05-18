@@ -722,6 +722,22 @@ body {
     color: #6f8497;
   }
 
+  .brand-loading-state {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.85rem 1rem;
+    border: 1px solid rgba(127,158,180,0.12);
+    border-radius: 8px;
+    background: rgba(7,13,22,0.72);
+    box-shadow: 0 14px 34px rgba(0,0,0,0.22);
+  }
+  .brand-loading-state img {
+    width: 2.625rem;
+    height: 2.625rem;
+    animation: operationalPulse 4.8s ease-in-out infinite;
+  }
+
   .service-index-hero {
     padding: 2.5rem 0 4.5rem;
     border-bottom: 1px solid rgba(255,255,255,0.07);
@@ -986,6 +1002,32 @@ body {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 0.8rem;
+  }
+  .evidence-operation-panel {
+    border: 1px solid rgba(127,158,180,0.12);
+    border-radius: 8px;
+    background:
+      linear-gradient(135deg, rgba(12,19,30,0.92), rgba(7,11,18,0.96)),
+      radial-gradient(circle at 78% 18%, rgba(72,120,176,0.10), transparent 36%);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.04) inset,
+      0 16px 36px rgba(0,0,0,0.22);
+  }
+  .evidence-trace-row {
+    display: grid;
+    grid-template-columns: 2rem minmax(0, 1fr);
+    gap: 0.85rem;
+    padding: 0.85rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.045);
+  }
+  .evidence-trace-row:last-child {
+    border-bottom: 0;
+  }
+  .evidence-assessment-demo {
+    border: 1px solid rgba(255,255,255,0.055);
+    border-radius: 8px;
+    background: rgba(255,255,255,0.018);
+    padding: 1rem;
   }
 
   /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -1484,6 +1526,9 @@ body {
     transition: background-color 0.12s ease, color 0.12s ease !important;
     transform: none !important;
   }
+  .brand-loading-state img {
+    animation: none !important;
+  }
   [style*="clip-path: inset"] {
     clip-path: inset(0 0 0 0) !important;
   }
@@ -1588,6 +1633,11 @@ html.light .text-zinc-200  { color: #202a36 !important; }
 html.light .text-zinc-300  { color: #354153 !important; }
 html.light .brand-lockup-title { color: #182434 !important; }
 html.light .brand-lockup-subtitle { color: #657386 !important; }
+html.light .brand-loading-state {
+  background: rgba(255,255,255,0.82);
+  border-color: rgba(24,32,43,0.10);
+  box-shadow: 0 12px 28px rgba(41,54,74,0.08);
+}
 
 /* Navigation */
 html.light header {
@@ -1736,7 +1786,9 @@ html.light .architecture-snapshot,
 html.light .deployment-diff,
 html.light .policy-overlay,
 html.light .audit-fragment,
-html.light .infra-state-panel {
+html.light .infra-state-panel,
+html.light .evidence-operation-panel,
+html.light .evidence-assessment-demo {
   border-color: rgba(36,52,70,0.12);
   background:
     linear-gradient(180deg, rgba(255,255,255,0.92), rgba(244,247,250,0.86)),
@@ -2137,6 +2189,10 @@ html.light::-webkit-scrollbar-thumb { background: #d1d1d6; }
   }
   .evidence-proof-strip > * {
     scroll-snap-align: start;
+  }
+  .evidence-trace-row {
+    grid-template-columns: 1.75rem minmax(0, 1fr);
+    gap: 0.65rem;
   }
   .deployment-diff-grid {
     grid-template-columns: 1fr;

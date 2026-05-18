@@ -22,8 +22,15 @@ export const Events = {
   // Assessment results
   AssessmentPdfOpened:       'Assessment PDF Opened',
   AssessmentPdfDownloaded:   'Assessment PDF Downloaded',
+  AssessmentPdfGenerated:    'assessment.pdf_generated',
   AssessmentResultsViewed:   'Assessment Results Viewed',
   AssessmentReportRefCopied: 'Assessment Report Ref Copied',
+  AssessmentFollowUpQueued:  'Follow-up Scheduled',
+  AssessmentLeadScored:      'Lead Scored',
+  AssessmentLeadClassified:  'Lead Classified',
+  TurnstileVerified:         'Turnstile Verified',
+  TurnstileExpired:          'Turnstile Expired',
+  TurnstileError:            'Turnstile Error',
 
   // Content engagement
   BlogArticleViewed:         'Blog Article Viewed',

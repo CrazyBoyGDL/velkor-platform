@@ -1,6 +1,7 @@
 import { MetadataRoute } from 'next'
 import { strapi } from '@/lib/strapi'
 import { SITE_URL } from '@/lib/config'
+import { FALLBACK_AUTHORITY_POSTS } from '@/lib/authorityContent'
 
 const BASE = SITE_URL
 
@@ -41,5 +42,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6,
   }))
 
-  return [...staticRoutes, ...blogRoutes]
+  const fallbackBlogRoutes: MetadataRoute.Sitemap = FALLBACK_AUTHORITY_POSTS.map(post => ({
+    url: `${BASE}/blog/${post.slug}`,
+    lastModified: new Date(post.publishedAt),
+    changeFrequency: 'monthly' as const,
+    priority: 0.72,
+  }))
+
+  const seen = new Set<string>()
+  return [...staticRoutes, ...fallbackBlogRoutes, ...blogRoutes].filter(route => {
+    if (seen.has(route.url)) return false
+    seen.add(route.url)
+    return true
+  })
 }

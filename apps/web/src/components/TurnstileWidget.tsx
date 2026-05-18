@@ -2,11 +2,13 @@
 
 import Script from 'next/script'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { trackEvent } from '@/components/Analytics'
+import { Events } from '@/lib/analyticsEvents'
 
 const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY
 const TURNSTILE_SCRIPT_SRC = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=onVelkorTurnstileLoad'
 
-type TurnstileWidgetStatus = 'loading' | 'ready' | 'verified' | 'expired' | 'error'
+type TurnstileWidgetStatus = 'loading' | 'ready' | 'verified' | 'expired' | 'error' | 'network-error'
 
 type TurnstileRenderOptions = {
   sitekey: string
@@ -15,7 +17,8 @@ type TurnstileRenderOptions = {
   action?: string
   callback: (token: string) => void
   'expired-callback': () => void
-  'error-callback': () => void
+  'error-callback': (code?: string) => void
+  'timeout-callback': () => void
 }
 
 type TurnstileApi = {
@@ -44,6 +47,7 @@ export default function TurnstileWidget({
 }) {
   const containerRef = useRef<HTMLDivElement>(null)
   const widgetIdRef = useRef<string | null>(null)
+  const loadTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const [scriptReady, setScriptReady] = useState(false)
   const [status, setStatus] = useState<TurnstileWidgetStatus>('loading')
 
@@ -53,6 +57,10 @@ export default function TurnstileWidget({
 
   const renderWidget = useCallback(() => {
     if (!TURNSTILE_SITE_KEY || !containerRef.current || !window.turnstile || widgetIdRef.current) return
+    if (loadTimerRef.current) {
+      clearTimeout(loadTimerRef.current)
+      loadTimerRef.current = null
+    }
 
     widgetIdRef.current = window.turnstile.render(containerRef.current, {
       sitekey: TURNSTILE_SITE_KEY,
@@ -62,14 +70,22 @@ export default function TurnstileWidget({
       callback(token) {
         setStatus('verified')
         onTokenChange(token)
+        trackEvent(Events.TurnstileVerified, { action: 'assessment' })
       },
       'expired-callback'() {
         setStatus('expired')
         clearToken()
+        trackEvent(Events.TurnstileExpired, { action: 'assessment' })
       },
-      'error-callback'() {
+      'error-callback'(code) {
         setStatus('error')
         clearToken()
+        trackEvent(Events.TurnstileError, { action: 'assessment', reason: code ?? 'widget-error' })
+      },
+      'timeout-callback'() {
+        setStatus('expired')
+        clearToken()
+        trackEvent(Events.TurnstileExpired, { action: 'assessment', reason: 'timeout' })
       },
     })
 
@@ -89,8 +105,16 @@ export default function TurnstileWidget({
       return
     }
 
+    loadTimerRef.current = setTimeout(() => {
+      if (!window.turnstile) {
+        setStatus('network-error')
+        trackEvent(Events.TurnstileError, { action: 'assessment', reason: 'script-timeout' })
+      }
+    }, 8000)
+
     return () => {
       delete window.onVelkorTurnstileLoad
+      if (loadTimerRef.current) clearTimeout(loadTimerRef.current)
     }
   }, [clearToken])
 
@@ -114,17 +138,33 @@ export default function TurnstileWidget({
     }
   }, [])
 
+  const retry = useCallback(() => {
+    setStatus('loading')
+    clearToken()
+    if (widgetIdRef.current && window.turnstile) {
+      window.turnstile.reset(widgetIdRef.current)
+      setStatus('ready')
+      return
+    }
+    if (window.turnstile) {
+      renderWidget()
+      return
+    }
+    window.location.reload()
+  }, [clearToken, renderWidget])
+
   if (!TURNSTILE_SITE_KEY) return null
 
   return (
-    <div className="rounded-xl border border-surface-border bg-surface-dark/70 px-4 py-3">
+    <div className="rounded-xl border border-surface-border bg-surface-dark/70 px-4 py-3" aria-live="polite">
       <Script
         src={TURNSTILE_SCRIPT_SRC}
         strategy="afterInteractive"
         onLoad={() => setScriptReady(true)}
         onError={() => {
-          setStatus('error')
+          setStatus('network-error')
           clearToken()
+          trackEvent(Events.TurnstileError, { action: 'assessment', reason: 'script-load-failed' })
         }}
       />
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
@@ -134,17 +174,36 @@ export default function TurnstileWidget({
             Protección Cloudflare Turnstile activa para producción.
           </p>
         </div>
-        <div
-          ref={containerRef}
-          className="min-h-[65px] min-w-[260px] max-w-full overflow-hidden"
-          aria-label="Cloudflare Turnstile"
-        />
+        <div className="w-full sm:w-auto">
+          <div
+            ref={containerRef}
+            className="min-h-[65px] min-w-0 w-full sm:min-w-[260px] max-w-full overflow-hidden"
+            role="group"
+            aria-label="Cloudflare Turnstile"
+          />
+        </div>
       </div>
+      {status === 'verified' && (
+        <p className="text-[11px] text-[#7aa88d] mt-2">Verificación completada. Puedes generar la evaluación.</p>
+      )}
       {status === 'expired' && (
         <p className="text-[11px] text-amber mt-2">La verificación expiró. Confírmala nuevamente para enviar.</p>
       )}
       {status === 'error' && (
-        <p className="text-[11px] text-red-400 mt-2">No se pudo cargar la verificación. Recarga la página e intenta de nuevo.</p>
+        <div className="mt-2 flex flex-col sm:flex-row sm:items-center gap-2">
+          <p className="text-[11px] text-red-400">La verificación no pudo completarse. Actualízala e intenta de nuevo.</p>
+          <button type="button" onClick={retry} className="text-[10px] font-mono text-zinc-500 hover:text-zinc-300 underline underline-offset-4">
+            Reintentar
+          </button>
+        </div>
+      )}
+      {status === 'network-error' && (
+        <div className="mt-2 flex flex-col sm:flex-row sm:items-center gap-2">
+          <p className="text-[11px] text-amber">No se pudo cargar Turnstile. Revisa bloqueadores de scripts o recarga la página.</p>
+          <button type="button" onClick={retry} className="text-[10px] font-mono text-zinc-500 hover:text-zinc-300 underline underline-offset-4">
+            Reintentar
+          </button>
+        </div>
       )}
       {status === 'loading' && (
         <p className="text-[11px] text-zinc-700 mt-2">Cargando verificación...</p>

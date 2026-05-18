@@ -64,10 +64,28 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: true }, { status: 200 })
   }
 
-  // ── Turnstile (optional — only active if TURNSTILE_SECRET_KEY is set) ──
-  const turnstileOk = await verifyTurnstile(san(body._ts, 2048), ip)
-  if (!turnstileOk) {
-    return NextResponse.json({ error: 'Verificación de seguridad fallida. Recarga la página.' }, { status: 403 })
+  // ── Turnstile (optional in dev, required in production when secret is set) ──
+  const turnstile = await verifyTurnstile(san(body._ts, 2048), ip)
+  if (!turnstile.success) {
+    logAuditEvent({
+      type: 'turnstile-failed',
+      ip,
+      reason: turnstile.errorCodes?.join(',') || 'unknown',
+      timestamp: new Date().toISOString(),
+    })
+    return NextResponse.json(
+      { error: 'Verificación anti-abuso fallida. Actualiza la verificación e intenta de nuevo.' },
+      { status: 403 }
+    )
+  }
+
+  if (turnstile.bypassed === 'network-fail-open') {
+    logAuditEvent({
+      type: 'turnstile-bypass',
+      ip,
+      reason: turnstile.errorCodes?.join(',') || 'siteverify-unreachable',
+      timestamp: new Date().toISOString(),
+    })
   }
 
   // ── Contact validation ──
@@ -164,6 +182,42 @@ export async function POST(req: NextRequest) {
     source:         answers.source,
     utm:            answers.utm,
   }))
+
+  await dispatchWebhook('lead.scored', {
+    company, email, reportRef,
+    scores: {
+      overall: scores.overall,
+      infrastructure: scores.infrastructure,
+      identity: scores.identity,
+      operations: scores.operations,
+      maturity: scores.maturity,
+      exposure: scores.exposureLevel,
+    },
+    flags: {
+      critical: scores.criticalCount,
+      high: scores.highCount,
+      total: scores.flags.length,
+    },
+  })
+
+  await dispatchWebhook('lead.classified', {
+    company, email, reportRef,
+    segment: classification.segment,
+    engagementType: classification.engagementType,
+    priority: classification.priority,
+    ownerRole: workflow.ownerRole,
+    workflow: workflow.workflow,
+    operationalPriority: workflow.operationalPriority,
+  })
+
+  await dispatchWebhook('followup.scheduled', {
+    company, email, reportRef,
+    workflow: workflow.workflow,
+    ownerRole: workflow.ownerRole,
+    slaHours: workflow.slaHours,
+    firstAction: workflow.firstAction,
+    escalationLevel: workflow.escalationLevel,
+  })
 
   if (scores.criticalCount > 0 || classification.priority === 'critical') {
     await dispatchWebhook('lead.critical', {
