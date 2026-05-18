@@ -1,4 +1,4 @@
-// ─── Velkor System — Assessment Notification Endpoint ────────────────────────
+// ─── Velkor Systems — Assessment Notification Endpoint ────────────────────────
 // POST /api/assessment/notify
 // Sends the post-assessment summary email via Resend after results are shown.
 // Called from the client once the assessment results page has mounted —
@@ -155,7 +155,7 @@ export async function POST(req: NextRequest) {
 
   // ── Build email ──
   const sequence = EMAIL_SEQUENCES['assessment-follow-up']
-  const subject = `${sequence.label} · ${reportRef} · Velkor System`
+  const subject = `${sequence.label} · ${reportRef} · Velkor Systems`
   const html    = generateAssessmentEmail(emailData)
 
   // ── Send ──

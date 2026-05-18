@@ -4,7 +4,7 @@ import { authorityAssetRules, contentTemplates, linkedinAuthorityFormats, operat
 import type { ContentTemplate, ContentField } from '@/lib/contentEngine'
 
 export const metadata: Metadata = {
-  title: 'Motor de Contenido Técnico | Framework — Velkor System',
+  title: 'Motor de Contenido Técnico | Framework — Velkor Systems',
   description: 'Estructuras reutilizables para distribuir autoridad operacional: decisiones de arquitectura, lecciones de implementación, gobernanza insights y casos de transformación.',
   alternates: { canonical: 'https://velkor.com.mx/framework/content-engine' },
 }

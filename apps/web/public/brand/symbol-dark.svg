@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+
+  <g class="velkor-symbol" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M14 12H50" stroke="#445f75" stroke-width="2.4" opacity=".62"/>
+    <path d="M14 12 23 34 32 52" stroke="#7f9eb4" stroke-width="3.3"/>
+    <path d="M50 12 41 34 32 52" stroke="#7f9eb4" stroke-width="3.3"/>
+    <path d="M23 34H41" stroke="#445f75" stroke-width="2.3" opacity=".68"/>
+    <path d="M32 20V52" stroke="#445f75" stroke-width="2.2" opacity=".62"/>
+    <path d="M32 20 23 34M32 20 41 34" stroke="#7f9eb4" stroke-width="2.4" opacity=".82"/>
+
+    <path d="M20.5 27.5 23 34 28.5 31.5" stroke="#b88748" stroke-width="1.55" opacity=".76"/>
+    <path d="M43.5 27.5 41 34 35.5 31.5" stroke="#b88748" stroke-width="1.55" opacity=".76"/>
+    <path d="M28.8 43.8 32 52 35.2 43.8" stroke="#b88748" stroke-width="1.55" opacity=".72"/>
+
+    <rect x="10.5" y="8.5" width="7" height="7" rx="2" fill="#7f9eb4" stroke="none"/>
+    <rect x="46.5" y="8.5" width="7" height="7" rx="2" fill="#7f9eb4" stroke="none"/>
+    <rect x="20" y="31" width="6" height="6" rx="1.6" fill="#7f9eb4" stroke="none"/>
+    <rect x="38" y="31" width="6" height="6" rx="1.6" fill="#7f9eb4" stroke="none"/>
+    <rect x="29" y="49" width="6" height="6" rx="1.8" fill="#7f9eb4" stroke="none"/>
+
+    <circle cx="32" cy="20" r="7.4" stroke="#9fc3d4" stroke-width="2" opacity=".72"/>
+    <circle cx="32" cy="20" r="3.1" fill="#9fc3d4" stroke="none"/>
+    <path d="M25.5 20h-4.8M43.3 20h-4.8" stroke="#b88748" stroke-width="1.5" opacity=".72"/>
+    <path d="M18 45h28" stroke="#445f75" stroke-width="1.4" opacity=".34"/>
+  </g>
+</svg>

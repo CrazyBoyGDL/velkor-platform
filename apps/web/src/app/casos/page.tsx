@@ -14,7 +14,7 @@ import CasosContent, {
 export const revalidate = 3600
 
 export const metadata: Metadata = {
-  title: 'Casos Operacionales Flagship | Narrativas de Ingeniería — Velkor System',
+  title: 'Casos Operacionales Flagship | Narrativas de Ingeniería — Velkor Systems',
   description:
     'Proyectos IT documentados como narrativas de ingeniería: contexto operacional, decisiones de arquitectura, restricciones reales, cronograma de implementación y resultados verificados.',
   alternates: { canonical: 'https://velkor.com.mx/casos' },

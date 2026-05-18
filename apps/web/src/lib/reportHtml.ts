@@ -89,7 +89,7 @@ export function generateReportHtml(data: ReportData): string {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Evaluación Operacional — ${a.company} — Velkor System</title>
+  <title>Evaluación Operacional — ${a.company} — Velkor Systems</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
 
@@ -239,7 +239,7 @@ export function generateReportHtml(data: ReportData): string {
       <div class="section-label">Evaluación Operacional de Infraestructura IT</div>
       <h1>${a.company}</h1>
       <div class="meta">${a.step1.industry} · ${a.step1.companySize} empleados · ${date} · Ref: ${reportRef}</div>
-      <div class="meta" style="margin-top:4px;">Preparado por: Velkor System · velkor.com.mx</div>
+      <div class="meta" style="margin-top:4px;">Preparado por: Velkor Systems · velkor.com.mx</div>
     </div>
 
     <!-- Overall score + exposure -->
@@ -338,8 +338,8 @@ export function generateReportHtml(data: ReportData): string {
     <!-- Footer -->
     <div class="footer-row">
       <div>
-        <div style="font-size:14px;font-weight:700;color:#e0e0f0;">Velkor System</div>
-        <div style="font-size:10px;font-family:monospace;color:#404060;margin-top:2px;">velkor.com.mx · Consultoría IT Empresarial</div>
+        <div style="font-size:14px;font-weight:700;color:#e0e0f0;">Velkor Systems</div>
+        <div style="font-size:10px;font-family:monospace;color:#404060;margin-top:2px;">velkor.com.mx · Infraestructura operacional</div>
       </div>
       <div style="text-align:right;font-size:10px;font-family:monospace;color:#404060;">
         <div>Informe generado: ${date}</div>

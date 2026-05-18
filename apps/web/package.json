@@ -1,7 +1,7 @@
 {
   "name": "@velkor/web",
   "version": "1.0.0",
-  "description": "Velkor Platform - Frontend SOC/NOC Interface",
+  "description": "Velkor Systems - Operational infrastructure frontend",
   "private": true,
   "scripts": {
     "dev": "next dev",

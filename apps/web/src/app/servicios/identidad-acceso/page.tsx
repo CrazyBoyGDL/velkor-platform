@@ -136,7 +136,7 @@ const jsonLd = {
   name: 'Gestión de Identidad y Acceso Empresarial',
   description:
     'Implementación de Microsoft Entra ID, Intune y MFA. Acceso Condicional, gobierno de identidades y operación documentada.',
-  provider: { '@type': 'Organization', name: 'Velkor System', url: 'https://velkor.com.mx' },
+  provider: { '@type': 'Organization', name: 'Velkor Systems', url: 'https://velkor.com.mx' },
   areaServed: { '@type': 'Country', name: 'México' },
   serviceType: 'Identity and Access Management',
   offers: {

@@ -136,7 +136,7 @@ const jsonLd = {
   name: 'Ciberseguridad Empresarial',
   description:
     'Diseño e implementación de arquitecturas de red seguras: Fortinet FortiGate, segmentación VLAN, VPN y acceso gobernado.',
-  provider: { '@type': 'Organization', name: 'Velkor System', url: 'https://velkor.com.mx' },
+  provider: { '@type': 'Organization', name: 'Velkor Systems', url: 'https://velkor.com.mx' },
   areaServed: { '@type': 'Country', name: 'México' },
   serviceType: 'Ciberseguridad Empresarial',
   offers: {

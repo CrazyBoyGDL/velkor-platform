@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" fill="none">
+  <rect width="1200" height="630" fill="#07101a"/>
+  <path d="M0 520H1200M0 110H1200" stroke="#152235"/>
+  <path d="M120 0V630M1080 0V630" stroke="#101b2a"/>
+  <path d="M656 154H1008L1076 222V318" stroke="#203448" stroke-width="1.2" opacity=".44"/>
+  <path d="M640 492H930L988 434H1092" stroke="#203448" stroke-width="1.2" opacity=".34"/>
+  <path d="M706 184H940M706 214H1012M706 244H902" stroke="#17283a" stroke-width="1" opacity=".55"/>
+  <g transform="translate(116 122) scale(3.45)">
+
+  <g class="velkor-symbol" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M14 12H50" stroke="#445f75" stroke-width="2.4" opacity=".62"/>
+    <path d="M14 12 23 34 32 52" stroke="#7f9eb4" stroke-width="3.3"/>
+    <path d="M50 12 41 34 32 52" stroke="#7f9eb4" stroke-width="3.3"/>
+    <path d="M23 34H41" stroke="#445f75" stroke-width="2.3" opacity=".68"/>
+    <path d="M32 20V52" stroke="#445f75" stroke-width="2.2" opacity=".62"/>
+    <path d="M32 20 23 34M32 20 41 34" stroke="#7f9eb4" stroke-width="2.4" opacity=".82"/>
+
+    <path d="M20.5 27.5 23 34 28.5 31.5" stroke="#b88748" stroke-width="1.55" opacity=".76"/>
+    <path d="M43.5 27.5 41 34 35.5 31.5" stroke="#b88748" stroke-width="1.55" opacity=".76"/>
+    <path d="M28.8 43.8 32 52 35.2 43.8" stroke="#b88748" stroke-width="1.55" opacity=".72"/>
+
+    <rect x="10.5" y="8.5" width="7" height="7" rx="2" fill="#7f9eb4" stroke="none"/>
+    <rect x="46.5" y="8.5" width="7" height="7" rx="2" fill="#7f9eb4" stroke="none"/>
+    <rect x="20" y="31" width="6" height="6" rx="1.6" fill="#7f9eb4" stroke="none"/>
+    <rect x="38" y="31" width="6" height="6" rx="1.6" fill="#7f9eb4" stroke="none"/>
+    <rect x="29" y="49" width="6" height="6" rx="1.8" fill="#7f9eb4" stroke="none"/>
+
+    <circle cx="32" cy="20" r="7.4" stroke="#9fc3d4" stroke-width="2" opacity=".72"/>
+    <circle cx="32" cy="20" r="3.1" fill="#9fc3d4" stroke="none"/>
+    <path d="M25.5 20h-4.8M43.3 20h-4.8" stroke="#b88748" stroke-width="1.5" opacity=".72"/>
+    <path d="M18 45h28" stroke="#445f75" stroke-width="1.4" opacity=".34"/>
+  </g>
+  </g>
+  <text x="404" y="246" fill="#eef5f9" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="64" font-weight="760" letter-spacing=".6">VELKOR SYSTEMS</text>
+  <text x="408" y="300" fill="#8298aa" font-family="JetBrains Mono, Consolas, monospace" font-size="18" font-weight="500" letter-spacing="3">INFRASTRUCTURE CONTROL PLANE</text>
+  <text x="408" y="376" fill="#a8b7c4" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="26" font-weight="520">Gobierno y continuidad para infraestructura critica.</text>
+  <path d="M408 424H856" stroke="#23364a" stroke-width="1"/>
+  <text x="408" y="468" fill="#b88748" font-family="JetBrains Mono, Consolas, monospace" font-size="17" font-weight="600" letter-spacing="2">VELKOR.COM.MX</text>
+</svg>

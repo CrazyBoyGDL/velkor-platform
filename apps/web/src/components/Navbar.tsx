@@ -50,10 +50,10 @@ export default function Navbar() {
 
           {/* Logo — re-keyed on route to replay animation */}
           <Link href="/" className="flex items-center gap-2.5 group flex-shrink-0">
-            <Logo key={pathname} className="w-9 h-9" />
+            <Logo key={pathname} className="w-9 h-9" state="monitoring" />
             <div className="leading-none">
-              <div className="text-noc-white font-semibold text-[15px] tracking-normal group-hover:text-zinc-200 transition-colors">VELKOR</div>
-              <div className="text-zinc-600 text-[9px] font-mono tracking-normal">OPERATIONS</div>
+              <div className="brand-lockup-title text-[15px] group-hover:text-zinc-200 transition-colors">VELKOR</div>
+              <div className="brand-lockup-subtitle">SYSTEMS</div>
             </div>
           </Link>
 

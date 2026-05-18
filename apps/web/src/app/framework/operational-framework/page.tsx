@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'Framework Operacional | Metodología de Ingeniería — Velkor System',
+  title: 'Framework Operacional | Metodología de Ingeniería — Velkor Systems',
   description:
     'Metodología de implementación operacional de 8 etapas: desde discovery de entorno hasta gobernanza continua. Diseñada para entornos empresariales donde el riesgo de interrupción es real.',
   alternates: { canonical: 'https://velkor.com.mx/framework/operational-framework' },

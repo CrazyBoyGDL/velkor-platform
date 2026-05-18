@@ -62,6 +62,13 @@ body {
   --accent-text-hover:#f0c487;
   --accent-border:    rgba(164,113,53,0.22);
   --accent-border-h:  rgba(164,113,53,0.36);
+
+  --brand-route: #7f9eb4;
+  --brand-route-muted: #445f75;
+  --brand-route-flow: #9fc3d4;
+  --brand-core: #9fc3d4;
+  --brand-node: #7f9eb4;
+  --brand-critical: #b88748;
 }
 
 @layer components {
@@ -699,6 +706,20 @@ body {
     background: #3f775c;
     box-shadow: 0 0 0 4px rgba(63,119,92,0.08);
     animation: operationalPulse 4.8s ease-in-out infinite;
+  }
+
+  .brand-lockup-title {
+    font-weight: 720;
+    letter-spacing: 0.01em;
+    color: #f2f6f9;
+  }
+
+  .brand-lockup-subtitle {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    color: #6f8497;
   }
 
   .service-index-hero {
@@ -1463,6 +1484,17 @@ body {
     transition: background-color 0.12s ease, color 0.12s ease !important;
     transform: none !important;
   }
+  [style*="clip-path: inset"] {
+    clip-path: inset(0 0 0 0) !important;
+  }
+  [style*="clip-path: inset"][style*="opacity: 0"] {
+    opacity: 1 !important;
+  }
+  .hero-depth-stage [style] {
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: inset(0 0 0 0) !important;
+  }
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -1471,6 +1503,12 @@ body {
 ══════════════════════════════════════════════════════════ */
 html.light {
   color-scheme: light;
+  --brand-route: #284257;
+  --brand-route-muted: #6f8294;
+  --brand-route-flow: #3d657d;
+  --brand-core: #1d3447;
+  --brand-node: #284257;
+  --brand-critical: #a8753f;
 }
 html.light body {
   background-color: #fafbfc;
@@ -1548,6 +1586,8 @@ html.light .text-zinc-600  { color: #788596 !important; }
 html.light .text-zinc-700  { color: #94a0ad !important; }
 html.light .text-zinc-200  { color: #202a36 !important; }
 html.light .text-zinc-300  { color: #354153 !important; }
+html.light .brand-lockup-title { color: #182434 !important; }
+html.light .brand-lockup-subtitle { color: #657386 !important; }
 
 /* Navigation */
 html.light header {

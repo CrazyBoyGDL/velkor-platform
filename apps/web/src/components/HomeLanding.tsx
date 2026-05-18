@@ -87,7 +87,7 @@ function Hero() {
         <div className="lg:max-w-[43rem] py-16 sm:py-20 lg:py-28">
           <motion.div {...heroUp(0)} className="flex items-center gap-3 mb-6">
             <div className="w-5 h-px flex-shrink-0 bg-white/[0.10]" />
-            <span className="label">Consultoría de infraestructura IT</span>
+            <span className="label">Infraestructura operacional</span>
           </motion.div>
 
           <motion.h1 {...heroUp(0.02)} className="display-heading mb-6 max-w-3xl">

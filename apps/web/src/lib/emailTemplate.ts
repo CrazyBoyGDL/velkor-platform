@@ -1,4 +1,4 @@
-// ─── Velkor System — Post-Assessment Email Template ──────────────────────────
+// ─── Velkor Systems — Post-Assessment Email Template ──────────────────────────
 // Generates a complete inline-CSS HTML email for delivery via Resend.
 // Table-based layout ensures compatibility across all major email clients.
 // Background: light (#f8f8fa) — dark backgrounds are stripped by many clients.
@@ -128,9 +128,9 @@ function buildHeader(data: EmailData): string {
         <table width="100%" cellpadding="0" cellspacing="0" border="0">
           <tr>
             <td>
-              <span style="font-family:Georgia,serif;font-size:18px;font-weight:700;color:#e8e8f0;letter-spacing:-0.02em;">Velkor System</span>
+              <span style="font-family:Georgia,serif;font-size:18px;font-weight:700;color:#e8e8f0;letter-spacing:-0.02em;">Velkor Systems</span>
               <br />
-              <span style="font-family:Courier New,monospace;font-size:10px;color:#505070;letter-spacing:0.15em;text-transform:uppercase;">Consultoría IT Empresarial · velkor.com.mx</span>
+              <span style="font-family:Courier New,monospace;font-size:10px;color:#505070;letter-spacing:0.12em;text-transform:uppercase;">Infraestructura operacional · velkor.com.mx</span>
             </td>
             <td align="right" valign="middle">
               <span style="font-family:Courier New,monospace;font-size:10px;color:#505070;">Ref: ${data.reportRef}</span>
@@ -325,7 +325,7 @@ function buildFooter(reportRef: string): string {
         <table width="100%" cellpadding="0" cellspacing="0" border="0">
           <tr>
             <td>
-              <p style="margin:0 0 3px;font-family:Arial,sans-serif;font-size:12px;font-weight:700;color:#e0e0f0;">Velkor System</p>
+              <p style="margin:0 0 3px;font-family:Arial,sans-serif;font-size:12px;font-weight:700;color:#e0e0f0;">Velkor Systems</p>
               <p style="margin:0;font-family:Courier New,monospace;font-size:10px;color:#404060;">velkor.com.mx · contacto@velkor.com.mx</p>
             </td>
             <td align="right" valign="middle">
@@ -384,7 +384,7 @@ export function generateOperationalEmail(data: OperationalEmailData): string {
         <table width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;background:#ffffff;border:1px solid #d8d8e0;border-radius:6px;overflow:hidden;">
           <tr>
             <td style="padding:24px 32px;background:#0a0a14;border-bottom:2px solid #0a0a14;">
-              <span style="font-family:Georgia,serif;font-size:18px;font-weight:700;color:#e8e8f0;">Velkor System</span><br />
+              <span style="font-family:Georgia,serif;font-size:18px;font-weight:700;color:#e8e8f0;">Velkor Systems</span><br />
               <span style="font-family:Courier New,monospace;font-size:10px;color:#505070;letter-spacing:0.15em;text-transform:uppercase;">${sequence.label} · ${sequence.owner}</span>
             </td>
           </tr>
@@ -421,7 +421,7 @@ export function generateAssessmentEmail(data: EmailData): string {
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Evaluación operacional completada · ${data.reportRef} · Velkor System</title>
+  <title>Evaluación operacional completada · ${data.reportRef} · Velkor Systems</title>
 </head>
 <body style="margin:0;padding:0;background:#f0f0f4;font-family:Arial,sans-serif;-webkit-font-smoothing:antialiased;">
   <!-- Outer wrapper -->

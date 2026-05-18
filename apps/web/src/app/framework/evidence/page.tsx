@@ -5,7 +5,7 @@ import { DiagramTracker, EvidenceLibraryTracker, EvidenceRequestLink } from '@/c
 import { AuditFragment } from '@/components/OperationalEvidence'
 
 export const metadata: Metadata = {
-  title: 'Evidencia Operacional | Fragmentos de Arquitectura y Documentación — Velkor System',
+  title: 'Evidencia Operacional | Fragmentos de Arquitectura y Documentación — Velkor Systems',
   description:
     'Repositorio de evidencia técnica: fragmentos de política de Acceso Condicional, planes de implementación, estructuras de gobierno, checklists de Intune y arquitecturas de referencia.',
   alternates: { canonical: 'https://velkor.com.mx/framework/evidence' },

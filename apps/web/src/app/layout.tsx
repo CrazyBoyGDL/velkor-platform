@@ -11,11 +11,11 @@ import { COMPANY, SITE_URL } from '@/lib/config'
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: 'Velkor — Consultoría IT Empresarial | Redes · Ciberseguridad · Microsoft 365',
-    template: '%s | Velkor',
+    default: 'Velkor Systems — Infraestructura Operacional | Gobierno Tecnológico',
+    template: '%s | Velkor Systems',
   },
   description:
-    'Consultoría IT empresarial en redes, ciberseguridad Fortinet, identidad Microsoft 365 y videovigilancia IP. Más de 50 clientes empresariales. Desde 2016.',
+    'Infraestructura operacional, gobierno tecnológico y continuidad empresarial para redes, identidad, ciberseguridad y sistemas críticos.',
   keywords: [
     'consultoría IT', 'ciberseguridad empresarial', 'Fortinet', 'Microsoft 365',
     'Intune', 'Entra ID', 'CCTV IP', 'videovigilancia empresarial',
@@ -34,23 +34,23 @@ export const metadata: Metadata = {
     locale: 'es_MX',
     url: SITE_URL,
     siteName: COMPANY.name,
-    title: 'Velkor — Consultoría IT Empresarial',
+    title: 'Velkor Systems — Infraestructura Operacional',
     description:
-      'Redes, ciberseguridad y Microsoft 365 para empresas que no pueden permitirse interrupciones.',
+      'Gobierno tecnológico, observabilidad y continuidad para empresas que operan infraestructura crítica.',
     images: [
       {
         url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'Velkor System — Consultoría IT Empresarial',
+        alt: 'Velkor Systems — Infrastructure Control Plane',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Velkor — Consultoría IT Empresarial',
+    title: 'Velkor Systems — Infraestructura Operacional',
     description:
-      'Redes, ciberseguridad y Microsoft 365 para empresas que no pueden permitirse interrupciones.',
+      'Gobierno tecnológico, observabilidad y continuidad para infraestructura crítica.',
     images: ['/og-image.png'],
   },
   alternates: {
@@ -58,11 +58,13 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: '/favicon.svg',       media: '(prefers-color-scheme: dark)' },
-      { url: '/favicon-white.svg', media: '(prefers-color-scheme: light)' },
+      { url: '/favicons/favicon.svg', type: 'image/svg+xml' },
+      { url: '/favicons/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/favicons/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
     ],
-    shortcut: '/favicon.svg',
-    apple: '/favicon.svg',
+    shortcut: '/favicons/favicon.ico',
+    apple: '/favicons/apple-touch-icon.png',
+    other: [{ rel: 'mask-icon', url: '/favicons/pinned-tab.svg', color: '#284257' }],
   },
   manifest: '/site.webmanifest',
 }
@@ -77,10 +79,10 @@ const jsonLd = {
       url: SITE_URL,
       logo: {
         '@type': 'ImageObject',
-        url: `${SITE_URL}/favicon.svg`,
+        url: `${SITE_URL}/brand/symbol-dark.svg`,
       },
       description:
-        'Consultoría IT empresarial especializada en redes, ciberseguridad, identidad Microsoft y videovigilancia IP.',
+        'Infraestructura operacional, gobierno tecnológico, observabilidad y continuidad para sistemas críticos.',
       foundingDate: '2016',
       areaServed: 'MX',
       knowsAbout: [
@@ -95,7 +97,7 @@ const jsonLd = {
       name: COMPANY.name,
       url: SITE_URL,
       description:
-        'Consultoría IT empresarial: redes y ciberseguridad, gestión de identidad Microsoft, videovigilancia IP.',
+        'Infraestructura operacional: redes, ciberseguridad, identidad Microsoft, observabilidad y continuidad.',
       areaServed: { '@type': 'Country', name: 'México' },
       serviceType: [
         'Consultoría IT',

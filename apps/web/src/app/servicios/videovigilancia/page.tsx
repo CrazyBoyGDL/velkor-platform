@@ -136,7 +136,7 @@ const jsonLd = {
   name: 'Videovigilancia IP Empresarial',
   description:
     'Instalación de cámaras IP Axis e Hikvision, NVR centralizado y analítica con IA para empresas.',
-  provider: { '@type': 'Organization', name: 'Velkor System', url: 'https://velkor.com.mx' },
+  provider: { '@type': 'Organization', name: 'Velkor Systems', url: 'https://velkor.com.mx' },
   areaServed: { '@type': 'Country', name: 'México' },
   serviceType: 'Videovigilancia IP',
   offers: {

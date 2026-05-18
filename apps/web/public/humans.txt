@@ -1,6 +1,7 @@
-Velkor System
+Velkor Systems
 Site: https://velkor.com.mx
 Contact: contacto@velkor.com.mx
 Security: seguridad@velkor.com.mx
 Stack: Next.js, Strapi, Railway, Cloudflare
+Focus: Infrastructure operations, technology governance, observability, and continuity
 Production activation: May 2026

@@ -23,15 +23,15 @@ export function canonical(path: string): string {
 // ─── Company identity ─────────────────────────────────────────────────────────
 
 export const COMPANY = {
-  name:          'Velkor System',
-  legalName:     'Velkor System',
-  tagline:       'Consultoría tecnológica empresarial',
-  description:   'Redes, ciberseguridad e identidad digital para empresas que necesitan operar sin improvisar cambios críticos.',
+  name:          'Velkor Systems',
+  legalName:     'Velkor Systems',
+  tagline:       'Infraestructura operacional y gobierno tecnológico',
+  description:   'Infraestructura operacional, gobierno tecnológico y continuidad para empresas que necesitan operar sistemas críticos con control.',
   country:       'México',
   region:        'Monterrey, Nuevo León',
   founded:       '2022',
   fieldExperienceSince: '2016',
-  version:       'v2.2',
+  version:       'v2.3',
 } as const
 
 // ─── Contact ──────────────────────────────────────────────────────────────────
@@ -162,7 +162,7 @@ export function buildOrganizationSchema() {
     '@type':    'Organization',
     name:       COMPANY.name,
     url:        SITE_URL,
-    logo:       `${SITE_URL}/favicon.svg`,
+    logo:       `${SITE_URL}/brand/symbol-dark.svg`,
     description: COMPANY.description,
     contactPoint: {
       '@type':       'ContactPoint',

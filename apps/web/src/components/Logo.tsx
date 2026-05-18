@@ -1,146 +1,180 @@
 'use client'
 
+import {
+  type BrandMotionState,
+  brandMotionClass,
+  brandMotionCss,
+} from '@/lib/motion/brandMotion'
+
 interface LogoProps {
   className?: string
-  color?: string
   animated?: boolean
+  state?: BrandMotionState
   variant?: 'dark' | 'light'
+  title?: string
 }
-
-const NODES = [
-  { id: 'tl', cx: 6,  cy: 6  },
-  { id: 'tr', cx: 42, cy: 6  },
-  { id: 'ml', cx: 15, cy: 24 },
-  { id: 'mr', cx: 33, cy: 24 },
-  { id: 'ct', cx: 24, cy: 15 },
-  { id: 'b',  cx: 24, cy: 42 },
-]
-
-const EDGES = [
-  { x1: 6,  y1: 6,  x2: 15, y2: 24, len: 20 },
-  { x1: 15, y1: 24, x2: 24, y2: 42, len: 20 },
-  { x1: 42, y1: 6,  x2: 33, y2: 24, len: 20 },
-  { x1: 33, y1: 24, x2: 24, y2: 42, len: 20 },
-  { x1: 6,  y1: 6,  x2: 24, y2: 15, len: 21 },
-  { x1: 24, y1: 15, x2: 42, y2: 6,  len: 21 },
-  { x1: 15, y1: 24, x2: 33, y2: 24, len: 18 },
-  { x1: 24, y1: 15, x2: 15, y2: 24, len: 13 },
-  { x1: 24, y1: 15, x2: 33, y2: 24, len: 13 },
-]
 
 export default function Logo({
   className = 'w-10 h-10',
-  color = '#6f8aa8',
   animated = true,
+  state = 'monitoring',
+  title = 'Velkor Systems logo',
 }: LogoProps) {
+  const rootClass = [
+    className,
+    'velkor-brand-symbol',
+    animated ? brandMotionClass(state) : '',
+  ].filter(Boolean).join(' ')
+
   return (
     <svg
-      viewBox="0 0 48 48"
+      viewBox="0 0 64 64"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={`${className} velkor-logo`}
-      aria-label="Velkor logo"
+      className={rootClass}
+      role="img"
+      aria-label={title}
     >
-      {animated && (
-        <style>{`
-          /* ── Draw-in on load ── */
-          @keyframes velkor-draw {
-            from { stroke-dashoffset: 80; opacity: 0; }
-            to   { stroke-dashoffset: 0;  opacity: 1; }
-          }
+      {animated && <style>{brandMotionCss}</style>}
+      <g className="velkor-brand-rig" fill="none" strokeLinecap="round" strokeLinejoin="round">
+        <path
+          d="M14 12H50"
+          stroke="var(--brand-route-muted, #445f75)"
+          strokeWidth="2.4"
+          opacity=".62"
+          className="velkor-brand-route"
+          style={animated ? { animationDelay: '0s' } : undefined}
+        />
+        <path
+          d="M14 12 23 34 32 52"
+          stroke="var(--brand-route, #7f9eb4)"
+          strokeWidth="3.3"
+          className="velkor-brand-route"
+          style={animated ? { animationDelay: '0.06s' } : undefined}
+        />
+        <path
+          d="M50 12 41 34 32 52"
+          stroke="var(--brand-route, #7f9eb4)"
+          strokeWidth="3.3"
+          className="velkor-brand-route"
+          style={animated ? { animationDelay: '0.12s' } : undefined}
+        />
+        <path
+          d="M23 34H41"
+          stroke="var(--brand-route-muted, #445f75)"
+          strokeWidth="2.3"
+          opacity=".68"
+          className="velkor-brand-route"
+          style={animated ? { animationDelay: '0.18s' } : undefined}
+        />
+        <path
+          d="M32 20V52"
+          stroke="var(--brand-route-muted, #445f75)"
+          strokeWidth="2.2"
+          opacity=".62"
+          className="velkor-brand-route"
+          style={animated ? { animationDelay: '0.24s' } : undefined}
+        />
+        <path
+          d="M32 20 23 34M32 20 41 34"
+          stroke="var(--brand-route, #7f9eb4)"
+          strokeWidth="2.4"
+          opacity=".82"
+          className="velkor-brand-route"
+          style={animated ? { animationDelay: '0.30s' } : undefined}
+        />
 
-          @keyframes velkor-link-pulse {
-            0%   { opacity: 0.50; }
-            45%  { opacity: 0.86; }
-            100% { opacity: 0.58; }
-          }
+        <path
+          d="M14 12 23 34 32 52"
+          stroke="var(--brand-route-flow, #9fc3d4)"
+          strokeWidth="1.25"
+          className="velkor-brand-flow"
+        />
+        <path
+          d="M50 12 41 34 32 52"
+          stroke="var(--brand-route-flow, #9fc3d4)"
+          strokeWidth="1.25"
+          className="velkor-brand-flow"
+          style={animated ? { animationDelay: '1.15s' } : undefined}
+        />
 
-          /* ── Node core pulse ── */
-          @keyframes velkor-node {
-            0%,100% { opacity: 0.78; }
-            50%     { opacity: 0.96; }
-          }
+        <path
+          d="M20.5 27.5 23 34 28.5 31.5"
+          stroke="var(--brand-critical, #b88748)"
+          strokeWidth="1.55"
+          opacity=".76"
+          className="velkor-brand-arrow"
+        />
+        <path
+          d="M43.5 27.5 41 34 35.5 31.5"
+          stroke="var(--brand-critical, #b88748)"
+          strokeWidth="1.55"
+          opacity=".76"
+          className="velkor-brand-arrow"
+        />
+        <path
+          d="M28.8 43.8 32 52 35.2 43.8"
+          stroke="var(--brand-critical, #b88748)"
+          strokeWidth="1.55"
+          opacity=".72"
+          className="velkor-brand-arrow"
+        />
 
-          /* ── Node outer ring expand ── */
-          @keyframes velkor-ring {
-            0%,100% { opacity: 0.06; }
-            50%     { opacity: 0.10; }
-          }
-
-          /* ── Whole-logo glow breathe ── */
-          @keyframes velkor-glow {
-            0%,100% { filter: drop-shadow(0 0 2px ${color}22); }
-            50%     { filter: drop-shadow(0 0 4px ${color}32); }
-          }
-
-          .velkor-logo { overflow: visible; }
-          .vlk-svg {
-            animation: velkor-glow 4.8s ease-in-out infinite;
-            transform-origin: 24px 24px;
-          }
-
-          /* Draw-in edges */
-          .vlk-edge {
-            stroke-dasharray: 80;
-            stroke-dashoffset: 80;
-            transition: opacity 0.18s ease, stroke 0.18s ease;
-            animation: velkor-draw 0.46s cubic-bezier(0.22,1,0.36,1) forwards;
-          }
-
-          .vlk-node { animation: velkor-node 6s ease-in-out infinite; }
-          .vlk-ring { animation: velkor-ring 6s ease-in-out infinite; }
-
-          .velkor-logo:hover .vlk-edge {
-            animation: velkor-link-pulse 0.84s cubic-bezier(0.22,1,0.36,1) forwards;
-            opacity: 0.82;
-          }
-          .velkor-logo:hover .vlk-node { opacity: 1; }
-          .velkor-logo:hover .vlk-ring { opacity: 0.13; }
-
-          @media (prefers-reduced-motion: reduce) {
-            .vlk-svg,
-            .vlk-edge,
-            .vlk-node,
-            .vlk-ring {
-              animation: none !important;
-            }
-            .vlk-edge {
-              stroke-dashoffset: 0;
-              opacity: 0.58;
-            }
-          }
-        `}</style>
-      )}
-
-      <g className={animated ? 'vlk-svg' : ''}>
-
-        {/* Base edges (draw-in once) */}
-        {EDGES.map(({ x1, y1, x2, y2 }, i) => (
-          <line key={`e${i}`}
-            x1={x1} y1={y1} x2={x2} y2={y2}
-            stroke={color} strokeWidth="1.4" strokeLinecap="round"
-            opacity="0.55"
-            className={animated ? 'vlk-edge' : ''}
-            style={animated ? { animationDelay: `${i * 0.055}s` } : {}}
+        {[
+          [10.5, 8.5, 7, 7, 0],
+          [46.5, 8.5, 7, 7, 0.25],
+          [20, 31, 6, 6, 0.5],
+          [38, 31, 6, 6, 0.75],
+          [29, 49, 6, 6, 1],
+        ].map(([x, y, w, h, delay]) => (
+          <rect
+            key={`${x}-${y}`}
+            x={x}
+            y={y}
+            width={w}
+            height={h}
+            rx="1.8"
+            fill="var(--brand-node, #7f9eb4)"
+            className="velkor-brand-node"
+            style={animated ? { animationDelay: `${delay}s` } : undefined}
           />
         ))}
 
-        {/* Nodes */}
-        {NODES.map(({ id: nid, cx, cy }, i) => (
-          <g key={nid}>
-            {/* Outer ring */}
-            <circle cx={cx} cy={cy} r="5" fill={color}
-              className={animated ? 'vlk-ring' : ''}
-              style={animated ? { animationDelay: `${i * 0.4}s` } : { opacity: 0.1 }}
-            />
-            {/* Core */}
-            <circle cx={cx} cy={cy} r="2.2" fill={color}
-              className={animated ? 'vlk-node' : ''}
-              style={animated ? { animationDelay: `${i * 0.4}s` } : {}}
-            />
-          </g>
-        ))}
-
+        <circle
+          cx="32"
+          cy="20"
+          r="7.4"
+          stroke="var(--brand-core, #9fc3d4)"
+          strokeWidth="2"
+          opacity=".72"
+          className="velkor-brand-core-ring"
+        />
+        <circle
+          cx="32"
+          cy="20"
+          r="3.1"
+          fill="var(--brand-core, #9fc3d4)"
+          className="velkor-brand-core"
+        />
+        <path
+          d="M25.5 20h-4.8M43.3 20h-4.8"
+          stroke="var(--brand-critical, #b88748)"
+          strokeWidth="1.5"
+          opacity=".72"
+        />
+        <path
+          d="M18 45h28"
+          stroke="var(--brand-route-muted, #445f75)"
+          strokeWidth="1.4"
+          opacity=".34"
+        />
+        <path
+          d="M13 38H51"
+          stroke="var(--brand-route-flow, #9fc3d4)"
+          strokeWidth="1.1"
+          opacity=".18"
+          className="velkor-brand-scan"
+        />
       </g>
     </svg>
   )

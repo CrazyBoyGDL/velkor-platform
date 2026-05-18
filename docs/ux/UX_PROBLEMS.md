@@ -112,7 +112,7 @@ Severity: 🔴 Critical | 🟠 High | 🟡 Medium | 🟢 Low
 ### UX-013 — All Pages Share the Same Metadata
 - **Severity:** 🟡 Medium (SEO)
 - **File:** `apps/web/src/app/layout.tsx`
-- **Issue:** Only root metadata is defined in `layout.tsx`. Individual pages (`/blog`, `/services`, `/casos`) have no page-specific `metadata` export. All pages share the root title "Velkor System — Consultoría IT Empresarial".
+- **Issue:** Only root metadata is defined in `layout.tsx`. Individual pages (`/blog`, `/services`, `/casos`) have no page-specific `metadata` export. All pages share the root title "Velkor Systems — Infraestructura Operacional".
 - **Business impact:** Search engines cannot distinguish between pages. Blog articles cannot have unique titles/descriptions for ranking.
 - **Recommendation:** Add `export const metadata: Metadata = {...}` to each page file. When CMS is connected, generate metadata dynamically from content.
 

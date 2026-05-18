@@ -52,8 +52,8 @@ export default function Footer() {
             <Link href="/" className="flex items-center gap-2.5 mb-5 group w-fit">
               <Logo className="w-8 h-8" animated={false} />
               <div className="leading-none">
-                <div className="text-noc-white font-semibold text-sm tracking-normal group-hover:text-zinc-300 transition-colors">VELKOR</div>
-                <div className="text-zinc-700 text-[9px] font-mono tracking-normal">OPERATIONS</div>
+                <div className="brand-lockup-title text-sm group-hover:text-zinc-300 transition-colors">VELKOR</div>
+                <div className="brand-lockup-subtitle">SYSTEMS</div>
               </div>
             </Link>
 
@@ -103,7 +103,7 @@ export default function Footer() {
             </div>
 
             <div className="mt-5 text-[10px] font-mono text-zinc-700 leading-relaxed max-w-sm">
-              Preparado para dominio productivo: canonical por {ENTERPRISE_READINESS.canonicalSource} · Cloudflare planificado · SPF/DKIM/DMARC listos para activación.
+              Producción activa: canonical por {ENTERPRISE_READINESS.canonicalSource} · Cloudflare operativo · SPF/DKIM/DMARC activos.
             </div>
 
             <div className="mt-3 text-[10px] font-mono text-zinc-700 leading-relaxed max-w-sm">

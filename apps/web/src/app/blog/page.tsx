@@ -6,11 +6,11 @@ import BlogList, { type BlogPost } from '@/components/BlogList'
 export const revalidate = 3600
 
 export const metadata: Metadata = {
-  title: 'Inteligencia Operacional | Briefs Técnicos — Velkor System',
+  title: 'Inteligencia Operacional | Briefs Técnicos — Velkor Systems',
   description: 'Briefs técnicos sobre decisiones de arquitectura, errores de implementación y gobernanza operacional en infraestructura empresarial.',
   alternates: { canonical: 'https://velkor.com.mx/blog' },
   openGraph: {
-    title: 'Inteligencia Operacional | Velkor System',
+    title: 'Inteligencia Operacional | Velkor Systems',
     description: 'Briefs técnicos sobre arquitectura, implementación y gobernanza operacional.',
   },
 }
