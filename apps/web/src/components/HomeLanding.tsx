@@ -7,6 +7,7 @@ import AdaptiveCTA from '@/components/AdaptiveCTA'
 import InfraTopology from '@/components/InfraTopology'
 import RiskExposure from '@/components/RiskExposure'
 import TrustValidationLayer from '@/components/TrustValidationLayer'
+import HumanConsultiveLayer from '@/components/HumanConsultiveLayer'
 import { SystemStateRail, TopologyFragment } from '@/components/VisualIntelligence'
 import { trackCTA } from '@/components/Analytics'
 import { EASE, reveal as fadeUp, enter as heroUp } from '@/lib/motion'
@@ -22,9 +23,9 @@ export type FeaturedCaseSummary = {
 }
 
 const HERO_SIGNALS = [
-  'Redes, identidad y seguridad operables',
-  'Alcance claro antes de tocar producción',
-  'Evidencia y responsables al cierre',
+  'Restricciones antes que promesas',
+  'Ventanas y rollback visibles',
+  'Dueños claros al cierre',
 ]
 
 const WORKFLOW = [
@@ -92,11 +93,12 @@ function Hero() {
           </motion.div>
 
           <motion.h1 {...heroUp(0.02)} className="display-heading mb-6 max-w-3xl">
-            Infraestructura empresarial clara, segura y documentada.
+            Sistemas críticos con una ruta clara antes de tocar producción.
           </motion.h1>
 
           <motion.p {...heroUp(0.04)} className="editorial-lede mb-8 max-w-[34rem]">
-            Velkor ordena redes, identidad y endpoints para operar con alcance claro, evidencia y control.
+            Velkor ayuda a decidir qué mover, qué esperar y qué dejar documentado cuando redes,
+            identidad y equipos ya están bajo presión.
           </motion.p>
 
           <motion.div {...heroUp(0.06)} className="flex flex-col sm:flex-row gap-3 mb-9">
@@ -120,7 +122,7 @@ function Hero() {
             />
             <TopologyFragment
               title="Control-plane operativo"
-              caption="Mapa compacto de señales: identidad, red, aplicacion y operaciones bajo la misma ruta de decision."
+              caption="Mapa compacto de señales: identidad, red, aplicación y responsables bajo la misma ruta de decisión."
               accent="#638fa9"
             />
           </motion.div>
@@ -145,9 +147,9 @@ function WorkflowSection() {
         <div className="grid lg:grid-cols-[0.76fr_1.24fr] gap-12 lg:gap-20 items-start">
           <motion.div {...fadeUp(0)}>
             <span className="label block mb-5">Cómo trabaja Velkor</span>
-            <h2 className="section-heading max-w-xl mb-5">Menos ruido. Más decisión técnica.</h2>
+            <h2 className="section-heading max-w-xl mb-5">Primero entendemos la presión. Luego ordenamos el cambio.</h2>
             <p className="text-zinc-500 text-base leading-relaxed max-w-md">
-              La primera conversación separa lo crítico de lo conveniente.
+              La primera conversación separa urgencia, dependencia y riesgo aceptable.
             </p>
           </motion.div>
 
@@ -226,6 +228,7 @@ export default function HomeLanding({ featuredCase }: { featuredCase: FeaturedCa
       <div className="section-divider" />
       <RiskExposure />
       <WorkflowSection />
+      <HumanConsultiveLayer />
       <FeaturedCaseSection featuredCase={featuredCase} />
       <TrustValidationLayer />
     </>

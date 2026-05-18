@@ -338,6 +338,13 @@ function StatusBadge({ status }: { status: EvidenceItem['status'] }) {
   )
 }
 
+function requestLabel(item: EvidenceItem): string {
+  if (item.status === 'template') return 'Pedir plantilla →'
+  if (item.type === 'diagram') return 'Revisar arquitectura →'
+  if (item.fieldNote || item.decision) return 'Ver contexto completo →'
+  return 'Solicitar evidencia →'
+}
+
 function EvidenceCard({ item }: { item: EvidenceItem }) {
   const { label: typeLabel, color: typeColor } = TYPE_META[item.type]
 
@@ -435,7 +442,7 @@ function EvidenceCard({ item }: { item: EvidenceItem }) {
           category={item.category}
           status={item.status}
         >
-          Solicitar versión completa →
+          {requestLabel(item)}
         </EvidenceRequestLink>
       </div>
     </div>
@@ -539,8 +546,8 @@ export default function EvidencePage() {
             <span className="text-zinc-500">sanitizados para revisión</span>
           </h1>
           <p className="text-zinc-500 max-w-2xl text-sm leading-relaxed">
-            Políticas, flujos, checklists y arquitecturas derivadas de trabajo en campo. La información sensible se retira,
-            pero se conserva el contexto operativo: restricciones, decisiones, excepciones y pendientes.
+            Políticas, flujos, checklists y arquitecturas derivadas de trabajo en campo. Quitamos lo sensible,
+            pero dejamos las decisiones incómodas: restricciones, excepciones, pendientes y dueños.
           </p>
 
           {/* Meta strip */}

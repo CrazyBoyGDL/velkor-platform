@@ -36,6 +36,7 @@ export function VisualIntelligenceTracker({ page }: { page?: string }) {
     maxDepth.current = 0
     completed.current = false
     const firedDepth = new Set<number>()
+    const seenVisuals = new WeakSet<Element>()
 
     trackEvent(Events.RouteEntered, { page: pageId, device: deviceType() })
 
@@ -68,8 +69,8 @@ export function VisualIntelligenceTracker({ page }: { page?: string }) {
         for (const entry of entries) {
           if (!entry.isIntersecting) continue
           const node = entry.target as HTMLElement
-          if (node.dataset.visualSeen === 'true') continue
-          node.dataset.visualSeen = 'true'
+          if (seenVisuals.has(node)) continue
+          seenVisuals.add(node)
           trackEvent(Events.VisualEngagement, {
             page: pageId,
             visual_id: node.dataset.visualId ?? node.id ?? 'unknown',

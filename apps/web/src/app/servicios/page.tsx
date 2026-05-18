@@ -206,7 +206,7 @@ export default function ServiciosPage() {
           <div>
             <span className="label block mb-4">No empezar por el producto</span>
             <h2 className="text-noc-white text-2xl sm:text-3xl font-semibold leading-tight max-w-2xl">
-              Validar entorno. Luego tocar producción.
+              Primero el escenario. Después la ventana de cambio.
             </h2>
           </div>
           <AdaptiveCTA intent="operational-review" location="services-close" compact className="adaptive-cta-service-close" />

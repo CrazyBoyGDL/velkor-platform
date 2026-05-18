@@ -100,10 +100,10 @@ export default async function BlogPage() {
         <div className="mb-12">
           <span className="label">Conocimiento técnico</span>
           <h1 className="text-4xl sm:text-5xl font-black text-noc-white mt-3 mb-4">
-            Inteligencia operacional
+            Notas para decidir mejor
           </h1>
           <p className="text-zinc-500 max-w-xl leading-relaxed">
-            Briefs de campo: decisión, riesgo y señal operacional. Lectura rápida; profundidad cuando hace falta.
+            Lecturas cortas sobre decisiones reales: qué se movió, qué se dejó quieto y qué evidencia valió la pena conservar.
           </p>
         </div>
 

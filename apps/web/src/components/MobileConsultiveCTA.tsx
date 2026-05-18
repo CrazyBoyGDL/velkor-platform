@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { trackAdaptiveCTA, trackLeadIntelligenceSignal } from '@/components/Analytics'
-import { getConsultiveCTA } from '@/lib/consultiveCta'
+import { getConsultiveContactTarget, getConsultiveCTA } from '@/lib/consultiveCta'
 import { recordLeadSignal } from '@/lib/leadIntelligence'
 import { rafThrottle } from '@/lib/motion/operationalMotion'
 
@@ -16,6 +16,10 @@ export default function MobileConsultiveCTA() {
   const cta = useMemo(
     () => getConsultiveCTA({ pathname, source: 'mobile-sticky' }),
     [pathname]
+  )
+  const contactTarget = useMemo(
+    () => getConsultiveContactTarget('mobile-sticky'),
+    []
   )
 
   const hidden = HIDDEN_PREFIXES.some(prefix => pathname.startsWith(prefix))
@@ -34,32 +38,52 @@ export default function MobileConsultiveCTA() {
 
   if (hidden) return null
 
+  const click = () => {
+    trackAdaptiveCTA(cta.intent, cta.label, 'mobile-sticky', 'click', { service: cta.service })
+    recordLeadSignal({
+      type: 'adaptive-cta-clicked',
+      source: 'mobile-sticky',
+      weight: 3,
+      service: cta.service,
+      intent: cta.intent,
+    })
+    trackLeadIntelligenceSignal('adaptive-cta-clicked', 'mobile-sticky', 3, {
+      service: cta.service,
+      intent: cta.intent,
+    })
+  }
+
+  const content = (
+    <>
+      <span>
+        <strong>{contactTarget.label}</strong>
+        <small>{contactTarget.supporting}</small>
+      </span>
+      <span aria-hidden="true">→</span>
+    </>
+  )
+
   return (
     <div className={`mobile-sticky-cta ${visible ? 'mobile-sticky-cta-visible' : ''}`}>
-      <Link
-        href={cta.href}
-        className="mobile-sticky-cta-inner"
-        onClick={() => {
-          trackAdaptiveCTA(cta.intent, cta.label, 'mobile-sticky', 'click', { service: cta.service })
-          recordLeadSignal({
-            type: 'adaptive-cta-clicked',
-            source: 'mobile-sticky',
-            weight: 3,
-            service: cta.service,
-            intent: cta.intent,
-          })
-          trackLeadIntelligenceSignal('adaptive-cta-clicked', 'mobile-sticky', 3, {
-            service: cta.service,
-            intent: cta.intent,
-          })
-        }}
-      >
-        <span>
-          <strong>{cta.label}</strong>
-          <small>{cta.supporting}</small>
-        </span>
-        <span aria-hidden="true">→</span>
-      </Link>
+      {contactTarget.external ? (
+        <a
+          href={contactTarget.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mobile-sticky-cta-inner"
+          onClick={click}
+        >
+          {content}
+        </a>
+      ) : (
+        <Link
+          href={contactTarget.href}
+          className="mobile-sticky-cta-inner"
+          onClick={click}
+        >
+          {content}
+        </Link>
+      )}
     </div>
   )
 }

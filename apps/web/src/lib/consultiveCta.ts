@@ -19,35 +19,65 @@ export interface ConsultiveCTA {
 
 const CTA_COPY: Record<DiagnosticCtaIntent, { label: string; supporting: string; service: string }> = {
   'operational-review': {
-    label: 'Aterrizar diagnostico tecnico',
-    supporting: 'Riesgos, restricciones y primer alcance sin inflar el proyecto.',
+    label: 'Revisamos tu escenario',
+    supporting: 'Un especialista separa riesgos, restricciones y primer alcance.',
     service: 'operaciones',
   },
   'segmentation-validation': {
-    label: 'Validar segmentacion actual',
-    supporting: 'Cruces entre zonas, reglas heredadas y rollback antes de produccion.',
+    label: 'Cuéntanos cómo está segmentada',
+    supporting: 'Cruces entre zonas, reglas heredadas y rollback antes de producción.',
     service: 'ciberseguridad',
   },
   'identity-exposure-review': {
-    label: 'Revisar exposicion de identidades',
+    label: 'Revisamos identidades expuestas',
     supporting: 'MFA, privilegios, sesiones y evidencia de Acceso Condicional.',
     service: 'identidad',
   },
   'endpoint-governance-check': {
-    label: 'Detectar endpoints fuera de gobierno',
+    label: 'Ubicamos equipos sin dueño',
     supporting: 'Inventario, postura, BYOD y ownership de parcheo.',
     service: 'endpoint',
   },
   'mfa-gap-review': {
-    label: 'Cerrar brecha MFA',
+    label: 'Aterrizamos la brecha MFA',
     supporting: 'Excepciones, proveedores, admins y protocolos heredados.',
     service: 'identidad',
   },
   'remote-access-review': {
-    label: 'Evaluar acceso remoto',
+    label: 'Validamos acceso remoto',
     supporting: 'VPN, dispositivo, MFA y trazabilidad antes de ampliar acceso.',
     service: 'ciberseguridad',
   },
+}
+
+const DEFAULT_WHATSAPP_MESSAGE =
+  'Hola, quiero contarles un escenario de infraestructura y revisar el primer paso con Velkor.'
+
+function whatsappNumber(): string | null {
+  const raw = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER
+  const number = raw?.replace(/[^\d]/g, '') ?? ''
+  return number.length >= 10 ? number : null
+}
+
+export function getWhatsAppHref(message: string = DEFAULT_WHATSAPP_MESSAGE): string | null {
+  const number = whatsappNumber()
+  if (!number) return null
+  return `https://wa.me/${number}?text=${encodeURIComponent(message)}`
+}
+
+export function getConsultiveContactTarget(source = 'consultive-contact') {
+  const href = getWhatsAppHref(
+    `Hola, vengo de ${source}. Queremos revisar un escenario operativo con Velkor.`
+  )
+
+  return {
+    href: href ?? `/contacto?source=${encodeURIComponent(source)}`,
+    external: Boolean(href),
+    label: 'Cuéntanos el escenario',
+    supporting: href
+      ? 'WhatsApp directo con contexto técnico.'
+      : 'Formulario breve para una respuesta humana.',
+  }
 }
 
 function inferIntentFromPath(pathname?: string): DiagnosticCtaIntent {

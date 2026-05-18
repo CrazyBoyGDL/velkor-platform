@@ -27,10 +27,10 @@ export default function TrustValidationLayer() {
           <div>
             <span className="label block mb-4">Siguiente paso</span>
             <h2 className="section-heading mb-5 max-w-2xl">
-              Una evaluación técnica para decidir con calma.
+              Una primera revisión para decidir sin improvisar.
             </h2>
             <p className="text-zinc-500 text-base leading-relaxed max-w-xl">
-              En una primera revisión se separan riesgos reales, restricciones operativas y acciones que sí conviene ejecutar.
+              Separamos riesgos reales, restricciones de operación y acciones que sí conviene ejecutar.
             </p>
           </div>
 

@@ -20,7 +20,7 @@ const LINKS = {
     ['Casos técnicos',        '/casos'],
     ['Nosotros',              '/nosotros'],
     ['Blog técnico',          '/blog'],
-    ['Validar entorno',       '/assessments'],
+    ['Revisar escenario',     '/assessments'],
   ],
 }
 
