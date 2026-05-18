@@ -71,8 +71,11 @@ Open: **Railway Dashboard → `velkor-web` service → Variables**
 
 ```
 # ── API ──────────────────────────────────────────────────────
-STRAPI_URL=https://velkor-api-production.up.railway.app
+STRAPI_URL=http://velkor-api.railway.internal:1337
 NODE_ENV=production
+NEXT_PUBLIC_SITE_URL=https://velkor.com.mx
+NEXT_PUBLIC_APP_URL=https://velkor.com.mx
+NEXT_PUBLIC_SITE_DOMAIN=velkor.com.mx
 
 # ── Optional features (leave blank to disable) ───────────────
 NEXT_PUBLIC_WHATSAPP_NUMBER=

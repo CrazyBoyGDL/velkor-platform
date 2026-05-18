@@ -35,6 +35,19 @@ export function isDisposableEmail(email: string): boolean {
   return DISPOSABLE_DOMAINS.has(domain)
 }
 
+// ─── Client IP extraction ───────────────────────────────────────────────────
+// Prefer Cloudflare's original visitor headers when the zone is proxied.
+
+export function getRequestIp(req: { headers: Headers }): string {
+  return (
+    req.headers.get('cf-connecting-ip')?.trim() ||
+    req.headers.get('true-client-ip')?.trim() ||
+    req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+    req.headers.get('x-real-ip')?.trim() ||
+    'unknown'
+  )
+}
+
 // ─── Cloudflare Turnstile verification ───────────────────────────────────────
 // Only active if TURNSTILE_SECRET_KEY is set in the environment.
 // Falls through (returns true) if not configured, so Turnstile is opt-in.

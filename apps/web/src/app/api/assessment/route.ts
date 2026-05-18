@@ -4,7 +4,7 @@ import { scoreAssessment }           from '@/lib/scoring'
 import { classifyLead }              from '@/lib/classification'
 import { assignWorkflow, buildStrapiLeadPayload } from '@/lib/crm'
 import { dispatchWebhook, buildAssessmentCompletedPayload } from '@/lib/webhook'
-import { isHoneypotFilled, isDisposableEmail, verifyTurnstile, logAuditEvent } from '@/lib/security'
+import { getRequestIp, isHoneypotFilled, isDisposableEmail, verifyTurnstile, logAuditEvent } from '@/lib/security'
 
 // ─── Rate limiter ─────────────────────────────────────────────────────────────
 
@@ -22,14 +22,6 @@ function isRateLimited(ip: string): boolean {
   if (entry.count >= RATE_MAX) return true
   entry.count++
   return false
-}
-
-function getClientIp(req: NextRequest): string {
-  return (
-    req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ??
-    req.headers.get('x-real-ip') ??
-    'unknown'
-  )
 }
 
 // ─── Sanitization ─────────────────────────────────────────────────────────────
@@ -52,7 +44,7 @@ function sanArr(v: unknown, maxItems: number, maxLen: number): string[] {
 // ─── POST /api/assessment ─────────────────────────────────────────────────────
 
 export async function POST(req: NextRequest) {
-  const ip = getClientIp(req)
+  const ip = getRequestIp(req)
 
   if (isRateLimited(ip)) {
     logAuditEvent({ type: 'rate-limited', ip, timestamp: new Date().toISOString() })

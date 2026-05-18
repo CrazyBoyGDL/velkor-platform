@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { strapi } from '@/lib/strapi';
 import { buildDirectLeadPayload } from '@/lib/crm';
+import { getRequestIp } from '@/lib/security';
 
 // ── Rate limiter (same pattern as /api/assessment) ────────────────────────────
 const rateMap = new Map<string, { count: number; resetAt: number }>();
@@ -19,14 +20,6 @@ function isRateLimited(ip: string): boolean {
   return false;
 }
 
-function getClientIp(req: NextRequest): string {
-  return (
-    req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ??
-    req.headers.get('x-real-ip') ??
-    'unknown'
-  );
-}
-
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function sanitize(value: unknown, max: number): string {
@@ -37,7 +30,7 @@ function sanitize(value: unknown, max: number): string {
 // ── POST /api/contacto ────────────────────────────────────────────────────────
 // Lighter contact form; saves to Strapi lead with source = 'contacto'
 export async function POST(req: NextRequest) {
-  const ip = getClientIp(req);
+  const ip = getRequestIp(req);
   if (isRateLimited(ip)) {
     return NextResponse.json(
       { error: 'Demasiadas solicitudes. Intenta de nuevo en un minuto.' },

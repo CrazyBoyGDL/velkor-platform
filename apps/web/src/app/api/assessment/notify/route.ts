@@ -10,7 +10,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { EMAIL_SEQUENCES, generateAssessmentEmail } from '@/lib/emailTemplate'
 import type { EmailData }           from '@/lib/emailTemplate'
 import { COMPANY, CONTACT }         from '@/lib/config'
-import { logAuditEvent }            from '@/lib/security'
+import { getRequestIp, logAuditEvent } from '@/lib/security'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -36,14 +36,6 @@ function isNotifyRateLimited(ip: string): boolean {
   if (entry.count >= NOTIFY_MAX) return true
   entry.count++
   return false
-}
-
-function getClientIp(req: NextRequest): string {
-  return (
-    req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ??
-    req.headers.get('x-real-ip') ??
-    'unknown'
-  )
 }
 
 // ─── Basic validation helpers ─────────────────────────────────────────────────
@@ -121,7 +113,7 @@ async function sendViaResend(
 // ─── POST handler ─────────────────────────────────────────────────────────────
 
 export async function POST(req: NextRequest) {
-  const ip = getClientIp(req)
+  const ip = getRequestIp(req)
 
   // ── Rate limit ──
   if (isNotifyRateLimited(ip)) {

@@ -314,7 +314,7 @@ ResultsScreen (client) → generateReportHtml(data) → HTML string
 | Var | Effect if set |
 |-----|---------------|
 | `TURNSTILE_SECRET_KEY` | Enables Cloudflare Turnstile bot protection |
-| `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | Enables frontend widget rendering *(not yet wired)* |
+| `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | Enables the assessment widget and posts `_ts` to `/api/assessment` |
 
 ---
 
