@@ -1366,23 +1366,39 @@ main {
     margin-left: auto;
     margin-right: clamp(-7rem, -5vw, -2rem);
     transform: translate3d(0, 0, 0);
-    opacity: 0.74;
+    opacity: 0.82;
     mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.56) 12%, black 28%, black 88%, transparent 100%);
   }
 
   .hero-evidence-summary {
     position: absolute;
-    right: clamp(2.4rem, 7vw, 7rem);
-    bottom: clamp(4rem, 12vh, 9rem);
-    width: min(27rem, 34vw);
+    right: clamp(6rem, 9vw, 9.5rem);
+    bottom: clamp(2rem, 5vh, 4rem);
+    z-index: 2;
+    width: min(22rem, 26vw);
+    pointer-events: none;
     border: 1px solid rgba(148,163,184,0.10);
     border-radius: 8px;
     background:
-      linear-gradient(180deg, rgba(8,13,22,0.78), rgba(5,8,14,0.86));
+      radial-gradient(circle at 12% 0%, rgba(var(--spatial-accent-rgb),0.070), transparent 12rem),
+      linear-gradient(180deg, rgba(8,13,22,0.90), rgba(5,8,14,0.94));
     box-shadow:
       0 1px 0 rgba(255,255,255,0.035) inset,
-      0 18px 36px rgba(0,0,0,0.24);
+      0 18px 36px rgba(0,0,0,0.18);
+    -webkit-backdrop-filter: blur(10px) saturate(118%);
+    backdrop-filter: blur(10px) saturate(118%);
     overflow: hidden;
+  }
+
+  .hero-evidence-summary::before {
+    content: '';
+    position: absolute;
+    left: -3rem;
+    right: 100%;
+    top: 50%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(var(--spatial-accent-rgb),0.24));
+    opacity: 0.7;
   }
 
   .hero-evidence-heading {
@@ -1390,7 +1406,7 @@ main {
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
-    padding: 0.75rem 0.85rem;
+    padding: 0.68rem 0.78rem;
     border-bottom: 1px solid rgba(148,163,184,0.075);
     font-family: 'JetBrains Mono', monospace;
     text-transform: uppercase;
@@ -1413,14 +1429,35 @@ main {
   }
 
   .hero-evidence-item {
-    min-height: 3.35rem;
+    position: relative;
+    min-height: 2.88rem;
     display: grid;
     align-content: center;
     gap: 0.26rem;
-    padding: 0.7rem 0.85rem;
+    padding: 0.56rem 0.78rem 0.56rem 1rem;
     border-top: 1px solid rgba(148,163,184,0.045);
     font-family: 'JetBrains Mono', monospace;
   }
+
+  .hero-evidence-item::before {
+    content: '';
+    position: absolute;
+    left: 0.5rem;
+    top: 50%;
+    width: 4px;
+    height: 4px;
+    border-radius: 999px;
+    background: rgba(var(--spatial-accent-rgb),0.68);
+    box-shadow: 0 0 0 3px rgba(var(--spatial-accent-rgb),0.05);
+    transform: translateY(-50%);
+    animation: evidenceStatusBreath calc(var(--cinematic-breath-duration) * 0.52) ease-in-out infinite;
+  }
+
+  .hero-evidence-item:nth-child(2)::before { animation-delay: -1.8s; }
+  .hero-evidence-item:nth-child(3)::before { animation-delay: -3.6s; }
+  .hero-evidence-item:nth-child(4)::before { animation-delay: -5.4s; }
+  .hero-evidence-item:nth-child(5)::before { animation-delay: -7.2s; }
+  .hero-evidence-item:nth-child(6)::before { animation-delay: -9s; }
 
   .hero-evidence-item:nth-child(-n+2) {
     border-top: 0;
@@ -2464,6 +2501,10 @@ main {
   padding: 0.875rem 1.75rem;
 }
 
+.adaptive-cta-hero::after {
+  animation: ctaRouteSignal calc(var(--cinematic-route-duration) * 0.72) ease-in-out infinite;
+}
+
 .adaptive-cta-service-close {
   min-width: min(100%, 15rem);
 }
@@ -2750,6 +2791,35 @@ main {
   72%      { opacity: 0.48; transform: scale(0.96); }
 }
 
+@keyframes evidenceStatusBreath {
+  0%, 100% {
+    opacity: 0.46;
+    box-shadow: 0 0 0 3px rgba(var(--spatial-accent-rgb),0.040);
+  }
+  42% {
+    opacity: 0.92;
+    box-shadow: 0 0 0 5px rgba(var(--spatial-accent-rgb),0.075);
+  }
+  68% {
+    opacity: 0.58;
+  }
+}
+
+@keyframes ctaRouteSignal {
+  0%, 100% {
+    opacity: 0.38;
+    transform: scaleX(0.42);
+  }
+  44% {
+    opacity: 0.72;
+    transform: scaleX(0.82);
+  }
+  68% {
+    opacity: 0.50;
+    transform: scaleX(0.58);
+  }
+}
+
 @keyframes atmoNodeHeartbeat {
   0%, 100% { opacity: 0.42; transform: translate3d(0,0,0) scale(1); }
   13%      { opacity: 0.82; transform: translate3d(0,0,0) scale(1.16); }
@@ -2903,6 +2973,8 @@ main {
   }
   .topology-fragment-route,
   .visual-state-active::before,
+  .hero-evidence-item::before,
+  .adaptive-cta-hero::after,
   .spatial-field-system__route,
   .spatial-field-system__nodes span,
   .operational-atmosphere__field,
@@ -3232,7 +3304,9 @@ html.light .hero-content-plane::before {
 }
 html.light .hero-evidence-summary {
   border-color: rgba(36,52,70,0.12);
-  background: linear-gradient(180deg, rgba(255,255,255,0.88), rgba(242,247,250,0.84));
+  background:
+    radial-gradient(circle at 12% 0%, rgba(72,104,132,0.075), transparent 12rem),
+    linear-gradient(180deg, rgba(255,255,255,0.88), rgba(242,247,250,0.84));
   box-shadow: 0 16px 34px rgba(41,54,74,0.09), 0 1px 0 rgba(255,255,255,0.94) inset;
 }
 html.light .hero-evidence-heading,

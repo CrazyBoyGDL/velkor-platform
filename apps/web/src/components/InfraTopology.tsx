@@ -89,6 +89,8 @@ const CROSS_LINKS = [
 // Dash cycle lengths for spoke animation (dash + gap = period)
 const DASH_R1 = 14
 const DASH_R2 = 20
+const SIGNAL_STEP = 0.38
+const SIGNAL_OFFSET = 0.22
 
 // ─── Component ───────────────────────────────────────────────────────────────
 export default function InfraTopology() {
@@ -157,6 +159,26 @@ export default function InfraTopology() {
           }}
         />
 
+        <motion.circle
+          cx={CX}
+          cy={CY}
+          r={28}
+          stroke="rgba(159,195,212,0.26)"
+          strokeWidth={0.9}
+          fill="none"
+          initial={{ opacity: 0, scale: 0.82 }}
+          animate={running
+            ? { opacity: [0, 0.38, 0], scale: [0.78, 1.34, 1.72] }
+            : { opacity: 0, scale: 1 }}
+          transition={{
+            repeat: running ? Infinity : 0,
+            duration: CINEMATIC_TIMING.topologySpoke,
+            ease: 'easeOut',
+            delay: SIGNAL_OFFSET,
+          }}
+          style={{ transformOrigin: `${CX}px ${CY}px` }}
+        />
+
         {/* Outer ring accent marks at each node's angular position */}
         {INNER_NODES.map(({ deg, color }) => {
           const [rx, ry] = polar(deg, R_RING_OUTER)
@@ -183,27 +205,32 @@ export default function InfraTopology() {
                 {...topologyActivation(i)}
                 x1={CX} y1={CY} x2={nx} y2={ny}
                 stroke={color}
-                strokeWidth={1.1}
+                strokeWidth={1.25}
                 strokeDasharray="3 11"
                 strokeDashoffset={0}
                 animate={running
-                  ? { opacity: 0.45, pathLength: 1, strokeDashoffset: [DASH_R1, 0] }
+                  ? { opacity: [0.28, 0.68, 0.34], pathLength: 1, strokeDashoffset: [DASH_R1, 0] }
                   : { opacity: 0.22, pathLength: 1, strokeDashoffset: 0 }}
                 transition={{
-                  opacity: { duration: 0.12, ease: EASE as any, delay: 0.08 },
+                  opacity: {
+                    repeat: running ? Infinity : 0,
+                    duration: CINEMATIC_TIMING.topologySpoke + i * 0.16,
+                    ease: 'easeInOut',
+                    delay: cinematicDelay(i, SIGNAL_STEP, SIGNAL_OFFSET),
+                  },
                   strokeDashoffset: {
                     repeat: running ? Infinity : 0,
-                    duration: CINEMATIC_TIMING.topologySpoke + i * 0.22,
+                    duration: CINEMATIC_TIMING.topologySpoke + i * 0.16,
                     ease: 'linear',
-                    delay: cinematicDelay(i, 0.36),
+                    delay: cinematicDelay(i, SIGNAL_STEP, SIGNAL_OFFSET),
                   },
                 }}
               />
               <motion.circle
                 cx={CX}
                 cy={CY}
-                r={1.9}
-                fill={color}
+                r={2.8}
+                fill="#d7eef8"
                 fillOpacity={0.72}
                 initial={{ cx: CX, cy: CY, opacity: 0 }}
                 opacity={0}
@@ -216,9 +243,9 @@ export default function InfraTopology() {
                   : { cx: CX, cy: CY, opacity: 0 }}
                 transition={{
                   repeat: running ? Infinity : 0,
-                  duration: CINEMATIC_TIMING.topologyOuter + i * 0.28,
+                  duration: CINEMATIC_TIMING.topologySpoke + i * 0.16,
                   ease: 'linear',
-                  delay: cinematicDelay(i, 0.62, 0.6),
+                  delay: cinematicDelay(i, SIGNAL_STEP, SIGNAL_OFFSET + 0.2),
                 }}
               />
             </g>
@@ -275,6 +302,8 @@ export default function InfraTopology() {
           const dlen = Math.sqrt(dx * dx + dy2 * dy2) || 1
           const lx = +(mx + (dx / dlen) * 16).toFixed(1)
           const ly = +(my + (dy2 / dlen) * 16).toFixed(1)
+          const qx = +(mx + (dx / dlen) * 24).toFixed(2)
+          const qy = +(my + (dy2 / dlen) * 24).toFixed(2)
           return (
             <motion.g key={`cross-${i}`}
               initial={{ opacity: 0 }}
@@ -282,11 +311,27 @@ export default function InfraTopology() {
               transition={{ duration: 0.15, ease: EASE as any, delay: 0.12 }}
             >
               <motion.path d={path}
-                stroke={color} strokeWidth={0.75} strokeOpacity={0.22}
+                stroke={color} strokeWidth={0.8} strokeOpacity={0.28}
                 strokeDasharray="2 5" fill="none"
                 strokeDashoffset={0}
                 animate={running ? { strokeDashoffset: [0, -14] } : { strokeDashoffset: 0 }}
                 transition={{ repeat: running ? Infinity : 0, duration: CINEMATIC_TIMING.routeSecondary + i * 0.45, ease: 'linear', delay: cinematicDelay(i, 0.9) }}
+              />
+              <motion.circle
+                cx={ax}
+                cy={ay}
+                r={2}
+                fill={color}
+                initial={{ opacity: 0 }}
+                animate={running
+                  ? { cx: [ax, qx, bx], cy: [ay, qy, by], opacity: [0, 0.54, 0] }
+                  : { cx: ax, cy: ay, opacity: 0 }}
+                transition={{
+                  repeat: running ? Infinity : 0,
+                  duration: CINEMATIC_TIMING.routeSecondary * 0.34,
+                  ease: 'linear',
+                  delay: cinematicDelay(i, 1.4, 1.1),
+                }}
               />
               <text
                 x={lx} y={ly}
@@ -319,8 +364,30 @@ export default function InfraTopology() {
                 cx={nx} cy={ny} r={18}
                 fill={color} fillOpacity={0}
                 initial={{ fillOpacity: 0.018 }}
-                animate={running ? { fillOpacity: [0.04, 0.01, 0.04] } : { fillOpacity: 0.018 }}
-                transition={{ repeat: running ? Infinity : 0, duration: CINEMATIC_TIMING.nodeHeartbeat + i * 0.9, ease: 'easeInOut', delay: cinematicDelay(i, 0.47) }}
+                animate={running ? { fillOpacity: [0.07, 0.014, 0.08] } : { fillOpacity: 0.024 }}
+                transition={{
+                  repeat: running ? Infinity : 0,
+                  duration: CINEMATIC_TIMING.topologySpoke + i * 0.16,
+                  ease: 'easeInOut',
+                  delay: cinematicDelay(i, SIGNAL_STEP, SIGNAL_OFFSET + 0.72),
+                }}
+              />
+              <motion.circle
+                cx={nx} cy={ny} r={R_HEX1 + 8}
+                stroke={color}
+                strokeWidth={0.75}
+                fill="none"
+                initial={{ opacity: 0.10, scale: 0.90 }}
+                animate={running
+                  ? { opacity: [0.12, 0.52, 0.14], scale: [0.90, 1.14, 0.96] }
+                  : { opacity: 0.12, scale: 1 }}
+                transition={{
+                  repeat: running ? Infinity : 0,
+                  duration: CINEMATIC_TIMING.topologySpoke + i * 0.16,
+                  ease: 'easeInOut',
+                  delay: cinematicDelay(i, SIGNAL_STEP, SIGNAL_OFFSET + 0.82),
+                }}
+                style={{ transformOrigin: `${nx}px ${ny}px` }}
               />
               {/* Static ambient halo */}
               <circle cx={nx} cy={ny} r={20} fill={color} fillOpacity={0.04} />
@@ -331,7 +398,22 @@ export default function InfraTopology() {
                 fill={color} fillOpacity={0.07}
               />
               {/* Active status dot */}
-              <circle cx={nx} cy={ny} r={2.5} fill={color} fillOpacity={0.85} />
+              <motion.circle
+                cx={nx}
+                cy={ny}
+                r={2.5}
+                fill={color}
+                initial={{ fillOpacity: 0.85 }}
+                animate={running
+                  ? { fillOpacity: [0.72, 1, 0.78], r: [2.4, 3.15, 2.5] }
+                  : { fillOpacity: 0.85, r: 2.5 }}
+                transition={{
+                  repeat: running ? Infinity : 0,
+                  duration: CINEMATIC_TIMING.topologySpoke + i * 0.16,
+                  ease: 'easeInOut',
+                  delay: cinematicDelay(i, SIGNAL_STEP, SIGNAL_OFFSET + 0.82),
+                }}
+              />
               {/* Service label */}
               <text
                 x={lx} y={ly}
