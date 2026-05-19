@@ -86,7 +86,7 @@ export default function RiskExposure() {
 
         {/* Section label */}
         <div className="flex items-center gap-4 mb-10">
-          <motion.span {...appear(0)} className="label">Exposición al riesgo</motion.span>
+          <motion.span {...appear(0)} className="label">Problema operativo</motion.span>
           <div className="flex-1 h-px" style={{ background: 'linear-gradient(90deg, rgba(255,255,255,0.05), transparent)' }} />
         </div>
 
@@ -95,10 +95,10 @@ export default function RiskExposure() {
           {/* Left: editorial statement */}
           <div className="lg:sticky lg:top-28">
             <motion.h2 {...appear(0)} className="section-heading mb-4">
-              Problemas reales que frenan la operación.
+              Lo que suele romper la operación no siempre se ve en el dashboard.
             </motion.h2>
             <motion.p {...appear(0.010)} className="text-zinc-600 text-sm leading-relaxed max-w-xs">
-              Pocos controles bien priorizados bajan más riesgo que otro proyecto sin dueño.
+              Primero ubicamos dónde una falla puede moverse demasiado rápido: red, identidad y equipos.
             </motion.p>
           </div>
 

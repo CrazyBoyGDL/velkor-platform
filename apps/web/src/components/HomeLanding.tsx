@@ -1,18 +1,14 @@
 'use client'
 
 import Link from 'next/link'
-import dynamic from 'next/dynamic'
 import { motion } from 'framer-motion'
 import AdaptiveCTA from '@/components/AdaptiveCTA'
 import InfraTopology from '@/components/InfraTopology'
 import RiskExposure from '@/components/RiskExposure'
 import TrustValidationLayer from '@/components/TrustValidationLayer'
 import HumanConsultiveLayer from '@/components/HumanConsultiveLayer'
-import { SystemStateRail, TopologyFragment } from '@/components/VisualIntelligence'
 import { trackCTA } from '@/components/Analytics'
 import { EASE, reveal as fadeUp, enter as heroUp } from '@/lib/motion'
-
-const NetworkBg = dynamic(() => import('@/components/NetworkBg'), { ssr: false })
 
 export type FeaturedCaseSummary = {
   sector: string
@@ -22,39 +18,42 @@ export type FeaturedCaseSummary = {
   href: string
 }
 
-const HERO_SIGNALS = [
-  'Restricciones antes que promesas',
-  'Ventanas y rollback visibles',
-  'Dueños claros al cierre',
+const HERO_EVIDENCE = [
+  { label: 'Red', value: 'VLAN segmentada' },
+  { label: 'Identidad', value: 'MFA obligatorio' },
+  { label: 'Firewall', value: 'FortiGate hardened' },
+  { label: 'Acceso', value: 'Conditional Access activo' },
+  { label: 'Endpoints', value: 'Intune compliance' },
+  { label: 'Cambio', value: 'Rollback definido' },
 ]
 
 const WORKFLOW = [
   {
     step: '01',
-    title: 'Diagnóstico',
-    detail: 'Riesgos reales, dependencias y restricciones antes de proponer.',
+    title: 'Ubicar el riesgo real',
+    detail: 'Red plana, cuentas sin MFA, VPN abierta, cámaras expuestas o equipos sin inventario.',
   },
   {
     step: '02',
-    title: 'Ruta técnica',
-    detail: 'Controles priorizados, exclusiones claras y responsables visibles.',
+    title: 'Priorizar cambios seguros',
+    detail: 'Qué se corrige primero, qué se deja fuera, quién aprueba y cómo se regresa si algo falla.',
   },
   {
     step: '03',
-    title: 'Implementación',
-    detail: 'Ventanas, rollback, evidencia y handoff para operar sin dependencia.',
+    title: 'Dejar evidencia operable',
+    detail: 'Reglas, excepciones, responsables, pendientes y handoff para que el equipo pueda operar.',
   },
 ]
 
 const PROCESS_PROOF = [
-  'Dependencias validadas',
-  'Rollback aprobado',
-  'Evidencia al cierre',
+  'Riesgos priorizados',
+  'Cambios con dueño',
+  'Evidencia usable',
 ]
 
 const AVOIDED_PATTERNS = [
   'MFA parcial sin excepciones documentadas',
-  'Segmentacion superficial sin reglas entre zonas',
+  'Segmentación superficial sin reglas entre zonas',
   'Monitoreo que no dispara responsables reales',
 ]
 
@@ -63,8 +62,6 @@ function Hero() {
     <section className="relative flex items-start lg:items-center overflow-hidden lg:min-h-[82vh] hero-depth-stage spatial-hero-field">
       <div className="absolute inset-0 pointer-events-none">
         <div className="hero-atmospheric-layer" />
-        <div className="absolute inset-0 bg-topology opacity-20" />
-        <NetworkBg />
         <div className="absolute bottom-0 left-0 right-0 h-56 hero-bottom-fade" />
       </div>
 
@@ -80,6 +77,20 @@ function Hero() {
           transition={{ repeat: Infinity, duration: 36, ease: 'easeInOut' }}
         >
           <InfraTopology />
+          <div className="hero-evidence-summary">
+            <div className="hero-evidence-heading">
+              <span>Evidencia operativa</span>
+              <strong>estado después de control</strong>
+            </div>
+            <div className="hero-evidence-grid">
+              {HERO_EVIDENCE.map(item => (
+                <div key={item.label} className="hero-evidence-item">
+                  <span>{item.label}</span>
+                  <strong>{item.value}</strong>
+                </div>
+              ))}
+            </div>
+          </div>
         </motion.div>
       </motion.div>
 
@@ -91,12 +102,12 @@ function Hero() {
           </motion.div>
 
           <motion.h1 {...heroUp(0.02)} className="display-heading mb-6 max-w-3xl">
-            Sistemas críticos con una ruta clara antes de tocar producción.
+            Ordenamos tu infraestructura antes de que falle en producción.
           </motion.h1>
 
           <motion.p {...heroUp(0.04)} className="editorial-lede mb-8 max-w-[34rem]">
-            Velkor ayuda a decidir qué mover, qué esperar y qué dejar documentado cuando redes,
-            identidad y equipos ya están bajo presión.
+            Revisamos red, identidad, firewall, endpoints y rollback para reducir riesgo operativo
+            sin romper lo que el negocio necesita seguir usando.
           </motion.p>
 
           <motion.div {...heroUp(0.06)} className="flex flex-col sm:flex-row gap-3 mb-9">
@@ -104,33 +115,25 @@ function Hero() {
             <Link
               href="/casos"
               className="btn-ghost text-[14px] px-7 py-3.5"
-              onClick={() => trackCTA('Hero - Casos técnicos', 'hero')}
+              onClick={() => trackCTA('Hero - Casos reales', 'hero')}
             >
-              Ver casos técnicos
+              Ver casos reales
             </Link>
           </motion.div>
 
-          <motion.div {...heroUp(0.08)} className="hero-intelligence-layer mb-8">
-            <SystemStateRail
-              items={[
-                { label: 'Estado', value: 'monitoring', tone: 'active' },
-                { label: 'Cambio', value: 'gobernado', tone: 'stable' },
-                { label: 'Riesgo', value: 'trazable', tone: 'watch' },
-              ]}
-            />
-            <TopologyFragment
-              title="Control-plane operativo"
-              caption="Mapa compacto de señales: identidad, red, aplicación y responsables bajo la misma ruta de decisión."
-              accent="#638fa9"
-            />
-          </motion.div>
-
-          <motion.div {...heroUp(0.1)} className="hidden lg:grid sm:grid-cols-3 gap-3 max-w-3xl hero-operational-rail">
-            {HERO_SIGNALS.map((signal) => (
-              <div key={signal} className="home-signal">
-                {signal}
-              </div>
-            ))}
+          <motion.div {...heroUp(0.08)} className="hero-evidence-summary hero-evidence-summary--mobile lg:hidden">
+            <div className="hero-evidence-heading">
+              <span>Evidencia operativa</span>
+              <strong>estado después de control</strong>
+            </div>
+            <div className="hero-evidence-grid">
+              {HERO_EVIDENCE.map(item => (
+                <div key={item.label} className="hero-evidence-item">
+                  <span>{item.label}</span>
+                  <strong>{item.value}</strong>
+                </div>
+              ))}
+            </div>
           </motion.div>
         </div>
       </div>
@@ -226,8 +229,8 @@ export default function HomeLanding({ featuredCase }: { featuredCase: FeaturedCa
       <div className="section-divider" />
       <RiskExposure />
       <WorkflowSection />
-      <HumanConsultiveLayer />
       <FeaturedCaseSection featuredCase={featuredCase} />
+      <HumanConsultiveLayer />
       <TrustValidationLayer />
     </>
   )
