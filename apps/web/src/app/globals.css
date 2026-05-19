@@ -58,6 +58,17 @@ body {
   --atmo-drift-y: 0px;
   --atmo-route-opacity: 0.22;
   --atmo-node-opacity: 0.42;
+  --focus-core-x: 72%;
+  --focus-core-y: 34%;
+  --focus-rgb: 99,143,169;
+  --focus-secondary-rgb: 63,119,92;
+  --focus-energy: 0.68;
+  --focus-corridor-angle: -7deg;
+  --cinematic-breath-duration: 18s;
+  --cinematic-field-duration: 42s;
+  --cinematic-mesh-duration: 64s;
+  --cinematic-route-duration: 24s;
+  --cinematic-cta-response: 0.18s;
 
   /* Premium easing — used in transitions and animations */
   --ease-expo:  cubic-bezier(0.16, 1, 0.3, 1);   /* fast start, smooth coast */
@@ -169,11 +180,13 @@ body {
     pointer-events: none;
     color: #638fa9;
     background:
-      radial-gradient(circle at var(--cursor-x) var(--cursor-y), rgba(99,143,169,calc(0.045 + var(--atmo-activity) * 0.035)), transparent 28rem),
-      radial-gradient(circle at 78% var(--atmo-focus-y), rgba(63,119,92,calc(0.022 + var(--atmo-activity) * 0.028)), transparent 30rem),
+      radial-gradient(circle at var(--cursor-x) var(--cursor-y), rgba(var(--focus-rgb),calc(0.035 + var(--atmo-activity) * 0.032)), transparent 28rem),
+      radial-gradient(circle at var(--focus-core-x) var(--focus-core-y), rgba(var(--focus-rgb),calc(0.045 + var(--focus-energy) * 0.040)), transparent 30rem),
+      radial-gradient(circle at 78% var(--atmo-focus-y), rgba(var(--focus-secondary-rgb),calc(0.022 + var(--atmo-activity) * 0.028)), transparent 30rem),
       radial-gradient(ellipse at 46% 108%, rgba(184,135,72,0.030), transparent 34rem),
       linear-gradient(180deg, #080c14 0%, #07101a 48%, #080c14 100%);
     --atmo-region-mix: 0.28;
+    animation: atmoGlobalBreath var(--cinematic-breath-duration) ease-in-out infinite;
   }
 
   html[data-atmo-region='low'] {
@@ -196,12 +209,12 @@ body {
     inset: -14% -10%;
     opacity: calc(0.30 + var(--atmo-activity) * 0.16);
     background:
-      radial-gradient(ellipse at 18% 30%, rgba(99,143,169,0.050), transparent 36rem),
-      radial-gradient(ellipse at 84% 64%, rgba(63,119,92,0.034), transparent 34rem),
+      radial-gradient(ellipse at 18% 30%, rgba(var(--focus-rgb),0.050), transparent 36rem),
+      radial-gradient(ellipse at 84% 64%, rgba(var(--focus-secondary-rgb),0.034), transparent 34rem),
       linear-gradient(115deg, transparent 0%, rgba(255,255,255,0.018) 42%, transparent 72%);
     filter: blur(0.2px);
     transform: translate3d(var(--atmo-drift-x), var(--atmo-drift-y), 0);
-    animation: atmoFieldDrift 36s ease-in-out infinite;
+    animation: atmoFieldDrift var(--cinematic-field-duration) ease-in-out infinite;
   }
 
   .operational-atmosphere__mesh {
@@ -215,7 +228,58 @@ body {
     background-size: 96px 96px, 96px 96px, auto;
     mask-image: linear-gradient(180deg, transparent, black 12%, black 78%, transparent);
     transform: translate3d(calc(var(--atmo-drift-x) * -0.35), calc(var(--atmo-drift-y) * 0.45), 0);
-    animation: atmoMeshDrift 52s linear infinite;
+    animation: atmoMeshDrift var(--cinematic-mesh-duration) linear infinite;
+  }
+
+  .operational-atmosphere__core {
+    position: absolute;
+    left: var(--focus-core-x);
+    top: var(--focus-core-y);
+    width: clamp(13rem, 25vw, 30rem);
+    aspect-ratio: 1;
+    border-radius: 999px;
+    opacity: calc(0.18 + var(--focus-energy) * 0.18);
+    transform: translate3d(-50%, -50%, 0) scale(1);
+    background:
+      radial-gradient(circle, rgba(var(--focus-rgb),0.22), rgba(var(--focus-rgb),0.070) 34%, transparent 68%),
+      radial-gradient(circle, rgba(255,255,255,0.06), transparent 58%);
+    filter: blur(0.4px);
+    mix-blend-mode: screen;
+    animation: atmoFocusCoreBreath var(--cinematic-breath-duration) ease-in-out infinite;
+  }
+
+  .operational-atmosphere__core-ring {
+    position: absolute;
+    left: var(--focus-core-x);
+    top: var(--focus-core-y);
+    width: clamp(12rem, 22vw, 25rem);
+    aspect-ratio: 1;
+    border-radius: 999px;
+    opacity: calc(0.08 + var(--focus-energy) * 0.12);
+    transform: translate3d(-50%, -50%, 0);
+    background:
+      conic-gradient(from 90deg,
+        transparent 0deg,
+        rgba(var(--focus-rgb),0.18) 44deg,
+        transparent 78deg,
+        transparent 184deg,
+        rgba(var(--focus-secondary-rgb),0.11) 228deg,
+        transparent 270deg);
+    mask-image: radial-gradient(circle, transparent 56%, black 58%, black 61%, transparent 64%);
+    animation: atmoFocusRingScan calc(var(--cinematic-route-duration) * 1.45) linear infinite;
+  }
+
+  .operational-atmosphere__focus-corridor {
+    position: absolute;
+    left: -8vw;
+    right: -8vw;
+    top: var(--focus-core-y);
+    height: 1px;
+    opacity: calc(0.08 + var(--focus-energy) * 0.12);
+    background:
+      linear-gradient(90deg, transparent, rgba(var(--focus-rgb),0.34), rgba(var(--focus-secondary-rgb),0.14), transparent);
+    transform: rotate(var(--focus-corridor-angle)) translate3d(calc(var(--atmo-drift-x) * 0.35), 0, 0);
+    animation: atmoFocusCorridor calc(var(--cinematic-route-duration) * 1.2) ease-in-out infinite;
   }
 
   .operational-atmosphere__routes {
@@ -236,14 +300,14 @@ body {
     stroke-dasharray: 0.05 0.15;
     stroke-dashoffset: 0;
     vector-effect: non-scaling-stroke;
-    animation: atmoRoutePulse 18s linear infinite;
+    animation: atmoRoutePulse var(--cinematic-route-duration) linear infinite;
   }
 
   .operational-atmosphere__route--2 {
     stroke-width: 0.82;
     stroke-dasharray: 0.04 0.19;
     opacity: 0.72;
-    animation-duration: 23s;
+    animation-duration: calc(var(--cinematic-route-duration) * 1.26);
     animation-delay: -7s;
   }
 
@@ -251,7 +315,7 @@ body {
     stroke-width: 0.92;
     stroke-dasharray: 0.035 0.16;
     opacity: 0.58;
-    animation-duration: 29s;
+    animation-duration: calc(var(--cinematic-route-duration) * 1.62);
     animation-delay: -13s;
   }
 
@@ -331,6 +395,46 @@ body {
     background: linear-gradient(90deg, transparent, rgba(148,163,184,0.45), transparent);
     animation: atmoTelemetryVariance var(--telemetry-duration) ease-in-out infinite;
     animation-delay: var(--telemetry-delay);
+  }
+
+  .operational-atmosphere__annotations {
+    position: absolute;
+    left: clamp(1.6rem, 6vw, 7rem);
+    bottom: 14vh;
+    display: grid;
+    gap: 0.55rem;
+    opacity: calc(0.030 + var(--focus-energy) * 0.035);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: rgba(190,204,216,0.72);
+    transform: translate3d(0, calc(var(--atmo-drift-y) * -0.18), 0);
+  }
+
+  .operational-atmosphere__annotations span {
+    position: relative;
+    padding-left: 0.85rem;
+    white-space: nowrap;
+    animation: atmoAnnotationPresence calc(var(--cinematic-breath-duration) * 1.4) ease-in-out infinite;
+  }
+
+  .operational-atmosphere__annotations span:nth-child(2) {
+    animation-delay: -7s;
+  }
+
+  .operational-atmosphere__annotations span:nth-child(3) {
+    animation-delay: -13s;
+  }
+
+  .operational-atmosphere__annotations span::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.45em;
+    width: 4px;
+    height: 4px;
+    border-radius: 999px;
+    background: rgba(var(--focus-rgb),0.60);
+    box-shadow: 0 0 0 3px rgba(var(--focus-rgb),0.045);
   }
 
   .operational-atmosphere__falloff {
@@ -485,8 +589,12 @@ body {
   /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      LABELS / BADGES
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-  .label { @apply text-[10.5px] font-semibold uppercase tracking-normal text-zinc-500; }
-  .badge { @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[10px] font-mono font-medium; }
+  .label { @apply text-[10.5px] font-bold uppercase tracking-normal text-zinc-500; }
+  .label {
+    color: #7e8b9c;
+    text-shadow: 0 0 18px rgba(99,143,169,0.055);
+  }
+  .badge { @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[10px] font-mono font-semibold; }
 
   /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      BUTTONS — premium tactile interactions
@@ -1131,11 +1239,26 @@ body {
   }
 
   .hero-intelligence-layer {
+    position: relative;
     display: grid;
     grid-template-columns: minmax(0, 0.92fr) minmax(17rem, 1.08fr);
     gap: 0.85rem;
     max-width: 46rem;
     align-items: stretch;
+  }
+
+  .hero-intelligence-layer::before {
+    content: '';
+    position: absolute;
+    inset: -0.75rem -0.85rem;
+    border-radius: 12px;
+    pointer-events: none;
+    opacity: calc(0.18 + var(--focus-energy, 0.68) * 0.18);
+    background:
+      radial-gradient(circle at 66% 42%, rgba(var(--focus-rgb),0.20), transparent 18rem),
+      linear-gradient(90deg, transparent, rgba(var(--focus-rgb),0.070), transparent);
+    mask-image: linear-gradient(90deg, transparent, black 12%, black 82%, transparent);
+    animation: heroFocusBreath var(--cinematic-breath-duration) ease-in-out infinite;
   }
 
   .visual-state-rail,
@@ -1152,6 +1275,23 @@ body {
     box-shadow:
       0 1px 0 rgba(255,255,255,0.045) inset,
       0 16px 38px rgba(0,0,0,0.22);
+  }
+
+  .visual-state-rail::after,
+  .topology-fragment::after,
+  .governance-callout::after,
+  .continuity-trace::after {
+    content: '';
+    position: absolute;
+    left: 0.75rem;
+    right: 0.75rem;
+    bottom: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(var(--focus-rgb),0.32), transparent);
+    opacity: 0.28;
+    transform: scaleX(0.48);
+    transform-origin: left;
+    animation: focusAnchorSweep calc(var(--cinematic-route-duration) * 1.1) ease-in-out infinite;
   }
 
   .visual-state-rail::before,
@@ -1308,12 +1448,12 @@ body {
     stroke-width: 1.35;
     stroke-dasharray: 5 8;
     stroke-opacity: calc(0.24 + var(--atmo-activity, 0.28) * 0.10);
-    animation: visualRouteTrace 12s linear infinite;
+    animation: visualRouteTrace calc(var(--cinematic-route-duration) * 0.58) linear infinite;
   }
 
   .topology-fragment-route-secondary {
     stroke-opacity: 0.20;
-    animation-duration: 16s;
+    animation-duration: calc(var(--cinematic-route-duration) * 0.82);
   }
 
   .topology-fragment p,
@@ -1817,6 +1957,7 @@ body {
 }
 
 .adaptive-cta {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: space-between;
@@ -1829,10 +1970,37 @@ body {
     rgba(11,14,20,0.82);
   color: #d7aa72;
   padding: 0.72rem 1rem;
+  overflow: hidden;
   transition:
-    border-color 0.16s var(--ease-quart),
-    transform 0.16s var(--ease-quart),
-    background 0.16s var(--ease-quart);
+    border-color var(--cinematic-cta-response, 0.18s) var(--ease-quart),
+    transform var(--cinematic-cta-response, 0.18s) var(--ease-quart),
+    box-shadow var(--cinematic-cta-response, 0.18s) var(--ease-quart),
+    background var(--cinematic-cta-response, 0.18s) var(--ease-quart);
+}
+
+.adaptive-cta::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(105deg, transparent 0%, rgba(var(--focus-rgb),0.11) 38%, rgba(184,135,72,0.13) 50%, transparent 66%);
+  opacity: 0;
+  transform: translate3d(-42%,0,0);
+  transition: opacity 0.18s var(--ease-quart), transform 0.24s var(--ease-quart);
+}
+
+.adaptive-cta::after {
+  content: '';
+  position: absolute;
+  left: 0.75rem;
+  right: 0.75rem;
+  bottom: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(var(--focus-rgb),0.34), transparent);
+  opacity: 0.28;
+  transform: scaleX(0.52);
+  transform-origin: left;
 }
 
 .adaptive-cta:hover {
@@ -1840,7 +2008,22 @@ body {
   background:
     linear-gradient(180deg, rgba(164,113,53,0.23), rgba(164,113,53,0.12)),
     rgba(14,17,23,0.92);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.055) inset,
+    0 12px 28px rgba(0,0,0,0.24),
+    0 0 0 1px rgba(var(--focus-rgb),0.045);
   transform: translateY(-1px);
+}
+
+.adaptive-cta:hover::before {
+  opacity: 1;
+  transform: translate3d(28%,0,0);
+}
+
+.adaptive-cta:hover::after {
+  opacity: 0.75;
+  transform: scaleX(1);
+  transition: opacity 0.18s var(--ease-quart), transform 0.24s var(--ease-quart);
 }
 
 .adaptive-cta:active {
@@ -2168,6 +2351,47 @@ body {
   83%      { opacity: 0.50; transform: scaleX(0.88); }
 }
 
+@keyframes atmoGlobalBreath {
+  0%, 100% { filter: saturate(1) brightness(1); }
+  44%      { filter: saturate(1.06) brightness(1.035); }
+  68%      { filter: saturate(1.02) brightness(0.985); }
+}
+
+@keyframes atmoFocusCoreBreath {
+  0%, 100% { opacity: calc(0.16 + var(--focus-energy) * 0.16); transform: translate3d(-50%, -50%, 0) scale(0.96); }
+  42%      { opacity: calc(0.26 + var(--focus-energy) * 0.22); transform: translate3d(-50%, -50%, 0) scale(1.045); }
+  72%      { opacity: calc(0.18 + var(--focus-energy) * 0.17); transform: translate3d(-50%, -50%, 0) scale(1.01); }
+}
+
+@keyframes atmoFocusRingScan {
+  0%   { transform: translate3d(-50%, -50%, 0) rotate(0deg); opacity: calc(0.06 + var(--focus-energy) * 0.10); }
+  38%  { opacity: calc(0.12 + var(--focus-energy) * 0.13); }
+  100% { transform: translate3d(-50%, -50%, 0) rotate(360deg); opacity: calc(0.06 + var(--focus-energy) * 0.10); }
+}
+
+@keyframes atmoFocusCorridor {
+  0%, 100% { opacity: calc(0.055 + var(--focus-energy) * 0.10); filter: blur(0); }
+  46%      { opacity: calc(0.13 + var(--focus-energy) * 0.14); filter: blur(0.18px); }
+}
+
+@keyframes heroFocusBreath {
+  0%, 100% { opacity: calc(0.12 + var(--focus-energy) * 0.12); transform: scale(0.98); }
+  48%      { opacity: calc(0.22 + var(--focus-energy) * 0.16); transform: scale(1.012); }
+}
+
+@keyframes focusAnchorSweep {
+  0%, 100% { opacity: 0.18; transform: translate3d(-10%,0,0) scaleX(0.38); }
+  44%      { opacity: 0.52; transform: translate3d(0,0,0) scaleX(0.92); }
+  72%      { opacity: 0.26; transform: translate3d(8%,0,0) scaleX(0.64); }
+}
+
+@keyframes atmoAnnotationPresence {
+  0%, 100% { opacity: 0.36; transform: translate3d(0,0,0); }
+  36%      { opacity: 0.82; transform: translate3d(1px,0,0); }
+  47%      { opacity: 0.42; }
+  78%      { opacity: 0.58; }
+}
+
 @keyframes continuityTrace {
   0%   { background-position: 0 0; opacity: 0.24; }
   38%  { opacity: 0.54; }
@@ -2262,17 +2486,27 @@ body {
   .visual-state-active::before,
   .operational-atmosphere__field,
   .operational-atmosphere__mesh,
+  .operational-atmosphere__core,
+  .operational-atmosphere__core-ring,
+  .operational-atmosphere__focus-corridor,
   .operational-atmosphere__route,
   .operational-atmosphere__node,
   .operational-atmosphere__corridor,
   .operational-atmosphere__telemetry span,
+  .operational-atmosphere__annotations span,
+  .hero-intelligence-layer::before,
+  .visual-state-rail::after,
+  .topology-fragment::after,
+  .governance-callout::after,
+  .continuity-trace::after,
   .continuity-section::after,
   .evidence-card-state i {
     animation: none !important;
   }
   .operational-atmosphere__routes,
   .operational-atmosphere__nodes,
-  .operational-atmosphere__telemetry {
+  .operational-atmosphere__telemetry,
+  .operational-atmosphere__annotations {
     opacity: 0.08 !important;
   }
   [style*="clip-path: inset"] {
@@ -2302,21 +2536,23 @@ html.light {
   --brand-critical: #a8753f;
 }
 html.light body {
-  background-color: #fafbfc;
+  background-color: #eef3f6;
   background-image:
-    linear-gradient(180deg, #ffffff 0%, #f7f9fb 52%, #f1f5f8 100%),
-    linear-gradient(rgba(24,32,43,0.018) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(24,32,43,0.018) 1px, transparent 1px);
-  background-size: auto, 26px 26px, 26px 26px;
-  color: #18202b;
+    radial-gradient(ellipse at 22% 0%, rgba(92,119,144,0.14), transparent 32rem),
+    radial-gradient(ellipse at 80% 18%, rgba(164,113,53,0.055), transparent 24rem),
+    linear-gradient(rgba(24,32,43,0.026) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(24,32,43,0.022) 1px, transparent 1px),
+    linear-gradient(180deg, #f4f7f9 0%, #eaf0f4 54%, #dfe8ee 100%);
+  background-size: auto, auto, 28px 28px, 28px 28px, auto;
+  color: #162131;
 }
 
 /* Surfaces */
 html.light .card {
   background:
-    linear-gradient(180deg, rgba(255,255,255,0.94), rgba(247,250,253,0.92)) !important;
-  border-color: rgba(24,32,43,0.105) !important;
-  box-shadow: 0 1px 0 rgba(255,255,255,0.92) inset, 0 8px 20px rgba(41,54,74,0.08) !important;
+    linear-gradient(180deg, rgba(248,251,253,0.90), rgba(232,240,246,0.86)) !important;
+  border-color: rgba(24,42,59,0.13) !important;
+  box-shadow: 0 1px 0 rgba(255,255,255,0.78) inset, 0 10px 24px rgba(41,54,74,0.095) !important;
   color: #18202b;
 }
 html.light .card:hover {
@@ -2409,9 +2645,10 @@ html.light .bg-topology {
 html.light .operational-atmosphere {
   color: #355871;
   background:
-    radial-gradient(circle at var(--cursor-x) var(--cursor-y), rgba(72,104,132,calc(0.070 + var(--atmo-activity) * 0.026)), transparent 30rem),
-    radial-gradient(circle at 78% var(--atmo-focus-y), rgba(164,113,53,calc(0.030 + var(--atmo-activity) * 0.018)), transparent 28rem),
-    linear-gradient(180deg, #ffffff 0%, #f6f9fb 48%, #eef3f7 100%);
+    radial-gradient(circle at var(--cursor-x) var(--cursor-y), rgba(var(--focus-rgb),calc(0.052 + var(--atmo-activity) * 0.022)), transparent 30rem),
+    radial-gradient(circle at var(--focus-core-x) var(--focus-core-y), rgba(var(--focus-rgb),calc(0.050 + var(--focus-energy) * 0.030)), transparent 28rem),
+    radial-gradient(circle at 78% var(--atmo-focus-y), rgba(var(--focus-secondary-rgb),calc(0.026 + var(--atmo-activity) * 0.018)), transparent 28rem),
+    linear-gradient(180deg, #f1f5f8 0%, #e6edf2 48%, #dce6ed 100%);
 }
 html.light .operational-atmosphere__field {
   background:
@@ -2422,9 +2659,21 @@ html.light .operational-atmosphere__field {
 html.light .operational-atmosphere__mesh {
   opacity: 0.52;
   background-image:
-    linear-gradient(rgba(36,52,70,0.045) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(36,52,70,0.040) 1px, transparent 1px),
+    linear-gradient(rgba(36,52,70,0.052) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(36,52,70,0.048) 1px, transparent 1px),
     radial-gradient(circle at 30% 18%, rgba(72,104,132,0.09), transparent 28rem);
+}
+html.light .operational-atmosphere__core {
+  mix-blend-mode: multiply;
+  background:
+    radial-gradient(circle, rgba(var(--focus-rgb),0.18), rgba(var(--focus-rgb),0.060) 34%, transparent 68%),
+    radial-gradient(circle, rgba(255,255,255,0.34), transparent 58%);
+}
+html.light .operational-atmosphere__core-ring {
+  opacity: calc(0.055 + var(--focus-energy) * 0.085);
+}
+html.light .operational-atmosphere__focus-corridor {
+  background: linear-gradient(90deg, transparent, rgba(var(--focus-rgb),0.24), rgba(var(--focus-secondary-rgb),0.11), transparent);
 }
 html.light .operational-atmosphere__routes {
   color: rgba(36,71,98,0.72);
@@ -2443,6 +2692,10 @@ html.light .operational-atmosphere__corridor {
 }
 html.light .operational-atmosphere__telemetry span {
   background: linear-gradient(90deg, transparent, rgba(36,52,70,0.32), transparent);
+}
+html.light .operational-atmosphere__annotations {
+  color: rgba(36,52,70,0.56);
+  mix-blend-mode: multiply;
 }
 html.light .operational-atmosphere__falloff {
   background:
@@ -2951,6 +3204,17 @@ html.light::-webkit-scrollbar-thumb { background: #d1d1d6; }
     opacity: 0.16;
     background-size: 72px 72px, 72px 72px, auto;
   }
+  .operational-atmosphere__core {
+    width: clamp(10rem, 68vw, 18rem);
+    opacity: calc(0.12 + var(--focus-energy) * 0.10);
+  }
+  .operational-atmosphere__core-ring {
+    width: clamp(9rem, 58vw, 16rem);
+    opacity: calc(0.04 + var(--focus-energy) * 0.06);
+  }
+  .operational-atmosphere__focus-corridor {
+    opacity: calc(0.04 + var(--focus-energy) * 0.06);
+  }
   .operational-atmosphere__routes {
     inset: 0 -28% -8%;
     width: 156%;
@@ -2964,7 +3228,8 @@ html.light::-webkit-scrollbar-thumb { background: #d1d1d6; }
     height: 4px;
   }
   .operational-atmosphere__corridor--secondary,
-  .operational-atmosphere__telemetry {
+  .operational-atmosphere__telemetry,
+  .operational-atmosphere__annotations {
     display: none;
   }
   .visual-evidence-heading {

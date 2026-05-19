@@ -1,8 +1,10 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import type { CSSProperties } from 'react'
+import { usePathname } from 'next/navigation'
 import { rafThrottle } from '@/lib/motion/operationalMotion'
+import { applyCinematicVars, CINEMATIC_TIMING, cinematicSeconds, getFocusProfile } from '@/lib/motion/operationalCinematics'
 
 const ROUTES = [
   'M-80 260 C 170 210, 310 340, 520 285 S 870 150, 1110 220 S 1350 340, 1520 250',
@@ -22,6 +24,22 @@ const NODES = [
 ] as const
 
 export default function OperationalAtmosphere() {
+  const pathname = usePathname()
+  const profile = useMemo(() => getFocusProfile(pathname), [pathname])
+  const atmosphereStyle = useMemo(() => ({
+    '--focus-core-x': profile.coreX,
+    '--focus-core-y': profile.coreY,
+    '--focus-rgb': profile.accentRgb,
+    '--focus-secondary-rgb': profile.secondaryRgb,
+    '--focus-energy': profile.energy.toFixed(2),
+    '--focus-corridor-angle': profile.corridorAngle,
+    '--cinematic-breath-duration': cinematicSeconds(CINEMATIC_TIMING.breath),
+    '--cinematic-field-duration': cinematicSeconds(CINEMATIC_TIMING.fieldDrift),
+    '--cinematic-mesh-duration': cinematicSeconds(CINEMATIC_TIMING.meshDrift),
+    '--cinematic-route-duration': cinematicSeconds(CINEMATIC_TIMING.routePrimary),
+    '--cinematic-cta-response': `${CINEMATIC_TIMING.ctaResponse}s`,
+  } as CSSProperties), [profile])
+
   useEffect(() => {
     const root = document.documentElement
     const media = window.matchMedia('(prefers-reduced-motion: reduce)')
@@ -50,6 +68,7 @@ export default function OperationalAtmosphere() {
       }
     }
 
+    applyCinematicVars(root, profile)
     setInitialLight()
     setScrollState()
 
@@ -88,12 +107,15 @@ export default function OperationalAtmosphere() {
       window.removeEventListener('resize', onResize)
       document.removeEventListener('visibilitychange', onVisibility)
     }
-  }, [])
+  }, [profile])
 
   return (
-    <div className="operational-atmosphere" aria-hidden="true">
+    <div className="operational-atmosphere" data-focus-core={profile.id} style={atmosphereStyle} aria-hidden="true">
       <div className="operational-atmosphere__field" />
       <div className="operational-atmosphere__mesh" />
+      <div className="operational-atmosphere__core" />
+      <div className="operational-atmosphere__core-ring" />
+      <div className="operational-atmosphere__focus-corridor" />
       <div className="operational-atmosphere__corridor operational-atmosphere__corridor--primary" />
       <div className="operational-atmosphere__corridor operational-atmosphere__corridor--secondary" />
       <svg className="operational-atmosphere__routes" viewBox="0 0 1440 1100" preserveAspectRatio="none">
@@ -138,6 +160,11 @@ export default function OperationalAtmosphere() {
             } as CSSProperties}
           />
         ))}
+      </div>
+      <div className="operational-atmosphere__annotations">
+        <span>rollback listo</span>
+        <span>dueño confirmado</span>
+        <span>ventana monitoreada</span>
       </div>
       <div className="operational-atmosphere__falloff" />
       <div className="operational-atmosphere__spine" />

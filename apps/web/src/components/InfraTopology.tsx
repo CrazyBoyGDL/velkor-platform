@@ -2,6 +2,7 @@
 import { motion } from 'framer-motion'
 import { EASE } from '@/lib/motion'
 import { nodeActivation, topologyActivation, useOperationalActivity } from '@/lib/motion/operationalMotion'
+import { CINEMATIC_TIMING, cinematicDelay } from '@/lib/motion/operationalCinematics'
 
 // ─── Canvas + geometry constants ──────────────────────────────────────────────
 const W = 560, H = 400
@@ -97,7 +98,7 @@ export default function InfraTopology() {
   return (
     <div
       ref={ref}
-      className="select-none w-full"
+      className="infra-topology select-none w-full"
       role="img"
       aria-label="Diagrama de arquitectura de infraestructura IT gestionada por Velkor"
     >
@@ -119,6 +120,42 @@ export default function InfraTopology() {
           stroke="rgba(56,100,160,0.11)" strokeWidth={0.75} strokeDasharray="2 7" />
         <circle cx={CX} cy={CY} r={R_RING_INNER}
           stroke="rgba(56,100,160,0.06)" strokeWidth={0.5} strokeDasharray="1 8" />
+
+        <motion.circle
+          cx={CX}
+          cy={CY}
+          r={R_RING_MID}
+          stroke="rgba(127,158,180,0.18)"
+          strokeWidth={0.7}
+          strokeDasharray="2 11"
+          fill="none"
+          initial={{ opacity: 0.22, rotate: 0 }}
+          animate={running
+            ? { opacity: [0.18, 0.42, 0.20], rotate: 360 }
+            : { opacity: 0.18, rotate: 0 }}
+          transition={{
+            opacity: { repeat: running ? Infinity : 0, duration: CINEMATIC_TIMING.topologyCore, ease: 'easeInOut' },
+            rotate: { repeat: running ? Infinity : 0, duration: CINEMATIC_TIMING.routeTertiary, ease: 'linear' },
+          }}
+          style={{ transformOrigin: `${CX}px ${CY}px` }}
+        />
+
+        <motion.path
+          d={`M ${CX - 96} ${CY + 24} C ${CX - 38} ${CY - 54}, ${CX + 38} ${CY + 58}, ${CX + 106} ${CY - 22}`}
+          stroke="rgba(159,195,212,0.22)"
+          strokeWidth={1.1}
+          strokeDasharray="4 18"
+          fill="none"
+          initial={{ opacity: 0, pathLength: 0 }}
+          animate={running
+            ? { opacity: [0.16, 0.34, 0.16], pathLength: 1, strokeDashoffset: [22, 0] }
+            : { opacity: 0.14, pathLength: 1, strokeDashoffset: 0 }}
+          transition={{
+            opacity: { repeat: running ? Infinity : 0, duration: CINEMATIC_TIMING.topologyCore + 1.6, ease: 'easeInOut' },
+            pathLength: { duration: 0.9, ease: EASE as any },
+            strokeDashoffset: { repeat: running ? Infinity : 0, duration: CINEMATIC_TIMING.routePrimary, ease: 'linear' },
+          }}
+        />
 
         {/* Outer ring accent marks at each node's angular position */}
         {INNER_NODES.map(({ deg, color }) => {
@@ -156,9 +193,9 @@ export default function InfraTopology() {
                   opacity: { duration: 0.12, ease: EASE as any, delay: 0.08 },
                   strokeDashoffset: {
                     repeat: running ? Infinity : 0,
-                    duration: 2.1 + i * 0.17,
+                    duration: CINEMATIC_TIMING.topologySpoke + i * 0.22,
                     ease: 'linear',
-                    delay: i * 0.28,
+                    delay: cinematicDelay(i, 0.36),
                   },
                 }}
               />
@@ -179,9 +216,9 @@ export default function InfraTopology() {
                   : { cx: CX, cy: CY, opacity: 0 }}
                 transition={{
                   repeat: running ? Infinity : 0,
-                  duration: 3.8 + i * 0.24,
+                  duration: CINEMATIC_TIMING.topologyOuter + i * 0.28,
                   ease: 'linear',
-                  delay: 0.6 + i * 0.52,
+                  delay: cinematicDelay(i, 0.62, 0.6),
                 }}
               />
             </g>
@@ -212,9 +249,9 @@ export default function InfraTopology() {
                   opacity: { duration: 0.12, ease: EASE as any, delay: 0.08 },
                   strokeDashoffset: {
                     repeat: running ? Infinity : 0,
-                    duration: 3.8 + i * 0.25,
+                    duration: CINEMATIC_TIMING.topologyOuter + i * 0.34,
                     ease: 'linear',
-                    delay: i * 0.45,
+                    delay: cinematicDelay(i, 0.55),
                   },
                 }}
               />
@@ -249,7 +286,7 @@ export default function InfraTopology() {
                 strokeDasharray="2 5" fill="none"
                 strokeDashoffset={0}
                 animate={running ? { strokeDashoffset: [0, -14] } : { strokeDashoffset: 0 }}
-                transition={{ repeat: running ? Infinity : 0, duration: 5.2 + i * 0.35, ease: 'linear', delay: i * 0.8 }}
+                transition={{ repeat: running ? Infinity : 0, duration: CINEMATIC_TIMING.routeSecondary + i * 0.45, ease: 'linear', delay: cinematicDelay(i, 0.9) }}
               />
               <text
                 x={lx} y={ly}
@@ -283,7 +320,7 @@ export default function InfraTopology() {
                 fill={color} fillOpacity={0}
                 initial={{ fillOpacity: 0.018 }}
                 animate={running ? { fillOpacity: [0.04, 0.01, 0.04] } : { fillOpacity: 0.018 }}
-                transition={{ repeat: running ? Infinity : 0, duration: 5.5 + i * 1.1, ease: 'easeInOut', delay: i * 0.55 }}
+                transition={{ repeat: running ? Infinity : 0, duration: CINEMATIC_TIMING.nodeHeartbeat + i * 0.9, ease: 'easeInOut', delay: cinematicDelay(i, 0.47) }}
               />
               {/* Static ambient halo */}
               <circle cx={nx} cy={ny} r={20} fill={color} fillOpacity={0.04} />
@@ -381,7 +418,20 @@ export default function InfraTopology() {
             fill="rgba(100,116,139,0.05)"
             initial={{ opacity: 0.36 }}
             animate={running ? { opacity: [0.70, 0.30, 0.70] } : { opacity: 0.36 }}
-            transition={{ repeat: running ? Infinity : 0, duration: 5.5, ease: 'easeInOut' }}
+            transition={{ repeat: running ? Infinity : 0, duration: CINEMATIC_TIMING.topologyCore, ease: 'easeInOut' }}
+          />
+          <motion.circle
+            cx={CX} cy={CY} r={48}
+            stroke="rgba(159,195,212,0.20)"
+            strokeWidth={0.8}
+            strokeDasharray="1 9"
+            fill="none"
+            initial={{ opacity: 0.12, scale: 0.94 }}
+            animate={running
+              ? { opacity: [0.10, 0.36, 0.12], scale: [0.96, 1.04, 0.96] }
+              : { opacity: 0.12, scale: 1 }}
+            transition={{ repeat: running ? Infinity : 0, duration: CINEMATIC_TIMING.breath, ease: 'easeInOut' }}
+            style={{ transformOrigin: `${CX}px ${CY}px` }}
           />
           {/* Outer orbit ring — dashed hexagonal reference plane */}
           <polygon
