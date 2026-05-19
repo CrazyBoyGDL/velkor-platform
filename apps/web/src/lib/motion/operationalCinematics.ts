@@ -84,6 +84,14 @@ const PROFILE_BY_SECTION: Array<{ match: (pathname: string) => boolean; profile:
   },
 ]
 
+export const SPATIAL_HORIZON_BY_PROFILE: Record<FocusProfile['id'], string> = {
+  'hero-core': '38vh',
+  'service-route': '46vh',
+  'evidence-trace': '56vh',
+  'assessment-focus': '42vh',
+  'knowledge-field': '36vh',
+}
+
 export function getFocusProfile(pathname = '/'): FocusProfile {
   return PROFILE_BY_SECTION.find(entry => entry.match(pathname))?.profile ?? DEFAULT_FOCUS_PROFILE
 }
@@ -103,6 +111,13 @@ export function applyCinematicVars(target: HTMLElement, profile: FocusProfile) {
   target.style.setProperty('--focus-secondary-rgb', profile.secondaryRgb)
   target.style.setProperty('--focus-energy', profile.energy.toFixed(2))
   target.style.setProperty('--focus-corridor-angle', profile.corridorAngle)
+  target.style.setProperty('--spatial-core-x', profile.coreX)
+  target.style.setProperty('--spatial-core-y', profile.coreY)
+  target.style.setProperty('--spatial-accent-rgb', profile.accentRgb)
+  target.style.setProperty('--spatial-secondary-rgb', profile.secondaryRgb)
+  target.style.setProperty('--spatial-energy', profile.energy.toFixed(2))
+  target.style.setProperty('--spatial-tilt', profile.corridorAngle)
+  target.style.setProperty('--spatial-horizon-y', SPATIAL_HORIZON_BY_PROFILE[profile.id])
   target.style.setProperty('--cinematic-breath-duration', cinematicSeconds(CINEMATIC_TIMING.breath))
   target.style.setProperty('--cinematic-field-duration', cinematicSeconds(CINEMATIC_TIMING.fieldDrift))
   target.style.setProperty('--cinematic-mesh-duration', cinematicSeconds(CINEMATIC_TIMING.meshDrift))

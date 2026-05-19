@@ -4,6 +4,7 @@ import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import MobileConsultiveCTA from '@/components/MobileConsultiveCTA'
 import OperationalAtmosphere from '@/components/OperationalAtmosphere'
+import SpatialFieldSystem from '@/components/SpatialFieldSystem'
 import ThemeProvider from '@/components/ThemeProvider'
 import { Analytics } from '@/components/Analytics'
 import { VisualIntelligenceTracker } from '@/components/VisualIntelligence'
@@ -136,6 +137,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Analytics />
         <ThemeProvider>
           <OperationalAtmosphere />
+          <SpatialFieldSystem />
           <VisualIntelligenceTracker />
           <Navbar />
           <main className="flex-1 pt-[64px]">

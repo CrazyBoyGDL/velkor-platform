@@ -60,7 +60,7 @@ const AVOIDED_PATTERNS = [
 
 function Hero() {
   return (
-    <section className="relative flex items-start lg:items-center overflow-hidden lg:min-h-[82vh] hero-depth-stage">
+    <section className="relative flex items-start lg:items-center overflow-hidden lg:min-h-[82vh] hero-depth-stage spatial-hero-field">
       <div className="absolute inset-0 pointer-events-none">
         <div className="hero-atmospheric-layer" />
         <div className="absolute inset-0 bg-topology opacity-20" />
@@ -69,15 +69,13 @@ function Hero() {
       </div>
 
       <motion.div
-        className="absolute inset-y-0 right-0 hidden lg:flex items-center pointer-events-none"
-        style={{ width: '58%' }}
+        className="hero-topology-plane absolute inset-0 hidden lg:flex items-center pointer-events-none"
         initial={{ opacity: 0 }}
-        animate={{ opacity: 0.78 }}
+        animate={{ opacity: 0.82 }}
         transition={{ duration: 0.45, ease: EASE, delay: 0.1 }}
       >
-        <div className="absolute inset-y-0 left-0 z-10 hero-topology-dissolve" style={{ width: '46%' }} />
         <motion.div
-          className="w-full"
+          className="hero-topology-field"
           animate={{ y: [0, -2, 0], x: [0, 1, 0] }}
           transition={{ repeat: Infinity, duration: 36, ease: 'easeInOut' }}
         >
@@ -85,7 +83,7 @@ function Hero() {
         </motion.div>
       </motion.div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-8 w-full">
+      <div className="hero-content-plane relative z-10 max-w-7xl mx-auto px-4 sm:px-8 w-full">
         <div className="lg:max-w-[43rem] py-16 sm:py-20 lg:py-28">
           <motion.div {...heroUp(0)} className="flex items-center gap-3 mb-6">
             <div className="w-5 h-px flex-shrink-0 bg-white/[0.10]" />
