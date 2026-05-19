@@ -56,6 +56,14 @@ export default function SpatialFieldSystem() {
             pathLength="1"
           />
         ))}
+        {FIELD_ROUTES.map((route, index) => (
+          <path
+            key={`signal-${route}`}
+            className={`spatial-field-system__signal spatial-field-system__signal--${index + 1}`}
+            d={route}
+            pathLength="1"
+          />
+        ))}
       </svg>
       <div className="spatial-field-system__nodes">
         {FIELD_NODES.map((node, index) => (

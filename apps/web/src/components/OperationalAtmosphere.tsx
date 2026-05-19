@@ -23,6 +23,19 @@ const NODES = [
   { x: 88, y: 72, tone: 'focus' },
 ] as const
 
+const SIGNAL_POINTS = [
+  { x: 15, y: 27, tone: 'low' },
+  { x: 26, y: 48, tone: 'sync' },
+  { x: 39, y: 19, tone: 'monitoring' },
+  { x: 52, y: 37, tone: 'focus' },
+  { x: 61, y: 69, tone: 'low' },
+  { x: 73, y: 24, tone: 'sync' },
+  { x: 82, y: 54, tone: 'monitoring' },
+  { x: 91, y: 76, tone: 'focus' },
+  { x: 47, y: 83, tone: 'sync' },
+  { x: 67, y: 12, tone: 'low' },
+] as const
+
 export default function OperationalAtmosphere() {
   const pathname = usePathname()
   const profile = useMemo(() => getFocusProfile(pathname), [pathname])
@@ -134,6 +147,14 @@ export default function OperationalAtmosphere() {
             pathLength="1"
           />
         ))}
+        {ROUTES.map((route, index) => (
+          <path
+            key={`signal-${route}`}
+            className={`operational-atmosphere__route-signal operational-atmosphere__route-signal--${index + 1}`}
+            d={route}
+            pathLength="1"
+          />
+        ))}
       </svg>
       <div className="operational-atmosphere__nodes">
         {NODES.map((node, index) => (
@@ -144,6 +165,19 @@ export default function OperationalAtmosphere() {
               left: `${node.x}%`,
               top: `${node.y}%`,
               animationDelay: `${index * 0.47}s`,
+            }}
+          />
+        ))}
+      </div>
+      <div className="operational-atmosphere__signal-field">
+        {SIGNAL_POINTS.map((point, index) => (
+          <span
+            key={`${point.x}-${point.y}`}
+            className={`operational-atmosphere__signal operational-atmosphere__signal--${point.tone}`}
+            style={{
+              left: `${point.x}%`,
+              top: `${point.y}%`,
+              animationDelay: `${index * -1.13}s`,
             }}
           />
         ))}

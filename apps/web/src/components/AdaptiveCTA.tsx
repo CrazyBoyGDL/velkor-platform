@@ -51,10 +51,22 @@ export default function AdaptiveCTA({
     })
   }, [cta.intent, cta.label, cta.service, location, riskLevel])
 
+  const activateSystemRoute = () => {
+    document.documentElement.dataset.atmoInteraction = 'cta'
+  }
+
+  const releaseSystemRoute = () => {
+    delete document.documentElement.dataset.atmoInteraction
+  }
+
   return (
     <Link
       href={cta.href}
       className={`adaptive-cta ${compact ? 'adaptive-cta-compact' : ''} ${className}`}
+      onPointerEnter={activateSystemRoute}
+      onPointerLeave={releaseSystemRoute}
+      onFocus={activateSystemRoute}
+      onBlur={releaseSystemRoute}
       onClick={() => {
         trackAdaptiveCTA(cta.intent, cta.label, location, 'click', {
           risk_level: riskLevel ?? 'unknown',

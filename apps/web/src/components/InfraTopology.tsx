@@ -282,6 +282,27 @@ export default function InfraTopology() {
                   },
                 }}
               />
+              <motion.circle
+                cx={CX}
+                cy={CY}
+                r={2.1}
+                fill={color}
+                fillOpacity={0.58}
+                initial={{ cx: CX, cy: CY, opacity: 0 }}
+                animate={running
+                  ? {
+                      cx: [CX, (CX + nx) / 2, nx],
+                      cy: [CY, (CY + ny) / 2, ny],
+                      opacity: [0, 0.42, 0],
+                    }
+                  : { cx: CX, cy: CY, opacity: 0 }}
+                transition={{
+                  repeat: running ? Infinity : 0,
+                  duration: CINEMATIC_TIMING.topologyOuter + i * 0.22,
+                  ease: 'linear',
+                  delay: cinematicDelay(i, 0.7, 0.9),
+                }}
+              />
             </g>
           )
         })}
@@ -453,13 +474,39 @@ export default function InfraTopology() {
               key={`n2-${deg}`}
               {...nodeActivation(i + INNER_NODES.length)}
             >
-              <circle cx={nx} cy={ny} r={16} fill={color} fillOpacity={0.03} />
+              <motion.circle
+                cx={nx}
+                cy={ny}
+                r={16}
+                fill={color}
+                initial={{ fillOpacity: 0.03 }}
+                animate={running ? { fillOpacity: [0.03, 0.085, 0.036] } : { fillOpacity: 0.03 }}
+                transition={{
+                  repeat: running ? Infinity : 0,
+                  duration: CINEMATIC_TIMING.topologyOuter + i * 0.34,
+                  ease: 'easeInOut',
+                  delay: cinematicDelay(i, 0.55, 1.2),
+                }}
+              />
               <polygon
                 points={hexPts(nx, ny, R_HEX2)}
                 stroke={color} strokeWidth={0.75} strokeOpacity={0.32}
                 fill={color} fillOpacity={0.04}
               />
-              <circle cx={nx} cy={ny} r={2} fill={color} fillOpacity={0.58} />
+              <motion.circle
+                cx={nx}
+                cy={ny}
+                r={2}
+                fill={color}
+                initial={{ fillOpacity: 0.58 }}
+                animate={running ? { fillOpacity: [0.42, 0.86, 0.50], r: [1.8, 2.45, 2] } : { fillOpacity: 0.58, r: 2 }}
+                transition={{
+                  repeat: running ? Infinity : 0,
+                  duration: CINEMATIC_TIMING.topologyOuter + i * 0.34,
+                  ease: 'easeInOut',
+                  delay: cinematicDelay(i, 0.55, 1.3),
+                }}
+              />
               <text
                 x={lx} y={ly}
                 textAnchor={anchor}

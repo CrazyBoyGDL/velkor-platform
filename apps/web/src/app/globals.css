@@ -25,6 +25,31 @@ body {
 ::-webkit-scrollbar-thumb:hover { background: rgba(61,120,176,0.30); }
 ::selection { background: rgba(61,120,176,0.16); color: #e2e8f0; }
 
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+html.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis:not(.lenis-autoToggle).lenis-stopped {
+  overflow: clip;
+}
+
+.lenis [data-lenis-prevent],
+.lenis [data-lenis-prevent-wheel],
+.lenis [data-lenis-prevent-touch],
+.lenis [data-lenis-prevent-vertical],
+.lenis [data-lenis-prevent-horizontal] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
 main {
   position: relative;
   z-index: 0;
@@ -64,6 +89,8 @@ main {
   --atmo-drift-y: 0px;
   --atmo-route-opacity: 0.22;
   --atmo-node-opacity: 0.42;
+  --scroll-velocity: 0;
+  --scroll-direction: 0;
   --focus-core-x: 72%;
   --focus-core-y: 34%;
   --focus-rgb: 99,143,169;
@@ -333,6 +360,46 @@ main {
     animation-delay: -13s;
   }
 
+  .operational-atmosphere__route-signal {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.28;
+    stroke-linecap: round;
+    stroke-dasharray: 0.018 0.982;
+    stroke-dashoffset: 0;
+    vector-effect: non-scaling-stroke;
+    opacity: calc(0.10 + var(--atmo-activity) * 0.13 + var(--scroll-velocity) * 0.20);
+    filter: drop-shadow(0 0 7px rgba(var(--focus-rgb),0.16));
+    animation: atmoSignalTravel calc(var(--cinematic-route-duration) * 0.36) linear infinite;
+  }
+
+  .operational-atmosphere__route-signal--2 {
+    stroke-width: 1.05;
+    stroke-dasharray: 0.014 0.986;
+    animation-duration: calc(var(--cinematic-route-duration) * 0.48);
+    animation-delay: -3.8s;
+  }
+
+  .operational-atmosphere__route-signal--3 {
+    stroke-width: 1.16;
+    stroke-dasharray: 0.012 0.988;
+    animation-duration: calc(var(--cinematic-route-duration) * 0.62);
+    animation-delay: -8.4s;
+  }
+
+  html[data-scroll-state='moving'] .operational-atmosphere__route-signal {
+    opacity: calc(0.16 + var(--atmo-activity) * 0.16 + var(--scroll-velocity) * 0.26);
+  }
+
+  html[data-atmo-interaction='cta'] .operational-atmosphere__core {
+    opacity: calc(0.28 + var(--focus-energy) * 0.24);
+  }
+
+  html[data-atmo-interaction='cta'] .operational-atmosphere__focus-corridor,
+  html[data-atmo-interaction='cta'] .operational-atmosphere__route-signal {
+    opacity: calc(0.22 + var(--focus-energy) * 0.18);
+  }
+
   .operational-atmosphere__nodes {
     position: absolute;
     inset: 0;
@@ -368,6 +435,73 @@ main {
   .operational-atmosphere__node--low {
     opacity: 0.54;
     animation-duration: 13.2s;
+  }
+
+  .operational-atmosphere__signal-field {
+    position: absolute;
+    inset: 0;
+    opacity: calc(0.13 + var(--atmo-activity) * 0.18 + var(--scroll-velocity) * 0.12);
+    transform: translate3d(calc(var(--atmo-drift-x) * 0.16), calc(var(--atmo-drift-y) * 0.11), 0);
+    mix-blend-mode: screen;
+  }
+
+  .operational-atmosphere__signal {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    border-radius: 999px;
+    background: rgba(var(--focus-rgb),0.70);
+    box-shadow:
+      0 0 0 4px rgba(var(--focus-rgb),0.035),
+      0 0 18px rgba(var(--focus-rgb),0.10);
+    transform: translate3d(0,0,0);
+    animation: atmoMicroSignal 8.4s ease-in-out infinite;
+  }
+
+  .operational-atmosphere__signal::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 34px;
+    height: 1px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, rgba(var(--focus-rgb),0.38), transparent);
+    transform: translate3d(3px,-50%,0) rotate(var(--focus-corridor-angle));
+    opacity: 0.34;
+  }
+
+  .operational-atmosphere__signal--focus {
+    background: rgba(184,135,72,0.58);
+    box-shadow:
+      0 0 0 4px rgba(184,135,72,0.030),
+      0 0 16px rgba(184,135,72,0.090);
+    animation-duration: 10.2s;
+  }
+
+  .operational-atmosphere__signal--sync {
+    animation-duration: 7.2s;
+  }
+
+  .operational-atmosphere__signal--low {
+    opacity: 0.58;
+    animation-duration: 12.6s;
+  }
+
+  @media (max-width: 640px) {
+    .operational-atmosphere__route-signal,
+    .spatial-field-system__signal {
+      opacity: calc(0.05 + var(--atmo-activity) * 0.08);
+    }
+
+    .operational-atmosphere__signal-field .operational-atmosphere__signal:nth-child(n+7) {
+      display: none;
+    }
+
+    .operational-atmosphere__signal::after {
+      width: 20px;
+      opacity: 0.22;
+    }
   }
 
   .operational-atmosphere__corridor {
@@ -568,6 +702,34 @@ main {
     animation-delay: -5s;
   }
 
+  .spatial-field-system__signal {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1;
+    stroke-linecap: round;
+    stroke-dasharray: 0.012 0.988;
+    stroke-dashoffset: 0;
+    vector-effect: non-scaling-stroke;
+    opacity: calc(0.08 + var(--spatial-energy) * 0.10 + var(--scroll-velocity) * 0.16);
+    filter: drop-shadow(0 0 5px rgba(var(--spatial-accent-rgb),0.12));
+    animation: spatialSignalHead calc(var(--cinematic-route-duration) * 0.52) linear infinite;
+  }
+
+  .spatial-field-system__signal--2 {
+    animation-duration: calc(var(--cinematic-route-duration) * 0.68);
+    animation-delay: -5.5s;
+  }
+
+  .spatial-field-system__signal--3 {
+    animation-duration: calc(var(--cinematic-route-duration) * 0.82);
+    animation-delay: -9s;
+  }
+
+  .spatial-field-system__signal--4 {
+    animation-duration: calc(var(--cinematic-route-duration) * 0.74);
+    animation-delay: -2.8s;
+  }
+
   .spatial-field-system__nodes {
     inset: 0;
     opacity: calc(0.09 + var(--spatial-energy) * 0.060);
@@ -657,6 +819,7 @@ main {
     transform-origin: left;
     transition: opacity 0.18s var(--ease-quart), transform 0.18s var(--ease-quart);
     pointer-events: none;
+    animation: moduleRouteInheritance calc(var(--cinematic-route-duration) * 0.64) ease-in-out infinite;
   }
   .card:hover {
     border-color: rgba(255,255,255,0.085);
@@ -1021,6 +1184,8 @@ main {
     pointer-events: none;
     background: linear-gradient(90deg, transparent, rgba(var(--spatial-accent-rgb),0.20), rgba(var(--spatial-secondary-rgb),0.07), transparent);
     opacity: 0.62;
+    transform-origin: left;
+    animation: moduleRouteInheritance calc(var(--cinematic-route-duration) * 0.52) ease-in-out infinite;
   }
 
   .home-process-row {
@@ -1058,6 +1223,20 @@ main {
       radial-gradient(circle at var(--spatial-core-x) 22%, rgba(var(--spatial-accent-rgb),0.070), transparent 22rem),
       linear-gradient(var(--spatial-tilt), rgba(var(--spatial-secondary-rgb),0.036), transparent 44%);
     opacity: 0.82;
+  }
+
+  .home-case-panel::after {
+    content: '';
+    position: absolute;
+    left: 1rem;
+    right: 1rem;
+    bottom: 0;
+    height: 1px;
+    pointer-events: none;
+    background: linear-gradient(90deg, transparent, rgba(var(--spatial-accent-rgb),0.24), rgba(var(--spatial-secondary-rgb),0.10), transparent);
+    opacity: 0.46;
+    transform-origin: left;
+    animation: moduleRouteInheritance calc(var(--cinematic-route-duration) * 0.58) ease-in-out infinite;
   }
 
   .home-case-row,
@@ -1370,6 +1549,52 @@ main {
     mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.56) 12%, black 28%, black 88%, transparent 100%);
   }
 
+  .hero-topology-field::before {
+    content: '';
+    position: absolute;
+    z-index: 0;
+    left: 36%;
+    top: 18%;
+    width: min(30rem, 42vw);
+    aspect-ratio: 1;
+    border-radius: 999px;
+    pointer-events: none;
+    opacity: calc(0.16 + var(--scroll-velocity) * 0.12);
+    background:
+      conic-gradient(from 140deg,
+        transparent 0deg,
+        rgba(var(--spatial-accent-rgb),0.18) 38deg,
+        transparent 72deg,
+        transparent 186deg,
+        rgba(var(--spatial-secondary-rgb),0.11) 232deg,
+        transparent 278deg);
+    mask-image: radial-gradient(circle, transparent 45%, black 49%, black 53%, transparent 58%);
+    transform: translate3d(0,0,0);
+    animation: heroTopologyScan calc(var(--cinematic-route-duration) * 0.72) linear infinite;
+    mix-blend-mode: screen;
+  }
+
+  .hero-topology-field::after {
+    content: '';
+    position: absolute;
+    z-index: 0;
+    left: 22%;
+    right: 2%;
+    top: 52%;
+    height: 1px;
+    pointer-events: none;
+    opacity: calc(0.18 + var(--scroll-velocity) * 0.14);
+    background: linear-gradient(90deg, transparent, rgba(var(--spatial-accent-rgb),0.34), rgba(var(--spatial-secondary-rgb),0.14), transparent);
+    transform-origin: left;
+    animation: heroRouteEnergy calc(var(--cinematic-route-duration) * 0.46) ease-in-out infinite;
+    mix-blend-mode: screen;
+  }
+
+  .hero-topology-field > .infra-topology {
+    position: relative;
+    z-index: 1;
+  }
+
   .hero-evidence-summary {
     position: absolute;
     right: clamp(6rem, 9vw, 9.5rem);
@@ -1586,6 +1811,20 @@ main {
     background: linear-gradient(145deg, rgba(8,13,22,0.74), rgba(5,8,14,0.92));
     overflow: hidden;
   }
+
+  .storyboard-panel::after {
+    content: '';
+    position: absolute;
+    left: 1rem;
+    right: 1rem;
+    bottom: 0;
+    height: 1px;
+    pointer-events: none;
+    background: linear-gradient(90deg, transparent, rgba(var(--spatial-accent-rgb),0.22), rgba(var(--spatial-secondary-rgb),0.09), transparent);
+    opacity: 0.38;
+    transform-origin: left;
+    animation: moduleRouteInheritance calc(var(--cinematic-route-duration) * 0.70) ease-in-out infinite;
+  }
   .storyboard-node {
     border: 1px solid rgba(148,163,184,0.14);
     background: rgba(255,255,255,0.026);
@@ -1615,6 +1854,20 @@ main {
     pointer-events: none;
     background: linear-gradient(90deg, transparent, rgba(var(--spatial-accent-rgb),0.18), transparent);
     opacity: 0.58;
+  }
+
+  .service-panel-surface::after {
+    content: '';
+    position: absolute;
+    left: 0.85rem;
+    right: 0.85rem;
+    bottom: 0;
+    height: 1px;
+    pointer-events: none;
+    background: linear-gradient(90deg, transparent, rgba(var(--spatial-accent-rgb),0.22), rgba(var(--spatial-secondary-rgb),0.08), transparent);
+    opacity: 0.40;
+    transform-origin: left;
+    animation: moduleRouteInheritance calc(var(--cinematic-route-duration) * 0.62) ease-in-out infinite;
   }
 
   .group:hover .service-panel-surface {
@@ -2778,6 +3031,14 @@ main {
   100% { stroke-dashoffset: -1; opacity: 0.40; }
 }
 
+@keyframes atmoSignalTravel {
+  0%   { stroke-dashoffset: 0; opacity: 0; }
+  12%  { opacity: calc(0.14 + var(--atmo-activity) * 0.20 + var(--scroll-velocity) * 0.18); }
+  44%  { opacity: calc(0.22 + var(--atmo-activity) * 0.22 + var(--scroll-velocity) * 0.22); }
+  78%  { opacity: calc(0.12 + var(--atmo-activity) * 0.16); }
+  100% { stroke-dashoffset: -1; opacity: 0; }
+}
+
 @keyframes spatialSignalPropagate {
   0%   { stroke-dashoffset: 0; opacity: 0.44; }
   38%  { opacity: 0.82; }
@@ -2785,10 +3046,52 @@ main {
   100% { stroke-dashoffset: -1; opacity: 0.44; }
 }
 
+@keyframes spatialSignalHead {
+  0%   { stroke-dashoffset: 0; opacity: 0; }
+  16%  { opacity: calc(0.12 + var(--spatial-energy) * 0.14); }
+  48%  { opacity: calc(0.18 + var(--spatial-energy) * 0.16 + var(--scroll-velocity) * 0.12); }
+  82%  { opacity: calc(0.10 + var(--spatial-energy) * 0.10); }
+  100% { stroke-dashoffset: -1; opacity: 0; }
+}
+
 @keyframes spatialNodeSettle {
   0%, 100% { opacity: 0.36; transform: scale(0.92); }
   44%      { opacity: 0.68; transform: scale(1); }
   72%      { opacity: 0.48; transform: scale(0.96); }
+}
+
+@keyframes atmoMicroSignal {
+  0%, 100% {
+    opacity: 0.18;
+    transform: translate3d(0,0,0) scale(0.82);
+  }
+  18% {
+    opacity: 0.78;
+    transform: translate3d(1px,-1px,0) scale(1.16);
+  }
+  26% {
+    opacity: 0.34;
+    transform: translate3d(0,0,0) scale(0.92);
+  }
+  62% {
+    opacity: 0.56;
+    transform: translate3d(-1px,1px,0) scale(1.04);
+  }
+}
+
+@keyframes moduleRouteInheritance {
+  0%, 100% {
+    opacity: 0.30;
+    transform: scaleX(0.34);
+  }
+  42% {
+    opacity: calc(0.54 + var(--scroll-velocity) * 0.18);
+    transform: scaleX(0.86);
+  }
+  68% {
+    opacity: 0.40;
+    transform: scaleX(0.58);
+  }
 }
 
 @keyframes evidenceStatusBreath {
@@ -2866,6 +3169,18 @@ main {
 @keyframes heroFocusBreath {
   0%, 100% { opacity: calc(0.12 + var(--focus-energy) * 0.12); transform: scale(0.98); }
   48%      { opacity: calc(0.22 + var(--focus-energy) * 0.16); transform: scale(1.012); }
+}
+
+@keyframes heroTopologyScan {
+  0%   { transform: rotate(0deg) scale(0.98); opacity: calc(0.11 + var(--scroll-velocity) * 0.10); }
+  42%  { opacity: calc(0.22 + var(--scroll-velocity) * 0.14); }
+  100% { transform: rotate(360deg) scale(1.02); opacity: calc(0.11 + var(--scroll-velocity) * 0.10); }
+}
+
+@keyframes heroRouteEnergy {
+  0%, 100% { opacity: 0.14; transform: scaleX(0.28); }
+  36%      { opacity: calc(0.36 + var(--scroll-velocity) * 0.16); transform: scaleX(0.88); }
+  64%      { opacity: 0.22; transform: scaleX(0.56); }
 }
 
 @keyframes focusAnchorSweep {
@@ -2975,7 +3290,10 @@ main {
   .visual-state-active::before,
   .hero-evidence-item::before,
   .adaptive-cta-hero::after,
+  .hero-topology-field::before,
+  .hero-topology-field::after,
   .spatial-field-system__route,
+  .spatial-field-system__signal,
   .spatial-field-system__nodes span,
   .operational-atmosphere__field,
   .operational-atmosphere__mesh,
@@ -2983,10 +3301,17 @@ main {
   .operational-atmosphere__core-ring,
   .operational-atmosphere__focus-corridor,
   .operational-atmosphere__route,
+  .operational-atmosphere__route-signal,
   .operational-atmosphere__node,
+  .operational-atmosphere__signal,
   .operational-atmosphere__corridor,
   .operational-atmosphere__telemetry span,
   .operational-atmosphere__annotations span,
+  .card::after,
+  .home-process::after,
+  .home-case-panel::after,
+  .storyboard-panel::after,
+  .service-panel-surface::after,
   .hero-intelligence-layer::before,
   .hero-intelligence-layer::after,
   .visual-state-rail::after,
@@ -2999,6 +3324,7 @@ main {
   }
   .operational-atmosphere__routes,
   .operational-atmosphere__nodes,
+  .operational-atmosphere__signal-field,
   .operational-atmosphere__telemetry,
   .operational-atmosphere__annotations,
   .spatial-field-system__routes,
