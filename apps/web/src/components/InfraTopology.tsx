@@ -117,24 +117,24 @@ export default function InfraTopology() {
             inner zone / security perimeter / edge+cloud plane
         ══════════════════════════════════════════════════════════ */}
         <circle cx={CX} cy={CY} r={R_RING_OUTER}
-          stroke="rgba(56,100,160,0.08)" strokeWidth={0.6} strokeDasharray="1.5 8" />
+          stroke="rgba(56,100,160,0.12)" strokeWidth={0.7} strokeDasharray="1.5 8" />
         <circle cx={CX} cy={CY} r={R_RING_MID}
-          stroke="rgba(56,100,160,0.11)" strokeWidth={0.75} strokeDasharray="2 7" />
+          stroke="rgba(56,100,160,0.16)" strokeWidth={0.85} strokeDasharray="2 7" />
         <circle cx={CX} cy={CY} r={R_RING_INNER}
-          stroke="rgba(56,100,160,0.06)" strokeWidth={0.5} strokeDasharray="1 8" />
+          stroke="rgba(56,100,160,0.09)" strokeWidth={0.58} strokeDasharray="1 8" />
 
         <motion.circle
           cx={CX}
           cy={CY}
           r={R_RING_MID}
-          stroke="rgba(127,158,180,0.18)"
-          strokeWidth={0.7}
+          stroke="rgba(127,158,180,0.24)"
+          strokeWidth={0.82}
           strokeDasharray="2 11"
           fill="none"
           initial={{ opacity: 0.22, rotate: 0 }}
           animate={running
-            ? { opacity: [0.18, 0.42, 0.20], rotate: 360 }
-            : { opacity: 0.18, rotate: 0 }}
+            ? { opacity: [0.24, 0.56, 0.26], rotate: 360 }
+            : { opacity: 0.24, rotate: 0 }}
           transition={{
             opacity: { repeat: running ? Infinity : 0, duration: CINEMATIC_TIMING.topologyCore, ease: 'easeInOut' },
             rotate: { repeat: running ? Infinity : 0, duration: CINEMATIC_TIMING.routeTertiary, ease: 'linear' },
@@ -144,14 +144,14 @@ export default function InfraTopology() {
 
         <motion.path
           d={`M ${CX - 96} ${CY + 24} C ${CX - 38} ${CY - 54}, ${CX + 38} ${CY + 58}, ${CX + 106} ${CY - 22}`}
-          stroke="rgba(159,195,212,0.22)"
-          strokeWidth={1.1}
+          stroke="rgba(159,195,212,0.30)"
+          strokeWidth={1.25}
           strokeDasharray="4 18"
           fill="none"
           initial={{ opacity: 0, pathLength: 0 }}
           animate={running
-            ? { opacity: [0.16, 0.34, 0.16], pathLength: 1, strokeDashoffset: [22, 0] }
-            : { opacity: 0.14, pathLength: 1, strokeDashoffset: 0 }}
+            ? { opacity: [0.24, 0.52, 0.24], pathLength: 1, strokeDashoffset: [22, 0] }
+            : { opacity: 0.20, pathLength: 1, strokeDashoffset: 0 }}
           transition={{
             opacity: { repeat: running ? Infinity : 0, duration: CINEMATIC_TIMING.topologyCore + 1.6, ease: 'easeInOut' },
             pathLength: { duration: 0.9, ease: EASE as any },
@@ -163,12 +163,12 @@ export default function InfraTopology() {
           cx={CX}
           cy={CY}
           r={28}
-          stroke="rgba(159,195,212,0.26)"
-          strokeWidth={0.9}
+          stroke="rgba(159,195,212,0.34)"
+          strokeWidth={1}
           fill="none"
           initial={{ opacity: 0, scale: 0.82 }}
           animate={running
-            ? { opacity: [0, 0.38, 0], scale: [0.78, 1.34, 1.72] }
+            ? { opacity: [0, 0.52, 0], scale: [0.78, 1.34, 1.72] }
             : { opacity: 0, scale: 1 }}
           transition={{
             repeat: running ? Infinity : 0,
@@ -185,7 +185,71 @@ export default function InfraTopology() {
           return (
             <circle key={`rim-${deg}`}
               cx={rx} cy={ry} r={1.8}
-              fill={color} fillOpacity={0.28} />
+              fill={color} fillOpacity={0.42} />
+          )
+        })}
+
+        {/* Primary operational routes: visible causality from the core to critical controls. */}
+        {[
+          { deg: -82, color: '#5aa7e8', bend: -24 },
+          { deg: -18, color: '#5aa7e8', bend: 18 },
+          { deg: 42, color: '#31b98b', bend: 28 },
+          { deg: 102, color: '#31b98b', bend: -22 },
+        ].map(({ deg, color, bend }, i) => {
+          const [nx, ny] = polar(deg, R1)
+          const mx = (CX + nx) / 2
+          const my = (CY + ny) / 2
+          const path = `M ${CX} ${CY} Q ${+(mx + bend).toFixed(2)} ${+(my - Math.abs(bend) * 0.18).toFixed(2)} ${nx} ${ny}`
+          return (
+            <g key={`focus-route-${deg}`}>
+              <motion.path
+                d={path}
+                stroke={color}
+                strokeWidth={1.65}
+                strokeLinecap="round"
+                strokeDasharray="6 18"
+                fill="none"
+                initial={{ opacity: 0, pathLength: 0.5 }}
+                animate={running
+                  ? { opacity: [0.24, 0.72, 0.28], pathLength: 1, strokeDashoffset: [24, 0] }
+                  : { opacity: 0.28, pathLength: 1, strokeDashoffset: 0 }}
+                transition={{
+                  opacity: {
+                    repeat: running ? Infinity : 0,
+                    duration: CINEMATIC_TIMING.topologySpoke + i * 0.18,
+                    ease: 'easeInOut',
+                    delay: cinematicDelay(i, SIGNAL_STEP, SIGNAL_OFFSET + 0.1),
+                  },
+                  pathLength: { duration: 0.8, ease: EASE as any },
+                  strokeDashoffset: {
+                    repeat: running ? Infinity : 0,
+                    duration: CINEMATIC_TIMING.topologySpoke + i * 0.18,
+                    ease: 'linear',
+                    delay: cinematicDelay(i, SIGNAL_STEP, SIGNAL_OFFSET + 0.1),
+                  },
+                }}
+              />
+              <motion.circle
+                cx={CX}
+                cy={CY}
+                r={3.2}
+                fill="#d8f4ff"
+                initial={{ opacity: 0 }}
+                animate={running
+                  ? {
+                      cx: [CX, +(mx + bend).toFixed(2), nx],
+                      cy: [CY, +(my - Math.abs(bend) * 0.18).toFixed(2), ny],
+                      opacity: [0, 0.86, 0],
+                    }
+                  : { cx: CX, cy: CY, opacity: 0 }}
+                transition={{
+                  repeat: running ? Infinity : 0,
+                  duration: CINEMATIC_TIMING.topologySpoke + i * 0.18,
+                  ease: 'linear',
+                  delay: cinematicDelay(i, SIGNAL_STEP, SIGNAL_OFFSET + 0.34),
+                }}
+              />
+            </g>
           )
         })}
 
@@ -199,18 +263,18 @@ export default function InfraTopology() {
             <g key={`spoke1-${deg}`}>
               {/* Static structural line */}
               <line x1={CX} y1={CY} x2={nx} y2={ny}
-                stroke={color} strokeWidth={0.6} strokeOpacity={0.11} />
+                stroke={color} strokeWidth={0.7} strokeOpacity={0.16} />
               {/* Animated data flow */}
               <motion.line
                 {...topologyActivation(i)}
                 x1={CX} y1={CY} x2={nx} y2={ny}
                 stroke={color}
-                strokeWidth={1.25}
+                strokeWidth={1.42}
                 strokeDasharray="3 11"
                 strokeDashoffset={0}
                 animate={running
-                  ? { opacity: [0.28, 0.68, 0.34], pathLength: 1, strokeDashoffset: [DASH_R1, 0] }
-                  : { opacity: 0.22, pathLength: 1, strokeDashoffset: 0 }}
+                  ? { opacity: [0.34, 0.82, 0.38], pathLength: 1, strokeDashoffset: [DASH_R1, 0] }
+                  : { opacity: 0.28, pathLength: 1, strokeDashoffset: 0 }}
                 transition={{
                   opacity: {
                     repeat: running ? Infinity : 0,
@@ -229,16 +293,16 @@ export default function InfraTopology() {
               <motion.circle
                 cx={CX}
                 cy={CY}
-                r={2.8}
+                r={3.05}
                 fill="#d7eef8"
-                fillOpacity={0.72}
+                fillOpacity={0.86}
                 initial={{ cx: CX, cy: CY, opacity: 0 }}
                 opacity={0}
                 animate={running
                   ? {
                       cx: [CX, nx],
                       cy: [CY, ny],
-                      opacity: [0, 0.62, 0],
+                      opacity: [0, 0.78, 0],
                     }
                   : { cx: CX, cy: CY, opacity: 0 }}
                 transition={{
@@ -261,17 +325,17 @@ export default function InfraTopology() {
           return (
             <g key={`spoke2-${deg}`}>
               <line x1={CX} y1={CY} x2={nx} y2={ny}
-                stroke={color} strokeWidth={0.5} strokeOpacity={0.07} />
+                stroke={color} strokeWidth={0.58} strokeOpacity={0.10} />
               <motion.line
                 {...topologyActivation(i + INNER_NODES.length)}
                 x1={CX} y1={CY} x2={nx} y2={ny}
                 stroke={color}
-                strokeWidth={0.85}
+                strokeWidth={1}
                 strokeDasharray="2 12"
                 strokeDashoffset={0}
                 animate={running
-                  ? { opacity: 0.28, pathLength: 1, strokeDashoffset: [DASH_R2, 0] }
-                  : { opacity: 0.14, pathLength: 1, strokeDashoffset: 0 }}
+                  ? { opacity: [0.22, 0.44, 0.24], pathLength: 1, strokeDashoffset: [DASH_R2, 0] }
+                  : { opacity: 0.18, pathLength: 1, strokeDashoffset: 0 }}
                 transition={{
                   opacity: { duration: 0.12, ease: EASE as any, delay: 0.08 },
                   strokeDashoffset: {
@@ -285,15 +349,15 @@ export default function InfraTopology() {
               <motion.circle
                 cx={CX}
                 cy={CY}
-                r={2.1}
+                r={2.35}
                 fill={color}
-                fillOpacity={0.58}
+                fillOpacity={0.70}
                 initial={{ cx: CX, cy: CY, opacity: 0 }}
                 animate={running
                   ? {
                       cx: [CX, (CX + nx) / 2, nx],
                       cy: [CY, (CY + ny) / 2, ny],
-                      opacity: [0, 0.42, 0],
+                      opacity: [0, 0.56, 0],
                     }
                   : { cx: CX, cy: CY, opacity: 0 }}
                 transition={{
@@ -332,7 +396,7 @@ export default function InfraTopology() {
               transition={{ duration: 0.15, ease: EASE as any, delay: 0.12 }}
             >
               <motion.path d={path}
-                stroke={color} strokeWidth={0.8} strokeOpacity={0.28}
+                stroke={color} strokeWidth={0.95} strokeOpacity={0.38}
                 strokeDasharray="2 5" fill="none"
                 strokeDashoffset={0}
                 animate={running ? { strokeDashoffset: [0, -14] } : { strokeDashoffset: 0 }}
@@ -345,7 +409,7 @@ export default function InfraTopology() {
                 fill={color}
                 initial={{ opacity: 0 }}
                 animate={running
-                  ? { cx: [ax, qx, bx], cy: [ay, qy, by], opacity: [0, 0.54, 0] }
+                  ? { cx: [ax, qx, bx], cy: [ay, qy, by], opacity: [0, 0.68, 0] }
                   : { cx: ax, cy: ay, opacity: 0 }}
                 transition={{
                   repeat: running ? Infinity : 0,
@@ -359,7 +423,7 @@ export default function InfraTopology() {
                 textAnchor="middle"
                 fontSize={5.5}
                 fontFamily="'JetBrains Mono', 'Fira Code', monospace"
-                fill={color} fillOpacity={0.32}
+                 fill={color} fillOpacity={0.44}
                 letterSpacing="0.04em"
               >
                 {label}
@@ -385,7 +449,7 @@ export default function InfraTopology() {
                 cx={nx} cy={ny} r={18}
                 fill={color} fillOpacity={0}
                 initial={{ fillOpacity: 0.018 }}
-                animate={running ? { fillOpacity: [0.07, 0.014, 0.08] } : { fillOpacity: 0.024 }}
+                animate={running ? { fillOpacity: [0.10, 0.024, 0.12] } : { fillOpacity: 0.032 }}
                 transition={{
                   repeat: running ? Infinity : 0,
                   duration: CINEMATIC_TIMING.topologySpoke + i * 0.16,
@@ -396,12 +460,12 @@ export default function InfraTopology() {
               <motion.circle
                 cx={nx} cy={ny} r={R_HEX1 + 8}
                 stroke={color}
-                strokeWidth={0.75}
+                 strokeWidth={0.9}
                 fill="none"
                 initial={{ opacity: 0.10, scale: 0.90 }}
                 animate={running
-                  ? { opacity: [0.12, 0.52, 0.14], scale: [0.90, 1.14, 0.96] }
-                  : { opacity: 0.12, scale: 1 }}
+                  ? { opacity: [0.18, 0.70, 0.20], scale: [0.90, 1.16, 0.96] }
+                  : { opacity: 0.16, scale: 1 }}
                 transition={{
                   repeat: running ? Infinity : 0,
                   duration: CINEMATIC_TIMING.topologySpoke + i * 0.16,
@@ -411,12 +475,12 @@ export default function InfraTopology() {
                 style={{ transformOrigin: `${nx}px ${ny}px` }}
               />
               {/* Static ambient halo */}
-              <circle cx={nx} cy={ny} r={20} fill={color} fillOpacity={0.04} />
+               <circle cx={nx} cy={ny} r={21} fill={color} fillOpacity={0.065} />
               {/* Hexagonal node body */}
               <polygon
                 points={hexPts(nx, ny, R_HEX1)}
-                stroke={color} strokeWidth={1} strokeOpacity={0.5}
-                fill={color} fillOpacity={0.07}
+                 stroke={color} strokeWidth={1.08} strokeOpacity={0.66}
+                 fill={color} fillOpacity={0.095}
               />
               {/* Active status dot */}
               <motion.circle
@@ -424,10 +488,10 @@ export default function InfraTopology() {
                 cy={ny}
                 r={2.5}
                 fill={color}
-                initial={{ fillOpacity: 0.85 }}
+                 initial={{ fillOpacity: 0.92 }}
                 animate={running
-                  ? { fillOpacity: [0.72, 1, 0.78], r: [2.4, 3.15, 2.5] }
-                  : { fillOpacity: 0.85, r: 2.5 }}
+                   ? { fillOpacity: [0.78, 1, 0.82], r: [2.55, 3.55, 2.65] }
+                   : { fillOpacity: 0.9, r: 2.65 }}
                 transition={{
                   repeat: running ? Infinity : 0,
                   duration: CINEMATIC_TIMING.topologySpoke + i * 0.16,
@@ -442,7 +506,7 @@ export default function InfraTopology() {
                 fontSize={8}
                 fontFamily="'JetBrains Mono', 'Fira Code', monospace"
                 fontWeight="700"
-                fill="rgba(228,228,231,0.80)"
+                 fill="rgba(228,228,231,0.88)"
                 letterSpacing="0.10em"
               >
                 {label}
@@ -453,7 +517,7 @@ export default function InfraTopology() {
                 textAnchor={anchor}
                 fontSize={6.5}
                 fontFamily="'JetBrains Mono', 'Fira Code', monospace"
-                fill="rgba(113,113,122,0.55)"
+                 fill="rgba(148,163,184,0.62)"
                 letterSpacing="0.03em"
               >
                 {detail}
@@ -479,8 +543,8 @@ export default function InfraTopology() {
                 cy={ny}
                 r={16}
                 fill={color}
-                initial={{ fillOpacity: 0.03 }}
-                animate={running ? { fillOpacity: [0.03, 0.085, 0.036] } : { fillOpacity: 0.03 }}
+                initial={{ fillOpacity: 0.04 }}
+                animate={running ? { fillOpacity: [0.04, 0.12, 0.048] } : { fillOpacity: 0.04 }}
                 transition={{
                   repeat: running ? Infinity : 0,
                   duration: CINEMATIC_TIMING.topologyOuter + i * 0.34,
@@ -490,16 +554,16 @@ export default function InfraTopology() {
               />
               <polygon
                 points={hexPts(nx, ny, R_HEX2)}
-                stroke={color} strokeWidth={0.75} strokeOpacity={0.32}
-                fill={color} fillOpacity={0.04}
+                stroke={color} strokeWidth={0.85} strokeOpacity={0.44}
+                fill={color} fillOpacity={0.06}
               />
               <motion.circle
                 cx={nx}
                 cy={ny}
                 r={2}
                 fill={color}
-                initial={{ fillOpacity: 0.58 }}
-                animate={running ? { fillOpacity: [0.42, 0.86, 0.50], r: [1.8, 2.45, 2] } : { fillOpacity: 0.58, r: 2 }}
+                initial={{ fillOpacity: 0.66 }}
+                animate={running ? { fillOpacity: [0.50, 0.96, 0.56], r: [1.9, 2.75, 2.1] } : { fillOpacity: 0.66, r: 2.1 }}
                 transition={{
                   repeat: running ? Infinity : 0,
                   duration: CINEMATIC_TIMING.topologyOuter + i * 0.34,
@@ -513,7 +577,7 @@ export default function InfraTopology() {
                 fontSize={7}
                 fontFamily="'JetBrains Mono', 'Fira Code', monospace"
                 fontWeight="700"
-                fill="rgba(228,228,231,0.52)"
+                fill="rgba(228,228,231,0.64)"
                 letterSpacing="0.08em"
               >
                 {label}
@@ -523,7 +587,7 @@ export default function InfraTopology() {
                 textAnchor={anchor}
                 fontSize={5.5}
                 fontFamily="'JetBrains Mono', 'Fira Code', monospace"
-                fill="rgba(113,113,122,0.38)"
+                fill="rgba(148,163,184,0.46)"
                 letterSpacing="0.03em"
               >
                 {detail}
@@ -544,41 +608,41 @@ export default function InfraTopology() {
           {/* Ambient breathing glow — cool steel, not amber */}
           <motion.circle
             cx={CX} cy={CY} r={38}
-            fill="rgba(100,116,139,0.05)"
-            initial={{ opacity: 0.36 }}
-            animate={running ? { opacity: [0.70, 0.30, 0.70] } : { opacity: 0.36 }}
+            fill="rgba(100,116,139,0.075)"
+            initial={{ opacity: 0.44 }}
+            animate={running ? { opacity: [0.86, 0.36, 0.86] } : { opacity: 0.44 }}
             transition={{ repeat: running ? Infinity : 0, duration: CINEMATIC_TIMING.topologyCore, ease: 'easeInOut' }}
           />
           <motion.circle
             cx={CX} cy={CY} r={48}
-            stroke="rgba(159,195,212,0.20)"
-            strokeWidth={0.8}
+            stroke="rgba(159,195,212,0.30)"
+            strokeWidth={0.95}
             strokeDasharray="1 9"
             fill="none"
             initial={{ opacity: 0.12, scale: 0.94 }}
             animate={running
-              ? { opacity: [0.10, 0.36, 0.12], scale: [0.96, 1.04, 0.96] }
-              : { opacity: 0.12, scale: 1 }}
+              ? { opacity: [0.18, 0.54, 0.20], scale: [0.96, 1.06, 0.96] }
+              : { opacity: 0.18, scale: 1 }}
             transition={{ repeat: running ? Infinity : 0, duration: CINEMATIC_TIMING.breath, ease: 'easeInOut' }}
             style={{ transformOrigin: `${CX}px ${CY}px` }}
           />
           {/* Outer orbit ring — dashed hexagonal reference plane */}
           <polygon
             points={hexPts(CX, CY, R_HUB + 8)}
-            stroke="rgba(148,163,184,0.15)" strokeWidth={0.75}
+            stroke="rgba(148,163,184,0.24)" strokeWidth={0.82}
             strokeDasharray="2 4" fill="none"
           />
           {/* Main hub hexagon — steel/platinum */}
           <polygon
             points={hexPts(CX, CY, R_HUB)}
-            stroke="rgba(148,163,184,0.50)" strokeWidth={1.25}
-            fill="rgba(148,163,184,0.055)"
+            stroke="rgba(203,213,225,0.66)" strokeWidth={1.32}
+            fill="rgba(148,163,184,0.080)"
           />
           {/* Inner structural hexagon — precision engineering mark */}
           <polygon
             points={hexPts(CX, CY, 10)}
-            stroke="rgba(100,116,139,0.22)" strokeWidth={0.75}
-            fill="rgba(100,116,139,0.03)"
+            stroke="rgba(159,195,212,0.32)" strokeWidth={0.78}
+            fill="rgba(100,116,139,0.05)"
           />
           {/* Hub identity — engineered confidence */}
           <text
@@ -587,7 +651,7 @@ export default function InfraTopology() {
             fontSize={7}
             fontFamily="'JetBrains Mono', 'Fira Code', monospace"
             fontWeight="700"
-            fill="rgba(226,232,240,0.88)"
+            fill="rgba(241,245,249,0.94)"
             letterSpacing="0.14em"
           >
             VELKOR
@@ -597,7 +661,7 @@ export default function InfraTopology() {
             textAnchor="middle"
             fontSize={5.5}
             fontFamily="'JetBrains Mono', 'Fira Code', monospace"
-            fill="rgba(100,116,139,0.48)"
+            fill="rgba(148,163,184,0.60)"
             letterSpacing="0.10em"
           >
             PLATFORM

@@ -19,12 +19,17 @@ export type FeaturedCaseSummary = {
 }
 
 const HERO_EVIDENCE = [
-  { label: 'Red', value: 'VLAN segmentada' },
-  { label: 'Identidad', value: 'MFA obligatorio' },
-  { label: 'Firewall', value: 'FortiGate hardened' },
-  { label: 'Acceso', value: 'Conditional Access activo' },
-  { label: 'Endpoints', value: 'Intune compliance' },
-  { label: 'Cambio', value: 'Rollback definido' },
+  { label: 'Red', value: 'VLAN segmentada', meta: '6 zonas activas' },
+  { label: 'Firewall', value: 'FortiGate hardened', meta: 'políticas aplicadas' },
+  { label: 'Identidad', value: 'MFA obligatorio', meta: '100% cumplimiento' },
+  { label: 'Acceso', value: 'Conditional Access activo', meta: 'reglas validadas' },
+  { label: 'Endpoints', value: 'Intune compliance', meta: 'dispositivos gestionados' },
+]
+
+const HERO_STATES = [
+  { label: 'Monitoreo continuo', tone: 'sync' },
+  { label: 'Cambios trazables', tone: 'route' },
+  { label: 'Rollback listo', tone: 'safe' },
 ]
 
 const WORKFLOW = [
@@ -59,7 +64,7 @@ const AVOIDED_PATTERNS = [
 
 function Hero() {
   return (
-    <section className="relative flex items-start lg:items-center overflow-hidden lg:min-h-[82vh] hero-depth-stage spatial-hero-field">
+    <section className="relative flex items-start lg:items-center overflow-hidden lg:min-h-[86vh] hero-depth-stage spatial-hero-field">
       <div className="absolute inset-0 pointer-events-none">
         <div className="hero-atmospheric-layer" />
         <div className="absolute bottom-0 left-0 right-0 h-56 hero-bottom-fade" />
@@ -68,7 +73,7 @@ function Hero() {
       <motion.div
         className="hero-topology-plane absolute inset-0 hidden lg:flex items-center pointer-events-none"
         initial={{ opacity: 0 }}
-        animate={{ opacity: 0.82 }}
+        animate={{ opacity: 0.94 }}
         transition={{ duration: 0.45, ease: EASE, delay: 0.1 }}
       >
         <motion.div
@@ -77,21 +82,22 @@ function Hero() {
           transition={{ repeat: Infinity, duration: 36, ease: 'easeInOut' }}
         >
           <InfraTopology />
-          <div className="hero-evidence-summary">
-            <div className="hero-evidence-heading">
-              <span>Evidencia operativa</span>
-              <strong>estado después de control</strong>
-            </div>
-            <div className="hero-evidence-grid">
-              {HERO_EVIDENCE.map(item => (
-                <div key={item.label} className="hero-evidence-item">
-                  <span>{item.label}</span>
-                  <strong>{item.value}</strong>
-                </div>
-              ))}
-            </div>
-          </div>
         </motion.div>
+        <div className="hero-evidence-summary">
+          <div className="hero-evidence-heading">
+            <span>Evidencia operativa</span>
+            <strong>estado sincronizado</strong>
+          </div>
+          <div className="hero-evidence-grid">
+            {HERO_EVIDENCE.map(item => (
+              <div key={item.label} className="hero-evidence-item">
+                <span>{item.label}</span>
+                <strong>{item.value}</strong>
+                <em>{item.meta}</em>
+              </div>
+            ))}
+          </div>
+        </div>
       </motion.div>
 
       <div className="hero-content-plane relative z-10 max-w-7xl mx-auto px-4 sm:px-8 w-full">
@@ -102,7 +108,7 @@ function Hero() {
           </motion.div>
 
           <motion.h1 {...heroUp(0.02)} className="display-heading mb-6 max-w-3xl">
-            Ordenamos tu infraestructura antes de que falle en producción.
+            Ordenamos tu infraestructura antes de que <span className="hero-heading-accent">falle</span> en producción.
           </motion.h1>
 
           <motion.p {...heroUp(0.04)} className="editorial-lede mb-8 max-w-[34rem]">
@@ -121,16 +127,26 @@ function Hero() {
             </Link>
           </motion.div>
 
+          <motion.div {...heroUp(0.07)} className="hero-operational-states" aria-label="Estados operacionales">
+            {HERO_STATES.map(state => (
+              <span key={state.label} className={`hero-operational-state hero-operational-state--${state.tone}`}>
+                <i aria-hidden="true" />
+                {state.label}
+              </span>
+            ))}
+          </motion.div>
+
           <motion.div {...heroUp(0.08)} className="hero-evidence-summary hero-evidence-summary--mobile lg:hidden">
             <div className="hero-evidence-heading">
               <span>Evidencia operativa</span>
-              <strong>estado después de control</strong>
+              <strong>estado sincronizado</strong>
             </div>
             <div className="hero-evidence-grid">
               {HERO_EVIDENCE.map(item => (
                 <div key={item.label} className="hero-evidence-item">
                   <span>{item.label}</span>
                   <strong>{item.value}</strong>
+                  <em>{item.meta}</em>
                 </div>
               ))}
             </div>
