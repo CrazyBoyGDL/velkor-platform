@@ -22,8 +22,7 @@ const HERO_EVIDENCE = [
   { label: 'Red', value: 'VLAN segmentada', meta: '6 zonas activas' },
   { label: 'Firewall', value: 'FortiGate hardened', meta: 'políticas aplicadas' },
   { label: 'Identidad', value: 'MFA obligatorio', meta: '100% cumplimiento' },
-  { label: 'Acceso', value: 'Conditional Access activo', meta: 'reglas validadas' },
-  { label: 'Endpoints', value: 'Intune compliance', meta: 'dispositivos gestionados' },
+  { label: 'Rollback', value: 'Ventana protegida', meta: 'retorno listo' },
 ]
 
 const HERO_STATES = [
@@ -64,7 +63,10 @@ const AVOIDED_PATTERNS = [
 
 function Hero() {
   return (
-    <section className="relative flex items-start lg:items-center overflow-hidden lg:min-h-[86vh] hero-depth-stage spatial-hero-field">
+    <section
+      className="relative flex items-start lg:items-center overflow-hidden lg:min-h-[78vh] hero-depth-stage spatial-hero-field"
+      data-flow-region="hero"
+    >
       <div className="absolute inset-0 pointer-events-none">
         <div className="hero-atmospheric-layer" />
         <div className="absolute bottom-0 left-0 right-0 h-56 hero-bottom-fade" />
@@ -101,13 +103,13 @@ function Hero() {
       </motion.div>
 
       <div className="hero-content-plane relative z-10 max-w-7xl mx-auto px-4 sm:px-8 w-full">
-        <div className="lg:max-w-[43rem] py-16 sm:py-20 lg:py-28">
+        <div className="lg:max-w-[41rem] py-14 sm:py-[4.75rem] lg:py-24">
           <motion.div {...heroUp(0)} className="flex items-center gap-3 mb-6">
             <div className="w-5 h-px flex-shrink-0 bg-white/[0.10]" />
             <span className="label">Infraestructura operacional</span>
           </motion.div>
 
-          <motion.h1 {...heroUp(0.02)} className="display-heading mb-6 max-w-3xl">
+          <motion.h1 {...heroUp(0.02)} className="display-heading mb-6 max-w-[44rem]">
             Ordenamos tu infraestructura antes de que <span className="hero-heading-accent">falle</span> en producción.
           </motion.h1>
 
@@ -159,7 +161,7 @@ function Hero() {
 
 function WorkflowSection() {
   return (
-    <section className="home-section px-4 sm:px-8 continuity-section">
+    <section className="home-section px-4 sm:px-8 continuity-section" data-flow-region="workflow">
       <div className="max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-[0.76fr_1.24fr] gap-12 lg:gap-20 items-start">
           <motion.div {...fadeUp(0)}>
@@ -170,7 +172,7 @@ function WorkflowSection() {
             </p>
           </motion.div>
 
-          <div className="home-process depth-0">
+          <div className="home-process">
             {WORKFLOW.map(({ step, title, detail }) => (
               <motion.div key={step} {...fadeUp(0)} className="home-process-row">
                 <span className="font-mono text-[11px] text-zinc-700 tabular-nums">{step}</span>
@@ -200,7 +202,7 @@ function WorkflowSection() {
 
 function FeaturedCaseSection({ featuredCase }: { featuredCase: FeaturedCaseSummary }) {
   return (
-    <section className="home-section px-4 sm:px-8 section-arch continuity-section">
+    <section className="home-section px-4 sm:px-8 section-arch continuity-section" data-flow-region="case">
       <div className="max-w-7xl mx-auto relative">
         <div className="grid lg:grid-cols-[0.9fr_1.1fr] gap-12 lg:gap-20 items-center">
           <motion.div {...fadeUp(0)}>
@@ -209,7 +211,7 @@ function FeaturedCaseSection({ featuredCase }: { featuredCase: FeaturedCaseSumma
             <p className="text-zinc-500 text-base leading-relaxed max-w-xl">{featuredCase.summary}</p>
           </motion.div>
 
-          <motion.div {...fadeUp(0.02)} className="home-case-panel depth-focus proximity-surface">
+          <motion.div {...fadeUp(0.02)} className="home-case-panel proximity-surface">
             <div className="flex items-center justify-between gap-4 mb-8">
               <div>
                 <div className="text-[10px] font-mono text-zinc-700 mb-2">SECTOR</div>
@@ -240,14 +242,15 @@ function FeaturedCaseSection({ featuredCase }: { featuredCase: FeaturedCaseSumma
 
 export default function HomeLanding({ featuredCase }: { featuredCase: FeaturedCaseSummary }) {
   return (
-    <>
+    <div className="home-flow">
       <Hero />
-      <div className="section-divider" />
+      <div className="section-flow-bridge" aria-hidden="true" />
       <RiskExposure />
+      <div className="section-flow-bridge section-flow-bridge--quiet" aria-hidden="true" />
       <WorkflowSection />
       <FeaturedCaseSection featuredCase={featuredCase} />
       <HumanConsultiveLayer />
       <TrustValidationLayer />
-    </>
+    </div>
   )
 }

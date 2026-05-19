@@ -81,7 +81,7 @@ function RiskItem({ risk }: { risk: typeof RISKS[number] }) {
 // ── Section ───────────────────────────────────────────────────────────────
 export default function RiskExposure() {
   return (
-    <section className="home-section px-4 sm:px-8 relative section-deep">
+    <section className="home-section px-4 sm:px-8 relative section-deep continuity-section" data-flow-region="risk">
       <div className="max-w-7xl mx-auto">
 
         {/* Section label */}

@@ -67,7 +67,7 @@ function ContactAction({ source }: { source: string }) {
 
 export default function HumanConsultiveLayer() {
   return (
-    <section className="home-section px-4 sm:px-8 human-consultive-section">
+    <section className="home-section px-4 sm:px-8 human-consultive-section continuity-section" data-flow-region="human">
       <div className="max-w-7xl mx-auto">
         <div className="human-consultive-grid">
           <div className="human-consultive-copy">
@@ -81,7 +81,7 @@ export default function HumanConsultiveLayer() {
             </p>
           </div>
 
-          <div className="human-field-panel depth-1">
+          <div className="human-field-panel">
             <div className="human-field-panel-header">
               <span>Notas de campo</span>
               <small>sanitizadas · decisiones reales</small>

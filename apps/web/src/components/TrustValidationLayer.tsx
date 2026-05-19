@@ -21,7 +21,7 @@ export default function TrustValidationLayer() {
   }, [])
 
   return (
-    <section className="home-section px-4 sm:px-8">
+    <section className="home-section px-4 sm:px-8 continuity-section" data-flow-region="trust">
       <div className="max-w-7xl mx-auto">
         <motion.div {...fadeUp(0)} className="home-final-cta">
           <div>

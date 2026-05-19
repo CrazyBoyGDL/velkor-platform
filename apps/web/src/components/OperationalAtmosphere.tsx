@@ -57,6 +57,7 @@ export default function OperationalAtmosphere() {
     const root = document.documentElement
     const media = window.matchMedia('(prefers-reduced-motion: reduce)')
     let lastRegion = ''
+    let lastFlowRegion = ''
 
     const setInitialLight = () => {
       root.style.setProperty('--cursor-x', `${Math.round(window.innerWidth * 0.62)}px`)
@@ -78,6 +79,38 @@ export default function OperationalAtmosphere() {
       if (region !== lastRegion) {
         root.dataset.atmoRegion = region
         lastRegion = region
+      }
+
+      const sections = Array.from(document.querySelectorAll<HTMLElement>('[data-flow-region]'))
+      if (!sections.length) return
+
+      const viewportFocus = window.innerHeight * 0.52
+      let activeIndex = 0
+      let activeRegion = sections[0].dataset.flowRegion ?? 'hero'
+      let closest = Number.POSITIVE_INFINITY
+
+      sections.forEach((section, index) => {
+        const rect = section.getBoundingClientRect()
+        if (rect.bottom < 0 || rect.top > window.innerHeight) return
+
+        const sectionFocus = rect.top + rect.height * 0.42
+        const score = Math.abs(sectionFocus - viewportFocus)
+        if (score < closest) {
+          closest = score
+          activeIndex = index
+          activeRegion = section.dataset.flowRegion ?? activeRegion
+        }
+      })
+
+      const flowProgress = sections.length > 1 ? activeIndex / (sections.length - 1) : 0
+      root.style.setProperty('--section-flow-index', activeIndex.toString())
+      root.style.setProperty('--section-flow-progress', flowProgress.toFixed(3))
+      root.style.setProperty('--section-flow-y', `${Math.round(18 + flowProgress * 64)}%`)
+      root.style.setProperty('--atmo-propagation', Math.min(1, depth * 0.78 + flowProgress * 0.22).toFixed(3))
+
+      if (activeRegion !== lastFlowRegion) {
+        root.dataset.flowRegion = activeRegion
+        lastFlowRegion = activeRegion
       }
     }
 

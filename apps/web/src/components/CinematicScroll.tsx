@@ -35,13 +35,13 @@ export default function CinematicScroll() {
     let settleTimer: number | undefined
 
     const lenis = new Lenis({
-      duration: 1.02,
-      easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      duration: 0.66,
+      easing: t => 1 - Math.pow(1 - t, 3.2),
       smoothWheel: true,
       syncTouch: false,
-      wheelMultiplier: 0.82,
+      wheelMultiplier: 1.08,
       touchMultiplier: 1,
-      anchors: { offset: -76 },
+      anchors: { offset: -68 },
       prevent: node => Boolean(node.closest('input, textarea, select, [role="dialog"], [data-native-scroll]')),
     })
 
@@ -51,14 +51,14 @@ export default function CinematicScroll() {
     }
 
     const onScroll = (instance: LenisInstance) => {
-      const velocity = Math.min(Math.abs(instance.velocity || 0) / 3.6, 1)
+      const velocity = Math.min(Math.abs(instance.velocity || 0) / 3.2, 1)
       root.dataset.scrollEngine = 'lenis'
       root.dataset.scrollState = velocity > 0.035 ? 'moving' : 'settled'
       root.style.setProperty('--scroll-velocity', velocity.toFixed(3))
       root.style.setProperty('--scroll-direction', String(instance.direction || 0))
 
       if (settleTimer) window.clearTimeout(settleTimer)
-      settleTimer = window.setTimeout(setSettled, 180)
+      settleTimer = window.setTimeout(setSettled, 140)
     }
 
     const raf = (time: number) => {
