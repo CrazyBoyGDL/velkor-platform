@@ -1,3 +1,5 @@
+import { createHash } from 'node:crypto'
+
 // ─── Velkor Security Utilities ───────────────────────────────────────────────
 // Honeypot detection, disposable email filtering, Turnstile verification.
 // All checks are layered — any single check can be bypassed, but combination
@@ -55,6 +57,9 @@ export function getRequestIp(req: { headers: Headers }): string {
 const TURNSTILE_SECRET = process.env.TURNSTILE_SECRET_KEY
 const TURNSTILE_VERIFY = 'https://challenges.cloudflare.com/turnstile/v0/siteverify'
 const TURNSTILE_EXPECTED_ACTION = process.env.TURNSTILE_EXPECTED_ACTION ?? 'assessment'
+const TURNSTILE_FAIL_OPEN =
+  process.env.TURNSTILE_FAIL_OPEN === 'true' ||
+  (process.env.NODE_ENV !== 'production' && process.env.TURNSTILE_FAIL_OPEN !== 'false')
 const TURNSTILE_ALLOWED_HOSTNAMES = (process.env.TURNSTILE_ALLOWED_HOSTNAMES ?? 'velkor.com.mx,www.velkor.com.mx')
   .split(',')
   .map(host => host.trim().toLowerCase())
@@ -118,11 +123,10 @@ export async function verifyTurnstile(token: string | undefined, remoteIp: strin
       hostname: data.hostname,
     }
   } catch {
-    // If Siteverify is unreachable, fail open and audit the bypass.
     return {
-      success: true,
+      success: TURNSTILE_FAIL_OPEN,
       configured: true,
-      bypassed: 'network-fail-open',
+      bypassed: TURNSTILE_FAIL_OPEN ? 'network-fail-open' : undefined,
       errorCodes: ['siteverify-unreachable'],
     }
   }
@@ -140,7 +144,35 @@ export interface AuditEntry {
   timestamp: string
 }
 
+const LOG_HASH_SALT = process.env.LOG_HASH_SALT || process.env.ASSESSMENT_WEBHOOK_SECRET || 'velkor-log-v1'
+
+function hashForLog(value: string): string {
+  return createHash('sha256')
+    .update(`${LOG_HASH_SALT}:${value.trim().toLowerCase()}`)
+    .digest('hex')
+    .slice(0, 16)
+}
+
+export function redactEmailForLog(email: string | undefined): string | undefined {
+  if (!email) return undefined
+  const [local, domain] = email.split('@')
+  if (!local || !domain) return 'invalid-email'
+  return `${local.slice(0, 2)}***@${domain.toLowerCase()}`
+}
+
+function sanitizeAuditEntry(entry: AuditEntry): Record<string, unknown> {
+  return {
+    audit: true,
+    type: entry.type,
+    ipHash: entry.ip && entry.ip !== 'unknown' ? hashForLog(entry.ip) : 'unknown',
+    emailHash: entry.email ? hashForLog(entry.email) : undefined,
+    emailDomain: entry.email?.split('@')[1]?.toLowerCase(),
+    companyHash: entry.company ? hashForLog(entry.company) : undefined,
+    reason: entry.reason,
+    timestamp: entry.timestamp,
+  }
+}
+
 export function logAuditEvent(entry: AuditEntry): void {
-  // Structured JSON log — Railway log aggregation picks this up automatically
-  console.log(JSON.stringify({ audit: true, ...entry }))
+  console.log(JSON.stringify(sanitizeAuditEntry(entry)))
 }

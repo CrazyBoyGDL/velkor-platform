@@ -144,7 +144,7 @@ export const NAV_LINKS = {
   ],
   framework: [
     { label: 'Metodología',            href: '/framework' },
-    { label: 'Framework operacional',  href: '/framework/operational-framework' },
+    { label: 'Método operacional',     href: '/framework/operational-framework' },
     { label: 'Evidencia técnica',      href: '/framework/evidence' },
     { label: 'Motor de contenido',     href: '/framework/content-engine' },
   ],

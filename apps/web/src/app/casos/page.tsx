@@ -442,7 +442,7 @@ export default async function CasosPage() {
         <div className="mb-14">
           <span className="label">Narrativas de ingeniería</span>
           <h1 className="text-4xl sm:text-5xl font-black text-noc-white mt-3 mb-4 leading-tight tracking-heading">
-            Dos casos fuertes.<br />
+            Dos casos fuertes.<br />{' '}
             <span className="text-zinc-500">Profundidad antes que catálogo</span>
           </h1>
           <p className="text-zinc-500 max-w-2xl text-sm leading-relaxed">

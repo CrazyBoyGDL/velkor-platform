@@ -124,7 +124,7 @@ export default function ServiceEcosystem() {
           <div>
             <motion.h2 {...fadeUp(0.04)}
               className="section-heading mb-4">
-              Servicios aislados<br />
+              Servicios aislados<br />{' '}
               <span className="text-zinc-600">no crean seguridad.</span>
             </motion.h2>
             <motion.p {...fadeUp(0.08)} className="text-zinc-500 text-sm leading-relaxed max-w-sm">

@@ -376,7 +376,7 @@ export default function OperationalFrameworkPage() {
         <div className="mb-16">
           <span className="label block mb-3">Framework Operacional</span>
           <h1 className="text-4xl sm:text-5xl font-black text-noc-white leading-tight mb-5">
-            Metodología de ingeniería<br />
+            Metodología de ingeniería<br />{' '}
             <span className="text-gradient-amber">en 8 etapas</span>
           </h1>
           <p className="text-zinc-500 text-base leading-relaxed max-w-2xl mb-6">

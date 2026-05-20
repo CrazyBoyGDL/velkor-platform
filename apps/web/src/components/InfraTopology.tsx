@@ -1,37 +1,27 @@
 'use client'
-import { motion } from 'framer-motion'
-import { EASE } from '@/lib/motion'
-import { nodeActivation, topologyActivation, useOperationalActivity } from '@/lib/motion/operationalMotion'
-import { CINEMATIC_TIMING, cinematicDelay } from '@/lib/motion/operationalCinematics'
 
-// ─── Canvas + geometry constants ──────────────────────────────────────────────
-const W = 560, H = 400
-const CX = W / 2, CY = H / 2      // hub center
+import type { CSSProperties } from 'react'
+import { useOperationalActivity } from '@/lib/motion/operationalMotion'
 
-// Hub
-const R_HUB = 20                   // main hexagon circumradius
+const W = 560
+const H = 400
+const CX = W / 2
+const CY = H / 2
 
-// Decorative depth rings (purely structural reference lines)
-const R_RING_INNER  = 62           // inner zone boundary
-const R_RING_MID    = 120          // mid zone boundary
-const R_RING_OUTER  = 184          // outer zone boundary
+const R_HUB = 20
+const R_RING_INNER = 62
+const R_RING_MID = 120
+const R_RING_OUTER = 184
+const R1 = 90
+const R2 = 152
+const R_HEX1 = 13
+const R_HEX2 = 10
 
-// Node orbit radii
-const R1 = 90                      // inner: core infrastructure nodes
-const R2 = 152                     // outer: edge/cloud/audit nodes
-
-// Node hexagon sizes
-const R_HEX1 = 13                  // inner node hexagon
-const R_HEX2 = 10                  // outer node hexagon
-
-// ─── Helpers ─────────────────────────────────────────────────────────────────
-/** Cartesian from polar, relative to hub center */
 function polar(deg: number, r: number): [number, number] {
   const a = (deg * Math.PI) / 180
   return [+(CX + r * Math.cos(a)).toFixed(2), +(CY + r * Math.sin(a)).toFixed(2)]
 }
 
-/** SVG polygon points for a flat-top regular hexagon */
 function hexPts(cx: number, cy: number, r: number): string {
   return Array.from({ length: 6 }, (_, i) => {
     const a = (i * Math.PI) / 3 - Math.PI / 6
@@ -39,68 +29,57 @@ function hexPts(cx: number, cy: number, r: number): string {
   }).join(' ')
 }
 
-/**
- * Quadratic bezier arc bending outward from hub center.
- * Creates a curved lateral connection between two nodes
- * that avoids routing through the hub.
- */
 function outerArc(ax: number, ay: number, bx: number, by: number): string {
-  const mx = (ax + bx) / 2, my = (ay + by) / 2
-  const dx = mx - CX, dy = my - CY
+  const mx = (ax + bx) / 2
+  const my = (ay + by) / 2
+  const dx = mx - CX
+  const dy = my - CY
   const len = Math.sqrt(dx * dx + dy * dy) || 1
-  // Control point: 24px outward from midpoint (away from hub)
   const qx = +(mx + (dx / len) * 24).toFixed(2)
   const qy = +(my + (dy / len) * 24).toFixed(2)
   return `M ${ax} ${ay} Q ${qx} ${qy} ${bx} ${by}`
 }
 
-// ─── Node definitions ─────────────────────────────────────────────────────────
-// Asymmetric angles — deliberately NOT evenly spaced to feel organic/real
-// Angles measured from +x axis (standard SVG/math convention)
+function delayStyle(index: number, step = 0.38, offset = 0.22): CSSProperties {
+  return { '--signal-delay': `${(offset + index * step).toFixed(2)}s` } as CSSProperties
+}
+
 const INNER_NODES = [
-  // Security / network perimeter cluster (upper-left)
-  { deg: -82, color: '#4878b0', label: 'NGFW',     detail: 'FortiGate · Hardened',  dx:  0,  dy: -34, anchor: 'middle' as const },
-  { deg: -18, color: '#4878b0', label: 'NETWORK',  detail: 'VLAN · Segmentación',   dx:  28, dy:  -6, anchor: 'start'  as const },
-  // Identity / compliance cluster (right)
-  { deg:  42, color: '#3a7858', label: 'IDENTITY', detail: 'Entra ID · SSO',         dx:  28, dy:  -6, anchor: 'start'  as const },
-  { deg: 102, color: '#3a7858', label: 'ENDPOINT', detail: 'Intune · Autopilot',     dx:  0,  dy:  34, anchor: 'middle' as const },
-  // Cloud / collaboration cluster (lower-left)
-  { deg: 162, color: '#4878b0', label: 'M365',     detail: 'Exchange · Teams',       dx: -28, dy:  -6, anchor: 'end'    as const },
-  { deg: 222, color: '#3d88a5', label: 'CCTV',     detail: 'Axis · NVR · IA',        dx: -28, dy:  -6, anchor: 'end'    as const },
+  { deg: -82, color: '#4878b0', label: 'NGFW', detail: 'FortiGate · Hardened', dx: 0, dy: -34, anchor: 'middle' as const },
+  { deg: -18, color: '#4878b0', label: 'NETWORK', detail: 'VLAN · Segmentación', dx: 28, dy: -6, anchor: 'start' as const },
+  { deg: 42, color: '#3a7858', label: 'IDENTITY', detail: 'Entra ID · SSO', dx: 28, dy: -6, anchor: 'start' as const },
+  { deg: 102, color: '#3a7858', label: 'ENDPOINT', detail: 'Intune · Autopilot', dx: 0, dy: 34, anchor: 'middle' as const },
+  { deg: 162, color: '#4878b0', label: 'M365', detail: 'Exchange · Teams', dx: -28, dy: -6, anchor: 'end' as const },
+  { deg: 222, color: '#3d88a5', label: 'CCTV', detail: 'Axis · NVR · IA', dx: -28, dy: -6, anchor: 'end' as const },
 ] as const
 
-// Outer edge / cloud / audit nodes — smaller, dimmer, more peripheral
 const OUTER_NODES = [
-  { deg: -52, color: '#475569', label: 'WAN',   detail: 'Edge · ISP',      dx:  0,  dy: -26, anchor: 'middle' as const },
-  { deg:  14, color: '#3a7858', label: 'FIDO2', detail: 'MFA · Hardware',  dx:  24, dy:  -4, anchor: 'start'  as const },
-  { deg: 178, color: '#64748b', label: 'AUDIT', detail: 'Log · SIEM',      dx: -24, dy:  -4, anchor: 'end'    as const },
+  { deg: -52, color: '#475569', label: 'WAN', detail: 'Edge · ISP', dx: 0, dy: -26, anchor: 'middle' as const },
+  { deg: 14, color: '#3a7858', label: 'FIDO2', detail: 'MFA · Hardware', dx: 24, dy: -4, anchor: 'start' as const },
+  { deg: 178, color: '#64748b', label: 'AUDIT', detail: 'Log · SIEM', dx: -24, dy: -4, anchor: 'end' as const },
 ] as const
 
-// Lateral cross-connections (between related inner nodes, not through hub)
 const CROSS_LINKS = [
-  // FortiGate enforces policy on internal network segment
   { from: 0, to: 1, color: '#4878b0', label: 'Policy·L3' },
-  // Identity governs endpoint access via MDM
   { from: 2, to: 3, color: '#3a7858', label: 'MDM Sync' },
-  // M365 authenticates via Entra ID — cloud identity plane
   { from: 4, to: 2, color: '#4878b0', label: 'Auth·SSO' },
 ] as const
 
-// Dash cycle lengths for spoke animation (dash + gap = period)
-const DASH_R1 = 14
-const DASH_R2 = 20
-const SIGNAL_STEP = 0.38
-const SIGNAL_OFFSET = 0.22
+const FOCUS_ROUTES = [
+  { deg: -82, color: '#5aa7e8', bend: -24 },
+  { deg: -18, color: '#5aa7e8', bend: 18 },
+  { deg: 42, color: '#31b98b', bend: 28 },
+  { deg: 102, color: '#31b98b', bend: -22 },
+] as const
 
-// ─── Component ───────────────────────────────────────────────────────────────
 export default function InfraTopology() {
   const { ref, active, reducedMotion } = useOperationalActivity<HTMLDivElement>(0.08)
-  const running = active && !reducedMotion
+  const isActive = active && !reducedMotion
 
   return (
     <div
       ref={ref}
-      className="infra-topology select-none w-full"
+      className={`infra-topology select-none w-full${isActive ? ' infra-topology--active' : ''}`}
       role="img"
       aria-label="Diagrama de arquitectura de infraestructura IT gestionada por Velkor"
     >
@@ -110,469 +89,176 @@ export default function InfraTopology() {
         xmlns="http://www.w3.org/2000/svg"
         className="w-full h-auto"
       >
-
-        {/* ══════════════════════════════════════════════════════════
-            DEPTH RINGS — structural zone references
-            Three concentric dashed rings define infrastructure layers:
-            inner zone / security perimeter / edge+cloud plane
-        ══════════════════════════════════════════════════════════ */}
-        <circle cx={CX} cy={CY} r={R_RING_OUTER}
-          stroke="rgba(56,100,160,0.12)" strokeWidth={0.7} strokeDasharray="1.5 8" />
-        <circle cx={CX} cy={CY} r={R_RING_MID}
-          stroke="rgba(56,100,160,0.16)" strokeWidth={0.85} strokeDasharray="2 7" />
-        <circle cx={CX} cy={CY} r={R_RING_INNER}
-          stroke="rgba(56,100,160,0.09)" strokeWidth={0.58} strokeDasharray="1 8" />
-
-        <motion.circle
-          cx={CX}
-          cy={CY}
-          r={R_RING_MID}
-          stroke="rgba(127,158,180,0.24)"
-          strokeWidth={0.82}
-          strokeDasharray="2 11"
-          fill="none"
-          initial={{ opacity: 0.22, rotate: 0 }}
-          animate={running
-            ? { opacity: [0.24, 0.56, 0.26], rotate: 360 }
-            : { opacity: 0.24, rotate: 0 }}
-          transition={{
-            opacity: { repeat: running ? Infinity : 0, duration: CINEMATIC_TIMING.topologyCore, ease: 'easeInOut' },
-            rotate: { repeat: running ? Infinity : 0, duration: CINEMATIC_TIMING.routeTertiary, ease: 'linear' },
-          }}
-          style={{ transformOrigin: `${CX}px ${CY}px` }}
-        />
-
-        <motion.path
+        <circle cx={CX} cy={CY} r={R_RING_OUTER} stroke="rgba(56,100,160,0.12)" strokeWidth={0.7} strokeDasharray="1.5 8" />
+        <circle cx={CX} cy={CY} r={R_RING_MID} stroke="rgba(56,100,160,0.16)" strokeWidth={0.85} strokeDasharray="2 7" />
+        <circle cx={CX} cy={CY} r={R_RING_INNER} stroke="rgba(56,100,160,0.09)" strokeWidth={0.58} strokeDasharray="1 8" />
+        <circle className="infra-topology-core-orbit" cx={CX} cy={CY} r={R_RING_MID} stroke="rgba(127,158,180,0.24)" strokeWidth={0.82} strokeDasharray="2 11" fill="none" />
+        <path
+          className="infra-topology-current"
           d={`M ${CX - 96} ${CY + 24} C ${CX - 38} ${CY - 54}, ${CX + 38} ${CY + 58}, ${CX + 106} ${CY - 22}`}
           stroke="rgba(159,195,212,0.30)"
           strokeWidth={1.25}
           strokeDasharray="4 18"
           fill="none"
-          initial={{ opacity: 0, pathLength: 0 }}
-          animate={running
-            ? { opacity: [0.24, 0.52, 0.24], pathLength: 1, strokeDashoffset: [22, 0] }
-            : { opacity: 0.20, pathLength: 1, strokeDashoffset: 0 }}
-          transition={{
-            opacity: { repeat: running ? Infinity : 0, duration: CINEMATIC_TIMING.topologyCore + 1.6, ease: 'easeInOut' },
-            pathLength: { duration: 0.9, ease: EASE as any },
-            strokeDashoffset: { repeat: running ? Infinity : 0, duration: CINEMATIC_TIMING.routePrimary, ease: 'linear' },
-          }}
         />
+        <circle className="infra-topology-signal-ring" cx={CX} cy={CY} r={28} stroke="rgba(159,195,212,0.34)" strokeWidth={1} fill="none" />
 
-        <motion.circle
-          cx={CX}
-          cy={CY}
-          r={28}
-          stroke="rgba(159,195,212,0.34)"
-          strokeWidth={1}
-          fill="none"
-          initial={{ opacity: 0, scale: 0.82 }}
-          animate={running
-            ? { opacity: [0, 0.52, 0], scale: [0.78, 1.34, 1.72] }
-            : { opacity: 0, scale: 1 }}
-          transition={{
-            repeat: running ? Infinity : 0,
-            duration: CINEMATIC_TIMING.topologySpoke,
-            ease: 'easeOut',
-            delay: SIGNAL_OFFSET,
-          }}
-          style={{ transformOrigin: `${CX}px ${CY}px` }}
-        />
-
-        {/* Outer ring accent marks at each node's angular position */}
         {INNER_NODES.map(({ deg, color }) => {
           const [rx, ry] = polar(deg, R_RING_OUTER)
-          return (
-            <circle key={`rim-${deg}`}
-              cx={rx} cy={ry} r={1.8}
-              fill={color} fillOpacity={0.42} />
-          )
+          return <circle key={`rim-${deg}`} cx={rx} cy={ry} r={1.8} fill={color} fillOpacity={0.42} />
         })}
 
-        {/* Primary operational routes: visible causality from the core to critical controls. */}
-        {[
-          { deg: -82, color: '#5aa7e8', bend: -24 },
-          { deg: -18, color: '#5aa7e8', bend: 18 },
-          { deg: 42, color: '#31b98b', bend: 28 },
-          { deg: 102, color: '#31b98b', bend: -22 },
-        ].map(({ deg, color, bend }, i) => {
+        {FOCUS_ROUTES.map(({ deg, color, bend }, i) => {
           const [nx, ny] = polar(deg, R1)
           const mx = (CX + nx) / 2
           const my = (CY + ny) / 2
           const path = `M ${CX} ${CY} Q ${+(mx + bend).toFixed(2)} ${+(my - Math.abs(bend) * 0.18).toFixed(2)} ${nx} ${ny}`
           return (
-            <g key={`focus-route-${deg}`}>
-              <motion.path
-                d={path}
-                stroke={color}
-                strokeWidth={1.65}
-                strokeLinecap="round"
-                strokeDasharray="6 18"
-                fill="none"
-                initial={{ opacity: 0, pathLength: 0.5 }}
-                animate={running
-                  ? { opacity: [0.24, 0.72, 0.28], pathLength: 1, strokeDashoffset: [24, 0] }
-                  : { opacity: 0.28, pathLength: 1, strokeDashoffset: 0 }}
-                transition={{
-                  opacity: {
-                    repeat: running ? Infinity : 0,
-                    duration: CINEMATIC_TIMING.topologySpoke + i * 0.18,
-                    ease: 'easeInOut',
-                    delay: cinematicDelay(i, SIGNAL_STEP, SIGNAL_OFFSET + 0.1),
-                  },
-                  pathLength: { duration: 0.8, ease: EASE as any },
-                  strokeDashoffset: {
-                    repeat: running ? Infinity : 0,
-                    duration: CINEMATIC_TIMING.topologySpoke + i * 0.18,
-                    ease: 'linear',
-                    delay: cinematicDelay(i, SIGNAL_STEP, SIGNAL_OFFSET + 0.1),
-                  },
-                }}
-              />
-              <motion.circle
-                cx={CX}
-                cy={CY}
-                r={3.2}
-                fill="#d8f4ff"
-                initial={{ opacity: 0 }}
-                animate={running
-                  ? {
-                      cx: [CX, +(mx + bend).toFixed(2), nx],
-                      cy: [CY, +(my - Math.abs(bend) * 0.18).toFixed(2), ny],
-                      opacity: [0, 0.86, 0],
-                    }
-                  : { cx: CX, cy: CY, opacity: 0 }}
-                transition={{
-                  repeat: running ? Infinity : 0,
-                  duration: CINEMATIC_TIMING.topologySpoke + i * 0.18,
-                  ease: 'linear',
-                  delay: cinematicDelay(i, SIGNAL_STEP, SIGNAL_OFFSET + 0.34),
-                }}
-              />
-            </g>
+            <path
+              key={`focus-route-${deg}`}
+              className="infra-topology-focus-route"
+              d={path}
+              stroke={color}
+              strokeWidth={1.65}
+              strokeLinecap="round"
+              strokeDasharray="6 18"
+              fill="none"
+              style={delayStyle(i, 0.38, 0.32)}
+            />
           )
         })}
 
-        {/* ══════════════════════════════════════════════════════════
-            R1 SPOKE CONNECTIONS — hub to inner nodes
-            Each spoke has a static structural line + animated flow dash
-        ══════════════════════════════════════════════════════════ */}
         {INNER_NODES.map(({ deg, color }, i) => {
           const [nx, ny] = polar(deg, R1)
           return (
             <g key={`spoke1-${deg}`}>
-              {/* Static structural line */}
-              <line x1={CX} y1={CY} x2={nx} y2={ny}
-                stroke={color} strokeWidth={0.7} strokeOpacity={0.16} />
-              {/* Animated data flow */}
-              <motion.line
-                {...topologyActivation(i)}
-                x1={CX} y1={CY} x2={nx} y2={ny}
+              <line x1={CX} y1={CY} x2={nx} y2={ny} stroke={color} strokeWidth={0.7} strokeOpacity={0.16} />
+              <line
+                className="infra-topology-spoke-flow"
+                x1={CX}
+                y1={CY}
+                x2={nx}
+                y2={ny}
                 stroke={color}
                 strokeWidth={1.42}
                 strokeDasharray="3 11"
-                strokeDashoffset={0}
-                animate={running
-                  ? { opacity: [0.34, 0.82, 0.38], pathLength: 1, strokeDashoffset: [DASH_R1, 0] }
-                  : { opacity: 0.28, pathLength: 1, strokeDashoffset: 0 }}
-                transition={{
-                  opacity: {
-                    repeat: running ? Infinity : 0,
-                    duration: CINEMATIC_TIMING.topologySpoke + i * 0.16,
-                    ease: 'easeInOut',
-                    delay: cinematicDelay(i, SIGNAL_STEP, SIGNAL_OFFSET),
-                  },
-                  strokeDashoffset: {
-                    repeat: running ? Infinity : 0,
-                    duration: CINEMATIC_TIMING.topologySpoke + i * 0.16,
-                    ease: 'linear',
-                    delay: cinematicDelay(i, SIGNAL_STEP, SIGNAL_OFFSET),
-                  },
-                }}
-              />
-              <motion.circle
-                cx={CX}
-                cy={CY}
-                r={3.05}
-                fill="#d7eef8"
-                fillOpacity={0.86}
-                initial={{ cx: CX, cy: CY, opacity: 0 }}
-                opacity={0}
-                animate={running
-                  ? {
-                      cx: [CX, nx],
-                      cy: [CY, ny],
-                      opacity: [0, 0.78, 0],
-                    }
-                  : { cx: CX, cy: CY, opacity: 0 }}
-                transition={{
-                  repeat: running ? Infinity : 0,
-                  duration: CINEMATIC_TIMING.topologySpoke + i * 0.16,
-                  ease: 'linear',
-                  delay: cinematicDelay(i, SIGNAL_STEP, SIGNAL_OFFSET + 0.2),
-                }}
+                strokeDashoffset={14}
+                style={delayStyle(i)}
               />
             </g>
           )
         })}
 
-        {/* ══════════════════════════════════════════════════════════
-            R2 SPOKE CONNECTIONS — hub to outer/edge nodes
-            Dimmer, slower — these are background/cloud paths
-        ══════════════════════════════════════════════════════════ */}
         {OUTER_NODES.map(({ deg, color }, i) => {
           const [nx, ny] = polar(deg, R2)
           return (
             <g key={`spoke2-${deg}`}>
-              <line x1={CX} y1={CY} x2={nx} y2={ny}
-                stroke={color} strokeWidth={0.58} strokeOpacity={0.10} />
-              <motion.line
-                {...topologyActivation(i + INNER_NODES.length)}
-                x1={CX} y1={CY} x2={nx} y2={ny}
+              <line x1={CX} y1={CY} x2={nx} y2={ny} stroke={color} strokeWidth={0.58} strokeOpacity={0.10} />
+              <line
+                className="infra-topology-spoke-flow infra-topology-spoke-flow--outer"
+                x1={CX}
+                y1={CY}
+                x2={nx}
+                y2={ny}
                 stroke={color}
                 strokeWidth={1}
                 strokeDasharray="2 12"
-                strokeDashoffset={0}
-                animate={running
-                  ? { opacity: [0.22, 0.44, 0.24], pathLength: 1, strokeDashoffset: [DASH_R2, 0] }
-                  : { opacity: 0.18, pathLength: 1, strokeDashoffset: 0 }}
-                transition={{
-                  opacity: { duration: 0.12, ease: EASE as any, delay: 0.08 },
-                  strokeDashoffset: {
-                    repeat: running ? Infinity : 0,
-                    duration: CINEMATIC_TIMING.topologyOuter + i * 0.34,
-                    ease: 'linear',
-                    delay: cinematicDelay(i, 0.55),
-                  },
-                }}
-              />
-              <motion.circle
-                cx={CX}
-                cy={CY}
-                r={2.35}
-                fill={color}
-                fillOpacity={0.70}
-                initial={{ cx: CX, cy: CY, opacity: 0 }}
-                animate={running
-                  ? {
-                      cx: [CX, (CX + nx) / 2, nx],
-                      cy: [CY, (CY + ny) / 2, ny],
-                      opacity: [0, 0.56, 0],
-                    }
-                  : { cx: CX, cy: CY, opacity: 0 }}
-                transition={{
-                  repeat: running ? Infinity : 0,
-                  duration: CINEMATIC_TIMING.topologyOuter + i * 0.22,
-                  ease: 'linear',
-                  delay: cinematicDelay(i, 0.7, 0.9),
-                }}
+                strokeDashoffset={20}
+                style={delayStyle(i, 0.55, 0.55)}
               />
             </g>
           )
         })}
 
-        {/* ══════════════════════════════════════════════════════════
-            LATERAL CROSS-CONNECTIONS — service relationships
-            Curved arcs between inner nodes that share a relationship.
-            FortiGate enforces policy on NETWORK layer.
-            IDENTITY governs ENDPOINT via MDM sync.
-        ══════════════════════════════════════════════════════════ */}
         {CROSS_LINKS.map(({ from, to, color, label }, i) => {
           const [ax, ay] = polar(INNER_NODES[from].deg, R1)
           const [bx, by] = polar(INNER_NODES[to].deg, R1)
           const path = outerArc(ax, ay, bx, by)
-          // Label position: midpoint offset outward
-          const mx = (ax + bx) / 2, my = (ay + by) / 2
-          const dx = mx - CX, dy2 = my - CY
-          const dlen = Math.sqrt(dx * dx + dy2 * dy2) || 1
+          const mx = (ax + bx) / 2
+          const my = (ay + by) / 2
+          const dx = mx - CX
+          const dy = my - CY
+          const dlen = Math.sqrt(dx * dx + dy * dy) || 1
           const lx = +(mx + (dx / dlen) * 16).toFixed(1)
-          const ly = +(my + (dy2 / dlen) * 16).toFixed(1)
-          const qx = +(mx + (dx / dlen) * 24).toFixed(2)
-          const qy = +(my + (dy2 / dlen) * 24).toFixed(2)
+          const ly = +(my + (dy / dlen) * 16).toFixed(1)
           return (
-            <motion.g key={`cross-${i}`}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.15, ease: EASE as any, delay: 0.12 }}
-            >
-              <motion.path d={path}
-                stroke={color} strokeWidth={0.95} strokeOpacity={0.38}
-                strokeDasharray="2 5" fill="none"
-                strokeDashoffset={0}
-                animate={running ? { strokeDashoffset: [0, -14] } : { strokeDashoffset: 0 }}
-                transition={{ repeat: running ? Infinity : 0, duration: CINEMATIC_TIMING.routeSecondary + i * 0.45, ease: 'linear', delay: cinematicDelay(i, 0.9) }}
-              />
-              <motion.circle
-                cx={ax}
-                cy={ay}
-                r={2}
-                fill={color}
-                initial={{ opacity: 0 }}
-                animate={running
-                  ? { cx: [ax, qx, bx], cy: [ay, qy, by], opacity: [0, 0.68, 0] }
-                  : { cx: ax, cy: ay, opacity: 0 }}
-                transition={{
-                  repeat: running ? Infinity : 0,
-                  duration: CINEMATIC_TIMING.routeSecondary * 0.34,
-                  ease: 'linear',
-                  delay: cinematicDelay(i, 1.4, 1.1),
-                }}
+            <g key={`cross-${i}`}>
+              <path
+                className="infra-topology-cross-flow"
+                d={path}
+                stroke={color}
+                strokeWidth={0.95}
+                strokeOpacity={0.38}
+                strokeDasharray="2 5"
+                fill="none"
+                style={delayStyle(i, 0.9, 0.6)}
               />
               <text
-                x={lx} y={ly}
+                x={lx}
+                y={ly}
                 textAnchor="middle"
                 fontSize={5.5}
                 fontFamily="'JetBrains Mono', 'Fira Code', monospace"
-                 fill={color} fillOpacity={0.44}
+                fill={color}
+                fillOpacity={0.44}
                 letterSpacing="0.04em"
               >
                 {label}
               </text>
-            </motion.g>
+            </g>
           )
         })}
 
-        {/* ══════════════════════════════════════════════════════════
-            INNER SERVICE NODES (R1)
-            Core infrastructure services — primary size, full color
-        ══════════════════════════════════════════════════════════ */}
         {INNER_NODES.map(({ deg, color, label, detail, dx, dy, anchor }, i) => {
           const [nx, ny] = polar(deg, R1)
-          const lx = nx + dx, ly = ny + dy
+          const lx = nx + dx
+          const ly = ny + dy
           return (
-            <motion.g
-              key={`n1-${deg}`}
-              {...nodeActivation(i)}
-            >
-              {/* Breathing ambient halo — calm living-system pulse */}
-              <motion.circle
-                cx={nx} cy={ny} r={18}
-                fill={color} fillOpacity={0}
-                initial={{ fillOpacity: 0.018 }}
-                animate={running ? { fillOpacity: [0.10, 0.024, 0.12] } : { fillOpacity: 0.032 }}
-                transition={{
-                  repeat: running ? Infinity : 0,
-                  duration: CINEMATIC_TIMING.topologySpoke + i * 0.16,
-                  ease: 'easeInOut',
-                  delay: cinematicDelay(i, SIGNAL_STEP, SIGNAL_OFFSET + 0.72),
-                }}
-              />
-              <motion.circle
-                cx={nx} cy={ny} r={R_HEX1 + 8}
-                stroke={color}
-                 strokeWidth={0.9}
-                fill="none"
-                initial={{ opacity: 0.10, scale: 0.90 }}
-                animate={running
-                  ? { opacity: [0.18, 0.70, 0.20], scale: [0.90, 1.16, 0.96] }
-                  : { opacity: 0.16, scale: 1 }}
-                transition={{
-                  repeat: running ? Infinity : 0,
-                  duration: CINEMATIC_TIMING.topologySpoke + i * 0.16,
-                  ease: 'easeInOut',
-                  delay: cinematicDelay(i, SIGNAL_STEP, SIGNAL_OFFSET + 0.82),
-                }}
-                style={{ transformOrigin: `${nx}px ${ny}px` }}
-              />
-              {/* Static ambient halo */}
-               <circle cx={nx} cy={ny} r={21} fill={color} fillOpacity={0.065} />
-              {/* Hexagonal node body */}
-              <polygon
-                points={hexPts(nx, ny, R_HEX1)}
-                 stroke={color} strokeWidth={1.08} strokeOpacity={0.66}
-                 fill={color} fillOpacity={0.095}
-              />
-              {/* Active status dot */}
-              <motion.circle
-                cx={nx}
-                cy={ny}
-                r={2.5}
-                fill={color}
-                 initial={{ fillOpacity: 0.92 }}
-                animate={running
-                   ? { fillOpacity: [0.78, 1, 0.82], r: [2.55, 3.55, 2.65] }
-                   : { fillOpacity: 0.9, r: 2.65 }}
-                transition={{
-                  repeat: running ? Infinity : 0,
-                  duration: CINEMATIC_TIMING.topologySpoke + i * 0.16,
-                  ease: 'easeInOut',
-                  delay: cinematicDelay(i, SIGNAL_STEP, SIGNAL_OFFSET + 0.82),
-                }}
-              />
-              {/* Service label */}
+            <g key={`n1-${deg}`} className="infra-topology-node" style={delayStyle(i, 0.38, 0.94)}>
+              <circle className="infra-topology-node-halo" cx={nx} cy={ny} r={18} fill={color} fillOpacity={0.032} />
+              <circle className="infra-topology-node-ring" cx={nx} cy={ny} r={R_HEX1 + 8} stroke={color} strokeWidth={0.9} fill="none" />
+              <circle cx={nx} cy={ny} r={21} fill={color} fillOpacity={0.065} />
+              <polygon points={hexPts(nx, ny, R_HEX1)} stroke={color} strokeWidth={1.08} strokeOpacity={0.66} fill={color} fillOpacity={0.095} />
+              <circle className="infra-topology-node-dot" cx={nx} cy={ny} r={2.5} fill={color} />
               <text
-                x={lx} y={ly}
+                x={lx}
+                y={ly}
                 textAnchor={anchor}
                 fontSize={8}
                 fontFamily="'JetBrains Mono', 'Fira Code', monospace"
                 fontWeight="700"
-                 fill="rgba(228,228,231,0.88)"
+                fill="rgba(228,228,231,0.88)"
                 letterSpacing="0.10em"
               >
                 {label}
               </text>
-              {/* Technology stack detail */}
               <text
-                x={lx} y={ly + 11}
+                x={lx}
+                y={ly + 11}
                 textAnchor={anchor}
                 fontSize={6.5}
                 fontFamily="'JetBrains Mono', 'Fira Code', monospace"
-                 fill="rgba(148,163,184,0.62)"
+                fill="rgba(148,163,184,0.62)"
                 letterSpacing="0.03em"
               >
                 {detail}
               </text>
-            </motion.g>
+            </g>
           )
         })}
 
-        {/* ══════════════════════════════════════════════════════════
-            OUTER EDGE / CLOUD NODES (R2)
-            Peripheral: WAN entry, hardware MFA, audit/SIEM — smaller, dimmer
-        ══════════════════════════════════════════════════════════ */}
         {OUTER_NODES.map(({ deg, color, label, detail, dx, dy, anchor }, i) => {
           const [nx, ny] = polar(deg, R2)
-          const lx = nx + dx, ly = ny + dy
+          const lx = nx + dx
+          const ly = ny + dy
           return (
-            <motion.g
-              key={`n2-${deg}`}
-              {...nodeActivation(i + INNER_NODES.length)}
-            >
-              <motion.circle
-                cx={nx}
-                cy={ny}
-                r={16}
-                fill={color}
-                initial={{ fillOpacity: 0.04 }}
-                animate={running ? { fillOpacity: [0.04, 0.12, 0.048] } : { fillOpacity: 0.04 }}
-                transition={{
-                  repeat: running ? Infinity : 0,
-                  duration: CINEMATIC_TIMING.topologyOuter + i * 0.34,
-                  ease: 'easeInOut',
-                  delay: cinematicDelay(i, 0.55, 1.2),
-                }}
-              />
-              <polygon
-                points={hexPts(nx, ny, R_HEX2)}
-                stroke={color} strokeWidth={0.85} strokeOpacity={0.44}
-                fill={color} fillOpacity={0.06}
-              />
-              <motion.circle
-                cx={nx}
-                cy={ny}
-                r={2}
-                fill={color}
-                initial={{ fillOpacity: 0.66 }}
-                animate={running ? { fillOpacity: [0.50, 0.96, 0.56], r: [1.9, 2.75, 2.1] } : { fillOpacity: 0.66, r: 2.1 }}
-                transition={{
-                  repeat: running ? Infinity : 0,
-                  duration: CINEMATIC_TIMING.topologyOuter + i * 0.34,
-                  ease: 'easeInOut',
-                  delay: cinematicDelay(i, 0.55, 1.3),
-                }}
-              />
+            <g key={`n2-${deg}`} className="infra-topology-node infra-topology-node--outer" style={delayStyle(i, 0.55, 1.2)}>
+              <circle className="infra-topology-node-halo" cx={nx} cy={ny} r={16} fill={color} fillOpacity={0.04} />
+              <polygon points={hexPts(nx, ny, R_HEX2)} stroke={color} strokeWidth={0.85} strokeOpacity={0.44} fill={color} fillOpacity={0.06} />
+              <circle className="infra-topology-node-dot" cx={nx} cy={ny} r={2} fill={color} fillOpacity={0.66} />
               <text
-                x={lx} y={ly}
+                x={lx}
+                y={ly}
                 textAnchor={anchor}
                 fontSize={7}
                 fontFamily="'JetBrains Mono', 'Fira Code', monospace"
@@ -583,7 +269,8 @@ export default function InfraTopology() {
                 {label}
               </text>
               <text
-                x={lx} y={ly + 10}
+                x={lx}
+                y={ly + 10}
                 textAnchor={anchor}
                 fontSize={5.5}
                 fontFamily="'JetBrains Mono', 'Fira Code', monospace"
@@ -592,82 +279,23 @@ export default function InfraTopology() {
               >
                 {detail}
               </text>
-            </motion.g>
+            </g>
           )
         })}
 
-        {/* ══════════════════════════════════════════════════════════
-            CENTRAL HUB — Velkor platform core
-            Nested hexagons + ambient breathing pulse
-        ══════════════════════════════════════════════════════════ */}
-        <motion.g
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.18, ease: EASE as any, delay: 0.05 }}
-        >
-          {/* Ambient breathing glow — cool steel, not amber */}
-          <motion.circle
-            cx={CX} cy={CY} r={38}
-            fill="rgba(100,116,139,0.075)"
-            initial={{ opacity: 0.44 }}
-            animate={running ? { opacity: [0.86, 0.36, 0.86] } : { opacity: 0.44 }}
-            transition={{ repeat: running ? Infinity : 0, duration: CINEMATIC_TIMING.topologyCore, ease: 'easeInOut' }}
-          />
-          <motion.circle
-            cx={CX} cy={CY} r={48}
-            stroke="rgba(159,195,212,0.30)"
-            strokeWidth={0.95}
-            strokeDasharray="1 9"
-            fill="none"
-            initial={{ opacity: 0.12, scale: 0.94 }}
-            animate={running
-              ? { opacity: [0.18, 0.54, 0.20], scale: [0.96, 1.06, 0.96] }
-              : { opacity: 0.18, scale: 1 }}
-            transition={{ repeat: running ? Infinity : 0, duration: CINEMATIC_TIMING.breath, ease: 'easeInOut' }}
-            style={{ transformOrigin: `${CX}px ${CY}px` }}
-          />
-          {/* Outer orbit ring — dashed hexagonal reference plane */}
-          <polygon
-            points={hexPts(CX, CY, R_HUB + 8)}
-            stroke="rgba(148,163,184,0.24)" strokeWidth={0.82}
-            strokeDasharray="2 4" fill="none"
-          />
-          {/* Main hub hexagon — steel/platinum */}
-          <polygon
-            points={hexPts(CX, CY, R_HUB)}
-            stroke="rgba(203,213,225,0.66)" strokeWidth={1.32}
-            fill="rgba(148,163,184,0.080)"
-          />
-          {/* Inner structural hexagon — precision engineering mark */}
-          <polygon
-            points={hexPts(CX, CY, 10)}
-            stroke="rgba(159,195,212,0.32)" strokeWidth={0.78}
-            fill="rgba(100,116,139,0.05)"
-          />
-          {/* Hub identity — engineered confidence */}
-          <text
-            x={CX} y={CY - 2}
-            textAnchor="middle"
-            fontSize={7}
-            fontFamily="'JetBrains Mono', 'Fira Code', monospace"
-            fontWeight="700"
-            fill="rgba(241,245,249,0.94)"
-            letterSpacing="0.14em"
-          >
+        <g className="infra-topology-hub">
+          <circle className="infra-topology-hub-glow" cx={CX} cy={CY} r={38} fill="rgba(100,116,139,0.075)" />
+          <circle className="infra-topology-hub-ring" cx={CX} cy={CY} r={48} stroke="rgba(159,195,212,0.30)" strokeWidth={0.95} strokeDasharray="1 9" fill="none" />
+          <polygon points={hexPts(CX, CY, R_HUB + 8)} stroke="rgba(148,163,184,0.24)" strokeWidth={0.82} strokeDasharray="2 4" fill="none" />
+          <polygon points={hexPts(CX, CY, R_HUB)} stroke="rgba(203,213,225,0.66)" strokeWidth={1.32} fill="rgba(148,163,184,0.080)" />
+          <polygon points={hexPts(CX, CY, 10)} stroke="rgba(159,195,212,0.32)" strokeWidth={0.78} fill="rgba(100,116,139,0.05)" />
+          <text x={CX} y={CY - 2} textAnchor="middle" fontSize={7} fontFamily="'JetBrains Mono', 'Fira Code', monospace" fontWeight="700" fill="rgba(241,245,249,0.94)" letterSpacing="0.14em">
             VELKOR
           </text>
-          <text
-            x={CX} y={CY + 9}
-            textAnchor="middle"
-            fontSize={5.5}
-            fontFamily="'JetBrains Mono', 'Fira Code', monospace"
-            fill="rgba(148,163,184,0.60)"
-            letterSpacing="0.10em"
-          >
+          <text x={CX} y={CY + 9} textAnchor="middle" fontSize={5.5} fontFamily="'JetBrains Mono', 'Fira Code', monospace" fill="rgba(148,163,184,0.60)" letterSpacing="0.10em">
             PLATFORM
           </text>
-        </motion.g>
-
+        </g>
       </svg>
     </div>
   )

@@ -51,7 +51,7 @@ export default function RecursosPage() {
         <div className="mb-14">
           <span className="label">Recursos técnicos</span>
           <h1 className="text-4xl sm:text-5xl font-black text-noc-white mt-3 mb-4 leading-tight">
-            Guías técnicas<br />
+            Guías técnicas<br />{' '}
             <span className="text-gradient-amber">sin registro previo</span>
           </h1>
           <p className="text-zinc-500 text-base max-w-xl leading-relaxed">

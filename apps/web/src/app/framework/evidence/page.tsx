@@ -542,7 +542,7 @@ export default function EvidencePage() {
         <div className="mb-14">
           <span className="label">Repositorio de evidencia técnica</span>
           <h1 className="text-4xl sm:text-5xl font-semibold text-noc-white mt-3 mb-4 leading-tight tracking-heading">
-            Fragmentos de operación real,<br />
+            Fragmentos de operación real,<br />{' '}
             <span className="text-zinc-500">sanitizados para revisión</span>
           </h1>
           <p className="text-zinc-500 max-w-2xl text-sm leading-relaxed">

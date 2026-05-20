@@ -27,8 +27,8 @@ async function strapiPost<T>(path: string, data: unknown): Promise<T | null> {
       body: JSON.stringify({ data }),
     });
     if (!res.ok) {
-      const body = await res.text();
-      console.error(`[strapi] POST ${path} → ${res.status}`, body);
+      await res.text().catch(() => undefined);
+      console.error(`[strapi] POST ${path} → ${res.status}`);
       return null;
     }
     return res.json() as Promise<T>;

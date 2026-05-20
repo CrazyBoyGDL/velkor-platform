@@ -13,6 +13,7 @@ import {
 import ArticleEngagementTracker from '@/components/ArticleEngagementTracker'
 import TechnicalArticleBlocks from '@/components/TechnicalArticleBlocks'
 import TrackedLink from '@/components/TrackedLink'
+import { sanitizeCmsHtml } from '@/lib/sanitize'
 import {
   FALLBACK_AUTHORITY_POSTS,
   getFallbackAuthorityPost,
@@ -62,6 +63,10 @@ type RelatedPost = {
   category: string
   readTime: string
   hex: string
+}
+
+type BlogPostPageProps = {
+  params: Promise<{ slug: string }>
 }
 
 // ── Data fetching ─────────────────────────────────────────────────────────────
@@ -176,18 +181,19 @@ export async function generateStaticParams() {
 
 // ── Metadata ──────────────────────────────────────────────────────────────────
 export async function generateMetadata(
-  { params }: { params: { slug: string } }
+  { params }: BlogPostPageProps
 ): Promise<Metadata> {
-  const post = await getPost(params.slug)
+  const { slug } = await params
+  const post = await getPost(slug)
   if (!post) return { title: 'Artículo no encontrado | Velkor Systems' }
   return {
     title: `${post.title} | Velkor Systems`,
     description: post.excerpt || undefined,
-    alternates: { canonical: `https://velkor.com.mx/blog/${params.slug}` },
+    alternates: { canonical: `https://velkor.com.mx/blog/${slug}` },
     openGraph: {
       title: post.title,
       description: post.excerpt || undefined,
-      url: `https://velkor.com.mx/blog/${params.slug}`,
+      url: `https://velkor.com.mx/blog/${slug}`,
       type: 'article',
       images: [{ url: OG_IMAGES.articles, width: 1200, height: 630, alt: `${post.title} — Velkor Systems` }],
     },
@@ -199,10 +205,11 @@ export async function generateMetadata(
 }
 
 // ── Page ──────────────────────────────────────────────────────────────────────
-export default async function BlogPostPage({ params }: { params: { slug: string } }) {
+export default async function BlogPostPage({ params }: BlogPostPageProps) {
+  const { slug } = await params
   const [post, related] = await Promise.all([
-    getPost(params.slug),
-    getRelatedPosts(params.slug),
+    getPost(slug),
+    getRelatedPosts(slug),
   ])
   if (!post) notFound()
 
@@ -216,6 +223,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
   const downloadableArtifacts = asDownloadableArtifacts(post.downloadableArtifact, post.downloadableArtifacts)
   const articleBlocks = asTechnicalArticleBlocks(post.articleBlocks)
   const architectureRef = architectureReferenceHref(post.architectureDiagram)
+  const safeContentHtml = post.content ? sanitizeCmsHtml(post.content) : ''
   const metadataItems = [
     post.technicalCategory ? TECHNICAL_CATEGORY_LABEL[post.technicalCategory] ?? post.technicalCategory : null,
     post.technicalLevel ? TECHNICAL_LEVEL_LABEL[post.technicalLevel] ?? post.technicalLevel : null,
@@ -233,7 +241,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
   return (
     <div className="min-h-screen py-16 px-4 sm:px-8">
       <ArticleEngagementTracker
-        slug={params.slug}
+        slug={slug}
         category={post.category}
         readTime={post.readTime ?? ''}
         technicalLevel={post.technicalLevel}
@@ -300,10 +308,10 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
         </header>
 
         {/* Content */}
-        {post.content ? (
+        {safeContentHtml ? (
           <div
             className="blog-body"
-            dangerouslySetInnerHTML={{ __html: post.content }}
+            dangerouslySetInnerHTML={{ __html: safeContentHtml }}
           />
         ) : (
           <p className="text-zinc-600 text-sm italic">Contenido completo próximamente.</p>

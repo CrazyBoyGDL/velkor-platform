@@ -191,7 +191,7 @@ export default function VideovigilanciaPage() {
             <span className="text-zinc-700 text-[10px] font-mono">AXIS ACSR CERTIFIED</span>
           </div>
           <h1 className="text-4xl sm:text-5xl font-black text-noc-white leading-tight mb-4">
-            Ve todo.<br />
+            Ve todo.<br />{' '}
             <span style={{ color: '#3d88a5' }}>Responde antes.</span>
           </h1>
           <p className="text-zinc-400 text-lg leading-relaxed max-w-2xl mb-8">

@@ -191,7 +191,7 @@ export default function IdentidadAccesoPage() {
             <span className="text-zinc-700 text-[10px] font-mono">MICROSOFT CERTIFIED</span>
           </div>
           <h1 className="text-4xl sm:text-5xl font-black text-noc-white leading-tight mb-4">
-            Cada identidad,<br />
+            Cada identidad,<br />{' '}
             <span style={{ color: '#3a7858' }}>bajo control.</span>
           </h1>
           <p className="text-zinc-400 text-lg leading-relaxed max-w-2xl mb-8">

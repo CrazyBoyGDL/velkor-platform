@@ -25,15 +25,35 @@ export default function MobileConsultiveCTA() {
   const hidden = HIDDEN_PREFIXES.some(prefix => pathname.startsWith(prefix))
 
   useEffect(() => {
+    const html = document.documentElement
+    html.classList.toggle('mobile-cta-mounted', !hidden)
+    return () => html.classList.remove('mobile-cta-mounted')
+  }, [hidden])
+
+  useEffect(() => {
     if (hidden) {
       setVisible(false)
       return
     }
 
-    const update = rafThrottle(() => setVisible(window.scrollY > 520))
+    const isReadingPrioritySection = () => {
+      const avoidRegions = document.querySelectorAll<HTMLElement>('[data-mobile-sticky-avoid="true"]')
+      return Array.from(avoidRegions).some(region => {
+        const rect = region.getBoundingClientRect()
+        return rect.top < window.innerHeight - 72 && rect.bottom > 88
+      })
+    }
+
+    const update = rafThrottle(() => {
+      setVisible(window.scrollY > 520 && !isReadingPrioritySection())
+    })
     update()
     window.addEventListener('scroll', update, { passive: true })
-    return () => window.removeEventListener('scroll', update)
+    window.addEventListener('resize', update, { passive: true })
+    return () => {
+      window.removeEventListener('scroll', update)
+      window.removeEventListener('resize', update)
+    }
   }, [hidden, pathname])
 
   if (hidden) return null

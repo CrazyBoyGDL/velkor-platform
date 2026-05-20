@@ -2,29 +2,18 @@ import { NextRequest, NextResponse } from 'next/server';
 import { strapi } from '@/lib/strapi';
 import { buildDirectLeadPayload } from '@/lib/crm';
 import { getRequestIp } from '@/lib/security';
+import { createMemoryRateLimiter } from '@/lib/rateLimit';
+import { sanitizePlainText } from '@/lib/sanitize';
 
 // ── Rate limiter (same pattern as /api/assessment) ────────────────────────────
-const rateMap = new Map<string, { count: number; resetAt: number }>();
 const RATE_WINDOW_MS = 60_000;
 const RATE_MAX = 5;
-
-function isRateLimited(ip: string): boolean {
-  const now = Date.now();
-  const entry = rateMap.get(ip);
-  if (!entry || now > entry.resetAt) {
-    rateMap.set(ip, { count: 1, resetAt: now + RATE_WINDOW_MS });
-    return false;
-  }
-  if (entry.count >= RATE_MAX) return true;
-  entry.count++;
-  return false;
-}
+const checkRateLimit = createMemoryRateLimiter({ windowMs: RATE_WINDOW_MS, max: RATE_MAX });
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function sanitize(value: unknown, max: number): string {
-  if (typeof value !== 'string') return '';
-  return value.trim().replace(/<[^>]*>/g, '').slice(0, max);
+  return sanitizePlainText(value, max);
 }
 
 // ── POST /api/recurso-lead ────────────────────────────────────────────────────
@@ -32,10 +21,11 @@ function sanitize(value: unknown, max: number): string {
 // Saves lead to Strapi with source = 'recurso-[slug]'
 export async function POST(req: NextRequest) {
   const ip = getRequestIp(req);
-  if (isRateLimited(ip)) {
+  const rateLimit = checkRateLimit(ip);
+  if (rateLimit.limited) {
     return NextResponse.json(
       { error: 'Demasiadas solicitudes. Intenta de nuevo en un minuto.' },
-      { status: 429 }
+      { status: 429, headers: { 'Retry-After': String(rateLimit.retryAfter) } }
     );
   }
 

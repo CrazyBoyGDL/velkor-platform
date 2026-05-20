@@ -10,7 +10,7 @@ const LINKS = {
     ['Identidad & Acceso',    '/servicios/identidad-acceso'],
     ['CCTV & Vigilancia',     '/servicios/videovigilancia'],
   ],
-  Framework: [
+  Método: [
     ['Metodología',           '/framework'],
     ['Framework operacional', '/framework/operational-framework'],
     ['Evidencia técnica',     '/framework/evidence'],

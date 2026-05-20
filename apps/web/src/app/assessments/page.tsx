@@ -422,19 +422,24 @@ function Step1({
       <Divider label="Contacto" />
       <div className="grid sm:grid-cols-2 gap-4">
         {([
-          { k: 'name',    label: 'Nombre completo',    type: 'text',  ph: 'Juan Pérez',       req: true  },
-          { k: 'email',   label: 'Correo corporativo', type: 'email', ph: 'juan@empresa.com', req: true  },
-          { k: 'company', label: 'Empresa',            type: 'text',  ph: 'Corporativo XYZ',  req: true  },
-          { k: 'phone',   label: 'Teléfono',           type: 'tel',   ph: '+52 55 0000 0000', req: false },
-        ] as const).map(({ k, label, type, ph, req }) => (
+          { k: 'name',    id: 'assessment-name',    label: 'Nombre completo',    type: 'text',  ph: 'Juan Pérez',       req: true,  autoComplete: 'name',         inputMode: undefined, enterKeyHint: 'next' },
+          { k: 'email',   id: 'assessment-email',   label: 'Correo corporativo', type: 'email', ph: 'juan@empresa.com', req: true,  autoComplete: 'email',        inputMode: 'email', enterKeyHint: 'next' },
+          { k: 'company', id: 'assessment-company', label: 'Empresa',            type: 'text',  ph: 'Corporativo XYZ',  req: true,  autoComplete: 'organization', inputMode: undefined, enterKeyHint: 'next' },
+          { k: 'phone',   id: 'assessment-phone',   label: 'Teléfono',           type: 'tel',   ph: '+52 55 0000 0000', req: false, autoComplete: 'tel',          inputMode: 'tel',   enterKeyHint: 'next' },
+        ] as const).map(({ k, id, label, type, ph, req, autoComplete, inputMode, enterKeyHint }) => (
           <div key={k}>
-            <label className="label text-[10px] block mb-1.5">{label}</label>
+            <label htmlFor={id} className="label text-[10px] block mb-1.5">{label}</label>
             <input
+              id={id}
+              name={k}
               type={type} required={req}
               value={k === 'name' ? name : k === 'email' ? email : k === 'company' ? company : phone}
               onChange={e => onContact(k, e.target.value)}
               placeholder={ph}
-              className="w-full bg-surface-dark border border-surface-border rounded-xl px-4 py-2.5 text-noc-white placeholder-zinc-700 text-sm focus:outline-none focus:border-zinc-600 transition-colors"
+              autoComplete={autoComplete}
+              inputMode={inputMode}
+              enterKeyHint={enterKeyHint}
+              className="w-full min-h-12 bg-surface-dark border border-surface-border rounded-xl px-4 py-3 text-noc-white placeholder-zinc-700 text-base sm:text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-amber/40 focus:border-zinc-600 transition-colors"
             />
           </div>
         ))}
@@ -899,13 +904,17 @@ function Step5({
       </div>
 
       <div>
-        <label className="label text-[10px] block mb-1.5">Contexto adicional <span className="text-zinc-700">(opcional)</span></label>
+        <label htmlFor="assessment-notes" className="label text-[10px] block mb-1.5">Contexto adicional <span className="text-zinc-700">(opcional)</span></label>
         <textarea
+          id="assessment-notes"
+          name="notes"
           rows={4}
           value={data.notes}
           onChange={e => onChange('notes', e.target.value)}
+          autoComplete="off"
+          enterKeyHint="done"
           placeholder="Describe el contexto específico del proyecto, incidentes recientes, restricciones presupuestarias o cualquier información relevante para la evaluación..."
-          className="w-full bg-surface-dark border border-surface-border rounded-xl px-4 py-3 text-noc-white placeholder-zinc-700 text-sm focus:outline-none focus:border-zinc-600 transition-colors resize-none"
+          className="w-full min-h-28 bg-surface-dark border border-surface-border rounded-xl px-4 py-3 text-noc-white placeholder-zinc-700 text-base sm:text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-amber/40 focus:border-zinc-600 transition-colors resize-y"
         />
       </div>
     </div>
@@ -1074,6 +1083,14 @@ export default function AssessmentsPage() {
         return
       }
 
+      if (!data.scores || !data.classification || !data.reportRef) {
+        setStatus('error')
+        setErrorMsg('No pudimos generar el resultado en este momento. Intenta de nuevo en unos minutos.')
+        setTurnstileResetSignal(signal => signal + 1)
+        trackEvent(Events.AssessmentError, { reason: 'missing-assessment-result' })
+        return
+      }
+
       setScores(data.scores)
       setClassification(data.classification)
       setReportRef(data.reportRef)
@@ -1083,6 +1100,8 @@ export default function AssessmentsPage() {
         score:    data.scores?.overall,
         maturity: data.scores?.maturity,
         segment:  data.classification?.segment,
+        lead_stored: String(Boolean(data.leadStored)),
+        webhook_queued: String(Boolean(data.webhookQueued)),
       })
       trackEvent(Events.AssessmentLeadScored, {
         score: data.scores?.overall,
@@ -1099,7 +1118,7 @@ export default function AssessmentsPage() {
         follow_up_label: data.classification?.followUpLabel,
       })
 
-      // ── Email notification (non-blocking, fail-silent) ──
+      // Email notification is non-blocking, but delivery status is observable.
       if (data.scores && data.classification) {
         fetch('/api/assessment/notify', {
           method:  'POST',
@@ -1125,7 +1144,17 @@ export default function AssessmentsPage() {
               followUpHours:    data.classification.followUpHours,
             },
           }),
-        }).catch(() => {}) // silent — email delivery is best-effort
+        })
+          .then(async response => {
+            const notify = await response.json().catch(() => ({})) as { sent?: boolean; reason?: string }
+            trackEvent(Events.AssessmentFollowUpQueued, {
+              email_sent: String(Boolean(notify.sent)),
+              reason: notify.reason || (notify.sent ? 'sent' : 'not-sent'),
+            })
+          })
+          .catch(() => {
+            trackEvent(Events.AssessmentError, { reason: 'email-notify-network-error' })
+          })
       }
     } catch {
       setStatus('error')
@@ -1186,7 +1215,7 @@ export default function AssessmentsPage() {
         <div className="mb-8">
           <span className="label">Evaluación operacional de infraestructura IT</span>
           <h1 className="text-3xl sm:text-4xl font-black text-noc-white mt-3 mb-3 leading-tight tracking-heading">
-            Diagnóstico técnico<br />
+            Diagnóstico técnico<br />{' '}
             <span className="text-zinc-500">acotada y documentada</span>
           </h1>
           <p className="text-zinc-600 text-sm leading-relaxed max-w-lg">

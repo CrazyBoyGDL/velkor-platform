@@ -47,7 +47,7 @@ export default function ExecutiveDiagnostic() {
         <div className="grid lg:grid-cols-[1fr_1fr] gap-16 items-end mb-12">
           <motion.h2 {...appear(0)}
             className="section-heading">
-            Cuatro preguntas que<br />
+            Cuatro preguntas que<br />{' '}
             <span className="text-zinc-600">todo responsable de IT debe poder responder.</span>
           </motion.h2>
           <motion.p {...appear(0.010)} className="text-zinc-600 text-sm leading-relaxed max-w-sm self-end">

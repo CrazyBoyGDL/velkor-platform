@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { dispatchWebhook, type WebhookEvent } from '@/lib/webhook'
 import { getRequestIp, logAuditEvent } from '@/lib/security'
+import { createMemoryRateLimiter } from '@/lib/rateLimit'
+import { sanitizePlainText } from '@/lib/sanitize'
 
 const ALLOWED_EVENTS = new Set<WebhookEvent>([
   'assessment.started',
@@ -8,30 +10,17 @@ const ALLOWED_EVENTS = new Set<WebhookEvent>([
   'followup.scheduled',
 ])
 
-const rateMap = new Map<string, { count: number; resetAt: number }>()
 const RATE_WINDOW_MS = 60_000
 const RATE_MAX = 20
-
-function isRateLimited(ip: string): boolean {
-  const now = Date.now()
-  const entry = rateMap.get(ip)
-  if (!entry || now > entry.resetAt) {
-    rateMap.set(ip, { count: 1, resetAt: now + RATE_WINDOW_MS })
-    return false
-  }
-  if (entry.count >= RATE_MAX) return true
-  entry.count++
-  return false
-}
+const checkRateLimit = createMemoryRateLimiter({ windowMs: RATE_WINDOW_MS, max: RATE_MAX })
 
 function sanitize(value: unknown, max: number): string {
-  if (typeof value !== 'string') return ''
-  return value.trim().replace(/<[^>]*>/g, '').slice(0, max)
+  return sanitizePlainText(value, max)
 }
 
 export async function POST(req: NextRequest) {
   const ip = getRequestIp(req)
-  if (isRateLimited(ip)) {
+  if (checkRateLimit(ip).limited) {
     logAuditEvent({ type: 'rate-limited', ip, reason: 'assessment-event', timestamp: new Date().toISOString() })
     return NextResponse.json({ ok: true }, { status: 200 })
   }

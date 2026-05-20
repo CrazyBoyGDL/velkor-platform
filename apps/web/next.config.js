@@ -1,4 +1,8 @@
 /** @type {import('next').NextConfig} */
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true',
+});
+
 const isProd = process.env.NODE_ENV === 'production';
 const posthogHost = process.env.NEXT_PUBLIC_POSTHOG_HOST || 'https://app.posthog.com';
 const turnstileHost = 'https://challenges.cloudflare.com';
@@ -7,12 +11,6 @@ const railwayConnectSrc = 'https://*.railway.app https://*.up.railway.app';
 const nextConfig = {
   output: 'standalone',
   reactStrictMode: true,
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
-  typescript: {
-    ignoreBuildErrors: true,
-  },
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'velkor.com.mx' },
@@ -58,8 +56,9 @@ const nextConfig = {
           { key: 'X-Permitted-Cross-Domain-Policies', value: 'none' },
           { key: 'X-XSS-Protection', value: '0' },
           { key: 'Cross-Origin-Opener-Policy', value: 'same-origin-allow-popups' },
+          { key: 'Cross-Origin-Resource-Policy', value: 'same-origin' },
           { key: 'Origin-Agent-Cluster', value: '?1' },
-          { key: 'Permissions-Policy',     value: 'camera=(), microphone=(), geolocation=()' },
+          { key: 'Permissions-Policy',     value: 'accelerometer=(), autoplay=(), camera=(), display-capture=(), encrypted-media=(), fullscreen=(self), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()' },
           {
             key: 'Strict-Transport-Security',
             value: 'max-age=63072000; includeSubDomains; preload',
@@ -72,7 +71,7 @@ const nextConfig = {
               scriptSrc,
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com",
-              "img-src 'self' data: blob: https://*.railway.app https://*.up.railway.app",
+              "img-src 'self' data: blob: https://velkor.com.mx https://www.velkor.com.mx https://*.railway.app https://*.up.railway.app",
               `connect-src 'self' https://plausible.io ${posthogHost} ${turnstileHost} ${railwayConnectSrc}`,
               `frame-src 'self' ${turnstileHost}`,
               `child-src ${turnstileHost}`,
@@ -91,4 +90,4 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+module.exports = withBundleAnalyzer(nextConfig);

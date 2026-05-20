@@ -182,7 +182,7 @@ export default function OperationalArtifacts() {
 
         <motion.h2 {...fadeUp(0.04)}
           className="section-heading mb-3">
-          Evidencia que se puede revisar,<br />
+          Evidencia que se puede revisar,<br />{' '}
           <span className="text-zinc-600">con marcas de operación real</span>
         </motion.h2>
         <motion.p {...fadeUp(0.08)}

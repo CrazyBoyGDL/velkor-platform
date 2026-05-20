@@ -3,7 +3,6 @@
 import {
   type BrandMotionState,
   brandMotionClass,
-  brandMotionCss,
 } from '@/lib/motion/brandMotion'
 
 interface LogoProps {
@@ -35,7 +34,6 @@ export default function Logo({
       role="img"
       aria-label={title}
     >
-      {animated && <style>{brandMotionCss}</style>}
       <g className="velkor-brand-rig" fill="none" strokeLinecap="round" strokeLinejoin="round">
         <path
           d="M12 16H52"

@@ -10,7 +10,8 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
   const [theme, setTheme] = useState<Theme>('dark')
 
   useEffect(() => {
-    const saved = (localStorage.getItem('velkor-theme') as Theme) ?? 'dark'
+    const stored = localStorage.getItem('velkor-theme')
+    const saved: Theme = stored === 'light' ? 'light' : 'dark'
     setTheme(saved)
     apply(saved)
   }, [])
@@ -20,6 +21,10 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
     html.classList.toggle('dark',  t === 'dark')
     html.classList.toggle('light', t === 'light')
     html.setAttribute('data-theme', t)
+    html.style.colorScheme = t
+
+    const meta = document.querySelector<HTMLMetaElement>('meta[name="color-scheme"]')
+    if (meta) meta.content = t
   }
 
   function toggle() {

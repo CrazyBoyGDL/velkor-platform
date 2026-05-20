@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { trackCTA, trackEvent } from '@/components/Analytics'
 import { Events } from '@/lib/analyticsEvents'
 import { getWhatsAppHref } from '@/lib/consultiveCta'
+import { CONTACT } from '@/lib/config'
 
 const SERVICES = [
   'Redes & Ciberseguridad',
@@ -15,10 +16,25 @@ const SERVICES = [
 ]
 
 const WA_HREF = getWhatsAppHref('Hola, quiero contarles un escenario técnico y revisar el primer paso con Velkor.')
+const MAIL_HREF = `mailto:${CONTACT.email}?subject=${encodeURIComponent('Escenario técnico para Velkor')}`
 
 const CALENDLY_URL = process.env.NEXT_PUBLIC_CALENDLY_URL
 
-type Status = 'idle' | 'loading' | 'done' | 'error'
+type Status = 'idle' | 'loading' | 'done' | 'fallback' | 'error'
+type ContactFieldConfig = {
+  key: string
+  id: string
+  name: 'name' | 'email' | 'company' | 'phone'
+  label: string
+  type: 'text' | 'email' | 'tel'
+  value: string
+  setter: (value: string) => void
+  placeholder: string
+  required: boolean
+  autoComplete: string
+  inputMode?: 'text' | 'email' | 'tel'
+  enterKeyHint?: 'next' | 'done'
+}
 
 export default function ContactForm() {
   const [name,    setName]    = useState('')
@@ -27,8 +43,66 @@ export default function ContactForm() {
   const [phone,   setPhone]   = useState('')
   const [service, setService] = useState('')
   const [message, setMessage] = useState('')
+  const [hp, setHp] = useState('')
   const [status,  setStatus]  = useState<Status>('idle')
+  const [errorMsg, setErrorMsg] = useState('')
   const [started, setStarted] = useState(false)
+  const contactFields: ContactFieldConfig[] = [
+    {
+      key: 'name',
+      id: 'contact-name',
+      name: 'name',
+      label: 'Nombre completo',
+      type: 'text',
+      value: name,
+      setter: setName,
+      placeholder: 'Juan Pérez',
+      required: true,
+      autoComplete: 'name',
+      enterKeyHint: 'next',
+    },
+    {
+      key: 'email',
+      id: 'contact-email',
+      name: 'email',
+      label: 'Correo electrónico',
+      type: 'email',
+      value: email,
+      setter: setEmail,
+      placeholder: 'juan@empresa.com',
+      required: true,
+      autoComplete: 'email',
+      inputMode: 'email',
+      enterKeyHint: 'next',
+    },
+    {
+      key: 'company',
+      id: 'contact-company',
+      name: 'company',
+      label: 'Empresa',
+      type: 'text',
+      value: company,
+      setter: setCompany,
+      placeholder: 'Corporativo XYZ',
+      required: true,
+      autoComplete: 'organization',
+      enterKeyHint: 'next',
+    },
+    {
+      key: 'phone',
+      id: 'contact-phone',
+      name: 'phone',
+      label: 'Teléfono (opcional)',
+      type: 'tel',
+      value: phone,
+      setter: setPhone,
+      placeholder: '+52 55 0000 0000',
+      required: false,
+      autoComplete: 'tel',
+      inputMode: 'tel',
+      enterKeyHint: 'next',
+    },
+  ]
 
   const markStarted = () => {
     if (started) return
@@ -39,31 +113,46 @@ export default function ContactForm() {
   const submit = async (e: React.FormEvent) => {
     e.preventDefault()
     setStatus('loading')
+    setErrorMsg('')
     try {
       const res = await fetch('/api/contacto', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, company, phone, service, message }),
+        body: JSON.stringify({ name, email, company, phone, service, message, _hp: hp }),
       })
-      if (!res.ok) { setStatus('error'); return }
-      setStatus('done')
-      trackEvent(Events.ContactFormSubmitted, { service: service || 'unspecified' })
+      const data = await res.json().catch(() => ({})) as { error?: string; fallbackUsed?: boolean; leadStored?: boolean; notified?: boolean }
+      if (!res.ok) {
+        setErrorMsg(data.error || 'No se pudo enviar. Inténtalo de nuevo o contáctanos por WhatsApp.')
+        setStatus('error')
+        return
+      }
+      setStatus(data.fallbackUsed ? 'fallback' : 'done')
+      trackEvent(Events.ContactFormSubmitted, {
+        service: service || 'unspecified',
+        lead_stored: String(Boolean(data.leadStored)),
+        notified: String(Boolean(data.notified)),
+      })
     } catch {
+      setErrorMsg('No se pudo enviar. Inténtalo de nuevo o contáctanos por WhatsApp.')
       setStatus('error')
     }
   }
 
-  if (status === 'done') {
+  if (status === 'done' || status === 'fallback') {
     return (
-      <div className="card p-10 text-center border-noc-green/30">
+      <div className="contact-confirmation-surface p-10 text-center" role="status" aria-live="polite">
         <div className="w-12 h-12 rounded-full bg-noc-green-bg border border-noc-green/30 flex items-center justify-center mx-auto mb-5">
           <svg className="w-6 h-6 text-noc-green" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
           </svg>
         </div>
-        <h2 className="text-xl font-black text-noc-white mb-2">Mensaje recibido</h2>
+        <h2 className="text-xl font-black text-noc-white mb-2">
+          {status === 'fallback' ? 'Mensaje recibido por canal alterno' : 'Mensaje recibido'}
+        </h2>
         <p className="text-zinc-500 text-sm mb-6 max-w-xs mx-auto">
-          Nuestro equipo te contactará en menos de 24 horas hábiles.
+          {status === 'fallback'
+            ? 'El CRM no confirmó recepción, pero el equipo fue notificado para revisar tu caso.'
+            : 'Nuestro equipo te contactará en menos de 24 horas hábiles.'}
         </p>
         <button onClick={() => setStatus('idle')} className="btn-ghost text-sm px-6 py-2.5">
           Enviar otro mensaje
@@ -73,75 +162,110 @@ export default function ContactForm() {
   }
 
   return (
-    <div className="grid lg:grid-cols-[1fr_400px] gap-10 items-start">
+    <div className="contact-flow-surface">
 
       {/* Left — form */}
-      <form onSubmit={submit} onFocus={markStarted} className="card p-8 space-y-6">
-        <h2 className="text-noc-white font-black text-xl mb-2">Envíanos un mensaje</h2>
+      <form
+        action="/api/contacto"
+        method="POST"
+        onSubmit={submit}
+        onFocus={markStarted}
+        className="contact-form-surface space-y-6"
+        aria-labelledby="contact-form-title"
+      >
+        <h2 id="contact-form-title" className="text-noc-white font-black text-xl mb-2">Envíanos un mensaje</h2>
+        <input
+          type="text"
+          name="_hp"
+          tabIndex={-1}
+          autoComplete="off"
+          value={hp}
+          onChange={e => setHp(e.target.value)}
+          className="sr-only"
+          aria-hidden="true"
+        />
 
         {/* Contact fields */}
         <div className="grid sm:grid-cols-2 gap-4">
-          {[
-            { key: 'name',    label: 'Nombre completo',    type: 'text',  value: name,    setter: setName,    placeholder: 'Juan Pérez',       req: true  },
-            { key: 'email',   label: 'Correo electrónico', type: 'email', value: email,   setter: setEmail,   placeholder: 'juan@empresa.com', req: true  },
-            { key: 'company', label: 'Empresa',            type: 'text',  value: company, setter: setCompany, placeholder: 'Corporativo XYZ',  req: true  },
-            { key: 'phone',   label: 'Teléfono (opcional)', type: 'tel',  value: phone,   setter: setPhone,   placeholder: '+52 55 0000 0000', req: false },
-          ].map(({ key, label, type, value, setter, placeholder, req }) => (
-            <div key={key}>
-              <label className="label text-[10px] block mb-1.5">{label}</label>
+          {contactFields.map(field => (
+            <div key={field.key}>
+              <label htmlFor={field.id} className="label text-[10px] block mb-1.5">{field.label}</label>
               <input
-                type={type}
-                required={req}
-                value={value}
-                onChange={e => setter(e.target.value)}
-                placeholder={placeholder}
-                className="w-full bg-surface-dark border border-surface-border rounded-lg px-4 py-2.5 text-noc-white placeholder-zinc-700 text-sm focus:outline-none focus:border-zinc-600 transition-colors"
+                id={field.id}
+                name={field.name}
+                type={field.type}
+                required={field.required}
+                value={field.value}
+                onChange={e => field.setter(e.target.value)}
+                placeholder={field.placeholder}
+                autoComplete={field.autoComplete}
+                inputMode={field.inputMode}
+                enterKeyHint={field.enterKeyHint}
+                aria-invalid={status === 'error' ? 'true' : undefined}
+                aria-describedby={status === 'error' ? 'contact-error' : undefined}
+                className="w-full min-h-12 bg-surface-dark border border-surface-border rounded-lg px-4 py-3 text-noc-white placeholder-zinc-700 text-base sm:text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-amber/40 focus:border-zinc-600 transition-colors"
               />
             </div>
           ))}
         </div>
 
         {/* Service selector */}
-        <div>
-          <label className="label text-[10px] block mb-2">Área de interés</label>
+        <fieldset>
+          <legend className="label text-[10px] block mb-2">Área de interés</legend>
           <div className="grid sm:grid-cols-2 gap-2">
-            {SERVICES.map(s => (
-              <button
+            {SERVICES.map((s, index) => {
+              const id = `contact-service-${index}`
+              return (
+              <label
                 key={s}
-                type="button"
-                onClick={() => setService(service === s ? '' : s)}
-                className={`flex items-center gap-3 px-4 py-2.5 rounded-lg border text-xs text-left transition-all ${
+                htmlFor={id}
+                className={`contact-service-option flex min-h-12 cursor-pointer items-center gap-3 px-4 py-3 rounded-lg border text-xs text-left transition-all focus-within:ring-2 focus-within:ring-amber/35 ${
                   service === s
-                    ? 'border-amber/50 bg-amber-bg text-noc-white'
+                    ? 'contact-service-option--selected border-amber/50 bg-amber-bg text-noc-white'
                     : 'border-surface-border text-zinc-500 hover:border-zinc-600'
                 }`}
               >
+                <input
+                  id={id}
+                  className="sr-only"
+                  type="radio"
+                  name="service"
+                  value={s}
+                  checked={service === s}
+                  onChange={() => setService(s)}
+                />
                 <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center flex-shrink-0 transition-all ${
                   service === s ? 'bg-amber border-amber' : 'border-zinc-700'
                 }`}>
                   {service === s && <span className="w-1.5 h-1.5 rounded-full bg-black" />}
                 </div>
                 {s}
-              </button>
-            ))}
+              </label>
+            )})}
           </div>
-        </div>
+        </fieldset>
 
         {/* Message */}
         <div>
-          <label className="label text-[10px] block mb-1.5">Mensaje</label>
+          <label htmlFor="contact-message" className="label text-[10px] block mb-1.5">Mensaje</label>
           <textarea
+            id="contact-message"
+            name="message"
             rows={4}
             value={message}
             onChange={e => setMessage(e.target.value)}
+            autoComplete="off"
+            enterKeyHint="done"
             placeholder="Cuéntanos sobre tu infraestructura actual o lo que necesitas..."
-            className="w-full bg-surface-dark border border-surface-border rounded-lg px-4 py-3 text-noc-white placeholder-zinc-700 text-sm focus:outline-none focus:border-zinc-600 transition-colors resize-none"
+            aria-invalid={status === 'error' ? 'true' : undefined}
+            aria-describedby={status === 'error' ? 'contact-error' : undefined}
+            className="w-full min-h-28 bg-surface-dark border border-surface-border rounded-lg px-4 py-3 text-noc-white placeholder-zinc-700 text-base sm:text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-amber/40 focus:border-zinc-600 transition-colors resize-y"
           />
         </div>
 
         {status === 'error' && (
-          <p className="text-red-400 text-xs text-center">
-            No se pudo enviar. Inténtalo de nuevo o contáctanos por WhatsApp.
+          <p id="contact-error" role="alert" className="text-red-400 text-xs text-center">
+            {errorMsg}
           </p>
         )}
 
@@ -159,7 +283,7 @@ export default function ContactForm() {
       </form>
 
       {/* Right — alternatives */}
-      <div className="space-y-4">
+      <div className="contact-routes-surface">
 
         {/* WhatsApp */}
         {WA_HREF && (
@@ -168,7 +292,7 @@ export default function ContactForm() {
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => trackCTA('WhatsApp contacto', 'contact-alternatives', { channel: 'whatsapp' })}
-            className="block card p-6 hover:border-zinc-600 transition-colors group"
+            className="contact-route group"
             style={{ borderLeftColor: '#638fa9', borderLeftWidth: 3 }}
           >
             <div className="flex items-center gap-4">
@@ -187,6 +311,30 @@ export default function ContactForm() {
             </div>
           </a>
         )}
+        {!WA_HREF && (
+          <a
+            href={MAIL_HREF}
+            onClick={() => trackCTA('Email contacto', 'contact-alternatives', { channel: 'email' })}
+            className="contact-route group"
+            style={{ borderLeftColor: '#638fa9', borderLeftWidth: 3 }}
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(99,143,169,0.12)' }}>
+                <svg viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5" style={{ color: '#5f839b' }}>
+                  <path d="M2.94 5.34A2.25 2.25 0 0 1 5.08 3.8h9.84c.98 0 1.82.63 2.14 1.54L10 9.68 2.94 5.34Z" />
+                  <path d="M2.75 6.74v6.71a2.25 2.25 0 0 0 2.25 2.25h10a2.25 2.25 0 0 0 2.25-2.25V6.74l-6.58 4.04a1.3 1.3 0 0 1-1.34 0L2.75 6.74Z" />
+                </svg>
+              </div>
+              <div>
+                <div className="text-noc-white font-semibold text-sm group-hover:text-white transition-colors">Correo directo</div>
+                <div className="text-zinc-500 text-xs">{CONTACT.email}</div>
+              </div>
+              <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4 text-zinc-600 ml-auto">
+                <path d="M6.22 3.22a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L9.94 8 6.22 4.28a.75.75 0 010-1.06z"/>
+              </svg>
+            </div>
+          </a>
+        )}
 
         {/* Calendly */}
         {CALENDLY_URL ? (
@@ -195,7 +343,7 @@ export default function ContactForm() {
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => trackCTA('Calendly contacto', 'contact-alternatives', { channel: 'calendar' })}
-            className="block card p-6 hover:border-zinc-600 transition-colors group"
+            className="contact-route group"
             style={{ borderLeftColor: '#b07828', borderLeftWidth: 3 }}
           >
             <div className="flex items-center gap-4">
@@ -214,7 +362,7 @@ export default function ContactForm() {
             </div>
           </a>
         ) : (
-          <div className="card p-6 opacity-50">
+          <div className="contact-route opacity-50">
             <div className="flex items-center gap-4">
               <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 bg-amber-bg">
                 <svg viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 text-amber">
@@ -230,7 +378,7 @@ export default function ContactForm() {
         )}
 
         {/* Diagnóstico CTA */}
-        <div className="card p-6" style={{ borderColor: '#b0782830' }}>
+        <div className="contact-route contact-route--diagnostic">
           <div className="text-xs font-mono text-zinc-600 mb-3">EVALUACIÓN TÉCNICA</div>
           <h3 className="text-noc-white font-bold text-sm mb-2">¿Necesitas una auditoría completa?</h3>
           <p className="text-zinc-500 text-xs leading-relaxed mb-4">

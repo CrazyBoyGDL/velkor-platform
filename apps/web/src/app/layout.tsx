@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next'
+import Script from 'next/script'
 import './globals.css'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
@@ -59,6 +60,9 @@ export const metadata: Metadata = {
   alternates: {
     canonical: SITE_URL,
   },
+  other: {
+    'color-scheme': 'dark light',
+  },
   icons: {
     icon: [
       { url: '/favicons/favicon.svg', type: 'image/svg+xml' },
@@ -78,6 +82,8 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
   themeColor: [
     { media: '(prefers-color-scheme: dark)', color: '#07101a' },
     { media: '(prefers-color-scheme: light)', color: '#f4f7fb' },
@@ -131,6 +137,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="es" className="scroll-smooth dark" suppressHydrationWarning>
       <body className="bg-surface-dark text-noc-white min-h-screen flex flex-col transition-colors duration-300">
+        <Script
+          id="velkor-theme-init"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `try{var t=localStorage.getItem('velkor-theme')==='light'?'light':'dark';var h=document.documentElement;h.classList.toggle('light',t==='light');h.classList.toggle('dark',t==='dark');h.dataset.theme=t;h.style.colorScheme=t;var m=document.querySelector('meta[name="color-scheme"]');if(m)m.setAttribute('content',t);}catch(e){}`,
+          }}
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

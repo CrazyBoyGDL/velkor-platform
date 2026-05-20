@@ -5,40 +5,25 @@ import { classifyLead }              from '@/lib/classification'
 import { assignWorkflow, buildStrapiLeadPayload } from '@/lib/crm'
 import { dispatchWebhook, buildAssessmentCompletedPayload } from '@/lib/webhook'
 import { getRequestIp, isHoneypotFilled, isDisposableEmail, verifyTurnstile, logAuditEvent } from '@/lib/security'
+import { createMemoryRateLimiter } from '@/lib/rateLimit'
+import { sanitizePlainText, sanitizePlainTextArray } from '@/lib/sanitize'
 
 // ─── Rate limiter ─────────────────────────────────────────────────────────────
 
-const rateMap = new Map<string, { count: number; resetAt: number }>()
 const RATE_WINDOW_MS = 60_000
 const RATE_MAX = 3   // stricter for full assessment (heavier processing)
-
-function isRateLimited(ip: string): boolean {
-  const now = Date.now()
-  const entry = rateMap.get(ip)
-  if (!entry || now > entry.resetAt) {
-    rateMap.set(ip, { count: 1, resetAt: now + RATE_WINDOW_MS })
-    return false
-  }
-  if (entry.count >= RATE_MAX) return true
-  entry.count++
-  return false
-}
+const checkRateLimit = createMemoryRateLimiter({ windowMs: RATE_WINDOW_MS, max: RATE_MAX })
 
 // ─── Sanitization ─────────────────────────────────────────────────────────────
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 function san(v: unknown, max: number): string {
-  if (typeof v !== 'string') return ''
-  return v.trim().replace(/<[^>]*>/g, '').slice(0, max)
+  return sanitizePlainText(v, max)
 }
 
 function sanArr(v: unknown, maxItems: number, maxLen: number): string[] {
-  if (!Array.isArray(v)) return []
-  return (v as unknown[])
-    .slice(0, maxItems)
-    .map((x: unknown) => san(x, maxLen))
-    .filter(Boolean)
+  return sanitizePlainTextArray(v, maxItems, maxLen)
 }
 
 // ─── POST /api/assessment ─────────────────────────────────────────────────────
@@ -46,9 +31,13 @@ function sanArr(v: unknown, maxItems: number, maxLen: number): string[] {
 export async function POST(req: NextRequest) {
   const ip = getRequestIp(req)
 
-  if (isRateLimited(ip)) {
+  const rateLimit = checkRateLimit(ip)
+  if (rateLimit.limited) {
     logAuditEvent({ type: 'rate-limited', ip, timestamp: new Date().toISOString() })
-    return NextResponse.json({ ok: true }, { status: 200 }) // silent — don't leak rate-limit info
+    return NextResponse.json(
+      { ok: false, error: 'Demasiadas solicitudes. Intenta de nuevo en un minuto.' },
+      { status: 429, headers: { 'Retry-After': String(rateLimit.retryAfter) } },
+    )
   }
 
   let body: Record<string, unknown>
@@ -165,72 +154,98 @@ export async function POST(req: NextRequest) {
   const workflow = assignWorkflow(classification, scores)
 
   // ── Strapi storage (via CRM payload builder) ──
-  await strapi.post('/leads', buildStrapiLeadPayload(answers, scores, classification, workflow, reportRef))
+  const leadResult = await strapi.post('/leads', buildStrapiLeadPayload(answers, scores, classification, workflow, reportRef))
+  const leadStored = Boolean(leadResult)
 
-  // ── Webhook events ──
-  await dispatchWebhook('assessment.completed', buildAssessmentCompletedPayload({
-    company, email,
-    segment:        classification.segment,
-    engagementType: classification.engagementType,
-    priority:       classification.priority,
-    overallScore:   scores.overall,
-    criticalFlags:  scores.criticalCount,
-    highFlags:      scores.highCount,
-    maturity:       scores.maturity,
-    exposure:       scores.exposureLevel,
-    urgency:        answers.step5.urgency,
-    source:         answers.source,
-    utm:            answers.utm,
-  }))
-
-  await dispatchWebhook('lead.scored', {
-    company, email, reportRef,
-    scores: {
-      overall: scores.overall,
-      infrastructure: scores.infrastructure,
-      identity: scores.identity,
-      operations: scores.operations,
-      maturity: scores.maturity,
-      exposure: scores.exposureLevel,
-    },
-    flags: {
-      critical: scores.criticalCount,
-      high: scores.highCount,
-      total: scores.flags.length,
-    },
-  })
-
-  await dispatchWebhook('lead.classified', {
-    company, email, reportRef,
-    segment: classification.segment,
-    engagementType: classification.engagementType,
-    priority: classification.priority,
-    ownerRole: workflow.ownerRole,
-    workflow: workflow.workflow,
-    operationalPriority: workflow.operationalPriority,
-  })
-
-  await dispatchWebhook('followup.scheduled', {
-    company, email, reportRef,
-    workflow: workflow.workflow,
-    ownerRole: workflow.ownerRole,
-    slaHours: workflow.slaHours,
-    firstAction: workflow.firstAction,
-    escalationLevel: workflow.escalationLevel,
-  })
+  const webhookTasks = [
+    dispatchWebhook('assessment.completed', buildAssessmentCompletedPayload({
+      company, email,
+      segment:        classification.segment,
+      engagementType: classification.engagementType,
+      priority:       classification.priority,
+      overallScore:   scores.overall,
+      criticalFlags:  scores.criticalCount,
+      highFlags:      scores.highCount,
+      maturity:       scores.maturity,
+      exposure:       scores.exposureLevel,
+      urgency:        answers.step5.urgency,
+      source:         answers.source,
+      utm:            answers.utm,
+    })),
+    dispatchWebhook('lead.scored', {
+      company, email, reportRef,
+      scores: {
+        overall: scores.overall,
+        infrastructure: scores.infrastructure,
+        identity: scores.identity,
+        operations: scores.operations,
+        maturity: scores.maturity,
+        exposure: scores.exposureLevel,
+      },
+      flags: {
+        critical: scores.criticalCount,
+        high: scores.highCount,
+        total: scores.flags.length,
+      },
+    }),
+    dispatchWebhook('lead.classified', {
+      company, email, reportRef,
+      segment: classification.segment,
+      engagementType: classification.engagementType,
+      priority: classification.priority,
+      ownerRole: workflow.ownerRole,
+      workflow: workflow.workflow,
+      operationalPriority: workflow.operationalPriority,
+    }),
+    dispatchWebhook('followup.scheduled', {
+      company, email, reportRef,
+      workflow: workflow.workflow,
+      ownerRole: workflow.ownerRole,
+      slaHours: workflow.slaHours,
+      firstAction: workflow.firstAction,
+      escalationLevel: workflow.escalationLevel,
+    }),
+  ]
 
   if (scores.criticalCount > 0 || classification.priority === 'critical') {
-    await dispatchWebhook('lead.critical', {
+    webhookTasks.push(dispatchWebhook('lead.critical', {
       company, email, reportRef,
       flags: scores.flags.filter(f => f.severity === 'critical').map(f => f.id),
-    })
+    }))
   }
 
   if (classification.segment === 'Enterprise' || classification.priority === 'critical') {
-    await dispatchWebhook('lead.enterprise', { company, email, segment: classification.segment, reportRef })
+    webhookTasks.push(dispatchWebhook('lead.enterprise', { company, email, segment: classification.segment, reportRef }))
   }
 
-  logAuditEvent({ type: 'submission', ip, email, company, timestamp: new Date().toISOString() })
+  const webhookResults = await Promise.all(webhookTasks)
+  const webhookQueued = webhookResults.some(result => result.ok)
 
-  return NextResponse.json({ ok: true, reportRef, scores, classification }, { status: 201 })
+  if (!leadStored) {
+    await dispatchWebhook('lead.storage_failed', {
+      company,
+      email,
+      reportRef,
+      source: 'assessment',
+      workflow: workflow.workflow,
+      priority: classification.priority,
+      webhookQueued,
+    })
+  }
+
+  const failedWebhooks = webhookResults.filter(result => result.configured && !result.ok)
+  if (failedWebhooks.length > 0) {
+    console.error('[WEBHOOK] Assessment dispatch degraded', { reportRef, failedWebhooks })
+  }
+
+  logAuditEvent({
+    type: 'submission',
+    ip,
+    email,
+    company,
+    reason: `assessment · leadStored=${leadStored} · webhookQueued=${webhookQueued}`,
+    timestamp: new Date().toISOString(),
+  })
+
+  return NextResponse.json({ ok: true, reportRef, scores, classification, leadStored, webhookQueued }, { status: 201 })
 }

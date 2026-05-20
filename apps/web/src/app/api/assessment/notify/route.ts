@@ -4,13 +4,15 @@
 // Called from the client once the assessment results page has mounted —
 // NOT called automatically from the main assessment route.
 //
-// Fail-open: if RESEND_API_KEY is absent, logs and returns ok (dev-friendly).
+// Email delivery is non-blocking for the user, but failures stay observable.
 
 import { NextRequest, NextResponse } from 'next/server'
 import { EMAIL_SEQUENCES, generateAssessmentEmail } from '@/lib/emailTemplate'
 import type { EmailData }           from '@/lib/emailTemplate'
 import { COMPANY, CONTACT }         from '@/lib/config'
-import { getRequestIp, logAuditEvent } from '@/lib/security'
+import { getRequestIp, logAuditEvent, redactEmailForLog } from '@/lib/security'
+import { dispatchWebhook } from '@/lib/webhook'
+import { createMemoryRateLimiter } from '@/lib/rateLimit'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -22,21 +24,9 @@ interface NotifyBody {
 
 // ─── Rate limiter (3 per IP per hour) ────────────────────────────────────────
 
-const notifyRateMap = new Map<string, { count: number; resetAt: number }>()
 const NOTIFY_WINDOW_MS = 60 * 60 * 1_000   // 1 hour
 const NOTIFY_MAX       = 3
-
-function isNotifyRateLimited(ip: string): boolean {
-  const now   = Date.now()
-  const entry = notifyRateMap.get(ip)
-  if (!entry || now > entry.resetAt) {
-    notifyRateMap.set(ip, { count: 1, resetAt: now + NOTIFY_WINDOW_MS })
-    return false
-  }
-  if (entry.count >= NOTIFY_MAX) return true
-  entry.count++
-  return false
-}
+const checkNotifyRateLimit = createMemoryRateLimiter({ windowMs: NOTIFY_WINDOW_MS, max: NOTIFY_MAX })
 
 // ─── Basic validation helpers ─────────────────────────────────────────────────
 
@@ -116,7 +106,8 @@ export async function POST(req: NextRequest) {
   const ip = getRequestIp(req)
 
   // ── Rate limit ──
-  if (isNotifyRateLimited(ip)) {
+  const rateLimit = checkNotifyRateLimit(ip)
+  if (rateLimit.limited) {
     logAuditEvent({ type: 'rate-limited', ip, reason: 'notify endpoint', timestamp: new Date().toISOString() })
     // Silent 200 — don't reveal rate limit details to client
     return NextResponse.json({ ok: true, sent: false, reason: 'rate-limited' }, { status: 200 })
@@ -143,10 +134,21 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'emailData inválido o incompleto' }, { status: 400 })
   }
 
-  // ── Fail-open: no API key configured ──
+  // ── Observable degraded mode: no API key configured ──
   const apiKey = process.env.RESEND_API_KEY
   if (!apiKey) {
-    console.log('[EMAIL]', JSON.stringify({ reportRef, email, emailData }))
+    console.warn('[EMAIL:SKIPPED]', JSON.stringify({
+      reportRef,
+      email: redactEmailForLog(email),
+      reason: 'RESEND_API_KEY not configured',
+    }))
+    await dispatchWebhook('email.delivery_failed', {
+      reportRef,
+      email,
+      company: emailData.company,
+      reason: 'RESEND_API_KEY not configured',
+      source: 'assessment-notify',
+    })
     return NextResponse.json(
       { ok: true, sent: false, reason: 'RESEND_API_KEY not configured' },
       { status: 200 },
@@ -162,8 +164,14 @@ export async function POST(req: NextRequest) {
   const result = await sendViaResend(apiKey, email, subject, html)
 
   if (!result.ok) {
-    // Log internally but return success — don't expose delivery failures to client
-    console.error('[EMAIL] Resend delivery failed:', result.error, { reportRef, email })
+    console.error('[EMAIL] Resend delivery failed:', result.error, { reportRef, email: redactEmailForLog(email) })
+    await dispatchWebhook('email.delivery_failed', {
+      reportRef,
+      email,
+      company: emailData.company,
+      reason: result.error,
+      source: 'assessment-notify',
+    })
   }
 
   // ── Audit log ──
@@ -177,7 +185,7 @@ export async function POST(req: NextRequest) {
   })
 
   return NextResponse.json(
-    { ok: true, sent: result.ok, ...(result.id ? { id: result.id } : {}) },
+    { ok: true, sent: result.ok, ...(result.id ? { id: result.id } : {}), ...(!result.ok ? { reason: 'delivery-failed' } : {}) },
     { status: 200 },
   )
 }

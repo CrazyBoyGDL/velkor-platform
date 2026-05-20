@@ -55,16 +55,72 @@ const PROCESS_PROOF = [
   'Evidencia usable',
 ]
 
+const DECISION_LINE = [
+  {
+    label: 'Qué hacemos',
+    value: 'Ordenamos red, identidad, firewall, endpoints y continuidad.',
+  },
+  {
+    label: 'Para quién',
+    value: 'Empresas con sedes, usuarios críticos o cambios que no pueden improvisarse.',
+  },
+  {
+    label: 'Qué entregamos',
+    value: 'Alcance, riesgos, responsables, evidencia y siguiente paso operable.',
+  },
+  {
+    label: 'Cómo empieza',
+    value: 'Una revisión breve del escenario y restricciones reales.',
+  },
+] as const
+
 const AVOIDED_PATTERNS = [
   'MFA parcial sin excepciones documentadas',
   'Segmentación superficial sin reglas entre zonas',
   'Monitoreo que no dispara responsables reales',
 ]
 
+const ENTERPRISE_ASSURANCE = [
+  {
+    step: '01',
+    tone: 'scope',
+    label: 'Alcance',
+    title: 'Mapa de exposición',
+    detail: 'Qué está en riesgo, qué depende de operación y qué no se toca sin ventana.',
+  },
+  {
+    step: '02',
+    tone: 'control',
+    label: 'Control',
+    title: 'Cambio con dueño',
+    detail: 'Responsables, aprobaciones, restricciones y rutas de rollback antes de mover producción.',
+  },
+  {
+    step: '03',
+    tone: 'evidence',
+    label: 'Evidencia',
+    title: 'Entrega verificable',
+    detail: 'Reglas, excepciones, hallazgos, pendientes y decisiones sanitizadas para auditoría interna.',
+  },
+  {
+    step: '04',
+    tone: 'handoff',
+    label: 'Continuidad',
+    title: 'Siguiente paso operable',
+    detail: 'Qué queda cerrado, qué requiere fase dos y qué puede operar tu equipo sin improvisar.',
+  },
+] as const
+
+const ENTERPRISE_PROMISES = [
+  'Sin vendor lock-in forzado',
+  'Rollback antes de producción',
+  'Evidencia bajo NDA',
+] as const
+
 function Hero() {
   return (
     <section
-      className="relative flex items-start lg:items-center overflow-hidden lg:min-h-[78vh] hero-depth-stage spatial-hero-field"
+      className="relative flex items-start lg:items-center overflow-hidden hero-depth-stage spatial-hero-field"
       data-flow-region="hero"
     >
       <div className="absolute inset-0 pointer-events-none">
@@ -200,6 +256,67 @@ function WorkflowSection() {
   )
 }
 
+function DecisionLineSection() {
+  return (
+    <section className="px-4 sm:px-8 continuity-section home-decision-section" data-flow-region="decision-line">
+      <div className="max-w-7xl mx-auto">
+        <div className="home-decision-line" aria-label="Resumen de decisión Velkor">
+          {DECISION_LINE.map(item => (
+            <div key={item.label} className="home-decision-item">
+              <span>{item.label}</span>
+              <p>{item.value}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function EnterpriseAssuranceSection() {
+  return (
+    <section
+      className="enterprise-assurance-section px-4 sm:px-8 continuity-section"
+      data-flow-region="enterprise-assurance"
+      data-mobile-sticky-avoid="true"
+    >
+      <div className="max-w-7xl mx-auto">
+        <div className="enterprise-assurance-layout">
+          <motion.div {...fadeUp(0)} className="enterprise-assurance-copy">
+            <span className="label block mb-5">Consultoría enterprise</span>
+            <h2 className="section-heading mb-5 max-w-2xl">
+              Un camino visible antes de tocar producción.
+            </h2>
+            <p className="text-zinc-500 text-base leading-relaxed max-w-xl">
+              Velkor no vende una plataforma SaaS: guía decisiones técnicas con evidencia, límites claros
+              y una ruta de cambio que el negocio puede aprobar.
+            </p>
+            <div className="enterprise-assurance-promises" aria-label="Compromisos de trabajo">
+              {ENTERPRISE_PROMISES.map(item => (
+                <span key={item}>{item}</span>
+              ))}
+            </div>
+          </motion.div>
+
+          <motion.div {...fadeUp(0.03)} className="enterprise-assurance-map" aria-label="Ruta visual de consultoría Velkor">
+            <div className="enterprise-assurance-route" aria-hidden="true" />
+            {ENTERPRISE_ASSURANCE.map(item => (
+              <div key={item.step} className={`enterprise-assurance-node enterprise-assurance-node--${item.tone}`}>
+                <span className="enterprise-assurance-step">{item.step}</span>
+                <div>
+                  <small>{item.label}</small>
+                  <strong>{item.title}</strong>
+                  <p>{item.detail}</p>
+                </div>
+              </div>
+            ))}
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
 function FeaturedCaseSection({ featuredCase }: { featuredCase: FeaturedCaseSummary }) {
   return (
     <section className="home-section px-4 sm:px-8 section-arch continuity-section" data-flow-region="case">
@@ -244,6 +361,8 @@ export default function HomeLanding({ featuredCase }: { featuredCase: FeaturedCa
   return (
     <div className="home-flow">
       <Hero />
+      <DecisionLineSection />
+      <EnterpriseAssuranceSection />
       <div className="section-flow-bridge" aria-hidden="true" />
       <RiskExposure />
       <div className="section-flow-bridge section-flow-bridge--quiet" aria-hidden="true" />

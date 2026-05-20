@@ -9,8 +9,8 @@ import ThemeToggle from './ThemeToggle'
 const NAV = [
   { href: '/',           label: 'Inicio',    icon: true },
   { href: '/servicios',  label: 'Servicios' },
-  { href: '/framework',  label: 'Framework' },
-  { href: '/recursos',   label: 'Recursos' },
+  { href: '/framework',  label: 'Método' },
+  { href: '/recursos',   label: 'Guías' },
   { href: '/blog',       label: 'Blog' },
   { href: '/casos',      label: 'Casos' },
   { href: '/nosotros',   label: 'Nosotros' },
@@ -35,22 +35,16 @@ export default function Navbar() {
 
   return (
     <header
-      className="fixed top-0 left-0 right-0 z-40 transition-all duration-300"
-      style={{
-        background: solid || open
-          ? 'rgba(6,6,10,0.94)'
-          : 'transparent',
-        backdropFilter: solid || open ? 'blur(20px) saturate(180%)' : 'none',
-        borderBottom: solid || open ? '1px solid rgba(255,255,255,0.06)' : '1px solid transparent',
-        WebkitBackdropFilter: solid || open ? 'blur(20px) saturate(180%)' : 'none',
-      }}
+      className={`site-header ${solid || open ? 'site-header--solid' : ''} ${open ? 'site-header--open' : ''}`}
+      data-solid={solid ? 'true' : 'false'}
+      data-open={open ? 'true' : 'false'}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-[60px]">
+        <div className="flex items-center justify-between h-[58px] lg:h-[56px]">
 
           {/* Logo — re-keyed on route to replay animation */}
-          <Link href="/" className="flex items-center gap-2.5 group flex-shrink-0">
-            <Logo key={pathname} className="w-9 h-9" state="monitoring" />
+          <Link href="/" className="site-brand-link group">
+            <Logo key={pathname} className="w-8 h-8 lg:w-8 lg:h-8" state="monitoring" />
             <div className="leading-none">
               <div className="brand-lockup-title text-[15px] group-hover:text-zinc-200 transition-colors">VELKOR</div>
               <div className="brand-lockup-subtitle">SYSTEMS</div>
@@ -58,16 +52,13 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop Nav */}
-          <nav className="hidden lg:flex items-center gap-0.5">
+          <nav className="site-nav" aria-label="Navegación principal">
             {NAV.map(({ href, label, icon }) => (
               <Link
                 key={href}
                 href={href}
-                className={`relative flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                  isActive(href)
-                    ? 'text-noc-white'
-                    : 'text-zinc-500 hover:text-zinc-200 hover:bg-white/[0.04]'
-                }`}
+                aria-current={isActive(href) ? 'page' : undefined}
+                className={`site-nav-link ${isActive(href) ? 'site-nav-link--active' : ''}`}
               >
                 {icon && (
                   <svg viewBox="0 0 16 16" fill="none" className="w-3 h-3 flex-shrink-0">
@@ -79,7 +70,7 @@ export default function Navbar() {
                 {isActive(href) && (
                   <motion.span
                     layoutId="nav-indicator"
-                    className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-4 h-0.5 bg-blue-500 rounded-full"
+                    className="site-nav-indicator"
                   />
                 )}
               </Link>
@@ -87,14 +78,14 @@ export default function Navbar() {
           </nav>
 
           {/* Right */}
-          <div className="hidden lg:flex items-center gap-3">
-            <div className="operational-state-indicator" aria-label="Estado operacional activo">
+          <div className="site-nav-actions">
+            <div className="operational-state-indicator hidden xl:inline-flex" aria-label="Estado operacional activo">
               <span className="operational-state-dot" />
-              <span>Continuidad activa</span>
+              <span>Activo</span>
             </div>
             <ThemeToggle />
-            <Link href="/assessments" className="btn-amber text-sm px-5 py-2">
-              Revisar escenario →
+            <Link href="/assessments" className="btn-amber site-header-cta">
+              Revisar escenario
             </Link>
           </div>
 
@@ -102,9 +93,11 @@ export default function Navbar() {
           <div className="lg:hidden flex items-center gap-3">
             <ThemeToggle />
             <button
-              className="w-9 h-9 flex flex-col justify-center items-center gap-[5px]"
+              className="site-menu-button"
               onClick={() => setOpen(o => !o)}
               aria-label="Menú"
+              aria-expanded={open}
+              aria-controls="mobile-navigation"
             >
               <span className={`w-5 h-0.5 bg-zinc-400 rounded-full transition-all duration-200 origin-center ${open ? 'rotate-45 translate-y-[7px]' : ''}`} />
               <span className={`w-5 h-0.5 bg-zinc-400 rounded-full transition-all duration-200 ${open ? 'opacity-0 scale-x-0' : ''}`} />
@@ -121,19 +114,16 @@ export default function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden overflow-hidden"
-            style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}
+            className="site-mobile-menu-wrapper"
+            id="mobile-navigation"
           >
-            <div className="px-4 py-4 space-y-1" style={{ background: 'rgba(6,6,10,0.97)' }}>
+            <div className="site-mobile-menu">
               {NAV.map(({ href, label, icon }) => (
                 <Link
                   key={href}
                   href={href}
-                  className={`flex items-center gap-2 px-4 py-3 rounded-lg text-sm transition-colors ${
-                    isActive(href)
-                      ? 'text-white bg-white/[0.06] font-medium'
-                      : 'text-zinc-400 hover:text-white hover:bg-white/[0.04]'
-                  }`}
+                  aria-current={isActive(href) ? 'page' : undefined}
+                  className={`site-mobile-link ${isActive(href) ? 'site-mobile-link--active' : ''}`}
                 >
                   {icon && (
                     <svg viewBox="0 0 16 16" fill="none" className="w-3.5 h-3.5 flex-shrink-0">
@@ -144,9 +134,9 @@ export default function Navbar() {
                   {label}
                 </Link>
               ))}
-              <div className="pt-3 border-t border-white/[0.05]">
-                <Link href="/assessments" className="block btn-amber text-center py-3">
-                  Revisar escenario →
+              <div className="site-mobile-menu-cta">
+                <Link href="/assessments" className="btn-amber w-full text-center py-3">
+                  Revisar escenario
                 </Link>
               </div>
             </div>

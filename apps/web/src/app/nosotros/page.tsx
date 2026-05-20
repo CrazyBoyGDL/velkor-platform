@@ -2,6 +2,7 @@
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { reveal as fadeUp } from '@/lib/motion'
+import { TRUST } from '@/lib/config'
 
 const STATS = [
   { val: '2016',  label: 'Experiencia en campo',   color: '#b07828' },
@@ -71,7 +72,7 @@ export default function NosotrosPage() {
         <motion.div {...fadeUp(0)} className="mb-12">
           <span className="label">Quiénes somos</span>
           <h1 className="text-4xl sm:text-5xl font-black text-noc-white mt-3 mb-6 leading-tight">
-            El equipo que implementa,<br />
+            El equipo que implementa,<br />{' '}
             <span className="text-gradient-amber">no solo asesora</span>
           </h1>
           <p className="text-zinc-400 text-lg leading-relaxed max-w-2xl">
@@ -119,6 +120,27 @@ export default function NosotrosPage() {
               <div key={label} className="flex items-center gap-2.5">
                 <span className="w-1 h-1 rounded-full flex-shrink-0" style={{ background: color }} />
                 <span className="text-zinc-400 text-sm">{label}</span>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+
+        <motion.div {...fadeUp(0)} className="operator-proof-section mb-16">
+          <div>
+            <span className="label block mb-4">Cómo cuidamos producción</span>
+            <h2 className="text-2xl sm:text-3xl font-black text-noc-white leading-tight mb-4">
+              Señales verificables antes de tocar sistemas críticos.
+            </h2>
+            <p className="text-zinc-500 text-sm leading-relaxed max-w-xl">
+              Velkor trabaja con límites claros: alcance, responsables, rollback y evidencia.
+              La confianza no depende de una promesa visual, sino de cómo se controla cada cambio.
+            </p>
+          </div>
+          <div className="operator-proof-list">
+            {[...TRUST.serviceBoundaries, ...TRUST.secureCommunications].map(item => (
+              <div key={item} className="operator-proof-item">
+                <span />
+                <p>{item}</p>
               </div>
             ))}
           </div>
