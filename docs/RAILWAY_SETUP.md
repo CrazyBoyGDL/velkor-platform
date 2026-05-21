@@ -62,6 +62,15 @@ FRONTEND_URL=https://velkor.com.mx,https://www.velkor.com.mx
 PUBLIC_URL=https://api.velkor.com.mx
 API_PUBLIC_URL=https://api.velkor.com.mx
 STRAPI_ADMIN_PATH=/operacion
+
+# ── Media / Cloudflare R2 ──────────────────────────────────
+R2_ACCOUNT_ID=<Cloudflare account id>
+R2_ACCESS_KEY_ID=<R2 access key>
+R2_SECRET_ACCESS_KEY=<R2 secret key>
+R2_BUCKET=velkor-media
+R2_PUBLIC_URL=https://media.velkor.com.mx
+R2_REGION=auto
+UPLOAD_SIZE_LIMIT=12582912
 ```
 
 > **Railway reference variables** (e.g. `${{Postgres.PGHOST}}`) are resolved at
@@ -78,6 +87,7 @@ NODE_ENV=production
 NEXT_PUBLIC_SITE_URL=https://velkor.com.mx
 NEXT_PUBLIC_APP_URL=https://velkor.com.mx
 NEXT_PUBLIC_SITE_DOMAIN=velkor.com.mx
+NEXT_PUBLIC_MEDIA_URL=https://media.velkor.com.mx
 
 # ── Optional features (leave blank to disable) ───────────────
 NEXT_PUBLIC_WHATSAPP_NUMBER=
@@ -104,6 +114,13 @@ NEXT_PUBLIC_CALENDLY_URL=
 | `DATABASE_PASSWORD` | ✅ | Database password |
 | `DATABASE_SSL` | ✅ | `true` on Railway |
 | `FRONTEND_URL` | ✅ | Next.js URL for CORS allow-list |
+| `R2_ACCOUNT_ID` | production | Cloudflare account id for R2 S3 API |
+| `R2_ACCESS_KEY_ID` | production | R2 token access key |
+| `R2_SECRET_ACCESS_KEY` | production | R2 token secret key |
+| `R2_BUCKET` | production | Bucket for Strapi media uploads |
+| `R2_PUBLIC_URL` | production | Public media origin, e.g. `https://media.velkor.com.mx` |
+| `R2_REGION` | — | `auto` for Cloudflare R2 |
+| `UPLOAD_SIZE_LIMIT` | — | Upload max bytes, default `12582912` |
 | `HOST` | — | Bind address, default `0.0.0.0` |
 | `PORT` | — | HTTP port, default `1337` |
 | `NODE_ENV` | — | Set to `production` |
@@ -115,6 +132,7 @@ NEXT_PUBLIC_CALENDLY_URL=
 | `STRAPI_URL` | ✅ | Private Strapi base URL (not browser-exposed) |
 | `NODE_ENV` | — | Set to `production` |
 | `NEXT_PUBLIC_WHATSAPP_NUMBER` | optional | Enables WhatsApp CTA (e.g. `521XXXXXXXXXX`) |
+| `NEXT_PUBLIC_MEDIA_URL` | production | Public media origin used by Next Image |
 | `NEXT_PUBLIC_PLAUSIBLE_DOMAIN` | optional | Enables Plausible analytics |
 | `NEXT_PUBLIC_CALENDLY_URL` | optional | Enables Calendly booking button |
 

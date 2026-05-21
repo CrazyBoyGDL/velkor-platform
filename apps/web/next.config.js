@@ -6,6 +6,14 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 const isProd = process.env.NODE_ENV === 'production';
 const posthogHost = process.env.NEXT_PUBLIC_POSTHOG_HOST || 'https://app.posthog.com';
 const turnstileHost = 'https://challenges.cloudflare.com';
+const mediaUrl = process.env.NEXT_PUBLIC_MEDIA_URL || process.env.MEDIA_PUBLIC_URL || 'https://media.velkor.com.mx';
+const mediaHost = (() => {
+  try {
+    return new URL(mediaUrl).hostname;
+  } catch {
+    return 'media.velkor.com.mx';
+  }
+})();
 
 const nextConfig = {
   output: 'standalone',
@@ -15,6 +23,8 @@ const nextConfig = {
       { protocol: 'https', hostname: 'velkor.com.mx' },
       { protocol: 'https', hostname: 'www.velkor.com.mx' },
       { protocol: 'https', hostname: 'api.velkor.com.mx' },
+      { protocol: 'https', hostname: 'media.velkor.com.mx' },
+      { protocol: 'https', hostname: mediaHost },
     ],
   },
   async redirects() {
@@ -70,12 +80,12 @@ const nextConfig = {
               scriptSrc,
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com",
-              "img-src 'self' data: blob: https://velkor.com.mx https://www.velkor.com.mx https://api.velkor.com.mx",
+              `img-src 'self' data: blob: https://velkor.com.mx https://www.velkor.com.mx https://api.velkor.com.mx https://media.velkor.com.mx https://${mediaHost}`,
               `connect-src 'self' https://plausible.io ${posthogHost} ${turnstileHost}`,
               `frame-src 'self' ${turnstileHost}`,
               `child-src ${turnstileHost}`,
               "manifest-src 'self'",
-              "media-src 'self'",
+              `media-src 'self' https://media.velkor.com.mx https://${mediaHost}`,
               "worker-src 'self' blob:",
               "form-action 'self'",
               "object-src 'none'",

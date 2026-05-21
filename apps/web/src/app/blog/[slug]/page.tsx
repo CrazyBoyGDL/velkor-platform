@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import Link from 'next/link'
 import { strapi } from '@/lib/strapi'
 import {
@@ -14,6 +15,8 @@ import ArticleEngagementTracker from '@/components/ArticleEngagementTracker'
 import TechnicalArticleBlocks from '@/components/TechnicalArticleBlocks'
 import TrackedLink from '@/components/TrackedLink'
 import { sanitizeCmsHtml } from '@/lib/sanitize'
+import { mediaAsset, mediaGallery } from '@/lib/strapiMedia'
+import type { StrapiMediaField } from '@/lib/strapiMedia'
 import {
   FALLBACK_AUTHORITY_POSTS,
   getFallbackAuthorityPost,
@@ -36,6 +39,14 @@ type StrapiPost = {
     publishedAt: string
     readTime: string
     hex: string
+    seoTitle?: string
+    seoDescription?: string
+    coverImage?: StrapiMediaField
+    coverAlt?: string
+    coverCaption?: string
+    gallery?: StrapiMediaField
+    authorName?: string
+    reviewedBy?: string
     technicalCategory?: string
     technicalLevel?: string
     operationalTags?: unknown
@@ -75,7 +86,8 @@ async function getPost(slug: string): Promise<StrapiPost['attributes'] | null> {
   if (fallback) return fallback
 
   const data = await strapi.get<StrapiListResponse>(
-    `/posts?filters[slug][$eq]=${encodeURIComponent(slug)}&publicationState=live`,
+    `/posts?filters[slug][$eq]=${encodeURIComponent(slug)}&publicationState=live` +
+    '&populate[0]=coverImage&populate[1]=gallery',
     3600
   )
   const post = data?.data?.[0]
@@ -186,20 +198,27 @@ export async function generateMetadata(
   const { slug } = await params
   const post = await getPost(slug)
   if (!post) return { title: 'Artículo no encontrado | Velkor Systems' }
+  const title = post.seoTitle || post.title
+  const description = post.seoDescription || post.excerpt || undefined
+  const cover = mediaAsset(post.coverImage, post.coverAlt || post.title)
+  const images = cover
+    ? [{ url: cover.url, width: cover.width, height: cover.height, alt: cover.alt }]
+    : [{ url: OG_IMAGES.articles, width: 1200, height: 630, alt: `${post.title} — Velkor Systems` }]
+
   return {
-    title: `${post.title} | Velkor Systems`,
-    description: post.excerpt || undefined,
+    title: `${title} | Velkor Systems`,
+    description,
     alternates: { canonical: `https://velkor.com.mx/blog/${slug}` },
     openGraph: {
-      title: post.title,
-      description: post.excerpt || undefined,
+      title,
+      description,
       url: `https://velkor.com.mx/blog/${slug}`,
       type: 'article',
-      images: [{ url: OG_IMAGES.articles, width: 1200, height: 630, alt: `${post.title} — Velkor Systems` }],
+      images,
     },
     twitter: {
       card: 'summary_large_image',
-      images: [OG_IMAGES.articles],
+      images: cover ? [cover.url] : [OG_IMAGES.articles],
     },
   }
 }
@@ -215,6 +234,8 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
   const date = formatDate(post.publishedAt)
   const hex  = post.hex || '#b07828'
+  const cover = mediaAsset(post.coverImage, post.coverAlt || post.title)
+  const gallery = mediaGallery(post.gallery, post.title)
   const operationalTags = asStringArray(post.operationalTags)
   const relatedEvidence = asAuthorityReferences(post.relatedEvidence, 'evidence')
   const relatedCases = asAuthorityReferences(post.relatedCases, 'case-study')
@@ -246,7 +267,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         readTime={post.readTime ?? ''}
         technicalLevel={post.technicalLevel}
       />
-      <div className="max-w-3xl mx-auto">
+      <article className="enterprise-article-shell max-w-5xl mx-auto">
 
         {/* Back link */}
         <Link
@@ -260,7 +281,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         </Link>
 
         {/* Header */}
-        <header className="mb-10" style={{ borderLeft: `3px solid ${hex}`, paddingLeft: '1.25rem' }}>
+        <header className="enterprise-article-hero mb-10" style={{ borderLeft: `3px solid ${hex}`, paddingLeft: '1.25rem' }}>
           <div className="flex items-center gap-3 mb-4">
             <span
               className="badge text-[10px] font-mono"
@@ -291,6 +312,23 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
           <div className="text-zinc-700 text-xs font-mono">{date}</div>
 
+          {(post.authorName || post.reviewedBy) && (
+            <div className="article-trust-rail">
+              {post.authorName && (
+                <span>
+                  <strong>Autor</strong>
+                  {post.authorName}
+                </span>
+              )}
+              {post.reviewedBy && (
+                <span>
+                  <strong>Validación</strong>
+                  {post.reviewedBy}
+                </span>
+              )}
+            </div>
+          )}
+
           {(metadataItems.length > 0 || operationalTags.length > 0) && (
             <div className="mt-5 flex flex-wrap gap-2">
               {metadataItems.map(item => (
@@ -307,6 +345,22 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           )}
         </header>
 
+        {cover && (
+          <figure className="enterprise-article-cover">
+            <Image
+              src={cover.url}
+              alt={cover.alt}
+              width={cover.width}
+              height={cover.height}
+              priority
+              sizes="(max-width: 768px) 100vw, 1024px"
+            />
+            {(post.coverCaption || cover.caption) && (
+              <figcaption>{post.coverCaption || cover.caption}</figcaption>
+            )}
+          </figure>
+        )}
+
         {/* Content */}
         {safeContentHtml ? (
           <div
@@ -318,6 +372,26 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         )}
 
         <TechnicalArticleBlocks blocks={articleBlocks} />
+
+        {gallery.length > 0 && (
+          <section className="article-gallery" aria-label="Galería del artículo">
+            <div className="label block mb-4">Evidencia visual</div>
+            <div className="article-gallery-grid">
+              {gallery.map((asset, index) => (
+                <figure key={`${asset.url}-${index}`} className="article-gallery-item">
+                  <Image
+                    src={asset.url}
+                    alt={asset.alt}
+                    width={asset.width}
+                    height={asset.height}
+                    sizes="(max-width: 768px) 100vw, 48vw"
+                  />
+                  {asset.caption && <figcaption>{asset.caption}</figcaption>}
+                </figure>
+              ))}
+            </div>
+          </section>
+        )}
 
         {(downloadableArtifacts.length > 0 || post.governanceNotes) && (
           <div className="my-10 p-5 rounded-xl" style={{ background: 'rgba(58,120,88,0.04)', border: '1px solid rgba(58,120,88,0.12)' }}>
@@ -421,7 +495,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             Solicitar diagnóstico →
           </TrackedLink>
         </div>
-      </div>
+      </article>
     </div>
   )
 }

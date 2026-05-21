@@ -25,6 +25,42 @@
       "type": "text",
       "maxLength": 400
     },
+    "seoTitle": {
+      "type": "string",
+      "maxLength": 80
+    },
+    "seoDescription": {
+      "type": "text",
+      "maxLength": 180
+    },
+    "coverImage": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
+    "coverAlt": {
+      "type": "string",
+      "maxLength": 180
+    },
+    "coverCaption": {
+      "type": "string",
+      "maxLength": 240
+    },
+    "gallery": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
+    "authorName": {
+      "type": "string",
+      "maxLength": 120
+    },
+    "reviewedBy": {
+      "type": "string",
+      "maxLength": 120
+    },
     "content": {
       "type": "richtext"
     },

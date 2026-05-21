@@ -47,6 +47,28 @@ La coleccion tecnica `User` no debe aparecer en el flujo editorial. Los usuarios
 5. Guardar.
 6. Publicar solo cuando el contenido ya este revisado.
 
+## Publicar Articulos Con Imagen
+
+Los articulos ahora tienen una vista editorial mas completa en Velkor.com.mx:
+
+- `Imagen principal`: portada enterprise del articulo.
+- `Texto alternativo`: descripcion accesible de la portada.
+- `Pie de imagen`: contexto breve bajo la portada.
+- `Galeria del articulo`: evidencia visual secundaria.
+- `Titulo SEO` y `Descripcion SEO`: texto para buscadores y previews.
+- `Autor / responsable` y `Revision tecnica`: senales humanas de confianza.
+
+Flujo recomendado:
+
+1. Subir la imagen en `Media Library`.
+2. Abrir `Content Manager` -> `Articulo`.
+3. Seleccionar la imagen en `Imagen principal`.
+4. Escribir `Texto alternativo` antes de publicar.
+5. Agregar galeria solo si aporta evidencia real.
+6. Guardar y revisar en `https://velkor.com.mx/blog/<slug>`.
+
+Ver detalles completos en `docs/BLOG_MEDIA_WORKFLOW.md`.
+
 ## Leads
 
 En `Content Manager` -> `Lead recibido` puedes revisar:

@@ -4,6 +4,8 @@ import { architectureReferenceHref, asDownloadableArtifacts, asStringArray } fro
 import BlogList, { type BlogPost } from '@/components/BlogList'
 import { FALLBACK_AUTHORITY_POSTS, toBlogPostSummary } from '@/lib/authorityContent'
 import { OG_IMAGES } from '@/lib/config'
+import { mediaAsset } from '@/lib/strapiMedia'
+import type { StrapiMediaField } from '@/lib/strapiMedia'
 
 export const revalidate = 3600
 
@@ -34,6 +36,13 @@ type StrapiPost = {
     publishedAt: string
     readTime: string
     hex: string
+    seoTitle?: string
+    seoDescription?: string
+    coverImage?: StrapiMediaField
+    coverAlt?: string
+    coverCaption?: string
+    authorName?: string
+    reviewedBy?: string
     technicalCategory?: string
     technicalLevel?: string
     operationalTags?: unknown
@@ -58,7 +67,7 @@ function formatDate(iso: string): string {
 }
 
 async function getPosts(): Promise<BlogPost[]> {
-  const data = await strapi.get<{ data: StrapiPost[] }>('/posts?sort=publishedAt:desc&pagination[limit]=20')
+  const data = await strapi.get<{ data: StrapiPost[] }>('/posts?sort=publishedAt:desc&pagination[limit]=20&populate=coverImage')
   if (!data?.data?.length) return FALLBACK_POSTS
 
   const cmsPosts = data.data.map(({ attributes: a }) => ({
@@ -69,6 +78,10 @@ async function getPosts(): Promise<BlogPost[]> {
     date: formatDate(a.publishedAt),
     readTime: a.readTime ?? '',
     hex: a.hex ?? '#b07828',
+    coverImage: mediaAsset(a.coverImage, a.coverAlt || a.title),
+    coverCaption: a.coverCaption ?? null,
+    authorName: a.authorName ?? null,
+    reviewedBy: a.reviewedBy ?? null,
     technicalCategory: a.technicalCategory,
     technicalLevel: a.technicalLevel,
     operationalTags: asStringArray(a.operationalTags),

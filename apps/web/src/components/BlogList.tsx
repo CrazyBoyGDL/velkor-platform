@@ -1,8 +1,10 @@
 'use client'
+import Image from 'next/image'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { reveal as fadeUp } from '@/lib/motion'
 import type { DownloadableArtifact, EngagementType, MaturityLevel, TechnicalCategory, TechnicalLevel } from '@/lib/contentEngine'
+import type { MediaAsset } from '@/lib/strapiMedia'
 
 export type BlogPost = {
   slug: string
@@ -12,6 +14,10 @@ export type BlogPost = {
   date: string
   readTime: string
   hex: string
+  coverImage?: MediaAsset | null
+  coverCaption?: string | null
+  authorName?: string | null
+  reviewedBy?: string | null
   tags?: string[]
   technicalCategory?: TechnicalCategory | string
   technicalLevel?: TechnicalLevel | string
@@ -87,9 +93,21 @@ export default function BlogList({ posts }: { posts: BlogPost[] }) {
       <Link href={`/blog/${featured.slug}`} className="block group mb-6">
         <motion.article
           {...fadeUp(0.08)}
-          className="intelligence-brief-featured card p-0 overflow-hidden hover:border-zinc-700 transition-all duration-300 cursor-pointer"
+          className="intelligence-brief-featured p-0 overflow-hidden transition-all duration-300 cursor-pointer"
           style={{ borderLeftColor: featured.hex, borderLeftWidth: 3 }}
         >
+          {featured.coverImage && (
+            <div className="intelligence-brief-media">
+              <Image
+                src={featured.coverImage.url}
+                alt={featured.coverImage.alt}
+                fill
+                priority
+                sizes="(max-width: 768px) 100vw, 960px"
+              />
+              <div className="intelligence-brief-media-signal" aria-hidden="true" />
+            </div>
+          )}
           <div className="p-8">
             <div className="flex items-center gap-3 mb-5">
               <span className="badge text-[10px]" style={{ color: featured.hex, backgroundColor: featured.hex + '20' }}>
@@ -109,6 +127,12 @@ export default function BlogList({ posts }: { posts: BlogPost[] }) {
                 <span className="text-zinc-600 text-[11px] font-mono">
                   <span style={{ color: featured.hex }}>→</span> Referencia de arquitectura vinculada
                 </span>
+              </div>
+            )}
+            {(featured.authorName || featured.reviewedBy) && (
+              <div className="intelligence-brief-trust">
+                {featured.authorName && <span>Por {featured.authorName}</span>}
+                {featured.reviewedBy && <span>Revisión técnica: {featured.reviewedBy}</span>}
               </div>
             )}
             <div className="flex items-center justify-between">
@@ -141,6 +165,16 @@ export default function BlogList({ posts }: { posts: BlogPost[] }) {
                 <span className="label text-[9px]">{category} · {readTime}</span>
                 <h2>{title}</h2>
               </div>
+              {post.coverImage && (
+                <div className="intelligence-brief-row-thumb" aria-hidden="true">
+                  <Image
+                    src={post.coverImage.url}
+                    alt=""
+                    fill
+                    sizes="96px"
+                  />
+                </div>
+              )}
               <div className="intelligence-brief-meta">
                 {architectureRef && <span style={{ color: hex }}>arquitectura vinculada</span>}
                 {tags.slice(0, 2).map(tag => <span key={tag}>{tag}</span>)}

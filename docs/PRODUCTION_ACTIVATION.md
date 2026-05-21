@@ -13,6 +13,7 @@ Last field check: `2026-05-18`.
 | Canonical domain | `https://velkor.com.mx` | Code ready; Railway env set |
 | Web healthcheck | `/api/health` returns `200` | Live on canonical domain |
 | Strapi healthcheck | `/api/health` returns `200` | Expose through `api.velkor.com.mx`; Railway public host remains blocked except healthcheck |
+| Media domain | `https://media.velkor.com.mx` | Code ready; configure Cloudflare R2 bucket and Railway env |
 | Turnstile backend | `TURNSTILE_SECRET_KEY` validated server-side | Code ready; key still required |
 | Turnstile frontend | Widget posts `_ts` token to assessment API | Code ready; site key still required |
 | Security headers | CSP, HSTS, frame, referrer, permissions headers | Code ready and hardened for Cloudflare visitor IPs |
@@ -31,6 +32,7 @@ Replace the Railway targets with the exact CNAME targets shown in each Railway s
 | CNAME | `www` | `velkor.com.mx` | Proxied | Redirect or serve same app |
 | TXT | `<RAILWAY_VERIFICATION_NAME>` | `<RAILWAY_VERIFICATION_VALUE>` | DNS only | Required by Railway custom-domain verification |
 | CNAME | `api` | `<RAILWAY_API_CNAME_TARGET>` | Proxied | Required for Strapi operator panel at `https://api.velkor.com.mx/operacion` |
+| CNAME | `media` | `<CLOUDFLARE_R2_PUBLIC_BUCKET_TARGET>` | Proxied | Public image delivery for blog covers and CMS media |
 | TXT | `@` | `v=spf1 -all` | DNS only | Use while Velkor is receive-only; replace/merge with Resend-provided SPF when transactional sending is activated |
 | TXT | `_dmarc` | `v=DMARC1; p=none; rua=mailto:seguridad@velkor.com.mx; fo=1; adkim=s; aspf=s; pct=100` | DNS only | Start in monitor mode; move to quarantine/reject after reports |
 | MX | `@` | `route1.mx.cloudflare.net` | DNS only | Added/managed by Cloudflare Email Routing |
@@ -44,6 +46,7 @@ Runtime routing:
 
 - Public web: `https://velkor.com.mx`
 - Public Strapi operator panel: `https://api.velkor.com.mx/operacion`
+- Public media: `https://media.velkor.com.mx`
 - Private API from web: `http://velkor-api.railway.internal:1337`
 - Railway public API host: blocked for all paths except `/api/health`
 
@@ -109,6 +112,7 @@ NODE_ENV=production
 NEXT_PUBLIC_SITE_URL=https://velkor.com.mx
 NEXT_PUBLIC_APP_URL=https://velkor.com.mx
 NEXT_PUBLIC_SITE_DOMAIN=velkor.com.mx
+NEXT_PUBLIC_MEDIA_URL=https://media.velkor.com.mx
 STRAPI_URL=http://velkor-api.railway.internal:1337
 NEXT_PUBLIC_TURNSTILE_SITE_KEY=<Cloudflare Turnstile site key>
 TURNSTILE_SECRET_KEY=<Cloudflare Turnstile secret key>
@@ -142,6 +146,13 @@ FRONTEND_URL=https://velkor.com.mx,https://www.velkor.com.mx
 PUBLIC_URL=https://api.velkor.com.mx
 API_PUBLIC_URL=https://api.velkor.com.mx
 STRAPI_ADMIN_PATH=/operacion
+R2_ACCOUNT_ID=<Cloudflare account id>
+R2_ACCESS_KEY_ID=<R2 access key>
+R2_SECRET_ACCESS_KEY=<R2 secret key>
+R2_BUCKET=velkor-media
+R2_PUBLIC_URL=https://media.velkor.com.mx
+R2_REGION=auto
+UPLOAD_SIZE_LIMIT=12582912
 ```
 
 Current Railway drift notes:
@@ -149,6 +160,7 @@ Current Railway drift notes:
 - Set on `velkor-web`: `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_APP_URL`, `NEXT_PUBLIC_SITE_DOMAIN`, private `STRAPI_URL`, `NEXT_PUBLIC_PLAUSIBLE_DOMAIN`, `NEXT_PUBLIC_POSTHOG_HOST`, `ASSESSMENT_WEBHOOK_SECRET`.
 - Set on `velkor-api`: `HOST`, `DATABASE_SSL`, `FRONTEND_URL`, `PUBLIC_URL`, `API_PUBLIC_URL`, `STRAPI_ADMIN_PATH`.
 - Still required from providers: `NEXT_PUBLIC_TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY`, `ASSESSMENT_WEBHOOK_URL`, `RESEND_API_KEY`.
+- Still required for persistent CMS media: Cloudflare R2 bucket, `media.velkor.com.mx`, `R2_*` variables on `velkor-api`, and `NEXT_PUBLIC_MEDIA_URL` on `velkor-web`.
 - Manual Railway deploys must be run from the repository root with `railway up --service <service>`, not with `--path-as-root`, because the Railway service metadata already expects `apps/web` and `apps/api` inside the uploaded snapshot.
 
 Healthcheck paths:

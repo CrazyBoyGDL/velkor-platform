@@ -13,6 +13,7 @@
 export const SITE_URL    = process.env.NEXT_PUBLIC_SITE_URL ?? process.env.NEXT_PUBLIC_APP_URL ?? 'https://velkor.com.mx'
 export const APP_URL     = process.env.NEXT_PUBLIC_APP_URL  ?? SITE_URL
 export const SITE_DOMAIN = process.env.NEXT_PUBLIC_SITE_DOMAIN ?? 'velkor.com.mx'
+export const MEDIA_URL   = process.env.NEXT_PUBLIC_MEDIA_URL ?? 'https://media.velkor.com.mx'
 
 export const OG_IMAGES = {
   home:        '/og/og-home.png',
