@@ -32,6 +32,20 @@ const checkNotifyRateLimit = createMemoryRateLimiter({ windowMs: NOTIFY_WINDOW_M
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
+function isRiskFlag(value: unknown): boolean {
+  if (!value || typeof value !== 'object') return false
+  const flag = value as Record<string, unknown>
+  return (
+    typeof flag.severity === 'string' &&
+    typeof flag.finding === 'string' &&
+    typeof flag.recommendation === 'string'
+  )
+}
+
+function isStringArray(value: unknown): boolean {
+  return Array.isArray(value) && value.every(item => typeof item === 'string')
+}
+
 function isValidEmailData(d: unknown): d is EmailData {
   if (!d || typeof d !== 'object') return false
   const o = d as Record<string, unknown>
@@ -46,7 +60,12 @@ function isValidEmailData(d: unknown): d is EmailData {
     typeof o.criticalCount    === 'number' &&
     typeof o.highCount        === 'number' &&
     Array.isArray(o.topFlags) &&
-    Array.isArray(o.quickWins)
+    o.topFlags.every(isRiskFlag) &&
+    isStringArray(o.quickWins) &&
+    typeof o.recommendedPhase === 'string' &&
+    typeof o.engagementLabel === 'string' &&
+    typeof o.followUpLabel === 'string' &&
+    typeof o.followUpHours === 'number'
   )
 }
 
