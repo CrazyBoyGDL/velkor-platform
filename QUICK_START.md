@@ -250,13 +250,13 @@ Refer to:
 
 ---
 
-## 🌐 Production URLs (Railway)
+## 🌐 Production URLs
 
 | Service | URL |
 |---------|-----|
-| Frontend | https://velkor-web-production.up.railway.app |
-| Strapi Admin | https://velkor-api-production.up.railway.app/admin |
-| API REST | https://velkor-api-production.up.railway.app/api |
+| Frontend | https://velkor.com.mx |
+| Strapi Admin | https://api.velkor.com.mx/operacion |
+| API REST | https://api.velkor.com.mx/api |
 | Railway Dashboard | https://railway.app/project/9f9ab588-4442-49cc-9822-e6dddcf31a03 |
 
 **Auto-deploy**: Push to `main` branch → deploys automatically to production.

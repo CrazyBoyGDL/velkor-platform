@@ -5,8 +5,8 @@
 | Service | Railway name | Root dir | URL |
 |---------|-------------|----------|-----|
 | PostgreSQL | `Postgres` | (managed) | `postgres.railway.internal:5432` |
-| Strapi CMS | `velkor-api` | `apps/api` | `https://velkor-api-production.up.railway.app` |
-| Next.js frontend | `velkor-web` | `apps/web` | `https://velkor-web-production.up.railway.app` |
+| Strapi CMS | `velkor-api` | `apps/api` | `https://api.velkor.com.mx/operacion` |
+| Next.js frontend | `velkor-web` | `apps/web` | `https://velkor.com.mx` |
 
 Railway project: <https://railway.app/project/9f9ab588-4442-49cc-9822-e6dddcf31a03>
 
@@ -58,8 +58,11 @@ PORT=1337
 NODE_ENV=production
 
 # ── CORS ─────────────────────────────────────────────────────
-# Set to the actual velkor-web Railway URL (or custom domain)
-FRONTEND_URL=https://velkor-web-production.up.railway.app
+# Canonical Velkor origins only
+FRONTEND_URL=https://velkor.com.mx,https://www.velkor.com.mx
+PUBLIC_URL=https://api.velkor.com.mx
+API_PUBLIC_URL=https://api.velkor.com.mx
+STRAPI_ADMIN_PATH=/operacion
 ```
 
 > **Railway reference variables** (e.g. `${{Postgres.PGHOST}}`) are resolved at
@@ -183,7 +186,7 @@ Next.js service (protocol + domain, no trailing slash).
 
 For multiple origins (e.g., preview + production) use a comma-separated list:
 ```
-FRONTEND_URL=https://velkor.com.mx,https://velkor-web-production.up.railway.app
+FRONTEND_URL=https://velkor.com.mx,https://www.velkor.com.mx
 ```
 
 ### Rotating secrets

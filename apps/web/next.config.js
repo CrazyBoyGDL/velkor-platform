@@ -6,7 +6,6 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 const isProd = process.env.NODE_ENV === 'production';
 const posthogHost = process.env.NEXT_PUBLIC_POSTHOG_HOST || 'https://app.posthog.com';
 const turnstileHost = 'https://challenges.cloudflare.com';
-const railwayConnectSrc = 'https://*.railway.app https://*.up.railway.app';
 
 const nextConfig = {
   output: 'standalone',
@@ -14,8 +13,8 @@ const nextConfig = {
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'velkor.com.mx' },
-      { protocol: 'https', hostname: 'velkor-api-production.up.railway.app' },
-      { protocol: 'https', hostname: '*.up.railway.app' },
+      { protocol: 'https', hostname: 'www.velkor.com.mx' },
+      { protocol: 'https', hostname: 'api.velkor.com.mx' },
     ],
   },
   async redirects() {
@@ -71,8 +70,8 @@ const nextConfig = {
               scriptSrc,
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com",
-              "img-src 'self' data: blob: https://velkor.com.mx https://www.velkor.com.mx https://*.railway.app https://*.up.railway.app",
-              `connect-src 'self' https://plausible.io ${posthogHost} ${turnstileHost} ${railwayConnectSrc}`,
+              "img-src 'self' data: blob: https://velkor.com.mx https://www.velkor.com.mx https://api.velkor.com.mx",
+              `connect-src 'self' https://plausible.io ${posthogHost} ${turnstileHost}`,
               `frame-src 'self' ${turnstileHost}`,
               `child-src ${turnstileHost}`,
               "manifest-src 'self'",

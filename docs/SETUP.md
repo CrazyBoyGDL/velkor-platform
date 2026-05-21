@@ -181,7 +181,7 @@ Check `.env` and ensure `NEXT_PUBLIC_API_URL` matches Strapi URL:
 NEXT_PUBLIC_API_URL=http://localhost:1337
 
 # Production
-NEXT_PUBLIC_API_URL=https://your-api.railway.app
+NEXT_PUBLIC_API_URL=https://api.velkor.com.mx
 ```
 
 ### Database connection issues
