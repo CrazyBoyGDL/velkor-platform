@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { strapi } from '@/lib/strapi';
 import { buildDirectLeadPayload } from '@/lib/crm';
-import { getRequestIp } from '@/lib/security';
+import { resourceLeadEmail, sendOperationalEmail } from '@/lib/emailDelivery';
+import { getRequestIp, isDisposableEmail, isHoneypotFilled, logAuditEvent } from '@/lib/security';
 import { createMemoryRateLimiter } from '@/lib/rateLimit';
 import { sanitizePlainText } from '@/lib/sanitize';
+import { dispatchWebhook } from '@/lib/webhook';
 
 // ── Rate limiter (same pattern as /api/assessment) ────────────────────────────
 const RATE_WINDOW_MS = 60_000;
@@ -36,6 +38,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
   }
 
+  if (isHoneypotFilled(body._hp)) {
+    logAuditEvent({ type: 'honeypot', ip, email: sanitize(body.email, 200), timestamp: new Date().toISOString() });
+    return NextResponse.json({ ok: true, leadStored: false, notified: false }, { status: 200 });
+  }
+
   const name         = sanitize(body.name, 200);
   const email        = sanitize(body.email, 200);
   const company      = sanitize(body.company, 200);
@@ -45,6 +52,11 @@ export async function POST(req: NextRequest) {
   if (!email || !EMAIL_RE.test(email)) return NextResponse.json({ error: 'email inválido' },    { status: 400 });
   if (!company)                        return NextResponse.json({ error: 'empresa requerida' }, { status: 400 });
   if (!resourceSlug)                   return NextResponse.json({ error: 'recurso inválido' },  { status: 400 });
+
+  if (isDisposableEmail(email)) {
+    logAuditEvent({ type: 'disposable-email', ip, email, timestamp: new Date().toISOString() });
+    return NextResponse.json({ error: 'Por favor usa tu correo corporativo.' }, { status: 400 });
+  }
 
   const result = await strapi.post('/leads', buildDirectLeadPayload({
     name,
@@ -57,13 +69,53 @@ export async function POST(req: NextRequest) {
     nurtureStage: 'evidence-share',
     operationalPriority: 'nurture',
   }));
+  const leadStored = Boolean(result);
 
-  if (!result) {
+  const emailContent = resourceLeadEmail({ name, email, company, resourceSlug });
+  const [emailResult, webhookResult] = await Promise.all([
+    sendOperationalEmail({ ...emailContent, replyTo: email }),
+    dispatchWebhook('lead.resource', {
+      name,
+      email,
+      company,
+      resourceSlug,
+      source: `recurso-${resourceSlug}`,
+      leadStored,
+    }),
+  ]);
+  const notified = emailResult.ok || webhookResult.ok;
+  const fallbackUsed = !leadStored && notified;
+
+  if (!leadStored) {
+    await dispatchWebhook('lead.storage_failed', {
+      name,
+      email,
+      company,
+      source: `recurso-${resourceSlug}`,
+      notification: {
+        emailConfigured: emailResult.configured,
+        emailOk: emailResult.ok,
+        webhookConfigured: webhookResult.configured,
+        webhookOk: webhookResult.ok,
+      },
+    });
+  }
+
+  if (!leadStored && !notified) {
     return NextResponse.json(
-      { error: 'No se pudo registrar. Intenta nuevamente.' },
+      { ok: false, leadStored, notified, fallbackUsed: false, error: 'No se pudo registrar. Intenta nuevamente.' },
       { status: 502 }
     );
   }
 
-  return NextResponse.json({ ok: true }, { status: 201 });
+  logAuditEvent({
+    type: 'submission',
+    ip,
+    email,
+    company,
+    reason: `resource lead · leadStored=${leadStored} · notified=${notified}`,
+    timestamp: new Date().toISOString(),
+  });
+
+  return NextResponse.json({ ok: true, leadStored, notified, fallbackUsed }, { status: leadStored ? 201 : 202 });
 }

@@ -111,3 +111,98 @@ export function contactLeadEmail(params: {
     `,
   }
 }
+
+export function resourceLeadEmail(params: {
+  name: string
+  email: string
+  company: string
+  resourceSlug: string
+}) {
+  const safe = {
+    name: escapeHtml(params.name),
+    email: escapeHtml(params.email),
+    company: escapeHtml(params.company),
+    resourceSlug: escapeHtml(params.resourceSlug),
+  }
+
+  return {
+    subject: `Nuevo recurso Velkor · ${params.company}`,
+    html: `
+      <div style="font-family:Inter,Arial,sans-serif;background:#080c14;color:#e5e7eb;padding:24px">
+        <h1 style="font-size:20px;margin:0 0 12px">Nuevo lead de recurso</h1>
+        <p style="margin:0 0 18px;color:#9ca3af">Origen: recurso-${safe.resourceSlug}</p>
+        <table style="border-collapse:collapse;width:100%;max-width:680px">
+          <tr><td style="padding:8px;color:#94a3b8">Nombre</td><td style="padding:8px">${safe.name}</td></tr>
+          <tr><td style="padding:8px;color:#94a3b8">Email</td><td style="padding:8px">${safe.email}</td></tr>
+          <tr><td style="padding:8px;color:#94a3b8">Empresa</td><td style="padding:8px">${safe.company}</td></tr>
+          <tr><td style="padding:8px;color:#94a3b8">Recurso</td><td style="padding:8px">${safe.resourceSlug}</td></tr>
+        </table>
+      </div>
+    `,
+  }
+}
+
+export function assessmentLeadEmail(params: {
+  name: string
+  email: string
+  company: string
+  phone?: string
+  reportRef: string
+  source?: string
+  overallScore: number
+  maturityLabel: string
+  exposureLabel: string
+  criticalCount: number
+  highCount: number
+  segment: string
+  engagementLabel: string
+  priorityLabel: string
+  followUpLabel: string
+  followUpHours: number
+  recommendedPhase: string
+}) {
+  const safe = {
+    name: escapeHtml(params.name),
+    email: escapeHtml(params.email),
+    company: escapeHtml(params.company),
+    phone: escapeHtml(params.phone || 'No indicado'),
+    reportRef: escapeHtml(params.reportRef),
+    source: escapeHtml(params.source || 'direct'),
+    overallScore: escapeHtml(String(params.overallScore)),
+    maturityLabel: escapeHtml(params.maturityLabel),
+    exposureLabel: escapeHtml(params.exposureLabel),
+    criticalCount: escapeHtml(String(params.criticalCount)),
+    highCount: escapeHtml(String(params.highCount)),
+    segment: escapeHtml(params.segment),
+    engagementLabel: escapeHtml(params.engagementLabel),
+    priorityLabel: escapeHtml(params.priorityLabel),
+    followUpLabel: escapeHtml(params.followUpLabel),
+    followUpHours: escapeHtml(String(params.followUpHours)),
+    recommendedPhase: escapeHtml(params.recommendedPhase),
+  }
+
+  return {
+    subject: `Nuevo assessment Velkor · ${params.company} · ${params.reportRef}`,
+    html: `
+      <div style="font-family:Inter,Arial,sans-serif;background:#080c14;color:#e5e7eb;padding:24px">
+        <h1 style="font-size:20px;margin:0 0 12px">Nuevo assessment completado</h1>
+        <p style="margin:0 0 18px;color:#9ca3af">Reporte: ${safe.reportRef} · Origen: ${safe.source}</p>
+        <table style="border-collapse:collapse;width:100%;max-width:760px">
+          <tr><td style="padding:8px;color:#94a3b8">Nombre</td><td style="padding:8px">${safe.name}</td></tr>
+          <tr><td style="padding:8px;color:#94a3b8">Email</td><td style="padding:8px">${safe.email}</td></tr>
+          <tr><td style="padding:8px;color:#94a3b8">Empresa</td><td style="padding:8px">${safe.company}</td></tr>
+          <tr><td style="padding:8px;color:#94a3b8">Telefono</td><td style="padding:8px">${safe.phone}</td></tr>
+          <tr><td style="padding:8px;color:#94a3b8">Score</td><td style="padding:8px">${safe.overallScore}/100 · ${safe.maturityLabel} · ${safe.exposureLabel}</td></tr>
+          <tr><td style="padding:8px;color:#94a3b8">Hallazgos</td><td style="padding:8px">${safe.criticalCount} criticos · ${safe.highCount} altos</td></tr>
+          <tr><td style="padding:8px;color:#94a3b8">Segmento</td><td style="padding:8px">${safe.segment} · ${safe.engagementLabel}</td></tr>
+          <tr><td style="padding:8px;color:#94a3b8">Prioridad</td><td style="padding:8px">${safe.priorityLabel}</td></tr>
+          <tr><td style="padding:8px;color:#94a3b8">Seguimiento</td><td style="padding:8px">${safe.followUpLabel} · ${safe.followUpHours} h</td></tr>
+        </table>
+        <div style="margin-top:18px;padding:16px;border-left:2px solid #638fa9;background:rgba(99,143,169,0.08)">
+          <strong>Fase recomendada</strong><br />
+          ${safe.recommendedPhase}
+        </div>
+      </div>
+    `,
+  }
+}

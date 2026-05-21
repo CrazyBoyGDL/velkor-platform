@@ -4,6 +4,7 @@ import { scoreAssessment }           from '@/lib/scoring'
 import { classifyLead }              from '@/lib/classification'
 import { assignWorkflow, buildStrapiLeadPayload } from '@/lib/crm'
 import { dispatchWebhook, buildAssessmentCompletedPayload } from '@/lib/webhook'
+import { assessmentLeadEmail, sendOperationalEmail } from '@/lib/emailDelivery'
 import { getRequestIp, isHoneypotFilled, isDisposableEmail, verifyTurnstile, logAuditEvent } from '@/lib/security'
 import { createMemoryRateLimiter } from '@/lib/rateLimit'
 import { sanitizePlainText, sanitizePlainTextArray } from '@/lib/sanitize'
@@ -218,8 +219,31 @@ export async function POST(req: NextRequest) {
     webhookTasks.push(dispatchWebhook('lead.enterprise', { company, email, segment: classification.segment, reportRef }))
   }
 
-  const webhookResults = await Promise.all(webhookTasks)
+  const emailContent = assessmentLeadEmail({
+    name,
+    email,
+    company,
+    phone,
+    reportRef,
+    source: answers.source,
+    overallScore: scores.overall,
+    maturityLabel: scores.maturityLabel,
+    exposureLabel: scores.exposureLabel,
+    criticalCount: scores.criticalCount,
+    highCount: scores.highCount,
+    segment: classification.segment,
+    engagementLabel: classification.engagementLabel,
+    priorityLabel: classification.priorityLabel,
+    followUpLabel: classification.followUpLabel,
+    followUpHours: classification.followUpHours,
+    recommendedPhase: scores.recommendedPhase,
+  })
+  const [webhookResults, emailResult] = await Promise.all([
+    Promise.all(webhookTasks),
+    sendOperationalEmail({ ...emailContent, replyTo: email }),
+  ])
   const webhookQueued = webhookResults.some(result => result.ok)
+  const notified = webhookQueued || emailResult.ok
 
   if (!leadStored) {
     await dispatchWebhook('lead.storage_failed', {
@@ -230,6 +254,7 @@ export async function POST(req: NextRequest) {
       workflow: workflow.workflow,
       priority: classification.priority,
       webhookQueued,
+      emailNotified: emailResult.ok,
     })
   }
 
@@ -238,14 +263,38 @@ export async function POST(req: NextRequest) {
     console.error('[WEBHOOK] Assessment dispatch degraded', { reportRef, failedWebhooks })
   }
 
+  if (!emailResult.ok) {
+    console.error('[EMAIL] Assessment lead notification failed', {
+      reportRef,
+      configured: emailResult.configured,
+      reason: emailResult.reason,
+    })
+    await dispatchWebhook('email.delivery_failed', {
+      reportRef,
+      email,
+      company,
+      reason: emailResult.reason,
+      source: 'assessment-internal',
+    })
+  }
+
   logAuditEvent({
     type: 'submission',
     ip,
     email,
     company,
-    reason: `assessment · leadStored=${leadStored} · webhookQueued=${webhookQueued}`,
+    reason: `assessment · leadStored=${leadStored} · webhookQueued=${webhookQueued} · emailNotified=${emailResult.ok}`,
     timestamp: new Date().toISOString(),
   })
 
-  return NextResponse.json({ ok: true, reportRef, scores, classification, leadStored, webhookQueued }, { status: 201 })
+  return NextResponse.json({
+    ok: true,
+    reportRef,
+    scores,
+    classification,
+    leadStored,
+    webhookQueued,
+    notified,
+    emailNotified: emailResult.ok,
+  }, { status: 201 })
 }

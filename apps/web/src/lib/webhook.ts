@@ -13,6 +13,7 @@ export type WebhookEvent =
   | 'lead.critical'
   | 'lead.enterprise'
   | 'lead.contact'
+  | 'lead.resource'
   | 'lead.storage_failed'
   | 'email.delivery_failed'
   | 'followup.scheduled'

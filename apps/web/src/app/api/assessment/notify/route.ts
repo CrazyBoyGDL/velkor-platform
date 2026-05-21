@@ -72,13 +72,14 @@ function isValidEmailData(d: unknown): d is EmailData {
 // ─── Resend integration ───────────────────────────────────────────────────────
 
 const RESEND_API = 'https://api.resend.com/emails'
-const FROM_ADDR  = `${COMPANY.name} <${CONTACT.emailNoReply}>`
+const FROM_ADDR  = `${COMPANY.name} <${CONTACT.email}>`
 
 interface ResendPayload {
   from:    string
   to:      string[]
   subject: string
   html:    string
+  reply_to?: string
 }
 
 async function sendViaResend(
@@ -92,6 +93,7 @@ async function sendViaResend(
     to:      [to],
     subject,
     html,
+    reply_to: CONTACT.email,
   }
 
   try {
