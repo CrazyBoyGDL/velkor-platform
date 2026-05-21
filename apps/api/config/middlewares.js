@@ -16,5 +16,6 @@ module.exports = [
   'strapi::query',
   'strapi::body',
   'strapi::session',
+  'strapi::favicon',
   'strapi::public',
 ];
