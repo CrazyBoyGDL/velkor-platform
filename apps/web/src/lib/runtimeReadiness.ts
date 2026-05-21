@@ -11,7 +11,6 @@ const RECOMMENDED = [
   'BLOG_PREVIEW_SECRET',
   'NEXT_PUBLIC_TURNSTILE_SITE_KEY',
   'TURNSTILE_SECRET_KEY',
-  'NEXT_PUBLIC_WHATSAPP_NUMBER',
 ] as const
 
 export function getRuntimeReadiness() {

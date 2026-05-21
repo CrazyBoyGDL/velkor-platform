@@ -15,6 +15,16 @@ export const APP_URL     = process.env.NEXT_PUBLIC_APP_URL  ?? SITE_URL
 export const SITE_DOMAIN = process.env.NEXT_PUBLIC_SITE_DOMAIN ?? 'velkor.com.mx'
 export const MEDIA_URL   = process.env.NEXT_PUBLIC_MEDIA_URL ?? 'https://media.velkor.com.mx'
 
+const DEFAULT_WHATSAPP_NUMBER = '523314336621'
+
+function normalizePublicPhone(raw?: string | null): string | null {
+  const number = raw?.replace(/[^\d]/g, '') ?? ''
+  return number.length >= 10 ? number : null
+}
+
+export const PUBLIC_WHATSAPP_NUMBER =
+  normalizePublicPhone(process.env.NEXT_PUBLIC_WHATSAPP_NUMBER) ?? DEFAULT_WHATSAPP_NUMBER
+
 export const OG_IMAGES = {
   home:        '/og/og-home.png',
   servicios:  '/og/og-servicios.png',
@@ -58,8 +68,8 @@ export const CONTACT = {
   emailNoReply:  `noreply@${SITE_DOMAIN}`,
   /** Assessment report sender */
   emailReports:  `reportes@${SITE_DOMAIN}`,
-  /** WhatsApp (optional — set env var to activate) */
-  whatsapp:      process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? null,
+  /** WhatsApp Business number in international format (no + or spaces). */
+  whatsapp:      PUBLIC_WHATSAPP_NUMBER,
   /** LinkedIn company page */
   linkedin:      process.env.NEXT_PUBLIC_LINKEDIN_URL ?? null,
 } as const

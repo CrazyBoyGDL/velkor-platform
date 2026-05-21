@@ -1,4 +1,5 @@
 import type { DiagnosticCtaIntent, ExposureLevel } from './scoring'
+import { CONTACT } from './config'
 
 export interface ConsultiveCTAContext {
   intent?: DiagnosticCtaIntent
@@ -54,8 +55,7 @@ const DEFAULT_WHATSAPP_MESSAGE =
   'Hola, quiero contarles un escenario de infraestructura y revisar el primer paso con Velkor.'
 
 function whatsappNumber(): string | null {
-  const raw = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER
-  const number = raw?.replace(/[^\d]/g, '') ?? ''
+  const number = CONTACT.whatsapp?.replace(/[^\d]/g, '') ?? ''
   return number.length >= 10 ? number : null
 }
 
