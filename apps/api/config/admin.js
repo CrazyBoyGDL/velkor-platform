@@ -6,7 +6,7 @@ module.exports = ({ env }) => {
   }
 
   return {
-    url: env('STRAPI_ADMIN_PATH', '/admin'),
+    url: env('STRAPI_ADMIN_PATH', env('ADMIN_PATH', '/admin')),
     auth: {
       secret: required('ADMIN_JWT_SECRET'),
     },

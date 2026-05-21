@@ -15,6 +15,8 @@ RUN ADMIN_JWT_SECRET=strapi-build-placeholder \
     API_TOKEN_SALT=strapi-build-salt-placeholder \
     TRANSFER_TOKEN_SALT=strapi-build-salt-placeholder \
     APP_KEYS=build-key-1,build-key-2,build-key-3,build-key-4 \
+    STRAPI_ADMIN_PATH=/operacion \
+    ADMIN_PATH=/operacion \
     npm run build
 EXPOSE 1337
 # start.sh lives at /app/start.sh (WORKDIR) so `sh ./start.sh` works everywhere
