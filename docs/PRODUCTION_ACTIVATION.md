@@ -124,7 +124,6 @@ NEXT_PUBLIC_PLAUSIBLE_DOMAIN=velkor.com.mx
 NEXT_PUBLIC_POSTHOG_KEY=
 NEXT_PUBLIC_POSTHOG_HOST=https://app.posthog.com
 NEXT_PUBLIC_WHATSAPP_NUMBER=<optional>
-NEXT_PUBLIC_CALENDLY_URL=<optional>
 ```
 
 API service (`apps/api`):

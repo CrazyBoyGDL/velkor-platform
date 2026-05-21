@@ -19,6 +19,7 @@ const mediaHost = (() => {
 
 const nextConfig = {
   output: 'standalone',
+  poweredByHeader: false,
   reactStrictMode: true,
   images: {
     remotePatterns: [

@@ -18,8 +18,6 @@ const SERVICES = [
 const WA_HREF = getWhatsAppHref('Hola, quiero contarles un escenario técnico y revisar el primer paso con Velkor.')
 const MAIL_HREF = `mailto:${CONTACT.email}?subject=${encodeURIComponent('Escenario técnico para Velkor')}`
 
-const CALENDLY_URL = process.env.NEXT_PUBLIC_CALENDLY_URL
-
 type Status = 'idle' | 'loading' | 'done' | 'fallback' | 'error'
 type ContactFieldConfig = {
   key: string
@@ -311,71 +309,28 @@ export default function ContactForm() {
             </div>
           </a>
         )}
-        {!WA_HREF && (
-          <a
-            href={MAIL_HREF}
-            onClick={() => trackCTA('Email contacto', 'contact-alternatives', { channel: 'email' })}
-            className="contact-route group"
-            style={{ borderLeftColor: '#638fa9', borderLeftWidth: 3 }}
-          >
-            <div className="flex items-center gap-4">
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(99,143,169,0.12)' }}>
-                <svg viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5" style={{ color: '#5f839b' }}>
-                  <path d="M2.94 5.34A2.25 2.25 0 0 1 5.08 3.8h9.84c.98 0 1.82.63 2.14 1.54L10 9.68 2.94 5.34Z" />
-                  <path d="M2.75 6.74v6.71a2.25 2.25 0 0 0 2.25 2.25h10a2.25 2.25 0 0 0 2.25-2.25V6.74l-6.58 4.04a1.3 1.3 0 0 1-1.34 0L2.75 6.74Z" />
-                </svg>
-              </div>
-              <div>
-                <div className="text-noc-white font-semibold text-sm group-hover:text-white transition-colors">Correo directo</div>
-                <div className="text-zinc-500 text-xs">{CONTACT.email}</div>
-              </div>
-              <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4 text-zinc-600 ml-auto">
-                <path d="M6.22 3.22a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L9.94 8 6.22 4.28a.75.75 0 010-1.06z"/>
+        <a
+          href={MAIL_HREF}
+          onClick={() => trackCTA('Email contacto', 'contact-alternatives', { channel: 'email' })}
+          className="contact-route group"
+          style={{ borderLeftColor: '#638fa9', borderLeftWidth: 3 }}
+        >
+          <div className="flex items-center gap-4">
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(99,143,169,0.12)' }}>
+              <svg viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5" style={{ color: '#5f839b' }}>
+                <path d="M2.94 5.34A2.25 2.25 0 0 1 5.08 3.8h9.84c.98 0 1.82.63 2.14 1.54L10 9.68 2.94 5.34Z" />
+                <path d="M2.75 6.74v6.71a2.25 2.25 0 0 0 2.25 2.25h10a2.25 2.25 0 0 0 2.25-2.25V6.74l-6.58 4.04a1.3 1.3 0 0 1-1.34 0L2.75 6.74Z" />
               </svg>
             </div>
-          </a>
-        )}
-
-        {/* Calendly */}
-        {CALENDLY_URL ? (
-          <a
-            href={CALENDLY_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => trackCTA('Calendly contacto', 'contact-alternatives', { channel: 'calendar' })}
-            className="contact-route group"
-            style={{ borderLeftColor: '#b07828', borderLeftWidth: 3 }}
-          >
-            <div className="flex items-center gap-4">
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 bg-amber-bg">
-                <svg viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 text-amber">
-                  <path fillRule="evenodd" d="M5.75 2a.75.75 0 01.75.75V4h7V2.75a.75.75 0 011.5 0V4h.25A2.75 2.75 0 0118 6.75v8.5A2.75 2.75 0 0115.25 18H4.75A2.75 2.75 0 012 15.25v-8.5A2.75 2.75 0 014.75 4H5V2.75A.75.75 0 015.75 2zm-1 5.5c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h10.5c.69 0 1.25-.56 1.25-1.25v-6.5c0-.69-.56-1.25-1.25-1.25H4.75z" clipRule="evenodd" />
-                </svg>
-              </div>
-              <div>
-                <div className="text-noc-white font-semibold text-sm group-hover:text-white transition-colors">Agendar llamada</div>
-                <div className="text-zinc-500 text-xs">Elige un horario disponible</div>
-              </div>
-              <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4 text-zinc-600 ml-auto">
-                <path d="M6.22 3.22a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L9.94 8 6.22 4.28a.75.75 0 010-1.06z"/>
-              </svg>
+            <div>
+              <div className="text-noc-white font-semibold text-sm group-hover:text-white transition-colors">Correo directo</div>
+              <div className="text-zinc-500 text-xs">{CONTACT.email}</div>
             </div>
-          </a>
-        ) : (
-          <div className="contact-route opacity-50">
-            <div className="flex items-center gap-4">
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 bg-amber-bg">
-                <svg viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 text-amber">
-                  <path fillRule="evenodd" d="M5.75 2a.75.75 0 01.75.75V4h7V2.75a.75.75 0 011.5 0V4h.25A2.75 2.75 0 0118 6.75v8.5A2.75 2.75 0 0115.25 18H4.75A2.75 2.75 0 012 15.25v-8.5A2.75 2.75 0 014.75 4H5V2.75A.75.75 0 015.75 2zm-1 5.5c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h10.5c.69 0 1.25-.56 1.25-1.25v-6.5c0-.69-.56-1.25-1.25-1.25H4.75z" clipRule="evenodd" />
-                </svg>
-              </div>
-              <div>
-                <div className="text-noc-white font-semibold text-sm">Agendar llamada</div>
-                <div className="text-zinc-500 text-xs">Disponible próximamente</div>
-              </div>
-            </div>
+            <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4 text-zinc-600 ml-auto">
+              <path d="M6.22 3.22a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L9.94 8 6.22 4.28a.75.75 0 010-1.06z"/>
+            </svg>
           </div>
-        )}
+        </a>
 
         {/* Diagnóstico CTA */}
         <div className="contact-route contact-route--diagnostic">

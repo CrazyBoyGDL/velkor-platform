@@ -94,7 +94,6 @@ BLOG_PREVIEW_SECRET=<same value as velkor-api>
 # ── Optional features (leave blank to disable) ───────────────
 NEXT_PUBLIC_WHATSAPP_NUMBER=
 NEXT_PUBLIC_PLAUSIBLE_DOMAIN=
-NEXT_PUBLIC_CALENDLY_URL=
 ```
 
 ---
@@ -138,7 +137,6 @@ NEXT_PUBLIC_CALENDLY_URL=
 | `NEXT_PUBLIC_WHATSAPP_NUMBER` | optional | Enables WhatsApp CTA (e.g. `521XXXXXXXXXX`) |
 | `NEXT_PUBLIC_MEDIA_URL` | production | Public media origin used by Next Image |
 | `NEXT_PUBLIC_PLAUSIBLE_DOMAIN` | optional | Enables Plausible analytics |
-| `NEXT_PUBLIC_CALENDLY_URL` | optional | Enables Calendly booking button |
 
 ---
 

@@ -464,7 +464,7 @@ function buildRiskFactors(answers: AssessmentAnswers, _scores: ScoreResult): str
 function buildNextSteps(_scores: ScoreResult, classification: LeadClassification): string[] {
   if (classification.priority === 'critical') {
     return [
-      'Agendar llamada técnica urgente con el equipo de Velkor en las próximas 4 horas hábiles',
+      'Iniciar contacto técnico urgente con el equipo de Velkor en las próximas 4 horas hábiles',
       'Preparar acceso temporal de lectura al tenant para revisión de configuración de Entra ID',
       'Identificar al responsable de TI con acceso administrativo para iniciar la evaluación presencial',
     ]
@@ -472,7 +472,7 @@ function buildNextSteps(_scores: ScoreResult, classification: LeadClassification
 
   if (classification.priority === 'high') {
     return [
-      'Agendar llamada técnica con el equipo de Velkor en el transcurso del día',
+      'Iniciar revisión técnica con el equipo de Velkor en el transcurso del día',
       'Compartir diagrama de red actual (aunque sea aproximado) para contextualizar la propuesta',
       'Confirmar al stakeholder interno con autoridad para aprobar inicio de proyecto',
     ]
@@ -480,7 +480,7 @@ function buildNextSteps(_scores: ScoreResult, classification: LeadClassification
 
   return [
     'Revisar esta propuesta con el equipo directivo y área de TI',
-    'Agendar sesión de preguntas técnicas con el consultor asignado de Velkor',
+    'Enviar preguntas técnicas al consultor asignado de Velkor',
     'Definir fecha estimada de inicio y asignar contacto técnico interno del proyecto',
   ]
 }
