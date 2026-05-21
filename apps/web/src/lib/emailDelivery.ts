@@ -17,10 +17,17 @@ export interface OperationalEmailInput {
   replyTo?: string
 }
 
+function parseRecipients(value?: string): string[] {
+  return (value || '')
+    .split(/[;,]/)
+    .map(item => item.trim())
+    .filter(Boolean)
+}
+
 function recipients(to?: string | string[]): string[] {
-  if (Array.isArray(to)) return to.filter(Boolean)
-  if (to) return [to]
-  return [(process.env.LEAD_NOTIFICATION_EMAIL || CONTACT.email).trim()]
+  const values = Array.isArray(to) ? to.flatMap(parseRecipients) : parseRecipients(to)
+  const fallback = parseRecipients(process.env.LEAD_NOTIFICATION_EMAIL || CONTACT.email)
+  return Array.from(new Set(values.length ? values : fallback))
 }
 
 export async function sendOperationalEmail(input: OperationalEmailInput): Promise<EmailDeliveryResult> {
