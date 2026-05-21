@@ -5,7 +5,7 @@
     "singularName": "testimonio",
     "pluralName": "testimonios",
     "displayName": "Testimonio",
-    "description": "Testimonios de clientes (anónimos o con rol/sector)"
+    "description": "Testimonios aprobados, anonimos o con rol/sector"
   },
   "options": { "draftAndPublish": true },
   "attributes": {

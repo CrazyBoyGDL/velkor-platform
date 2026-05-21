@@ -28,7 +28,6 @@ node scripts/generate-secrets.js
 Example output:
 ```
 ADMIN_JWT_SECRET=<256-bit base64url>
-JWT_SECRET=<256-bit base64url>
 API_TOKEN_SALT=<192-bit base64url>
 TRANSFER_TOKEN_SALT=<192-bit base64url>
 APP_KEYS=<key1>,<key2>,<key3>,<key4>
@@ -95,7 +94,6 @@ NEXT_PUBLIC_CALENDLY_URL=
 | Variable | Required | Description |
 |----------|----------|-------------|
 | `ADMIN_JWT_SECRET` | ✅ | Admin panel JWT signing key |
-| `JWT_SECRET` | ✅ | users-permissions plugin JWT key |
 | `API_TOKEN_SALT` | ✅ | API token hashing salt |
 | `TRANSFER_TOKEN_SALT` | ✅ | Transfer token hashing salt |
 | `APP_KEYS` | ✅ | 4 × comma-separated Koa session keys |
@@ -131,7 +129,6 @@ Strapi initialises. If any are missing it prints exactly which ones and exits 1:
 ╔══════════════════════════════════════════════╗
 ║  STARTUP BLOCKED — Missing env vars          ║
 ╚══════════════════════════════════════════════╝
-  ✗ JWT_SECRET
   ✗ APP_KEYS
 
   → Generate secrets : node scripts/generate-secrets.js
@@ -196,7 +193,6 @@ To rotate secrets (e.g., after suspected leak):
 2. Update values in Railway → Variables.
 3. Redeploy the `velkor-api` service.
 
-> Rotating `JWT_SECRET` logs out all Strapi users.
 > Rotating `APP_KEYS` invalidates all browser sessions.
 > Rotating `ADMIN_JWT_SECRET` logs out all Strapi admins.
 

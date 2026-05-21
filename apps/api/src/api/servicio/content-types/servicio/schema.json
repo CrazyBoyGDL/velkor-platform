@@ -5,7 +5,7 @@
     "singularName": "servicio",
     "pluralName": "servicios",
     "displayName": "Servicio",
-    "description": "Service catalog entries"
+    "description": "Catalogo comercial de servicios"
   },
   "options": {
     "draftAndPublish": true

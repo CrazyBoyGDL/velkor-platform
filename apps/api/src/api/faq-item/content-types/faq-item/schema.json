@@ -4,7 +4,7 @@
   "info": {
     "singularName": "faq-item",
     "pluralName": "faq-items",
-    "displayName": "FAQ Item",
+    "displayName": "Pregunta frecuente",
     "description": "Preguntas frecuentes reutilizables por servicio"
   },
   "options": { "draftAndPublish": true },

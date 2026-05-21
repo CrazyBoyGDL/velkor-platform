@@ -29,7 +29,6 @@ check_required() {
 echo ""
 echo "Checking required env vars..."
 check_required ADMIN_JWT_SECRET
-check_required JWT_SECRET
 check_required API_TOKEN_SALT
 check_required TRANSFER_TOKEN_SALT
 check_required APP_KEYS

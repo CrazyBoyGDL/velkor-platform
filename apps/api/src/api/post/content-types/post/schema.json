@@ -4,8 +4,8 @@
   "info": {
     "singularName": "post",
     "pluralName": "posts",
-    "displayName": "Post",
-    "description": "Blog articles"
+    "displayName": "Articulo",
+    "description": "Articulos del blog y autoridad tecnica"
   },
   "options": {
     "draftAndPublish": true

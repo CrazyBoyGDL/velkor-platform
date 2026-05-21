@@ -1,0 +1,8 @@
+'use strict';
+const { createCoreRouter } = require('@strapi/strapi').factories;
+module.exports = createCoreRouter('api::recurso.recurso', {
+  config: {
+    find: { auth: false },
+    findOne: { auth: false },
+  },
+});

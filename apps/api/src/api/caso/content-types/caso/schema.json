@@ -5,7 +5,7 @@
     "singularName": "caso",
     "pluralName": "casos",
     "displayName": "Caso",
-    "description": "Case studies"
+    "description": "Casos sanitizados y evidencia comercial"
   },
   "options": {
     "draftAndPublish": true

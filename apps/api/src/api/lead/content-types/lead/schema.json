@@ -4,8 +4,8 @@
   "info": {
     "singularName": "lead",
     "pluralName": "leads",
-    "displayName": "Lead",
-    "description": "Assessment form submissions"
+    "displayName": "Lead recibido",
+    "description": "Inbox comercial: contacto, assessment y recursos"
   },
   "options": {
     "draftAndPublish": false

@@ -5,7 +5,7 @@
     "singularName": "recurso",
     "pluralName": "recursos",
     "displayName": "Recurso",
-    "description": "Recursos descargables / lead magnets"
+    "description": "Recursos descargables y materiales comerciales"
   },
   "options": { "draftAndPublish": true },
   "attributes": {

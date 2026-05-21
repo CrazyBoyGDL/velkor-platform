@@ -11,7 +11,6 @@ ENV NODE_ENV=production
 # Railway injects real secrets at runtime; these placeholders exist only for
 # the admin-panel build process and are not persisted as image environment.
 RUN ADMIN_JWT_SECRET=strapi-build-placeholder \
-    JWT_SECRET=strapi-build-placeholder \
     API_TOKEN_SALT=strapi-build-salt-placeholder \
     TRANSFER_TOKEN_SALT=strapi-build-salt-placeholder \
     APP_KEYS=build-key-1,build-key-2,build-key-3,build-key-4 \

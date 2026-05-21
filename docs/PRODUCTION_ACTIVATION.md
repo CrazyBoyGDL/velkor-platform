@@ -134,7 +134,6 @@ DATABASE_NAME=<Railway Postgres db>
 DATABASE_USERNAME=<Railway Postgres user>
 DATABASE_PASSWORD=<Railway Postgres password>
 DATABASE_SSL=true
-JWT_SECRET=<generated>
 ADMIN_JWT_SECRET=<generated>
 API_TOKEN_SALT=<generated>
 TRANSFER_TOKEN_SALT=<generated>

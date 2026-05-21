@@ -1,9 +1,9 @@
 'use strict';
 
 const { seedAuthorityPosts } = require('./content/authority-posts');
+const { configureOperatorLayouts } = require('./content/operator-layouts');
 
 const REQUIRED_ENV = [
-  'JWT_SECRET',
   'ADMIN_JWT_SECRET',
   'API_TOKEN_SALT',
   'TRANSFER_TOKEN_SALT',
@@ -25,50 +25,7 @@ module.exports = {
   },
 
   async bootstrap({ strapi }) {
-    await configurePublicPermissions(strapi);
+    await configureOperatorLayouts(strapi);
     await seedAuthorityPosts(strapi);
   },
 };
-
-async function configurePublicPermissions(strapi) {
-  const publicRole = await strapi
-    .query('plugin::users-permissions.role')
-    .findOne({ where: { type: 'public' } });
-
-  if (!publicRole) return;
-
-  const permissionsToGrant = [
-    { action: 'api::post.post.find' },
-    { action: 'api::post.post.findOne' },
-    { action: 'api::caso.caso.find' },
-    { action: 'api::caso.caso.findOne' },
-    { action: 'api::servicio.servicio.find' },
-    { action: 'api::servicio.servicio.findOne' },
-    { action: 'api::lead.lead.create' },
-    // Phase 4: lead magnets, testimonials, FAQ
-    { action: 'api::recurso.recurso.find' },
-    { action: 'api::recurso.recurso.findOne' },
-    { action: 'api::testimonio.testimonio.find' },
-    { action: 'api::faq-item.faq-item.find' },
-  ];
-
-  for (const { action } of permissionsToGrant) {
-    try {
-      const existing = await strapi
-        .query('plugin::users-permissions.permission')
-        .findOne({ where: { action, role: publicRole.id } });
-
-      if (!existing) {
-        await strapi
-          .query('plugin::users-permissions.permission')
-          .create({ data: { action, role: publicRole.id, enabled: true } });
-      } else if (!existing.enabled) {
-        await strapi
-          .query('plugin::users-permissions.permission')
-          .update({ where: { id: existing.id }, data: { enabled: true } });
-      }
-    } catch (err) {
-      strapi.log.warn(`[Velkor] Could not configure permission for ${action}:`, err.message);
-    }
-  }
-}

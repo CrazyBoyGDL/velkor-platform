@@ -15,14 +15,30 @@ La URL publica de Railway queda bloqueada por seguridad y no debe compartirse co
 Strapi es el panel interno para administrar:
 
 - Leads capturados por contacto, assessment y recursos.
-- Posts del blog.
+- Articulos del blog.
 - Casos tecnicos o casos sanitizados.
 - Servicios.
 - Recursos descargables.
 - Testimonios.
 - Preguntas frecuentes.
 
-## Flujo No Tecnico
+No es un constructor visual tipo WordPress. Es el CMS/headless backend que alimenta partes del sitio y guarda oportunidades comerciales. Para edicion visual completa conviene una fase posterior llamada `Velkor Studio`, una interfaz propia mas simple encima de Strapi.
+
+## Que Debo Abrir
+
+En `Content Manager` usa estas colecciones:
+
+- `Lead recibido`: inbox comercial. Aqui revisas contactos, assessments y descargas.
+- `Articulo`: contenido del blog.
+- `Caso`: casos sanitizados para demostrar experiencia.
+- `Servicio`: catalogo comercial.
+- `Recurso`: descargables y lead magnets.
+- `Testimonio`: prueba social aprobada.
+- `Pregunta frecuente`: respuestas reutilizables.
+
+La coleccion tecnica `User` no debe aparecer en el flujo editorial. Los usuarios administrativos de Strapi se gestionan desde `Settings`, no desde Content Manager.
+
+## Flujo No Tecnico Para Publicar
 
 1. Entrar al panel.
 2. Abrir `Content Manager`.
@@ -33,7 +49,7 @@ Strapi es el panel interno para administrar:
 
 ## Leads
 
-En `Content Manager` -> `Lead` puedes revisar:
+En `Content Manager` -> `Lead recibido` puedes revisar:
 
 - Nombre, correo, empresa y telefono.
 - Origen del lead: contacto, assessment o recurso.
@@ -76,8 +92,8 @@ Para que Strapi sea mas comodo para equipo no tecnico, conviene agregar una fase
 
 - Roles: `Operacion`, `Editor`, `Solo lectura`, `Administrador`.
 - Vistas guardadas para `Leads nuevos`, `Assessments criticos`, `Seguimiento vencido`.
-- Campos internos ocultos para roles no tecnicos.
-- Etiquetas claras en espanol para campos CRM.
+- Interfaz `Velkor Studio` para que Operacion vea solo formularios simples.
+- Preview de contenido antes de publicar en Velkor.com.mx.
 - Checklist de seguimiento dentro del lead.
 - Politica de MFA para administradores.
 
