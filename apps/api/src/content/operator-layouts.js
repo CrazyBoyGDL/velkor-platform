@@ -333,7 +333,7 @@ async function configureOperatorLayouts(strapi) {
           list: layout.list,
           edit: layout.edit,
         },
-        metadatas: buildMetadatas(current.metadatas || {}, layout),
+        metadatas: buildMetadatas(current.metadatas || {}, layout, contentType),
       });
     }
 
@@ -343,9 +343,19 @@ async function configureOperatorLayouts(strapi) {
   }
 }
 
-function buildMetadatas(current, layout) {
+function buildMetadatas(current, layout, contentType) {
   const next = { ...current };
+  const layoutFields = [
+    ...(layout.list || []),
+    ...(layout.edit || []).flat().map((item) => item.name),
+  ];
   const fieldNames = new Set([
+    'id',
+    'createdAt',
+    'updatedAt',
+    'publishedAt',
+    ...Object.keys(contentType.attributes || {}),
+    ...layoutFields,
     ...Object.keys(layout.labels || {}),
     ...Object.keys(layout.descriptions || {}),
     ...(layout.readOnly || []),
@@ -353,9 +363,22 @@ function buildMetadatas(current, layout) {
   ]);
 
   for (const name of fieldNames) {
-    const existing = next[name] || { edit: {}, list: {} };
-    const edit = { ...(existing.edit || {}) };
-    const list = { ...(existing.list || {}) };
+    const label = layout.labels?.[name] || humanizeField(name);
+    const existing = next[name] || {};
+    const edit = {
+      label,
+      description: '',
+      placeholder: '',
+      visible: true,
+      editable: true,
+      ...(existing.edit || {}),
+    };
+    const list = {
+      label,
+      searchable: isSearchable(contentType, name),
+      sortable: isSortable(contentType, name),
+      ...(existing.list || {}),
+    };
 
     if (layout.labels?.[name]) {
       edit.label = layout.labels[name];
@@ -378,6 +401,37 @@ function buildMetadatas(current, layout) {
   }
 
   return next;
+}
+
+function humanizeField(name) {
+  return name
+    .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+    .replace(/[-_]/g, ' ')
+    .replace(/\b\w/g, (letter) => letter.toUpperCase());
+}
+
+function isSearchable(contentType, name) {
+  const type = contentType.attributes?.[name]?.type;
+  return ['string', 'text', 'email', 'uid', 'enumeration'].includes(type);
+}
+
+function isSortable(contentType, name) {
+  if (['id', 'createdAt', 'updatedAt', 'publishedAt'].includes(name)) return true;
+  const type = contentType.attributes?.[name]?.type;
+  return [
+    'string',
+    'email',
+    'uid',
+    'enumeration',
+    'integer',
+    'biginteger',
+    'float',
+    'decimal',
+    'date',
+    'datetime',
+    'time',
+    'boolean',
+  ].includes(type);
 }
 
 module.exports = { configureOperatorLayouts };
