@@ -73,8 +73,8 @@ const FOCUS_ROUTES = [
 ] as const
 
 export default function InfraTopology() {
-  const { ref, active, reducedMotion } = useOperationalActivity<HTMLDivElement>(0.08)
-  const isActive = active && !reducedMotion
+  const { ref, reducedMotion } = useOperationalActivity<HTMLDivElement>(0.08)
+  const isActive = !reducedMotion
 
   return (
     <div
