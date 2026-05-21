@@ -24,6 +24,7 @@ R2_BUCKET=velkor-media
 R2_PUBLIC_URL=https://media.velkor.com.mx
 R2_REGION=auto
 UPLOAD_SIZE_LIMIT=12582912
+BLOG_PREVIEW_SECRET=<shared-preview-secret>
 ```
 
 `R2_ENDPOINT` es opcional. Si se define, debe apuntar al endpoint S3 de R2:
@@ -36,6 +37,7 @@ R2_ENDPOINT=https://<account-id>.r2.cloudflarestorage.com
 
 ```env
 NEXT_PUBLIC_MEDIA_URL=https://media.velkor.com.mx
+BLOG_PREVIEW_SECRET=<same-shared-preview-secret-as-api>
 ```
 
 Nunca poner `R2_SECRET_ACCESS_KEY` ni claves privadas como `NEXT_PUBLIC_*`.
@@ -58,6 +60,31 @@ Nunca poner `R2_SECRET_ACCESS_KEY` ni claves privadas como `NEXT_PUBLIC_*`.
 - `Descripcion SEO`: resumen de maximo 180 caracteres.
 - `Autor / responsable`: quien firma o responde por el contenido.
 - `Revision tecnica`: quien valido el contenido antes de publicar.
+
+## Preview Editorial Seguro
+
+Los borradores no deben abrirse desde la URL publica `/blog/<slug>`. Para revision humana se usa una URL privada que coloca una cookie temporal y despues muestra el articulo en modo preview.
+
+URL recomendada para n8n, usando token HMAC por slug:
+
+```text
+https://velkor.com.mx/api/blog-preview?slug=<slug-del-articulo>&token=<hmac-sha256(BLOG_PREVIEW_SECRET, slug)>
+```
+
+El destino final queda en:
+
+```text
+https://velkor.com.mx/blog/preview/<slug-del-articulo>
+```
+
+Reglas operativas:
+
+- `BLOG_PREVIEW_SECRET` debe existir con el mismo valor en `velkor-web` y `velkor-api`.
+- El secreto se guarda como credencial en n8n o en la herramienta editorial; no se pega en documentos, emails ni chats.
+- El token de la URL se calcula como HMAC-SHA256 del `slug` usando `BLOG_PREVIEW_SECRET`; asi no se expone el secreto maestro.
+- La cookie de preview dura 1 hora, es `httpOnly`, y no indexa en buscadores.
+- `Salir de preview` limpia la cookie y regresa al articulo publico.
+- Strapi solo entrega `publicationState=preview` cuando recibe el header interno `x-velkor-preview-secret`.
 
 ## Requisitos Editoriales
 
@@ -88,12 +115,13 @@ Galeria:
 9. Agregar galeria solo si hay evidencia visual aprobada.
 10. Completar `Autor / responsable` y `Revision tecnica`.
 11. Guardar.
-12. Revisar el articulo en `https://velkor.com.mx/blog/<slug>`.
-13. Publicar cuando contenido, imagenes y CTA esten correctos.
+12. Revisar el articulo con la URL privada de preview.
+13. Publicar cuando contenido, imagenes, SEO y CTA esten correctos.
+14. Validar el articulo publico en `https://velkor.com.mx/blog/<slug>`.
 
 ## API Para Crear Posts
 
-Los integradores deben autenticar con API token de Strapi y usar `multipart/form-data` para subir media.
+Los integradores deben autenticar con API token de Strapi y usar `multipart/form-data` para subir media. Para flujos con aprobacion humana, crear el articulo como borrador y mandar la URL de preview al aprobador; publicar solo despues de la aprobacion.
 
 ### 1. Subir imagen
 
@@ -127,7 +155,25 @@ curl -X POST "https://api.velkor.com.mx/api/posts" \
       "authorName": "Velkor Systems",
       "reviewedBy": "Direccion tecnica Velkor",
       "seoTitle": "Reducir riesgo operacional en red multi-sede",
-      "seoDescription": "Checklist para reducir riesgo operativo antes de cambios en red empresarial.",
+      "seoDescription": "Checklist para reducir riesgo operativo antes de cambios en red empresarial."
+    }
+  }'
+```
+
+### 3. Generar liga de aprobacion
+
+```text
+https://velkor.com.mx/api/blog-preview?slug=reducir-riesgo-operacional-red-multi-sede&token=<hmac-sha256(BLOG_PREVIEW_SECRET, reducir-riesgo-operacional-red-multi-sede)>
+```
+
+### 4. Publicar despues de aprobacion
+
+```bash
+curl -X PUT "https://api.velkor.com.mx/api/posts/<POST_ID>" \
+  -H "Authorization: Bearer <STRAPI_API_TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "data": {
       "publishedAt": "2026-05-20T18:00:00.000Z"
     }
   }'

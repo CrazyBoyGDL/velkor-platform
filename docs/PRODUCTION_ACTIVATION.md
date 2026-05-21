@@ -114,6 +114,7 @@ NEXT_PUBLIC_APP_URL=https://velkor.com.mx
 NEXT_PUBLIC_SITE_DOMAIN=velkor.com.mx
 NEXT_PUBLIC_MEDIA_URL=https://media.velkor.com.mx
 STRAPI_URL=http://velkor-api.railway.internal:1337
+BLOG_PREVIEW_SECRET=<shared random secret for CMS draft previews>
 NEXT_PUBLIC_TURNSTILE_SITE_KEY=<Cloudflare Turnstile site key>
 TURNSTILE_SECRET_KEY=<Cloudflare Turnstile secret key>
 ASSESSMENT_WEBHOOK_URL=<n8n/Make/Zapier webhook URL>
@@ -146,6 +147,7 @@ FRONTEND_URL=https://velkor.com.mx,https://www.velkor.com.mx
 PUBLIC_URL=https://api.velkor.com.mx
 API_PUBLIC_URL=https://api.velkor.com.mx
 STRAPI_ADMIN_PATH=/operacion
+BLOG_PREVIEW_SECRET=<same value as velkor-web>
 R2_ACCOUNT_ID=<Cloudflare account id>
 R2_ACCESS_KEY_ID=<R2 access key>
 R2_SECRET_ACCESS_KEY=<R2 secret key>
@@ -157,8 +159,8 @@ UPLOAD_SIZE_LIMIT=12582912
 
 Current Railway drift notes:
 
-- Set on `velkor-web`: `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_APP_URL`, `NEXT_PUBLIC_SITE_DOMAIN`, private `STRAPI_URL`, `NEXT_PUBLIC_PLAUSIBLE_DOMAIN`, `NEXT_PUBLIC_POSTHOG_HOST`, `ASSESSMENT_WEBHOOK_SECRET`.
-- Set on `velkor-api`: `HOST`, `DATABASE_SSL`, `FRONTEND_URL`, `PUBLIC_URL`, `API_PUBLIC_URL`, `STRAPI_ADMIN_PATH`.
+- Set on `velkor-web`: `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_APP_URL`, `NEXT_PUBLIC_SITE_DOMAIN`, private `STRAPI_URL`, `NEXT_PUBLIC_PLAUSIBLE_DOMAIN`, `NEXT_PUBLIC_POSTHOG_HOST`, `ASSESSMENT_WEBHOOK_SECRET`, `BLOG_PREVIEW_SECRET`.
+- Set on `velkor-api`: `HOST`, `DATABASE_SSL`, `FRONTEND_URL`, `PUBLIC_URL`, `API_PUBLIC_URL`, `STRAPI_ADMIN_PATH`, `BLOG_PREVIEW_SECRET`.
 - Still required from providers: `NEXT_PUBLIC_TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY`, `ASSESSMENT_WEBHOOK_URL`, `RESEND_API_KEY`.
 - Still required for persistent CMS media: Cloudflare R2 bucket, `media.velkor.com.mx`, `R2_*` variables on `velkor-api`, and `NEXT_PUBLIC_MEDIA_URL` on `velkor-web`.
 - Manual Railway deploys must be run from the repository root with `railway up --service <service>`, not with `--path-as-root`, because the Railway service metadata already expects `apps/web` and `apps/api` inside the uploaded snapshot.
@@ -180,6 +182,7 @@ The Next.js CSP allows:
 - Turnstile script, frame, and verification calls: `https://challenges.cloudflare.com`
 - Plausible: `https://plausible.io`
 - PostHog host from `NEXT_PUBLIC_POSTHOG_HOST`
+- Cloudflare Browser Insights beacon: `https://static.cloudflareinsights.com` and RUM endpoint `https://cloudflareinsights.com`
 - No Railway public domains in browser image/connect policy
 
 If a new analytics or transactional provider is added, update `apps/web/next.config.js` before enabling the provider script.

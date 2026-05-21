@@ -6,6 +6,8 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 const isProd = process.env.NODE_ENV === 'production';
 const posthogHost = process.env.NEXT_PUBLIC_POSTHOG_HOST || 'https://app.posthog.com';
 const turnstileHost = 'https://challenges.cloudflare.com';
+const cloudflareInsightsHost = 'https://static.cloudflareinsights.com';
+const cloudflareRumHost = 'https://cloudflareinsights.com';
 const mediaUrl = process.env.NEXT_PUBLIC_MEDIA_URL || process.env.MEDIA_PUBLIC_URL || 'https://media.velkor.com.mx';
 const mediaHost = (() => {
   try {
@@ -51,8 +53,8 @@ const nextConfig = {
 
   async headers() {
     const scriptSrc = isProd
-      ? `script-src 'self' 'unsafe-inline' https://plausible.io ${posthogHost} ${turnstileHost}`
-      : `script-src 'self' 'unsafe-inline' 'unsafe-eval' https://plausible.io ${posthogHost} ${turnstileHost}`;
+      ? `script-src 'self' 'unsafe-inline' https://plausible.io ${posthogHost} ${turnstileHost} ${cloudflareInsightsHost}`
+      : `script-src 'self' 'unsafe-inline' 'unsafe-eval' https://plausible.io ${posthogHost} ${turnstileHost} ${cloudflareInsightsHost}`;
 
     return [
       {
@@ -81,7 +83,7 @@ const nextConfig = {
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com",
               `img-src 'self' data: blob: https://velkor.com.mx https://www.velkor.com.mx https://api.velkor.com.mx https://media.velkor.com.mx https://${mediaHost}`,
-              `connect-src 'self' https://plausible.io ${posthogHost} ${turnstileHost}`,
+              `connect-src 'self' https://plausible.io ${posthogHost} ${turnstileHost} ${cloudflareRumHost}`,
               `frame-src 'self' ${turnstileHost}`,
               `child-src ${turnstileHost}`,
               "manifest-src 'self'",

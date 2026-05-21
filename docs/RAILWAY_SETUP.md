@@ -71,6 +71,7 @@ R2_BUCKET=velkor-media
 R2_PUBLIC_URL=https://media.velkor.com.mx
 R2_REGION=auto
 UPLOAD_SIZE_LIMIT=12582912
+BLOG_PREVIEW_SECRET=<shared random secret for draft previews>
 ```
 
 > **Railway reference variables** (e.g. `${{Postgres.PGHOST}}`) are resolved at
@@ -88,6 +89,7 @@ NEXT_PUBLIC_SITE_URL=https://velkor.com.mx
 NEXT_PUBLIC_APP_URL=https://velkor.com.mx
 NEXT_PUBLIC_SITE_DOMAIN=velkor.com.mx
 NEXT_PUBLIC_MEDIA_URL=https://media.velkor.com.mx
+BLOG_PREVIEW_SECRET=<same value as velkor-api>
 
 # ── Optional features (leave blank to disable) ───────────────
 NEXT_PUBLIC_WHATSAPP_NUMBER=
@@ -114,6 +116,7 @@ NEXT_PUBLIC_CALENDLY_URL=
 | `DATABASE_PASSWORD` | ✅ | Database password |
 | `DATABASE_SSL` | ✅ | `true` on Railway |
 | `FRONTEND_URL` | ✅ | Next.js URL for CORS allow-list |
+| `BLOG_PREVIEW_SECRET` | ✅ | Shared secret that allows private draft preview from the web app |
 | `R2_ACCOUNT_ID` | production | Cloudflare account id for R2 S3 API |
 | `R2_ACCESS_KEY_ID` | production | R2 token access key |
 | `R2_SECRET_ACCESS_KEY` | production | R2 token secret key |
@@ -130,6 +133,7 @@ NEXT_PUBLIC_CALENDLY_URL=
 | Variable | Required | Description |
 |----------|----------|-------------|
 | `STRAPI_URL` | ✅ | Private Strapi base URL (not browser-exposed) |
+| `BLOG_PREVIEW_SECRET` | recommended | Enables secure preview URLs for draft posts |
 | `NODE_ENV` | — | Set to `production` |
 | `NEXT_PUBLIC_WHATSAPP_NUMBER` | optional | Enables WhatsApp CTA (e.g. `521XXXXXXXXXX`) |
 | `NEXT_PUBLIC_MEDIA_URL` | production | Public media origin used by Next Image |

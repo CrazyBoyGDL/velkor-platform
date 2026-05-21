@@ -36,6 +36,7 @@ check_required DATABASE_HOST
 check_required DATABASE_NAME
 check_required DATABASE_USERNAME
 check_required DATABASE_PASSWORD
+check_required BLOG_PREVIEW_SECRET
 
 if [ -n "$MISSING_VARS" ]; then
   echo ""
