@@ -44,8 +44,12 @@ export default function MobileConsultiveCTA() {
       })
     }
 
+    let current = false
     const update = rafThrottle(() => {
-      setVisible(window.scrollY > 520 && !isReadingPrioritySection())
+      const next = window.scrollY > 520 && !isReadingPrioritySection()
+      if (next === current) return
+      current = next
+      setVisible(next)
     })
     update()
     window.addEventListener('scroll', update, { passive: true })

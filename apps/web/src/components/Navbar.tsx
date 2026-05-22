@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import Logo from './Logo'
 import ThemeToggle from './ThemeToggle'
+import { rafThrottle } from '@/lib/motion/operationalMotion'
 
 const NAV = [
   { href: '/',           label: 'Inicio',    icon: true },
@@ -23,7 +24,16 @@ export default function Navbar() {
   const pathname          = usePathname()
 
   useEffect(() => {
-    const onScroll = () => setSolid(window.scrollY > 40)
+    let current = window.scrollY > 40
+    setSolid(current)
+
+    const onScroll = rafThrottle(() => {
+      const next = window.scrollY > 40
+      if (next === current) return
+      current = next
+      setSolid(next)
+    })
+
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])

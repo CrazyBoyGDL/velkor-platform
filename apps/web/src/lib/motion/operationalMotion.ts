@@ -12,6 +12,7 @@ import {
 
 export const OPERATIONAL_EASE: [number, number, number, number] = [0.22, 1, 0.36, 1]
 export const LINEAR_EASE = 'linear'
+export const LOW_POWER_MOTION_QUERY = '(prefers-reduced-motion: reduce), (max-width: 767px), (pointer: coarse)'
 
 export type RevealDirection = 'up' | 'down' | 'left' | 'right' | 'center'
 
@@ -145,6 +146,20 @@ export function rafThrottle<T extends (...args: any[]) => void>(fn: T): T {
 
 export function useOperationalReducedMotion(): boolean {
   return Boolean(useReducedMotion())
+}
+
+export function useLowPowerMotion(defaultValue = true): boolean {
+  const [lowPower, setLowPower] = useState(defaultValue)
+
+  useEffect(() => {
+    const query = window.matchMedia(LOW_POWER_MOTION_QUERY)
+    const update = () => setLowPower(query.matches)
+    update()
+    query.addEventListener('change', update)
+    return () => query.removeEventListener('change', update)
+  }, [])
+
+  return lowPower
 }
 
 export function useOptimizedDpr(max = 1.6): number {

@@ -9,6 +9,7 @@ import TrustValidationLayer from '@/components/TrustValidationLayer'
 import HumanConsultiveLayer from '@/components/HumanConsultiveLayer'
 import { trackCTA } from '@/components/Analytics'
 import { EASE, reveal as fadeUp, enter as heroUp } from '@/lib/motion'
+import { useLowPowerMotion } from '@/lib/motion/operationalMotion'
 
 export type FeaturedCaseSummary = {
   sector: string
@@ -118,6 +119,8 @@ const ENTERPRISE_PROMISES = [
 ] as const
 
 function Hero() {
+  const lowPowerMotion = useLowPowerMotion(true)
+
   return (
     <section
       className="relative flex items-start lg:items-center overflow-hidden hero-depth-stage spatial-hero-field"
@@ -128,35 +131,37 @@ function Hero() {
         <div className="absolute bottom-0 left-0 right-0 h-56 hero-bottom-fade" />
       </div>
 
-      <motion.div
-        className="hero-topology-plane absolute inset-0 hidden lg:flex items-center pointer-events-none"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 0.94 }}
-        transition={{ duration: 0.45, ease: EASE, delay: 0.1 }}
-      >
+      {!lowPowerMotion && (
         <motion.div
-          className="hero-topology-field"
-          animate={{ y: [0, -2, 0], x: [0, 1, 0] }}
-          transition={{ repeat: Infinity, duration: 36, ease: 'easeInOut' }}
+          className="hero-topology-plane absolute inset-0 hidden lg:flex items-center pointer-events-none"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 0.94 }}
+          transition={{ duration: 0.45, ease: EASE, delay: 0.1 }}
         >
-          <InfraTopology />
+          <motion.div
+            className="hero-topology-field"
+            animate={{ y: [0, -2, 0], x: [0, 1, 0] }}
+            transition={{ repeat: Infinity, duration: 36, ease: 'easeInOut' }}
+          >
+            <InfraTopology />
+          </motion.div>
+          <div className="hero-evidence-summary">
+            <div className="hero-evidence-heading">
+              <span>Evidencia operativa</span>
+              <strong>estado sincronizado</strong>
+            </div>
+            <div className="hero-evidence-grid">
+              {HERO_EVIDENCE.map(item => (
+                <div key={item.label} className="hero-evidence-item">
+                  <span>{item.label}</span>
+                  <strong>{item.value}</strong>
+                  <em>{item.meta}</em>
+                </div>
+              ))}
+            </div>
+          </div>
         </motion.div>
-        <div className="hero-evidence-summary">
-          <div className="hero-evidence-heading">
-            <span>Evidencia operativa</span>
-            <strong>estado sincronizado</strong>
-          </div>
-          <div className="hero-evidence-grid">
-            {HERO_EVIDENCE.map(item => (
-              <div key={item.label} className="hero-evidence-item">
-                <span>{item.label}</span>
-                <strong>{item.value}</strong>
-                <em>{item.meta}</em>
-              </div>
-            ))}
-          </div>
-        </div>
-      </motion.div>
+      )}
 
       <div className="hero-content-plane relative z-10 max-w-7xl mx-auto px-4 sm:px-8 w-full">
         <div className="lg:max-w-[41rem] py-14 sm:py-[4.75rem] lg:py-24">

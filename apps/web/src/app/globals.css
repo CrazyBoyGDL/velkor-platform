@@ -6552,3 +6552,115 @@ html.light::-webkit-scrollbar-thumb { background: #d1d1d6; }
     display: none;
   }
 }
+
+/* Mobile performance budget: keep continuity, remove nonessential live layers. */
+@media (max-width: 767px), (pointer: coarse) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  body {
+    background-color: #0b131d;
+  }
+
+  .home-section,
+  .continuity-section,
+  .human-consultive-section {
+    content-visibility: auto;
+    contain-intrinsic-size: 680px;
+  }
+
+  .hero-depth-stage,
+  .home-decision-section {
+    content-visibility: visible;
+  }
+
+  .operational-atmosphere,
+  .operational-atmosphere * {
+    animation: none !important;
+    transition-duration: 0.12s !important;
+  }
+
+  .operational-atmosphere {
+    background:
+      radial-gradient(circle at 72% 18%, rgba(var(--focus-rgb),0.070), transparent 18rem),
+      radial-gradient(circle at 18% 48%, rgba(var(--focus-secondary-rgb),0.038), transparent 17rem),
+      linear-gradient(180deg, #0b131d 0%, #08111b 58%, #0a111a 100%);
+  }
+
+  .operational-atmosphere__field {
+    inset: -8% -10%;
+    opacity: 0.18 !important;
+    filter: none !important;
+    transform: none !important;
+  }
+
+  .operational-atmosphere__mesh {
+    inset: 0;
+    opacity: 0.10 !important;
+    background-size: 88px 88px, 88px 88px, auto;
+    transform: none !important;
+  }
+
+  .operational-atmosphere__core {
+    width: min(18rem, 74vw);
+    opacity: 0.14 !important;
+    filter: none !important;
+    transform: translate3d(-50%, -50%, 0) !important;
+  }
+
+  .operational-atmosphere__spine {
+    opacity: 0.18 !important;
+  }
+
+  .operational-atmosphere__core-ring,
+  .operational-atmosphere__focus-corridor,
+  .operational-atmosphere__corridor,
+  .operational-atmosphere__routes,
+  .operational-atmosphere__nodes,
+  .operational-atmosphere__signal-field,
+  .operational-atmosphere__telemetry,
+  .operational-atmosphere__annotations,
+  .spatial-field-system,
+  .hero-topology-plane {
+    display: none !important;
+  }
+
+  .velkor-brand-route,
+  .velkor-brand-flow,
+  .velkor-brand-node,
+  .velkor-brand-core,
+  .velkor-brand-core-ring,
+  .velkor-brand-scan,
+  .velkor-brand-arrow,
+  .velkor-brand-control-plane,
+  .velkor-brand-sync,
+  .velkor-brand-observe,
+  .velkor-brand-direction,
+  .section-flow-bridge::before,
+  .continuity-section::after,
+  .hero-evidence-item::before,
+  .hero-evidence-heading strong::before,
+  .hero-operational-state i,
+  .enterprise-assurance-map,
+  .enterprise-assurance-route::after,
+  .enterprise-assurance-node::before,
+  .adaptive-cta::before,
+  .adaptive-cta::after {
+    animation: none !important;
+  }
+
+  .velkor-brand-route,
+  .velkor-brand-flow,
+  .velkor-brand-node,
+  .velkor-brand-core,
+  .velkor-brand-core-ring,
+  .velkor-brand-scan {
+    transition: none !important;
+  }
+
+  .section-flow-bridge::before,
+  .continuity-section::after {
+    opacity: 0.12;
+  }
+}

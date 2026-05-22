@@ -3,7 +3,7 @@
 import { useEffect, useMemo } from 'react'
 import type { CSSProperties } from 'react'
 import { usePathname } from 'next/navigation'
-import { rafThrottle } from '@/lib/motion/operationalMotion'
+import { rafThrottle, useLowPowerMotion } from '@/lib/motion/operationalMotion'
 import { applyCinematicVars, CINEMATIC_TIMING, cinematicSeconds, getFocusProfile } from '@/lib/motion/operationalCinematics'
 
 const ROUTES = [
@@ -39,6 +39,7 @@ const SIGNAL_POINTS = [
 export default function OperationalAtmosphere() {
   const pathname = usePathname()
   const profile = useMemo(() => getFocusProfile(pathname), [pathname])
+  const lowPowerMotion = useLowPowerMotion(true)
   const atmosphereStyle = useMemo(() => ({
     '--focus-core-x': profile.coreX,
     '--focus-core-y': profile.coreY,
@@ -55,7 +56,6 @@ export default function OperationalAtmosphere() {
 
   useEffect(() => {
     const root = document.documentElement
-    const media = window.matchMedia('(prefers-reduced-motion: reduce)')
     let lastRegion = ''
     let lastFlowRegion = ''
 
@@ -118,8 +118,10 @@ export default function OperationalAtmosphere() {
     setInitialLight()
     setScrollState()
 
-    if (media.matches) {
-      root.dataset.atmoMotion = 'reduced'
+    if (lowPowerMotion) {
+      root.dataset.atmoMotion = 'lite'
+      root.style.setProperty('--scroll-velocity', '0')
+      root.style.setProperty('--scroll-direction', '0')
       return undefined
     }
 
@@ -153,13 +155,25 @@ export default function OperationalAtmosphere() {
       window.removeEventListener('resize', onResize)
       document.removeEventListener('visibilitychange', onVisibility)
     }
-  }, [profile])
+  }, [profile, lowPowerMotion])
 
   return (
-    <div className="operational-atmosphere" data-focus-core={profile.id} style={atmosphereStyle} aria-hidden="true">
+    <div
+      className={`operational-atmosphere${lowPowerMotion ? ' operational-atmosphere--lite' : ''}`}
+      data-focus-core={profile.id}
+      style={atmosphereStyle}
+      aria-hidden="true"
+    >
       <div className="operational-atmosphere__field" />
       <div className="operational-atmosphere__mesh" />
       <div className="operational-atmosphere__core" />
+      {lowPowerMotion ? (
+        <>
+          <div className="operational-atmosphere__falloff" />
+          <div className="operational-atmosphere__spine" />
+        </>
+      ) : (
+        <>
       <div className="operational-atmosphere__core-ring" />
       <div className="operational-atmosphere__focus-corridor" />
       <div className="operational-atmosphere__corridor operational-atmosphere__corridor--primary" />
@@ -235,6 +249,8 @@ export default function OperationalAtmosphere() {
       </div>
       <div className="operational-atmosphere__falloff" />
       <div className="operational-atmosphere__spine" />
+        </>
+      )}
     </div>
   )
 }

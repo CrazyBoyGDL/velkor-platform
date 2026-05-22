@@ -5,6 +5,7 @@ import type { CSSProperties } from 'react'
 import { usePathname } from 'next/navigation'
 import { trackEvent } from '@/components/Analytics'
 import { Events } from '@/lib/analyticsEvents'
+import { rafThrottle } from '@/lib/motion/operationalMotion'
 
 type StateItem = {
   label: string
@@ -47,7 +48,7 @@ export function VisualIntelligenceTracker({ page }: { page?: string }) {
       return Math.max(0, Math.min(100, Math.round((el.scrollTop / total) * 100)))
     }
 
-    const onScroll = () => {
+    const onScroll = rafThrottle(() => {
       const currentDepth = depth()
       maxDepth.current = Math.max(maxDepth.current, currentDepth)
       for (const threshold of [25, 50, 75, 90]) {
@@ -62,7 +63,7 @@ export function VisualIntelligenceTracker({ page }: { page?: string }) {
           })
         }
       }
-    }
+    })
 
     const observer = new IntersectionObserver(
       entries => {

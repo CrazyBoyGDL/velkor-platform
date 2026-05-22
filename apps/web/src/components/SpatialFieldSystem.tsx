@@ -3,6 +3,7 @@
 import { useMemo } from 'react'
 import type { CSSProperties } from 'react'
 import { usePathname } from 'next/navigation'
+import { useLowPowerMotion } from '@/lib/motion/operationalMotion'
 import { getFocusProfile, SPATIAL_HORIZON_BY_PROFILE } from '@/lib/motion/operationalCinematics'
 
 const FIELD_ROUTES = [
@@ -24,6 +25,7 @@ const FIELD_NODES = [
 export default function SpatialFieldSystem() {
   const pathname = usePathname()
   const profile = useMemo(() => getFocusProfile(pathname), [pathname])
+  const lowPowerMotion = useLowPowerMotion(true)
   const style = useMemo(() => ({
     '--spatial-core-x': profile.coreX,
     '--spatial-core-y': profile.coreY,
@@ -33,6 +35,8 @@ export default function SpatialFieldSystem() {
     '--spatial-tilt': profile.corridorAngle,
     '--spatial-horizon-y': SPATIAL_HORIZON_BY_PROFILE[profile.id],
   } as CSSProperties), [profile])
+
+  if (lowPowerMotion) return null
 
   return (
     <div className="spatial-field-system" data-spatial-field={profile.id} style={style} aria-hidden="true">
