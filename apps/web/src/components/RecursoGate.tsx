@@ -1,7 +1,8 @@
 'use client'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { trackDownload, trackEvent } from '@/components/Analytics'
 import { Events } from '@/lib/analyticsEvents'
+import TurnstileWidget, { isTurnstileEnabled } from '@/components/TurnstileWidget'
 
 type Section = {
   title: string
@@ -23,26 +24,62 @@ type Status = 'idle' | 'loading' | 'success' | 'error'
 export default function RecursoGate({
   slug, title, description, hex, includes, content, ctaLabel = 'Acceder al recurso gratuitamente',
 }: Props) {
+  const renderedAtRef = useRef(Date.now())
   const [name, setName]       = useState('')
   const [email, setEmail]     = useState('')
   const [company, setCompany] = useState('')
+  const [hp, setHp]           = useState('')
   const [status, setStatus]   = useState<Status>('idle')
+  const [errorMsg, setErrorMsg] = useState('')
+  const [turnstileToken, setTurnstileToken] = useState('')
+  const [turnstileResetSignal, setTurnstileResetSignal] = useState(0)
+  const turnstileRequired = isTurnstileEnabled()
+
+  useEffect(() => {
+    if (turnstileToken && status === 'error' && errorMsg === 'Confirma la verificación anti-abuso antes de continuar.') {
+      setStatus('idle')
+      setErrorMsg('')
+    }
+  }, [errorMsg, status, turnstileToken])
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (turnstileRequired && !turnstileToken) {
+      setStatus('error')
+      setErrorMsg('Confirma la verificación anti-abuso antes de continuar.')
+      trackEvent(Events.TurnstileError, { action: 'resource', reason: 'missing-token' })
+      return
+    }
+
     setStatus('loading')
+    setErrorMsg('')
     try {
       const res = await fetch('/api/recurso-lead', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, company, resourceSlug: slug }),
+        body: JSON.stringify({
+          name,
+          email,
+          company,
+          resourceSlug: slug,
+          _hp: hp,
+          _ts: turnstileToken,
+          _elapsedMs: Date.now() - renderedAtRef.current,
+        }),
       })
-      if (!res.ok) { setStatus('error'); return }
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({})) as { error?: string }
+        setErrorMsg(data.error || 'No se pudo procesar. Inténtalo de nuevo o escríbenos directamente.')
+        setTurnstileResetSignal(signal => signal + 1)
+        setStatus('error')
+        return
+      }
       setStatus('success')
       trackEvent(Events.ResourceLeadSubmitted, { recurso: slug })
       trackDownload(title, 'resource', `recurso-${slug}`, true)
     } catch {
       setStatus('error')
+      setErrorMsg('No se pudo procesar. Inténtalo de nuevo o escríbenos directamente.')
     }
   }
 
@@ -105,6 +142,16 @@ export default function RecursoGate({
           </div>
 
           <form onSubmit={submit} className="space-y-4">
+            <input
+              type="text"
+              name="_hp"
+              tabIndex={-1}
+              autoComplete="off"
+              value={hp}
+              onChange={e => setHp(e.target.value)}
+              className="sr-only"
+              aria-hidden="true"
+            />
             {[
               { key: 'name',    label: 'Nombre completo',   type: 'text',  value: name,    setter: setName,    placeholder: 'Juan Pérez',        req: true },
               { key: 'email',   label: 'Correo empresarial', type: 'email', value: email,   setter: setEmail,   placeholder: 'juan@empresa.com',  req: true },
@@ -123,15 +170,23 @@ export default function RecursoGate({
               </div>
             ))}
 
+            <TurnstileWidget
+              action="resource"
+              onTokenChange={setTurnstileToken}
+              resetSignal={turnstileResetSignal}
+              verificationHelp="Protege la descarga contra envíos automatizados."
+              verifiedMessage="Verificación completada. Puedes acceder al recurso."
+            />
+
             {status === 'error' && (
               <p className="text-red-400 text-xs">
-                No se pudo procesar. Inténtalo de nuevo o escríbenos directamente.
+                {errorMsg || 'No se pudo procesar. Inténtalo de nuevo o escríbenos directamente.'}
               </p>
             )}
 
             <button
               type="submit"
-              disabled={status === 'loading'}
+              disabled={status === 'loading' || (turnstileRequired && !turnstileToken)}
               className="w-full btn-amber py-3.5 text-[15px] disabled:opacity-50 disabled:cursor-not-allowed"
               style={status !== 'loading' ? { background: `linear-gradient(135deg, ${hex}, ${hex}cc)` } : undefined}
             >

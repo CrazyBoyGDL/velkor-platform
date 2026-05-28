@@ -1,10 +1,11 @@
 'use client'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { trackCTA, trackEvent } from '@/components/Analytics'
 import { Events } from '@/lib/analyticsEvents'
 import { getWhatsAppHref } from '@/lib/consultiveCta'
 import { CONTACT } from '@/lib/config'
+import TurnstileWidget, { isTurnstileEnabled } from '@/components/TurnstileWidget'
 
 const SERVICES = [
   'Redes & Ciberseguridad',
@@ -35,6 +36,7 @@ type ContactFieldConfig = {
 }
 
 export default function ContactForm() {
+  const renderedAtRef = useRef(Date.now())
   const [name,    setName]    = useState('')
   const [email,   setEmail]   = useState('')
   const [company, setCompany] = useState('')
@@ -45,6 +47,9 @@ export default function ContactForm() {
   const [status,  setStatus]  = useState<Status>('idle')
   const [errorMsg, setErrorMsg] = useState('')
   const [started, setStarted] = useState(false)
+  const [turnstileToken, setTurnstileToken] = useState('')
+  const [turnstileResetSignal, setTurnstileResetSignal] = useState(0)
+  const turnstileRequired = isTurnstileEnabled()
   const contactFields: ContactFieldConfig[] = [
     {
       key: 'name',
@@ -108,20 +113,45 @@ export default function ContactForm() {
     trackEvent(Events.ContactFormStarted, { page: 'contacto' })
   }
 
+  useEffect(() => {
+    if (turnstileToken && status === 'error' && errorMsg === 'Confirma la verificación anti-abuso antes de enviar.') {
+      setStatus('idle')
+      setErrorMsg('')
+    }
+  }, [errorMsg, status, turnstileToken])
+
   const submit = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (turnstileRequired && !turnstileToken) {
+      setStatus('error')
+      setErrorMsg('Confirma la verificación anti-abuso antes de enviar.')
+      trackEvent(Events.TurnstileError, { action: 'contact', reason: 'missing-token' })
+      return
+    }
+
     setStatus('loading')
     setErrorMsg('')
     try {
       const res = await fetch('/api/contacto', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, company, phone, service, message, _hp: hp }),
+        body: JSON.stringify({
+          name,
+          email,
+          company,
+          phone,
+          service,
+          message,
+          _hp: hp,
+          _ts: turnstileToken,
+          _elapsedMs: Date.now() - renderedAtRef.current,
+        }),
       })
       const data = await res.json().catch(() => ({})) as { error?: string; fallbackUsed?: boolean; leadStored?: boolean; notified?: boolean }
       if (!res.ok) {
         setErrorMsg(data.error || 'No se pudo enviar. Inténtalo de nuevo o contáctanos por WhatsApp.')
         setStatus('error')
+        setTurnstileResetSignal(signal => signal + 1)
         return
       }
       setStatus(data.fallbackUsed ? 'fallback' : 'done')
@@ -261,6 +291,14 @@ export default function ContactForm() {
           />
         </div>
 
+        <TurnstileWidget
+          action="contact"
+          onTokenChange={setTurnstileToken}
+          resetSignal={turnstileResetSignal}
+          verificationHelp="Protege este formulario contra envíos automatizados."
+          verifiedMessage="Verificación completada. Puedes enviar el mensaje."
+        />
+
         {status === 'error' && (
           <p id="contact-error" role="alert" className="text-red-400 text-xs text-center">
             {errorMsg}
@@ -269,7 +307,7 @@ export default function ContactForm() {
 
         <button
           type="submit"
-          disabled={status === 'loading'}
+          disabled={status === 'loading' || (turnstileRequired && !turnstileToken)}
           className="w-full btn-amber py-3.5 text-[15px] disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {status === 'loading' ? 'Enviando...' : 'Enviar mensaje →'}

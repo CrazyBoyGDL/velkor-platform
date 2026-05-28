@@ -5,7 +5,14 @@ import { classifyLead }              from '@/lib/classification'
 import { assignWorkflow, buildStrapiLeadPayload } from '@/lib/crm'
 import { dispatchWebhook, buildAssessmentCompletedPayload } from '@/lib/webhook'
 import { assessmentLeadEmail, sendOperationalEmail } from '@/lib/emailDelivery'
-import { getRequestIp, isHoneypotFilled, isDisposableEmail, verifyTurnstile, logAuditEvent } from '@/lib/security'
+import {
+  getRequestIp,
+  isHoneypotFilled,
+  isDisposableEmail,
+  verifyTurnstile,
+  logAuditEvent,
+  validateTrustedFormRequest,
+} from '@/lib/security'
 import { createMemoryRateLimiter } from '@/lib/rateLimit'
 import { sanitizePlainText, sanitizePlainTextArray } from '@/lib/sanitize'
 
@@ -31,6 +38,17 @@ function sanArr(v: unknown, maxItems: number, maxLen: number): string[] {
 
 export async function POST(req: NextRequest) {
   const ip = getRequestIp(req)
+  const trustedRequest = validateTrustedFormRequest(req)
+  if (!trustedRequest.ok) {
+    logAuditEvent({ type: 'rejection', ip, reason: `assessment:${trustedRequest.reason}`, timestamp: new Date().toISOString() })
+    return NextResponse.json(
+      { error: 'Solicitud no permitida.' },
+      {
+        status: 403,
+        headers: { 'Vary': 'Origin, Sec-Fetch-Site, Sec-Fetch-Mode' },
+      }
+    )
+  }
 
   const rateLimit = checkRateLimit(ip)
   if (rateLimit.limited) {
@@ -55,7 +73,7 @@ export async function POST(req: NextRequest) {
   }
 
   // ── Turnstile (optional in dev, required in production when secret is set) ──
-  const turnstile = await verifyTurnstile(san(body._ts, 2048), ip)
+  const turnstile = await verifyTurnstile(san(body._ts, 2048), ip, { expectedAction: 'assessment' })
   if (!turnstile.success) {
     logAuditEvent({
       type: 'turnstile-failed',

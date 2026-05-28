@@ -41,9 +41,17 @@ export function isTurnstileEnabled(): boolean {
 export default function TurnstileWidget({
   onTokenChange,
   resetSignal,
+  action = 'assessment',
+  verificationLabel = 'Verificación anti-abuso',
+  verificationHelp = 'Protección Cloudflare Turnstile activa para producción.',
+  verifiedMessage = 'Verificación completada. Puedes continuar.',
 }: {
   onTokenChange: (token: string) => void
   resetSignal: number
+  action?: 'assessment' | 'contact' | 'resource'
+  verificationLabel?: string
+  verificationHelp?: string
+  verifiedMessage?: string
 }) {
   const containerRef = useRef<HTMLDivElement>(null)
   const widgetIdRef = useRef<string | null>(null)
@@ -66,31 +74,31 @@ export default function TurnstileWidget({
       sitekey: TURNSTILE_SITE_KEY,
       theme:   'dark',
       size:    'flexible',
-      action:  'assessment',
+      action,
       callback(token) {
         setStatus('verified')
         onTokenChange(token)
-        trackEvent(Events.TurnstileVerified, { action: 'assessment' })
+        trackEvent(Events.TurnstileVerified, { action })
       },
       'expired-callback'() {
         setStatus('expired')
         clearToken()
-        trackEvent(Events.TurnstileExpired, { action: 'assessment' })
+        trackEvent(Events.TurnstileExpired, { action })
       },
       'error-callback'(code) {
         setStatus('error')
         clearToken()
-        trackEvent(Events.TurnstileError, { action: 'assessment', reason: code ?? 'widget-error' })
+        trackEvent(Events.TurnstileError, { action, reason: code ?? 'widget-error' })
       },
       'timeout-callback'() {
         setStatus('expired')
         clearToken()
-        trackEvent(Events.TurnstileExpired, { action: 'assessment', reason: 'timeout' })
+        trackEvent(Events.TurnstileExpired, { action, reason: 'timeout' })
       },
     })
 
     setStatus('ready')
-  }, [clearToken, onTokenChange])
+  }, [action, clearToken, onTokenChange])
 
   useEffect(() => {
     if (!TURNSTILE_SITE_KEY) {
@@ -108,7 +116,7 @@ export default function TurnstileWidget({
     loadTimerRef.current = setTimeout(() => {
       if (!window.turnstile) {
         setStatus('network-error')
-        trackEvent(Events.TurnstileError, { action: 'assessment', reason: 'script-timeout' })
+        trackEvent(Events.TurnstileError, { action, reason: 'script-timeout' })
       }
     }, 8000)
 
@@ -116,7 +124,7 @@ export default function TurnstileWidget({
       delete window.onVelkorTurnstileLoad
       if (loadTimerRef.current) clearTimeout(loadTimerRef.current)
     }
-  }, [clearToken])
+  }, [action, clearToken])
 
   useEffect(() => {
     if (scriptReady) renderWidget()
@@ -164,14 +172,14 @@ export default function TurnstileWidget({
         onError={() => {
           setStatus('network-error')
           clearToken()
-          trackEvent(Events.TurnstileError, { action: 'assessment', reason: 'script-load-failed' })
+          trackEvent(Events.TurnstileError, { action, reason: 'script-load-failed' })
         }}
       />
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <div className="label text-[9.5px] mb-1">Verificación anti-abuso</div>
+          <div className="label text-[9.5px] mb-1">{verificationLabel}</div>
           <p className="text-[11px] text-zinc-600 leading-snug">
-            Protección Cloudflare Turnstile activa para producción.
+            {verificationHelp}
           </p>
         </div>
         <div className="w-full sm:w-auto">
@@ -184,7 +192,7 @@ export default function TurnstileWidget({
         </div>
       </div>
       {status === 'verified' && (
-        <p className="text-[11px] text-[#7aa88d] mt-2">Verificación completada. Puedes generar la evaluación.</p>
+        <p className="text-[11px] text-[#7aa88d] mt-2">{verifiedMessage}</p>
       )}
       {status === 'expired' && (
         <p className="text-[11px] text-amber mt-2">La verificación expiró. Confírmala nuevamente para enviar.</p>

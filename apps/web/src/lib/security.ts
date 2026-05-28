@@ -1,7 +1,8 @@
 import { createHash } from 'node:crypto'
 
 // ─── Velkor Security Utilities ───────────────────────────────────────────────
-// Honeypot detection, disposable email filtering, Turnstile verification.
+// Honeypot detection, request provenance, disposable email filtering, spam scoring,
+// Turnstile verification.
 // All checks are layered — any single check can be bypassed, but combination
 // makes automated abuse economically unviable.
 
@@ -50,13 +51,134 @@ export function getRequestIp(req: { headers: Headers }): string {
   )
 }
 
+// ─── Public form request provenance ─────────────────────────────────────────
+// Open lead endpoints should only accept browser submissions from our own site.
+// This reduces direct script abuse before more expensive CRM/email work runs.
+
+const DEFAULT_FORM_HOSTNAMES = [
+  'velkor.com.mx',
+  'www.velkor.com.mx',
+]
+
+function allowedFormOrigins(): Set<string> {
+  const configuredHosts = (process.env.TURNSTILE_ALLOWED_HOSTNAMES || DEFAULT_FORM_HOSTNAMES.join(','))
+    .split(',')
+    .map(host => host.trim().toLowerCase())
+    .filter(Boolean)
+
+  const origins = new Set<string>()
+  for (const host of configuredHosts) {
+    origins.add(`https://${host}`)
+  }
+
+  if (process.env.NODE_ENV !== 'production') {
+    origins.add('http://localhost:3000')
+    origins.add('http://localhost:3100')
+    origins.add('http://127.0.0.1:3000')
+    origins.add('http://127.0.0.1:3100')
+  }
+
+  return origins
+}
+
+export function validateTrustedFormRequest(req: { headers: Headers }): { ok: true } | { ok: false; reason: string } {
+  const origin = req.headers.get('origin')?.trim().toLowerCase()
+  const secFetchSite = req.headers.get('sec-fetch-site')?.trim().toLowerCase()
+  const secFetchMode = req.headers.get('sec-fetch-mode')?.trim().toLowerCase()
+
+  if (origin && !allowedFormOrigins().has(origin)) {
+    return { ok: false, reason: 'origin-mismatch' }
+  }
+
+  if (secFetchSite && !['same-origin', 'same-site', 'none'].includes(secFetchSite)) {
+    return { ok: false, reason: `sec-fetch-site:${secFetchSite}` }
+  }
+
+  if (secFetchMode && !['cors', 'same-origin', 'navigate'].includes(secFetchMode)) {
+    return { ok: false, reason: `sec-fetch-mode:${secFetchMode}` }
+  }
+
+  if (process.env.NODE_ENV === 'production' && !origin && !secFetchSite) {
+    return { ok: false, reason: 'missing-browser-provenance' }
+  }
+
+  return { ok: true }
+}
+
+// ─── Lightweight lead spam scoring ──────────────────────────────────────────
+// This is intentionally conservative: high-confidence marketing/link spam only.
+
+const SPAM_TERMS = [
+  'backlink', 'backlinks', 'link building', 'guest post', 'guest posting',
+  'seo services', 'rank higher', 'search engine ranking', 'domain authority',
+  'casino', 'betting', 'gambling', 'crypto', 'bitcoin', 'forex', 'nft',
+  'loan', 'payday', 'viagra', 'cialis', 'porn', 'escort', 'adult traffic',
+  'telegram', 'whatsapp marketing', 'bulk email', 'email list',
+]
+
+const URL_RE = /\b(?:https?:\/\/|www\.|[a-z0-9-]+\.(?:com|net|org|io|xyz|ru|cn|top|shop|site|online|info|biz)\b)/gi
+const HTML_TAG_RE = /<\s*\/?\s*[a-z][^>]*>/i
+
+export function scoreLeadSpam(input: {
+  name?: string
+  email?: string
+  company?: string
+  message?: string
+  service?: string
+}): { spam: boolean; score: number; reasons: string[] } {
+  const values = [
+    input.name ?? '',
+    input.email ?? '',
+    input.company ?? '',
+    input.message ?? '',
+    input.service ?? '',
+  ]
+  const combined = values.join('\n').toLowerCase()
+  const message = (input.message ?? '').toLowerCase()
+  const reasons: string[] = []
+  let score = 0
+
+  const urls = combined.match(URL_RE) ?? []
+  if (urls.length >= 1) {
+    score += urls.length >= 2 ? 5 : 3
+    reasons.push(`urls:${urls.length}`)
+  }
+
+  if (HTML_TAG_RE.test(combined)) {
+    score += 3
+    reasons.push('html-tags')
+  }
+
+  const matchedTerms = SPAM_TERMS.filter(term => combined.includes(term))
+  if (matchedTerms.length > 0) {
+    score += Math.min(6, matchedTerms.length * 2)
+    reasons.push(`terms:${matchedTerms.slice(0, 3).join('|')}`)
+  }
+
+  if (/[\u0400-\u04ff]/.test(combined) && !/(fortinet|microsoft|intune|entra|red|firewall)/i.test(combined)) {
+    score += 2
+    reasons.push('unexpected-script')
+  }
+
+  if (message.length > 0 && message.length < 12 && urls.length > 0) {
+    score += 2
+    reasons.push('short-link-message')
+  }
+
+  return {
+    spam: score >= 5,
+    score,
+    reasons,
+  }
+}
+
 // ─── Cloudflare Turnstile verification ───────────────────────────────────────
 // Only active if TURNSTILE_SECRET_KEY is set in the environment.
 // Falls through if not configured, so Turnstile is opt-in for local/dev.
 
 const TURNSTILE_SECRET = process.env.TURNSTILE_SECRET_KEY
 const TURNSTILE_VERIFY = 'https://challenges.cloudflare.com/turnstile/v0/siteverify'
-const TURNSTILE_EXPECTED_ACTION = process.env.TURNSTILE_EXPECTED_ACTION ?? 'assessment'
+const TURNSTILE_EXPECTED_ACTION = process.env.TURNSTILE_EXPECTED_ACTION
 const TURNSTILE_FAIL_OPEN =
   process.env.TURNSTILE_FAIL_OPEN === 'true' ||
   (process.env.NODE_ENV !== 'production' && process.env.TURNSTILE_FAIL_OPEN !== 'false')
@@ -74,7 +196,11 @@ export interface TurnstileVerificationResult {
   hostname?: string
 }
 
-export async function verifyTurnstile(token: string | undefined, remoteIp: string): Promise<TurnstileVerificationResult> {
+export async function verifyTurnstile(
+  token: string | undefined,
+  remoteIp: string,
+  options: { expectedAction?: string } = {}
+): Promise<TurnstileVerificationResult> {
   if (!TURNSTILE_SECRET) {
     return { success: true, configured: false, bypassed: 'not-configured' }
   }
@@ -106,7 +232,8 @@ export async function verifyTurnstile(token: string | undefined, remoteIp: strin
       hostname?: string
     }
 
-    const actionOk = !TURNSTILE_EXPECTED_ACTION || data.action === TURNSTILE_EXPECTED_ACTION
+    const expectedAction = options.expectedAction ?? TURNSTILE_EXPECTED_ACTION
+    const actionOk = !expectedAction || data.action === expectedAction
     const hostname = data.hostname?.toLowerCase()
     const hostnameOk = !TURNSTILE_ALLOWED_HOSTNAMES.length || (hostname ? TURNSTILE_ALLOWED_HOSTNAMES.includes(hostname) : false)
     const success = data.success === true && actionOk && hostnameOk
@@ -136,7 +263,7 @@ export async function verifyTurnstile(token: string | undefined, remoteIp: strin
 // Structured log for security events. In production, send to Logtail/Datadog.
 
 export interface AuditEntry {
-  type:      'submission' | 'rejection' | 'rate-limited' | 'honeypot' | 'disposable-email' | 'turnstile-failed' | 'turnstile-bypass'
+  type:      'submission' | 'rejection' | 'rate-limited' | 'honeypot' | 'disposable-email' | 'spam-detected' | 'turnstile-failed' | 'turnstile-bypass'
   ip:        string
   email?:    string
   company?:  string

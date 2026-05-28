@@ -2,14 +2,23 @@ import { NextRequest, NextResponse } from 'next/server';
 import { strapi } from '@/lib/strapi';
 import { buildDirectLeadPayload } from '@/lib/crm';
 import { contactLeadEmail, sendOperationalEmail } from '@/lib/emailDelivery';
-import { getRequestIp, isDisposableEmail, isHoneypotFilled, logAuditEvent } from '@/lib/security';
+import {
+  getRequestIp,
+  isDisposableEmail,
+  isHoneypotFilled,
+  logAuditEvent,
+  scoreLeadSpam,
+  validateTrustedFormRequest,
+  verifyTurnstile,
+} from '@/lib/security';
 import { createMemoryRateLimiter } from '@/lib/rateLimit';
 import { sanitizePlainText } from '@/lib/sanitize';
 import { dispatchWebhook } from '@/lib/webhook';
 
 const RATE_WINDOW_MS = 60_000;
-const RATE_MAX = 5;
+const RATE_MAX = 3;
 const checkRateLimit = createMemoryRateLimiter({ windowMs: RATE_WINDOW_MS, max: RATE_MAX });
+const checkEmailRateLimit = createMemoryRateLimiter({ windowMs: 10 * 60_000, max: 2 });
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -17,6 +26,18 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 // Lighter contact form; saves to Strapi lead with source = 'contacto'
 export async function POST(req: NextRequest) {
   const ip = getRequestIp(req);
+  const trustedRequest = validateTrustedFormRequest(req);
+  if (!trustedRequest.ok) {
+    logAuditEvent({ type: 'rejection', ip, reason: `contacto:${trustedRequest.reason}`, timestamp: new Date().toISOString() });
+    return NextResponse.json(
+      { ok: false, leadStored: false, notified: false, error: 'Solicitud no permitida.' },
+      {
+        status: 403,
+        headers: { 'Vary': 'Origin, Sec-Fetch-Site, Sec-Fetch-Mode' },
+      }
+    );
+  }
+
   const rateLimit = checkRateLimit(ip);
   if (rateLimit.limited) {
     logAuditEvent({ type: 'rate-limited', ip, reason: 'contacto', timestamp: new Date().toISOString() });
@@ -42,6 +63,41 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: true, leadStored: false, notified: false }, { status: 200 });
   }
 
+  const elapsedMs = Number(body._elapsedMs);
+  if (Number.isFinite(elapsedMs) && elapsedMs > 0 && elapsedMs < 1200) {
+    logAuditEvent({
+      type: 'spam-detected',
+      ip,
+      email: sanitizePlainText(body.email, 200),
+      reason: `contacto:fast-submit:${Math.round(elapsedMs)}ms`,
+      timestamp: new Date().toISOString(),
+    });
+    return NextResponse.json({ ok: true, leadStored: false, notified: false }, { status: 200 });
+  }
+
+  const turnstile = await verifyTurnstile(sanitizePlainText(body._ts, 2048), ip, { expectedAction: 'contact' });
+  if (!turnstile.success) {
+    logAuditEvent({
+      type: 'turnstile-failed',
+      ip,
+      reason: turnstile.errorCodes?.join(',') || 'unknown',
+      timestamp: new Date().toISOString(),
+    });
+    return NextResponse.json(
+      { ok: false, leadStored: false, notified: false, error: 'Verificación anti-abuso fallida. Actualiza la verificación e intenta de nuevo.' },
+      { status: 403 }
+    );
+  }
+
+  if (turnstile.bypassed === 'network-fail-open') {
+    logAuditEvent({
+      type: 'turnstile-bypass',
+      ip,
+      reason: turnstile.errorCodes?.join(',') || 'siteverify-unreachable',
+      timestamp: new Date().toISOString(),
+    });
+  }
+
   const name    = sanitizePlainText(body.name, 200);
   const email   = sanitizePlainText(body.email, 200);
   const company = sanitizePlainText(body.company, 200);
@@ -53,12 +109,34 @@ export async function POST(req: NextRequest) {
   if (!email || !EMAIL_RE.test(email)) return NextResponse.json({ ok: false, leadStored: false, notified: false, error: 'email inválido' },    { status: 400 });
   if (!company)                        return NextResponse.json({ ok: false, leadStored: false, notified: false, error: 'empresa requerida' }, { status: 400 });
 
+  const emailRateLimit = checkEmailRateLimit(email.toLowerCase());
+  if (emailRateLimit.limited) {
+    logAuditEvent({ type: 'rate-limited', ip, email, reason: 'contacto-email', timestamp: new Date().toISOString() });
+    return NextResponse.json(
+      { ok: false, leadStored: false, notified: false, error: 'Demasiadas solicitudes. Intenta de nuevo más tarde.' },
+      { status: 429, headers: { 'Retry-After': String(emailRateLimit.retryAfter) } }
+    );
+  }
+
   if (isDisposableEmail(email)) {
     logAuditEvent({ type: 'disposable-email', ip, email, timestamp: new Date().toISOString() });
     return NextResponse.json(
       { ok: false, leadStored: false, notified: false, error: 'Por favor usa tu correo corporativo.' },
       { status: 400 }
     );
+  }
+
+  const spamScore = scoreLeadSpam({ name, email, company, message, service });
+  if (spamScore.spam) {
+    logAuditEvent({
+      type: 'spam-detected',
+      ip,
+      email,
+      company,
+      reason: `contacto:score=${spamScore.score}:${spamScore.reasons.join(',')}`,
+      timestamp: new Date().toISOString(),
+    });
+    return NextResponse.json({ ok: true, leadStored: false, notified: false }, { status: 200 });
   }
 
   const result = await strapi.post('/leads', buildDirectLeadPayload({
