@@ -280,11 +280,14 @@ export default function ContactForm() {
             id="contact-message"
             name="message"
             rows={4}
+            required
+            minLength={15}
+            maxLength={2000}
             value={message}
             onChange={e => setMessage(e.target.value)}
             autoComplete="off"
             enterKeyHint="done"
-            placeholder="Cuéntanos sobre tu infraestructura actual o lo que necesitas..."
+            placeholder="Cuéntanos qué necesitas o qué problema quieres resolver (mínimo 15 caracteres)."
             aria-invalid={status === 'error' ? 'true' : undefined}
             aria-describedby={status === 'error' ? 'contact-error' : undefined}
             className="w-full min-h-28 bg-surface-dark border border-surface-border rounded-lg px-4 py-3 text-noc-white placeholder-zinc-700 text-base sm:text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-amber/40 focus:border-zinc-600 transition-colors resize-y"

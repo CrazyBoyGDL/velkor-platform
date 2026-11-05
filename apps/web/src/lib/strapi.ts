@@ -19,6 +19,7 @@ async function strapiGet<T>(path: string, revalidate = 3600): Promise<T | null> 
     const res = await fetch(`${STRAPI_URL}/api${path}`, {
       headers: buildHeaders(),
       next: { revalidate },
+      signal: AbortSignal.timeout(3000),
     });
     if (!res.ok) {
       console.error(`[strapi] GET ${path} → ${res.status}`);

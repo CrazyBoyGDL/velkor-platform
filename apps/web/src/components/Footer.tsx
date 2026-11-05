@@ -1,7 +1,7 @@
 'use client'
 import Link from 'next/link'
 import Logo from './Logo'
-import { COMPANY, CONTACT, ENTERPRISE_READINESS, TRUST, SITE_DOMAIN, LEGAL } from '@/lib/config'
+import { COMPANY, CONTACT, TRUST, SITE_DOMAIN, LEGAL } from '@/lib/config'
 
 const LINKS = {
   Servicios: [
@@ -103,7 +103,7 @@ export default function Footer() {
             </div>
 
             <div className="mt-5 text-[10px] font-mono text-zinc-700 leading-relaxed max-w-sm">
-              Producción activa: canonical por {ENTERPRISE_READINESS.canonicalSource} · Cloudflare operativo · SPF/DKIM/DMARC activos.
+              Consultoría e implementación de tecnología para empresas.
             </div>
 
             <div className="mt-3 text-[10px] font-mono text-zinc-700 leading-relaxed max-w-sm">

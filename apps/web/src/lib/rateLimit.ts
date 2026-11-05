@@ -23,7 +23,7 @@ export function createMemoryRateLimiter(options: {
     }
   }
 
-  return function checkRateLimit(key: string): RateLimitDecision {
+  function checkRateLimit(key: string): RateLimitDecision {
     const now = Date.now()
     sweep(now)
 
@@ -40,4 +40,6 @@ export function createMemoryRateLimiter(options: {
     entry.count += 1
     return { limited: false, retryAfter: Math.max(1, Math.ceil((entry.resetAt - now) / 1000)) }
   }
+
+  return Object.assign(checkRateLimit, { forget: (key: string) => entries.delete(key) })
 }

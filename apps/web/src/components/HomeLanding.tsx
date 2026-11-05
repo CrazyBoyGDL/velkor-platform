@@ -59,19 +59,19 @@ const PROCESS_PROOF = [
 const DECISION_LINE = [
   {
     label: 'Qué hacemos',
-    value: 'Ordenamos red, identidad, firewall, endpoints y continuidad.',
+    value: 'Protegemos redes, accesos, equipos y sistemas de videovigilancia.',
   },
   {
     label: 'Para quién',
-    value: 'Empresas con sedes, usuarios críticos o cambios que no pueden improvisarse.',
+    value: 'Empresas que necesitan reducir riesgos y mantener sus operaciones en marcha.',
   },
   {
     label: 'Qué entregamos',
-    value: 'Alcance, riesgos, responsables, evidencia y siguiente paso operable.',
+    value: 'Un plan claro con prioridades, responsables y resultados documentados.',
   },
   {
     label: 'Cómo empieza',
-    value: 'Una revisión breve del escenario y restricciones reales.',
+    value: 'Cuéntanos qué necesitas y revisaremos contigo los siguientes pasos.',
   },
 ] as const
 
@@ -147,8 +147,8 @@ function Hero() {
           </motion.div>
           <div className="hero-evidence-summary">
             <div className="hero-evidence-heading">
-              <span>Evidencia operativa</span>
-              <strong>estado sincronizado</strong>
+              <span>Controles de ejemplo</span>
+              <strong>infraestructura protegida</strong>
             </div>
             <div className="hero-evidence-grid">
               {HERO_EVIDENCE.map(item => (
@@ -171,12 +171,12 @@ function Hero() {
           </motion.div>
 
           <motion.h1 {...heroUp(0.02)} className="display-heading mb-6 max-w-[44rem]">
-            Ordenamos tu infraestructura antes de que <span className="hero-heading-accent">falle</span> en producción.
+            Redes y ciberseguridad para que tu empresa <span className="hero-heading-accent">siga operando.</span>
           </motion.h1>
 
           <motion.p {...heroUp(0.04)} className="editorial-lede mb-8 max-w-[34rem]">
-            Revisamos red, identidad, firewall, endpoints y rollback para reducir riesgo operativo
-            sin romper lo que el negocio necesita seguir usando.
+            Ayudamos a empresas a proteger sus redes, accesos y equipos. Revisamos tu situación,
+            priorizamos los riesgos y te acompañamos en los cambios.
           </motion.p>
 
           <motion.div {...heroUp(0.06)} className="flex flex-col sm:flex-row gap-3 mb-9">
@@ -201,8 +201,8 @@ function Hero() {
 
           <motion.div {...heroUp(0.08)} className="hero-evidence-summary hero-evidence-summary--mobile lg:hidden">
             <div className="hero-evidence-heading">
-              <span>Evidencia operativa</span>
-              <strong>estado sincronizado</strong>
+              <span>Controles de ejemplo</span>
+              <strong>infraestructura protegida</strong>
             </div>
             <div className="hero-evidence-grid">
               {HERO_EVIDENCE.map(item => (

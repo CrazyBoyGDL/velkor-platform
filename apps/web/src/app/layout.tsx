@@ -4,7 +4,6 @@ import './globals.css'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import MobileConsultiveCTA from '@/components/MobileConsultiveCTA'
-import CinematicScroll from '@/components/CinematicScroll'
 import OperationalAtmosphere from '@/components/OperationalAtmosphere'
 import SpatialFieldSystem from '@/components/SpatialFieldSystem'
 import ThemeProvider from '@/components/ThemeProvider'
@@ -150,7 +149,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
         <Analytics />
         <ThemeProvider>
-          <CinematicScroll />
           <OperationalAtmosphere />
           <SpatialFieldSystem />
           <VisualIntelligenceTracker />

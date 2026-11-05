@@ -14,11 +14,13 @@ import {
 import { createMemoryRateLimiter } from '@/lib/rateLimit';
 import { sanitizePlainText } from '@/lib/sanitize';
 import { dispatchWebhook } from '@/lib/webhook';
+import { createHash } from 'node:crypto';
 
 const RATE_WINDOW_MS = 60_000;
 const RATE_MAX = 3;
 const checkRateLimit = createMemoryRateLimiter({ windowMs: RATE_WINDOW_MS, max: RATE_MAX });
 const checkEmailRateLimit = createMemoryRateLimiter({ windowMs: 10 * 60_000, max: 2 });
+const checkMessageRateLimit = createMemoryRateLimiter({ windowMs: 30 * 60_000, max: 1 });
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -108,6 +110,7 @@ export async function POST(req: NextRequest) {
   if (!name)                           return NextResponse.json({ ok: false, leadStored: false, notified: false, error: 'name requerido' },    { status: 400 });
   if (!email || !EMAIL_RE.test(email)) return NextResponse.json({ ok: false, leadStored: false, notified: false, error: 'email inválido' },    { status: 400 });
   if (!company)                        return NextResponse.json({ ok: false, leadStored: false, notified: false, error: 'empresa requerida' }, { status: 400 });
+  if (message.length < 15) return NextResponse.json({ ok: false, leadStored: false, notified: false, error: 'Cuéntanos un poco más: escribe al menos 15 caracteres en tu mensaje.' }, { status: 400 });
 
   const emailRateLimit = checkEmailRateLimit(email.toLowerCase());
   if (emailRateLimit.limited) {
@@ -137,6 +140,17 @@ export async function POST(req: NextRequest) {
       timestamp: new Date().toISOString(),
     });
     return NextResponse.json({ ok: true, leadStored: false, notified: false }, { status: 200 });
+  }
+
+  // Limit repeated message bodies even when the sender changes their email address.
+  const messageFingerprint = createHash('sha256').update(message.toLocaleLowerCase('es').replace(/\s+/g, ' ').trim()).digest('hex');
+  const duplicate = checkMessageRateLimit(messageFingerprint);
+  if (duplicate.limited) {
+    logAuditEvent({ type: 'rate-limited', ip, reason: 'contacto-duplicate-message', timestamp: new Date().toISOString() });
+    return NextResponse.json(
+      { ok: false, leadStored: false, notified: false, error: 'Este mensaje ya se envió recientemente. Espera antes de intentarlo de nuevo.' },
+      { status: 429, headers: { 'Retry-After': String(duplicate.retryAfter) } }
+    );
   }
 
   const result = await strapi.post('/leads', buildDirectLeadPayload({
@@ -204,6 +218,7 @@ export async function POST(req: NextRequest) {
   }
 
   if (!leadStored && !notified) {
+    checkMessageRateLimit.forget(messageFingerprint);
     return NextResponse.json(
       { ok: false, leadStored, notified, fallbackUsed: false, error: 'No se pudo enviar. Intenta nuevamente.' },
       { status: 502 }
