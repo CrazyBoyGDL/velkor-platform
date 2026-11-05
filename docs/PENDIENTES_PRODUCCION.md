@@ -20,8 +20,8 @@ Actualizado: 5 de noviembre de 2026. Objetivo autorizado: mejorar claridad, expe
 - [ ] Crear o confirmar widget Turnstile en Cloudflare para `velkor.com.mx` y `www.velkor.com.mx`; configurar en el servicio web de Railway `NEXT_PUBLIC_TURNSTILE_SITE_KEY` y `TURNSTILE_SECRET_KEY` como pareja, con la clave pública disponible durante la compilación. Mantener la clave secreta fuera del repositorio y del chat. Confirmar que `TURNSTILE_FAIL_OPEN=false`.
 - [ ] Revisar y probar todos los formularios y rutas que envían correo, no solo `/api/contacto`; comprobar límites y configuración efectiva en producción.
 - [ ] Verificar si el correo repetido proviene de formularios o directamente a direcciones públicas; Turnstile solo protege los formularios que lo usan.
-- [ ] Revisar cambios y `git diff --check`; comprobar de nuevo el estado remoto de `main`. La autenticación de `gh` informó token inválido; `git ls-remote` funcionó fuera del sandbox.
-- [ ] Integrar en `main` y publicar cuando compile y esté listo; el usuario autorizó producción y `main`. Confirmar en Railway qué servicio y commit se desplegaron y el estado del despliegue.
+- [x] Revisar cambios y `git diff --check`; comprobar el estado remoto de `main`.
+- [x] Enviar el commit `f019824` a `main`; el dominio público respondió HTTP 200 y mostró el nuevo encabezado el 5 de noviembre de 2026. El endpoint de salud respondió `degraded` con tres variables recomendadas faltantes. No se confirmó el estado interno del despliegue en Railway.
 - [ ] Validar en producción visualmente en móvil y escritorio, probar formulario legítimo y protección contra duplicados/bots sin generar correos innecesarios, y revisar logs y salud del servicio.
 
 ## Accesos y precauciones
